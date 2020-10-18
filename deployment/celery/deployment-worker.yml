@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mbpp-elatihan-api-celery-worker
+  labels:
+    deployment: mbpp-elatihan-api-celery-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      pod: mbpp-elatihan-api-celery-worker
+  template:
+    metadata:
+      labels:
+        pod: mbpp-elatihan-api-celery-worker
+    spec:
+      containers:
+        - name: mbpp-elatihan-api-celery-worker
+          image: syafiqpipe/mbpp-elatihan-api
+          # celery -A mbpp-elatihanapi worker -l debug
+          command: ['celery', '-A', 'core', 'worker', '-l', 'info']
+          envFrom:
+            - secretRef:
+                name: mbpp-elatihan-api-secret            

@@ -1,0 +1,308 @@
+<div class="header bg-warm-blue pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <!--Page title-->
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Kursus</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)"><i class="fas fa-chalkboard-teacher text-white"></i></a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)">Tambah Baru</a>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--<form [formGroup]="trainingApplicationForm">-->
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-custom-gray">
+                    <h4 class="m-0">Penambahan Kursus Baru</h4>
+                </div>
+                <div class="card-body">
+                    <form [formGroup]="trainingApplicationForm">
+                        <mat-horizontal-stepper [linear]="isLinear" [labelPosition]="labelPosition" #stepper
+                            [disableRipple]="isDisableRipple">
+                            <!-- Step Kursus -->
+                            <mat-step>
+                                <ng-template matStepLabel>Kursus</ng-template>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Kategori Kursus
+                                            </label>
+                                            <select class="custom-select" formControlName="course_type">
+                                                <option selected hidden>Sila pilih kategori kursus</option>
+                                                <option *ngFor="let training of trainingTypes"
+                                                    value="{{training.value}}">
+                                                    {{training.text}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Jenis Kursus
+                                            </label>
+                                            <select class="custom-select" formControlName="course_type">
+                                                <option selected hidden>Sila pilih jenis kursus</option>
+                                                <option *ngFor="let course of courseTypes" value="{{course.value}}">
+                                                    {{course.text}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Kod Kursus
+                                            </label>
+                                            <input class="form-control form-custom-input"
+                                                placeholder="Sila taip kod kursus" formControlName="course_code">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Nama Kursus
+                                            </label>
+                                            <input class="form-control form-custom-input"
+                                                placeholder="Sila taip nama kursus" formControlName="title">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Penerangan Kursus
+                                            </label>
+                                            <textarea class="form-control form-custom-textarea"
+                                                placeholder="Sila taip penerangan kursus" formControlName=description></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Penganjur Kursus
+                                            </label>
+                                            <input class="form-control form-custom-input"
+                                                placeholder="Sila taip penganjur kursus" formControlName="organiser">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Kos
+                                            </label>
+                                            <input class="form-control form-custom-input" placeholder="Sila taip kos"
+                                            formControlName="cost">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Jabatan
+                                            </label>
+                                            <select class="custom-select" formControlName="department_type">
+                                                <option hidden selected>Sila pilih jabatan</option>
+                                                <option *ngFor="let department of departmentTypes"
+                                                    value="{{department.value}}">{{department.text}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Kumpulan Sasaran
+                                            </label>
+                                            <input class="form-control form-custom-input"
+                                                placeholder="Sila taip kumpulan sasaran" formControlName="target_group">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <button class="btn btn-sm btn-success" matStepperNext>Seterusnya</button>
+                                </div>
+                            </mat-step>
+                            <!-- Step Jadual -->
+                            <mat-step>
+                                <ng-template matStepLabel>Jadual</ng-template>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Tarikh Mula
+                                            </label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i
+                                                            class="far fa-calendar-alt"></i></span>
+                                                </div>
+                                                <input type="text" 
+                                                    placeholder="Pilih tarikh mula" 
+                                                    class="form-control"
+                                                    bsDatepicker 
+                                                    formControlName="start_date" 
+                                                    [bsValue]="datePickerValue"
+                                                    [bsConfig]="datePickerConfig">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Masa Mula
+                                            </label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                                </div>
+                                                <input class=" form-control" id="example-time-input" type="time"
+                                                    placeholder="10:30:00" formControlName="start_time" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Tarikh Tamat
+                                            </label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i
+                                                            class="far fa-calendar-alt"></i></span>
+                                                </div>
+                                                <input type="text" placeholder="Pilih tarikh tamat" class="form-control"
+                                                    bsDatepicker formControlName="end_date" [bsValue]="datePickerValue"
+                                                    [bsConfig]="datePickerConfig">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Masa Tamat
+                                            </label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="far fa-clock"></i></span>
+                                                </div>
+                                                <input class=" form-control" id="example-time-input" type="time"
+                                                    placeholder="10:30:00" formControlName="end_time" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Tempat
+                                            </label>
+                                            <input class="form-control form-custom-input"
+                                                placeholder="Sila taip tempat kursus" formControlName="venue">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Bilangan Peserta
+                                            </label>
+                                            <input class="form-control form-custom-input"
+                                                placeholder="Sila taip bilangan peserta" formControlName="max_participant">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Jumlah Jam
+                                            </label>
+                                            <input class="form-control form-custom-input"
+                                                placeholder="Sila taip jumlah jam">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Penceramah
+                                            </label>
+                                            <input class="form-control form-custom-input"
+                                                placeholder="Sila taip penceramah" formControlName="speaker">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Fasilitator
+                                            </label>
+                                            <input class="form-control form-custom-input"
+                                                placeholder="Sila taip fasilitator" formControlName="fasilitator">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <button class="btn btn-sm btn-danger" matStepperPrevious>Sebelum</button>
+                                    <button class="btn btn-sm btn-success" matStepperNext>Seterusnya</button>
+                                </div>
+                            </mat-step>
+                            <mat-step>
+                                <ng-template matStepLabel>Siap</ng-template>
+                                Sila tekan hantar sekiranya anda pasti dengan informasi yang telah diisi.
+                                <div class="text-right">
+                                    <button class="btn btn-sm btn-danger" matStepperPrevious>Sebelum</button>
+                                    <button class="btn btn-sm btn-success" (click)="onSubmit()">Hantar</button>
+                                </div>
+                            </mat-step>
+                        </mat-horizontal-stepper>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--<div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                               <label class="form-control-label">
+                                                    Lampiran
+                                                </label>
+                                                <div class="form-custom-file">
+                                                    <input class="form-custom-file-input" id="customFileLang" lang="en" type="file" />
+                            
+                                                    <label class="form-custom-file-label" for="customFileLang">
+                                                        Pilih fail
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>-->

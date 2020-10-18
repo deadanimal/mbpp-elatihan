@@ -1,0 +1,185 @@
+<div class="header pb-6">
+	<div class="container-fluid">
+		<div class="header-body">
+			<div class="row align-items-center py-4">
+				<div class="col-lg-6 col-7">
+					<h6 class="h2 text-dark d-inline-block mb-0">Dashboard Penyelaras Latihan</h6>
+
+					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+							<li class=" breadcrumb-item">
+								<a href="javascript:void(0)"> <i class="fas fa-home text-dark"> </i> </a>
+							</li>
+						</ol>
+					</nav>
+				</div>
+
+				<!-- <div class="col-lg-6 col-5 text-right">
+					<a class="btn btn-sm btn-neutral" href="javascript:void(0)"> New </a>
+
+					<a class="btn btn-sm btn-neutral" href="javascript:void(0)">
+						Filters
+					</a>
+				</div> -->
+			</div>
+
+			<div class="row">
+				<div class="col-xl-3 col-md-6">
+					<div class="card card-stats">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<h5 class="card-title text-uppercase text-muted mb-0">
+										Kursus Dirancang
+									</h5>
+
+									<span class="h2 font-weight-bold mb-0"> {{totalTrainingPlanned}} </span>
+								</div>
+
+								<div class="col-auto">
+									<div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+										<i class="fas fa-chalkboard-teacher"> </i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-xl-3 col-md-6">
+					<div class="card card-stats">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<h5 class="card-title text-uppercase text-muted mb-0">
+										Kursus Dalaman
+									</h5>
+
+									<span class="h2 font-weight-bold mb-0"> {{totalTrainingInternal}} </span>
+								</div>
+
+								<div class="col-auto">
+									<div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+										<i class="fas fa-chalkboard-teacher"> </i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-xl-3 col-md-6">
+					<div class="card card-stats">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<h5 class="card-title text-uppercase text-muted mb-0">
+										Kursus Luaran
+									</h5>
+
+									<span class="h2 font-weight-bold mb-0"> {{totalTrainingExternal}} </span>
+								</div>
+
+								<div class="col-auto">
+									<div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+										<i class="fas fa-chalkboard-teacher"> </i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-xl-3 col-md-6">
+					<div class="card card-stats">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<h5 class="card-title text-uppercase text-muted mb-0">
+										Bajet Semasa
+									</h5>
+
+									<span class="h2 font-weight-bold mb-0"> {{totalBudgetCurrent}} </span>
+								</div>
+
+								<div class="col-auto">
+									<div class=" icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+										<i class="fas fa-receipt"> </i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+            </div>
+            
+            <div class="row d-flex justify-content-center">
+				<div class="col-xl-3 col-md-6">
+					<div class="card card-stats">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<h5 class="card-title text-uppercase text-muted mb-0">
+										Kehadiran Dalaman
+									</h5>
+
+									<span class="h2 font-weight-bold mb-0"> {{totalAttendanceInternal}} </span>
+								</div>
+
+								<div class="col-auto">
+									<div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+										<i class="fas fa-list-ul"> </i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-xl-3 col-md-6">
+					<div class="card card-stats">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<h5 class="card-title text-uppercase text-muted mb-0">
+										Kehadiran Luaran
+									</h5>
+
+									<span class="h2 font-weight-bold mb-0"> {{totalAttendanceExternal}} </span>
+								</div>
+
+								<div class="col-auto">
+									<div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+										<i class="fas fa-list-ul"> </i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-xl-3 col-md-6">
+					<div class="card card-stats">
+						<div class="card-body">
+							<div class="row">
+								<div class="col">
+									<h5 class="card-title text-uppercase text-muted mb-0">
+										Perbelanjaan Semasa
+									</h5>
+
+									<span class="h2 font-weight-bold mb-0"> {{totalExpensesCurrent}} </span>
+								</div>
+
+								<div class="col-auto">
+									<div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+										<i class="fas fa-receipt"> </i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

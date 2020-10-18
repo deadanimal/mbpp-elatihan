@@ -1,0 +1,139 @@
+<div class="header bg-warm-blue pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <!--Page title-->
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Kursus</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)"><i class="fas fa-info text-white"></i></a>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class=" col-lg-6 col-5 text-right">
+                    <a class=" btn btn-sm btn-neutral" href="javascript:void(0)"> Sijil </a>
+                    <a class=" btn btn-sm btn-neutral" href="javascript:void(0)"> Slip </a>
+                    <a class=" btn btn-sm btn-neutral" href="javascript:void(0)"> Penilaian </a>
+                    <a class=" btn btn-sm btn-neutral text-blue" (click)="openModalAttendance()"> Kedatangan </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col-lg-5 col-sm-12">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="m-0">Informasi Kursus</h4>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-primary btn-sm" (click)="openModalNotAttend()">Tidak hadir</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-control-label">Tajuk</label>
+                        <input class="form-control form-control-sm" value="Bengkel Pengurusan Server" disabled>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Tarikh Mula</label>
+                                <input class="form-control form-control-sm" value="29 November 2019" disabled>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Tarikh Tamat</label>
+                                <input class="form-control form-control-sm" value="29 November 2019" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Masa Mula</label>
+                                <input class="form-control form-control-sm" value="10.00 pagi" disabled>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Masa Tamat</label>
+                                <input class="form-control form-control-sm" value="4.00 petang" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label">Tempat</label>
+                        <input class="form-control form-control-sm" value="Bilik Server MBPP" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-control-label">Penceramah</label>
+                        <input class="form-control form-control-sm" value="Encik Hazrul" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 col-sm-12">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h4 class="m-0"> Nota Kursus</h4>
+                </div>
+                <div class="card-body text-center">
+                    <img class="mb-2" src="assets/img/icons/common/error-404.svg">
+                    <p>Tiada nota dibekalkan untuk kursus ini.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #modalNotAttend>
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="form-control-label"> Sebab </label>
+
+            <textarea
+                class="form-control form-control-sm edit-event--description textarea-autosize"
+                placeholder="Sebab tidak hadir" 
+                disabled
+            >
+            </textarea>
+
+            <i class="form-group--bar"> </i>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class=" btn btn-primary" data-calendar="update" (click)="submitNotAttend()">
+            Hantar
+        </button>
+
+        <button class=" btn btn-link ml-auto" data-dismiss="modal" (click)="notAttendModal.hide()">
+            Tutup
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #modalAttendance>
+    <div class="modal-body text-center">
+        
+        <img style="max-width: 10rem !important" src="assets/img/photo/qr.png">
+        <p>Sila scan QR code ini untuk kedatangan.</p>
+    </div>
+
+    <div class="modal-footer">
+
+        <button class=" btn btn-link ml-auto" data-dismiss="modal" (click)="attendanceModal.hide()">
+            Tutup
+        </button>
+    </div>
+</ng-template>

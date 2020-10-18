@@ -1,0 +1,57 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { 
+  AccordionModule, 
+  BsDatepickerModule, 
+  BsDropdownModule,
+  ModalModule,
+  ProgressbarModule,
+  TabsModule,
+  TooltipModule
+} from 'ngx-bootstrap';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LoadingBarModule } from '@ngx-loading-bar/core';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { RouterModule } from '@angular/router';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatStepperModule } from '@angular/material/stepper'; 
+import { MatIconModule } from '@angular/material/icon';
+import { NgSelectModule } from '@ng-select/ng-select';
+
+import { TrainingCoordinatorRoutes } from './training-coordinator.routing';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { TrainingsComponent } from './trainings/trainings.component';
+import { ExamsComponent } from './exams/exams.component';
+import { ExamAddComponent } from './exam-add/exam-add.component';
+import { TrainingAddComponent } from './training-add/training-add.component';
+
+@NgModule({
+  declarations: [
+    DashboardComponent, 
+    ExamsComponent,
+    ExamAddComponent,
+    TrainingsComponent,
+    TrainingAddComponent
+  ],
+  imports: [
+    CommonModule,
+    AccordionModule.forRoot(),
+    BsDatepickerModule.forRoot(),
+    BsDropdownModule.forRoot(),
+    MatButtonModule,
+    MatStepperModule,
+    MatIconModule,
+    ModalModule.forRoot(),
+    ProgressbarModule.forRoot(),
+    TabsModule.forRoot(),
+    TooltipModule.forRoot(),
+    FormsModule,
+    ReactiveFormsModule,
+    LoadingBarModule,
+    NgxDatatableModule,
+    NgSelectModule,
+    RouterModule.forChild(TrainingCoordinatorRoutes)
+  ]
+})
+export class TrainingCoordinatorModule { }

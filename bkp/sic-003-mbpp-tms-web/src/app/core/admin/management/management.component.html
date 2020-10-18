@@ -1,0 +1,125 @@
+<div class="header bg-warm-blue pb-6">
+	<div class="container-fluid">
+		<div class="header-body">
+			<div class="row align-items-center py-4">
+				<div class="col-lg-6 col-7">
+					<h6 class="h2 text-white d-inline-block mb-0">Pengurusan</h6>
+
+					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+							<li class="breadcrumb-item">
+								<a href="javascript:void(0)"> <i class=" fas fa-tasks"> </i> </a>
+							</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid mt--6">
+	<div class="row">
+		<div class="col-xl-12">
+			<div class="card shadow">
+				<div class="card-header">
+					<div class="row align-items-center">
+						<div class="col">
+							<h4 class="mb-0 text-dark">Tambah Pengguna</h4>
+						</div>
+						<div class="col-auto">
+							<button type="button" class="btn btn-custom-blue btn-sm" (click)="register()"><i class="fas fa-save text-white mr-2"></i>Tambah</button>
+						</div>
+					</div>
+				</div>
+				<div class="card-body">
+					<form [formGroup]="registerForm">
+						<div class="form-group">
+							<label class="form-control-label">Emel</label>
+							<input class="form-control" type="text" placeholder="Sila taip emel pengguna" formControlName="email">
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="form-group">
+									<label class="form-control-label">Kata laluan</label>
+									<input class="form-control" type="text" placeholder="Sila taip kata laluan pengguna" formControlName="password1">
+								</div>
+							</div>
+							<div class="col">
+								<div class="form-group">
+									<label class="form-control-label">Ulang kata laluan</label>
+									<input class="form-control" type="text" placeholder="Sila ulang kata laluan pengguna" formControlName="password2">
+								</div>
+							</div>
+						</div>
+					</form>
+					<hr class=" my-4" />
+					<form [formGroup]="userForm">
+						<div class="form-group">
+							<label class="form-control-label">Name penuh</label>
+							<input class="form-control" type="text" placeholder="Sila taip nama penuh pengguna" formControlName="full_name">
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="form-group">
+									<label class="form-control-label">NRIC baru</label>
+									<input class="form-control" type="text" placeholder="Sila taip NRIC baru pengguna" formControlName="new_nric">
+								</div>
+							</div>
+							<div class="col">
+								<div class="form-group">
+									<label class="form-control-label">Jenis pengguna</label>
+									<input class="form-control" formControlName="user_type">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="form-group">
+									<label class="form-control-label">Alamat</label>
+									<textarea class="form-control" type="text" placeholder="Sila taip alamat pengguna" formControlName="address"></textarea>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="form-group">
+									<label class="form-control-label">Jawatan</label>
+									<input class="form-control" type="text" placeholder="Sila taip jawatan pengguna" formControlName="position">
+								</div>
+							</div>
+							<div class="col">
+								<div class="form-group">
+									<label class="form-control-label">Gred</label>
+									<input class="form-control" type="text" placeholder="Sila taip gred pengguna" formControlName="grade">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="form-group">
+									<label class="form-control-label">Jantina</label>
+									<input class="form-control" type="text" placeholder="Sila taip emel pengguna" formControlName="gender_type">
+								</div>
+							</div>
+							<div class="col">
+								<div class="form-group">
+									<label class="form-control-label">Jabatan</label>
+									<input class="form-control" type="text" placeholder="Sila taip emel pengguna" formControlName="department_type">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col">
+								<div class="form-group">
+									<label class="form-control-label">No. Tel</label>
+									<input class="form-control" type="text" placeholder="Sila taip no. tel pengguna" formControlName="telephone_number">
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

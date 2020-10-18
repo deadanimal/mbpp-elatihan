@@ -1,0 +1,110 @@
+<div class="header bg-warm-blue pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <!--Page title-->
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Peperiksaan</h6>
+
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)"> <i class="fas fa-tools"> </i> </a>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row mb-2">
+                <div class="col">
+                    <form class="navbar-search navbar-search-light form-inline mr-sm-3" id="navbar-search-main">
+                        <div class="form-group mb-0" [ngClass]="{ focused: focusSearch === true }">
+                            <div class="input-group input-group-alternative input-group-merge">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                </div>
+                                <input 
+                                    class="form-control" 
+                                    placeholder="Carian" 
+                                    type="text" 
+                                    (focus)="focusSearch = true"
+                                    (blur)="focusSearch = false" 
+                                    (keyup)="filterTable($event.target.value)" />
+                            </div>
+                        </div>
+                        <button 
+                            type="button" 
+                            class="close" 
+                            (click)="closeSearch()" 
+                            data-action="search-close"
+                            data-target="#navbar-search-main" 
+                            aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="my-auto text-dark">Senarai Peperiksaan</h4>
+                        </div>
+                        <div class="col-auto">
+                            <button 
+                                type="button" 
+                                class="btn btn-custom-blue btn-sm">
+                                <i class="fas fa-print text-white mr-2"></i>
+                                Cetak
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table mat-table [dataSource]="tableSource" class="table table-flush" matSort>
+
+                        <ng-container matColumnDef="code">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Kod Peperiksaan </th>
+                            <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="title">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tajuk </th>
+                            <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="date">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Tarikh </th>
+                            <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: tableColumns;"></tr>
+                    </table>
+                    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="m-0">Statistik Peperiksaan Setiap Bulan</h4>
+                </div>
+                <div class="card-body">
+                    <div id="examChart" style="width: 100%; height: 400px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

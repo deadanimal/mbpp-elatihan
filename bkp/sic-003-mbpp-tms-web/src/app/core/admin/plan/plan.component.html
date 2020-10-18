@@ -1,0 +1,74 @@
+<div class="header bg-warm-blue pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">Takwim</h6>
+
+          <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item">
+                <a href="javascript:void(0)"> <i class=" fas fa-tasks"> </i> </a>
+              </li> 
+            </ol>
+          </nav>
+        </div>
+        <div class=" col-lg-6 mt-3 mt-lg-0 text-lg-right">
+          <a class=" fullcalendar-btn-prev btn btn-sm btn-neutral" href="javascript:void(0)"
+              (click)="calendar.next()">
+              <i class=" fas fa-angle-left"> </i>
+          </a>
+
+          <a class=" fullcalendar-btn-next btn btn-sm btn-neutral" href="javascript:void(0)"
+              (click)="calendar.prev()">
+              <i class=" fas fa-angle-right"> </i>
+          </a>
+
+          <a class=" btn btn-sm btn-neutral" data-calendar-view="month" href="javascript:void(0)"
+              (click)="changeView('dayGridMonth')">
+              Bulan
+          </a>
+
+          <a class=" btn btn-sm btn-neutral" data-calendar-view="basicWeek" href="javascript:void(0)"
+              (click)="changeView('dayGridWeek')">
+              Minggu
+          </a>
+
+          <a class=" btn btn-sm btn-neutral" data-calendar-view="basicDay" href="javascript:void(0)"
+              (click)="changeView('dayGridDay')">
+              Tahun
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid mt--6">
+  <div class=" row">
+    <div class=" col">
+      <div class=" card card-calendar">
+        <div class=" card-header bg-secondary"><h5 class=" h3 mb-0">Takwim</h5></div>
+
+        <div class=" card-body p-0">
+          <div class=" calendar" data-toggle="calendar" id="calendar"></div>
+        </div>
+      </div>
+
+      <div
+        aria-hidden="true"
+        aria-labelledby="new-event-label"
+        class=" modal fade"
+        id="new-event"
+        role="dialog"
+        tabindex="-1"
+      >
+        <div
+          class=" modal-dialog modal-dialog-centered modal-secondary"
+          role="document"
+        >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

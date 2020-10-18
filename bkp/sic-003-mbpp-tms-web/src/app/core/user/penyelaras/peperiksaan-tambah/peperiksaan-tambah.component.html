@@ -1,0 +1,131 @@
+<ngx-loading-bar></ngx-loading-bar>
+<div class="header bg-warm-blue pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <!--Page title-->
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Peperiksaan</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)"><i class="fas fa-chalkboard-teacher text-white"></i></a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)">Tambah</a>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col align-items-center">
+                            <h4 class="mx-0 my-auto">Tambah Rekod Peperiksaan</h4>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <form [formGroup]="examForm">
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                Tajuk Peperiksaan
+                            </label>
+                            <input 
+                                class="form-control"
+                                placeholder="Tajuk peperiksaan"
+                                type="text"
+                                formControlName="title"
+                            />
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Kod Peperiksaan
+                                    </label>
+                                    <input 
+                                        class="form-control"
+                                        placeholder="Kod peperiksaan"
+                                        type="text"
+                                        formControlName="code"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Tarikh Peperiksaan
+                                    </label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="far fa-calendar-alt"></i>
+                                            </span>
+                                        </div>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Pilih tarikh" 
+                                            class="form-control" 
+                                            bsDatepicker
+                                            formControlName="date"
+                                            [bsConfig]="datePickerConfig">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-control-label">Keputusan Peperiksaan</label>
+                                    <select 
+                                        class="form-control custom-select"
+                                        formControlName="result"
+                                        placeholder="Sila pilih keputusan peperiksaan"
+                                    >
+                                        <option selected hidden>Sila pilih keputusan peperiksaan</option>
+                                        <option *ngFor="let result of resultOptns" value="{{result.value}}">{{result.text}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-sm-12">
+                                <label class="form-control-label">Salinan Dokumen</label>
+                                <div class="custom-file">
+                                    <input
+                                        class="custom-file-input"
+                                        id="customFileLang"
+                                        lang="en"
+                                        type="file"
+                                        formControlName="document_copy"
+                                    />
+                    
+                                    <label class="custom-file-label" for="customFileLang">
+                                      Select file
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col text-right">
+                                <button class="btn btn-custom-blue ml-auto" (click)="confirm()">Tambah</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

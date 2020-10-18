@@ -1,0 +1,159 @@
+<div class="header bg-warm-blue pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <!--Page title-->
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Takwim</h6>
+
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)"> <i class="far fa-clipboard"> </i> </a>
+                            </li> 
+                        </ol>
+                    </nav>
+                </div>
+                <div class=" col-lg-6 mt-3 mt-lg-0 text-lg-right">
+                    <a class=" fullcalendar-btn-prev btn btn-sm btn-neutral" href="javascript:void(0)"
+                        (click)="calendar.next()">
+                        <i class=" fas fa-angle-left"> </i>
+                    </a>
+
+                    <a class=" fullcalendar-btn-next btn btn-sm btn-neutral" href="javascript:void(0)"
+                        (click)="calendar.prev()">
+                        <i class=" fas fa-angle-right"> </i>
+                    </a>
+
+                    <a class=" btn btn-sm btn-neutral" data-calendar-view="month" href="javascript:void(0)"
+                        (click)="changeView('dayGridMonth')">
+                        Bulan
+                    </a>
+
+                    <a class=" btn btn-sm btn-neutral" data-calendar-view="basicWeek" href="javascript:void(0)"
+                        (click)="changeView('dayGridWeek')">
+                        Minggu
+                    </a>
+
+                    <a class=" btn btn-sm btn-neutral" data-calendar-view="basicDay" href="javascript:void(0)"
+                        (click)="changeView('dayGridDay')">
+                        Tahun
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col-12">
+            <div class="card widget-calendar">
+                <div class="card-header">
+                    <div class="h5 text-muted mb-1 widget-calendar-year"></div>
+                    <div class="h3 mb-0 widget-calendar-day"></div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="calendar" data-toggle="calendar" id="calendar"></div>
+                </div>
+            </div>
+            <div aria-hidden="true" aria-labelledby="edit-event-label" class=" modal fade" id="edit-event" role="dialog"
+                tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered modal-secondary" role="document">
+                    <ng-template #modalView>
+                        <div class="modal-body">
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-control-label"> Nama Kursus </label>
+                                    </div>
+                                    <div class="col text-right">
+                                        <span class="badge badge-pill badge-lg badge-success">DIBUKA</span>
+                                    </div>
+                                </div>
+
+                                <input class="form-control form-control-sm edit-event--title" placeholder="Event Title"
+                                    type="text" value="{{ eventTitle }}" (change)="getNewEventTitle($event)" disabled />
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label class="form-control-label"> Deskripsi </label>
+
+                                <textarea class="form-control form-control-sm edit-event--description textarea-autosize"
+                                    placeholder="Event Desctiption" value="{{ eventDescription }}"
+                                    (change)="getNewEventDescription($event)" disabled>
+                                </textarea>
+
+                                <i class="form-group--bar"> </i>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label"> Kumpulan Sasaran </label>
+                                <input 
+                                    class="form-control form-control-sm"
+                                    value="Terbuka"
+                                    disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label"> Jumlah Telah Mohon </label>
+                                <input 
+                                    class="form-control form-control-sm"
+                                    value="15"
+                                    disabled>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Tarikh Mula</label>
+                                        <input class="form-control form-control-sm" value="12 Julai 2019" disabled>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Tarikh Tamat</label>
+                                        <input class="form-control form-control-sm" value="13 Julai 2019" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Masa Mula</label>
+                                        <input class="form-control form-control-sm" value="10.00 A.M" disabled>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Masa Tamat</label>
+                                        <input class="form-control form-control-sm" value="12.00 P.M" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Tempat</label>
+                                        <input class="form-control form-control-sm" value="Dewan MBPP" disabled>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Penceramah</label>
+                                        <input class="form-control form-control-sm" value="Mr. David" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customCheck1" checked="" disabled>
+                                <label class="custom-control-label" for="customCheck1">Pengangkutan</label>
+                            </div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

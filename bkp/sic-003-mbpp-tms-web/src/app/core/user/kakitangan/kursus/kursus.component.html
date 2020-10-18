@@ -1,0 +1,182 @@
+<div class="header bg-warm-blue pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <!--Page title-->
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Kursus</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)"><i class="fas fa-chalkboard text-white"></i></a>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="m-0">Senarai Kursus</h4>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th class="sort" data-sort="" scope="col">Kod</th>
+                                <th class="sort" data-sort="" scope="col">Nama</th>
+                                <th class="sort" data-sort="" scope="col">Tarikh Mula</th>
+                                <th class="sort" data-sort="" scope="col">Tarikh Tamat</th>
+                                <th class="sort" data-sort="" scope="col">Jumlah Peserta</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody class="list">
+                            <tr>
+                                <th scope="row">TER2015</th>
+                                <td>Kursus English Communication</td>
+                                <td>12 Disember 2020</td>
+                                <td>13 Disember 2020</td>
+                                <td>20</td>
+                                <td class="text-right">
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                    (click)="doViewModal()">Lihat</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">TER2081</th>
+                                <td>Kursus Media Sosial</td>
+                                <td>14 Disember 2020</td>
+                                <td>15 Disember 2020</td>
+                                <td>20</td>
+                                <td class="text-right">
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                        (click)="doViewModal()">Lihat</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">TER2011</th>
+                                <td>Kursus Microsoft Office</td>
+                                <td>27 Disember 2020</td>
+                                <td>28 Disember 2020</td>
+                                <td>20</td>
+                                <td class="text-right">
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                    (click)="doViewModal()">Lihat</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #modalView>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col">
+                    <label class="form-control-label"> Nama Kursus </label>
+                </div>
+                <div class="col text-right">
+                    <span class="badge badge-pill badge-lg badge-success">DIBUKA</span>
+                </div>
+            </div>
+
+            <input class="form-control form-control-sm edit-event--title" placeholder="Event Title" type="text"
+                value="Kursus Media Sosial" disabled />
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label"> Deskripsi </label>
+
+            <textarea class="form-control form-control-sm edit-event--description textarea-autosize"
+                placeholder="Event Desctiption" value="Kursus ini akan menerangkan tentang bahaya serta impak media sosial kepada kerja-kerja majlis"
+                disabled>
+                </textarea>
+
+            <i class="form-group--bar"> </i>
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label"> Kumpulan Sasaran </label>
+            <input 
+                class="form-control form-control-sm"
+                value="Terbuka"
+                disabled>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label"> Jumlah Telah Mohon </label>
+            <input 
+                class="form-control form-control-sm"
+                value="15"
+                disabled>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">Tarikh Mula</label>
+                    <input class="form-control form-control-sm" value="12 Julai 2020" disabled>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">Tarikh Tamat</label>
+                    <input class="form-control form-control-sm" value="13 Julai 2020" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">Masa Mula</label>
+                    <input class="form-control form-control-sm" value="10.00 A.M" disabled>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">Masa Tamat</label>
+                    <input class="form-control form-control-sm" value="12.00 P.M" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">Tempat</label>
+                    <input class="form-control form-control-sm" value="Dewan MBPP" disabled>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">Penceramah</label>
+                    <input class="form-control form-control-sm" value="Mr. David" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="customCheck1" checked="" disabled>
+            <label class="custom-control-label" for="customCheck1">Pengangkutan</label>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button class=" btn btn-primary" data-calendar="update" (click)="applyTraining()">
+            Mohon
+        </button>
+
+        <button class=" btn btn-link ml-auto" data-dismiss="modal" (click)="viewModal.hide()">
+            Tutup
+        </button>
+    </div>
+</ng-template>

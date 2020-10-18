@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mbpp-elatihan-api-deployment
+  labels:
+    app: mbpp-elatihan-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mbpp-elatihan-api
+  template:
+    metadata:
+      labels:
+        app: mbpp-elatihan-api
+    spec:
+      containers:
+      - name: mbpp-elatihan-api
+        image: syafiqpipe/mbpp-elatihan-api:1.0.0 #boleh tambah version
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        envFrom:
+          - secretRef:
+              name: mbpp-elatihan-api-secret

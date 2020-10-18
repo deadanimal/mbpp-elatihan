@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: mbpp-elatihan-my-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "mbpp-elatihan-my-prod"
+spec:
+  tls:
+  - hosts:
+    - mbpp-elatihan.pipe.my
+    - mbpp-elatihan-api.pipe.my
+
+    secretName: mbpp-elatihan-my-prod
+
+  rules:
+  - host: mbpp-elatihan-api.pipe.my
+    http:
+      paths:
+      - backend:
+          serviceName: mbpp-elatihan-api
+          servicePort: 5000    
+  - host: mbpp-elatihan.pipe.my
+    http:
+      paths:
+      - backend:
+          serviceName: mbpp-elatihan-webapp
+          servicePort: 80    

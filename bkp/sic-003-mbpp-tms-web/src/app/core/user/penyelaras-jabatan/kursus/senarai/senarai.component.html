@@ -1,0 +1,371 @@
+<div class="header bg-warm-blue pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <!--Page title-->
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Senarai Kursus</h6>
+
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)"> <i class="far fa-clipboard"> </i> </a>
+                            </li> 
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col">
+            <div class="row mb-2">
+                <div class="col">
+                    <form class="navbar-search navbar-search-light form-inline mr-sm-3" id="navbar-search-main">
+                        <div class="form-group mb-0" [ngClass]="{ focused: focus === true }">
+                            <div class="input-group input-group-alternative input-group-merge">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                </div>
+                                <input class="form-control" placeholder="Carian" type="text" (focus)="focus = true"
+                                    (blur)="focus = false" (keyup)="filterTable($event.target.value)" />
+                            </div>
+                        </div>
+                        <button type="button" class="close" (click)="closeSearch()" data-action="search-close"
+                            data-target="#navbar-search-main" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="m-0">Senarai Kursus</h4>
+                        </div>
+                        <div class="col-auto">
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Tajuk Kursus</th>
+                                <th scope="col">Tarikh Mula</th>
+                                <th scope="col">Jumlah Hari</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody clas="list">
+                            <tr>
+                                <th scope="row">1.</th>
+                                <td>Kursus Safety</td>
+                                <td>10 Julai 2020</td>
+                                <td>1 hari</td>
+                                <td class="text-right">
+                                    <button type="button" class="btn btn-primary btn-sm" (click)="detailModal(modalView)">Informasi</button>
+                                    <button type="button" class="btn btn-info btn-sm" (click)="navigatePage('/penyelaras-jabatan/kursus/permohonan/')">Lihat</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="m-0">Borang Pencalonan</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">NRIC Kakitangan</label>
+                                <select class="form-control custom-select" [(ngModel)]="selectedKakitangan">
+                                    <option value="" selected hidden disabled>Sila pilih</option>
+                                    <option value="901010108329">901010108329</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="selectedKakitangan == '901010108329'">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Nama
+                                </label>
+                                <input class="form-control" disabled value="Amirul Aiman" type="text"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    NRIC
+                                </label>
+                                <input class="form-control" disabled value="901010108329" type="text"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="selectedKakitangan == '901010108329'">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Jawatan
+                                </label>
+                                <input class="form-control" disabled value="Pegawai" type="text"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Gred
+                                </label>
+                                <input class="form-control" disabled value="Gred 41" type="text"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        
+                    </div>
+                    <div class="row" *ngIf="selectedKakitangan == '901010108329'">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Jabatan
+                                </label>
+                                <select class="browser-default custom-select" disabled>
+                                    <option selected disabled>Kejuruteraan</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Tarikh mula berkhidmat
+                                </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                                    </div>
+                                    <input type="text"
+                                        disabled 
+                                        value="22/01/2010"
+                                        class="form-control"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Latihan</label>
+                                <select class="form-control custom-select" [(ngModel)]="selectedLatihan">
+                                    <option value="" selected hidden disabled>Sila pilih</option>
+                                    <option value="Latihan Tanggungjawab Bersama">Latihan Tanggungjawab Bersama</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" *ngIf="selectedLatihan == 'Latihan Tanggungjawab Bersama'">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Nama Latihan
+                                </label>
+                                <input class="form-control" disabled value="Latihan Tanggungjawab Bersama" type="text"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Jenis Latihan
+                                </label>
+                                <select class="browser-default custom-select" disabled>
+                                    <option hidden>Pilih jenis latihan</option>
+                                    <option disabled selected>Latihan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="selectedLatihan == 'Latihan Tanggungjawab Bersama'">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Tarikh Latihan
+                                </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="ni ni-calendar-grid-58"></i></span>
+                                    </div>
+                                    <input type="text"
+                                        disabled
+                                        value="20/05/2020"
+                                        class="form-control"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Tempat Latihan
+                                </label>
+                                <input class="form-control" disabled value="Dewan MBPP" type="text"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 text-right">
+                            <button type="button" class="btn btn-primary" (click)="sendApplication()">Hantar Pencalonan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #modalView>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col">
+                    <label class="form-control-label"> Nama Kursus </label>
+                </div>
+                <div class="col text-right">
+                    <span class="badge badge-pill badge-lg badge-success">DIBUKA</span>
+                </div>
+            </div>
+
+            <input class="form-control form-control-sm edit-event--title" placeholder="Event Title"
+                type="text" value="Kursus Safety" disabled />
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label"> Catatan </label>
+
+            <textarea 
+                class="form-control"
+                value="Kursus ini berkaitan dengan safety di tapak pembinaan"
+                disabled>
+            </textarea>
+
+            <i class="form-group--bar"> </i>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">Tarikh Mula</label>
+                    <input class="form-control form-control-sm" value="10 Julai 2019" disabled>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">Tarikh Tamat</label>
+                    <input class="form-control form-control-sm" value="10 Julai 2019" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">Masa Mula</label>
+                    <input class="form-control form-control-sm" value="10.00 A.M" disabled>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">Masa Tamat</label>
+                    <input class="form-control form-control-sm" value="5.00 P.M" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">Tempat</label>
+                    <input class="form-control form-control-sm" value="Dewan MBPP" disabled>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label class="form-control-label">Penceramah</label>
+                    <input class="form-control form-control-sm" value="Mr. David" disabled>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+
+        <button class=" btn btn-link ml-auto" data-dismiss="modal" (click)="viewModal.hide()">
+            Tutup
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #modalReject>
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="form-control-label">Sebab</label> 
+            <textarea class="form-control" placeholder="Nyatakan sebab"></textarea>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form>
+                    <div class="custom-file">
+                      <input type="file" class="custom-file-input" id="customFileLang" lang="en">
+                      <label class="custom-file-label" for="customFileLang">Muat naik lampiran</label>
+                    </div>
+                  </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="rejectModal.hide()">Hantar</button>
+        <button class=" btn btn-link ml-auto" data-dismiss="modal" (click)="rejectModal.hide()">
+            Tutup
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #modalPrint>
+    <div class="modal-body">
+
+        <div class="form-group">
+            <label class="form-control-label">Tajuk Kursus</label>
+            <select class="form-control custom-select">
+                <option selected hidden>Sila pilih</option>
+                <option>This is a test</option>
+            </select>
+        </div>
+
+        <div class="row">
+            <div class="col text-center">
+                <button class="btn btn-primary">Cetak</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+
+        <button class=" btn btn-link ml-auto" data-dismiss="modal" (click)="viewModal.hide()">
+            Tutup
+        </button>
+    </div>
+</ng-template>

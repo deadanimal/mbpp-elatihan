@@ -1,0 +1,256 @@
+<div class="header bg-warm-blue pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <!--Page title-->
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-white d-inline-block mb-0">Dashboard</h6>
+
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item">
+                                <a href="javascript:void(0)"> <i class="fas fa-home"> </i> </a>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <!--Stat cards-->
+            <div class="row">
+                <!--Stat card 1-->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-stats">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">
+                                        Kursus Dalaman
+                                    </h5>
+                                    <span class="h2 font-weight-bold mb-0"> 1027 </span>
+                                </div>
+
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
+                                        <i class="ni ni-active-40"> </i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Stat card 2-->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-stats">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">
+                                        Kursus Luaran
+                                    </h5>
+                                    <span class="h2 font-weight-bold mb-0"> 356 </span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
+                                        <i class="ni ni-chart-pie-35"> </i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Stat card 3-->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-stats">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="card-title text-uppercase text-muted mb-0">
+                                        Kehadiran Dalaman
+                                    </h5>
+                                    <span class="h2 font-weight-bold mb-0"> 8127</span>
+                                </div>
+                                <div class="col-auto">
+                                    <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+                                        <i class="ni ni-money-coins"> </i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Stat card 4-->
+                <div class=" col-xl-3 col-md-6">
+                    <div class=" card card-stats">
+                        <div class=" card-body">
+                            <div class=" row">
+                                <div class=" col">
+                                    <h5 class=" card-title text-uppercase text-muted mb-0">
+                                        Kehadiran Luaran
+                                    </h5>
+                                    <span class=" h2 font-weight-bold mb-0"> 2191 </span>
+                                </div>
+                                <div class=" col-auto">
+                                    <div class=" icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                                        <i class=" ni ni-chart-bar-32"> </i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h6 class="text-muted text-uppercase ls-1 mb-1">Statistik</h6>
+                                    <h3 class="mb-0">Kursus Memenuhi Minimum 5 Hari</h3>
+                                </div>
+                                <div class="col-auto">
+                                    <div dropdown class="dropdown no-caret">
+                                        <button id="button-basic" dropdownToggle type="button"
+                                            class="btn btn-sm btn-custom-blue mr-0 dropdown-toggle"
+                                            aria-controls="dropdown-basic">
+                                            <i class=" fas fa-ellipsis-h"> </i>
+                                        </button>
+
+                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow"
+                                            *dropdownMenu>
+                                            <a class="dropdown-item" href="javascript:void(0)" (click)="getPDF()">
+                                                <i class="fas fa-file-pdf mr-2"></i>Export PDF
+                                            </a>
+
+                                            <a class="dropdown-item" href="javascript:void(0)">
+                                                <i class="fas fa-print mr-1"></i>Print
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="chartCapaiMin" style="width: 100%; height: 400px"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h6 class="text-muted text-uppercase ls-1 mb-1">Statistik</h6>
+                            <h3 class="mb-0">Kursus Tidak Memenuhi Minimum 5 Hari</h3>
+                        </div>
+                        <div class="col-auto">
+                            <div dropdown class="dropdown no-caret">
+                                <button id="button-basic" dropdownToggle type="button"
+                                    class="btn btn-sm btn-custom-blue mr-0 dropdown-toggle"
+                                    aria-controls="dropdown-basic">
+                                    <i class=" fas fa-ellipsis-h"> </i>
+                                </button>
+
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow" *dropdownMenu>
+                                    <a class="dropdown-item" href="javascript:void(0)" (click)="getPDF()">
+                                        <i class="fas fa-file-pdf mr-2"></i>Export PDF
+                                    </a>
+
+                                    <a class="dropdown-item" href="javascript:void(0)">
+                                        <i class="fas fa-print mr-1"></i>Print
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="chartBelumCapaiMin" style="width: 100%; height: 500px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h6 class="text-muted text-uppercase ls-1 mb-1">Statistik</h6>
+                            <h3 class="mb-0">Kehadiran Kursus Mengikut Skim</h3>
+                        </div>
+                        <div class="col-auto">
+                            <div dropdown class="dropdown no-caret">
+                                <button id="button-basic" dropdownToggle type="button"
+                                    class="btn btn-sm btn-custom-blue mr-0 dropdown-toggle"
+                                    aria-controls="dropdown-basic">
+                                    <i class=" fas fa-ellipsis-h"> </i>
+                                </button>
+
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow" *dropdownMenu>
+                                    <a class="dropdown-item" href="javascript:void(0)" (click)="getPDF()">
+                                        <i class="fas fa-file-pdf mr-2"></i>Export PDF
+                                    </a>
+
+                                    <a class="dropdown-item" href="javascript:void(0)">
+                                        <i class="fas fa-print mr-1"></i>Print
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="chartKehadiranJabatan" style="width: 100%; height: 500px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h6 class="text-muted text-uppercase ls-1 mb-1">Statistik</h6>
+                            <h3 class="mb-0">Prestasi Latihan Semasa</h3>
+                        </div>
+                        <div class="col-auto">
+                            <div dropdown class="dropdown no-caret">
+                                <button id="button-basic" dropdownToggle type="button"
+                                    class="btn btn-sm btn-custom-blue mr-0 dropdown-toggle"
+                                    aria-controls="dropdown-basic">
+                                    <i class=" fas fa-ellipsis-h"> </i>
+                                </button>
+
+                                <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow" *dropdownMenu>
+                                    <a class="dropdown-item text-dark"  (click)="getPDF()">
+                                        <i class="fas fa-file-pdf mr-2 text-dark"></i>Export PDF
+                                    </a>
+
+                                    <a class="dropdown-item" href="javascript:void(0)">
+                                        <i class="fas fa-print mr-1"></i>Print
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="chartPrestasiSemasa" style="width: 100%; height: 500px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
