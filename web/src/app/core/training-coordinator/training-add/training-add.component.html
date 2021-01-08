@@ -51,7 +51,7 @@
                                         <div class="form-group">
                                             <label class="form-control-label">Jenis Penganjur</label>
                                             <!-- organiser_type -->
-                                            <select class="form-control" formControlName="organiser_type">
+                                            <select class="form-control custom-select" formControlName="organiser_type">
                                                 <option *ngFor="let choice of organiserChoices" value="{{choice.value}}">{{choice.text}}</option>
                                             </select>
                                         </div>
@@ -61,7 +61,7 @@
                                         <div class="form-group">
                                             <label class="form-control-label">Penganjur</label>
                                             <!-- organiser -->
-                                            <select class="form-control" formControlName="organiser">
+                                            <select class="form-control custom-select" formControlName="organiser">
                                                 <option *ngFor="let organisation of organisations" value="{{organisation.id}}">{{organisation.shortname}} - {{organisation.name}}</option>
                                             </select>
                                         </div>
@@ -73,7 +73,7 @@
                                         <div class="form-group">
                                             <label class="form-control-label">Jenis Latihan</label>
                                             <!-- course_type -->
-                                            <select class="form-control" formControlName="course_type">
+                                            <select class="form-control custom-select" formControlName="course_type">
                                                 <option *ngFor="let choice of courseTypeChoices" value="{{choice.value}}">{{choice.text}}</option>
                                             </select>
                                         </div>
@@ -88,7 +88,7 @@
                                         <div class="form-group">
                                             <label class="form-control-label">Jenis Sasaran</label>
                                             <!-- target_group_type -->
-                                            <select class="form-control" formControlName="target_group_type">
+                                            <select class="form-control custom-select" formControlName="target_group_type" (change)="onChangeTargetType($event.target.value)">
                                                 <option *ngFor="let choice of targetGroupTypeChoices" value="{{choice.value}}">{{choice.text}}</option>
                                             </select>
                                         </div>
@@ -241,7 +241,7 @@
                                 </div>
 
                                 <div>
-                                    <button class="btn btn-success" matStepperNext>Seterusnya</button>
+                                    <button class="btn btn-primary" matStepperNext>Seterusnya</button>
                                 </div>
                             </mat-step>
 
@@ -308,8 +308,8 @@
                                 </div>
 
                                 <div>
-                                    <button class="btn btn-warning" matStepperPrevious>Sebelum</button>
-                                    <button class="btn btn-success" matStepperNext>Seterusnya</button>
+                                    <button class="btn btn-outline-primary" matStepperPrevious>Sebelum</button>
+                                    <button class="btn btn-primary" matStepperNext>Seterusnya</button>
                                 </div>
                             </mat-step>
 
@@ -426,7 +426,7 @@
                                 </div>
 
                                 <div>
-                                    <button class="btn btn-warning" matStepperPrevious>Sebelum</button>
+                                    <button class="btn btn-outline-primary" matStepperPrevious>Sebelum</button>
                                     <button class="btn btn-primary" (click)="confirm()">Daftar</button>
                                 </div>
                             </mat-step>
@@ -480,7 +480,7 @@
 
     <div class="modal-footer">
         <button 
-            class="btn btn-success"
+            class="btn btn-primary"
             type="button"
             (click)="addOrganisation()"
             [disabled]="!organisationForm.valid"
@@ -489,7 +489,7 @@
         </button>
 
         <button
-            class="btn btn-outline-danger ml-auto"
+            class="btn btn-outline-primary ml-auto"
             data-dismiss="modal"
             type="button"
             (click)="closeModal()"

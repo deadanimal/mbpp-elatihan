@@ -67,8 +67,16 @@ export class LoginComponent implements OnInit {
   }
 
   cheat() {
-    let username= '900106075157'
+    // Kakitangan - ST
+    // let username= '900106075157'
+    // let pwd = 'mbpplatihan'
+    // Ketua Jabatan - DC
+    // let username= '900106075156'
+    // let pwd = 'mbpplatihan'
+    // Ketua Latihan - TC
+    let username= '900106075155'
     let pwd = 'mbpplatihan'
+
     this.loginForm.controls['username'].setValue(username)
     this.loginForm.controls['password'].setValue(pwd)
 

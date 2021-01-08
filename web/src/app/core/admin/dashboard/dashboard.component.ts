@@ -1,9 +1,6 @@
 import { Component, OnInit, NgZone, OnDestroy } from "@angular/core";
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
-import * as am4maps from "@amcharts/amcharts4/maps";
-import am4geodata_continentsLow from "@amcharts/amcharts4-geodata/continentsLow";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,11 +11,11 @@ import { Router } from '@angular/router';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   // Chart
-  private chart: any
-  private chart1: any
-  private chart2: any
-  private clicked: any = true
-  private clicked1: any = false
+  public chart: any
+  public chart1: any
+  public chart2: any
+  public clicked: any = true
+  public clicked1: any = false
 
   constructor(
     private zone: NgZone

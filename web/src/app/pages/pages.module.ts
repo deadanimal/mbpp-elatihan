@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { 
   AccordionModule,
   BsDropdownModule,
+  CollapseModule,
   ModalModule,
   ProgressbarModule, 
   TabsModule,
@@ -24,6 +25,7 @@ import { HomeComponent } from './home/home.component';
     AccordionModule.forRoot(),
     BsDatepickerModule.forRoot(),
     BsDropdownModule.forRoot(),
+    CollapseModule.forRoot(),
     ModalModule.forRoot(),
     ProgressbarModule.forRoot(),
     TabsModule.forRoot(),

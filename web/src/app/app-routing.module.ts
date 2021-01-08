@@ -10,7 +10,7 @@ import { PresentationComponent } from './examples/presentation/presentation.comp
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'auth/login',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
   {
@@ -40,7 +40,7 @@ const routes: Routes = [
         // Training coordinator apges
         path: 'tc',
         loadChildren: './core/training-coordinator/training-coordinator.module#TrainingCoordinatorModule'
-      }
+      },
     ]
   },
   {
@@ -54,6 +54,10 @@ const routes: Routes = [
       {
         path: 'examples',
         loadChildren: './layouts/auth-layout/auth-layout.module#AuthLayoutModule'
+      },
+      {
+        path: '',
+        loadChildren: './pages/pages.module#PagesModule'
       }
     ]
   },

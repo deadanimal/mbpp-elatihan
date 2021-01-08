@@ -64,7 +64,7 @@ export class RegisterComponent implements OnInit {
     })
   }
 
-  login() {
+  createAccount() {
     this.loadingBar.start()
     this.loadingBar.complete()
     this.successMessage()
@@ -78,7 +78,7 @@ export class RegisterComponent implements OnInit {
 
   successMessage() {
     let title = 'Success'
-    let message = 'Loging in right now'
+    let message = 'Creating account'
     this.notifyService.openToastr(title, message)
   }
 

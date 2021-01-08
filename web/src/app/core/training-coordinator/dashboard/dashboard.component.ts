@@ -37,12 +37,12 @@ export class DashboardComponent implements OnInit {
   }
 
   getData() {
-    forkJoin(
+    forkJoin([
       this.attendanceService.getAll(),
       this.examService.getAll(),
       this.trainingService.getAll(),
       this.userService.getAll()
-    ).subscribe(
+    ]).subscribe(
       () => {}
     )
   }

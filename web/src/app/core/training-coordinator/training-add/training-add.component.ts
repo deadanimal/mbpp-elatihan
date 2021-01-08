@@ -235,6 +235,32 @@ export class TrainingAddComponent implements OnInit {
         Validators.required
       ]))
     })
+
+    this.trainingForm.controls['is_group_KPP_A'].patchValue(true)
+    this.trainingForm.controls['is_group_KPP_B'].patchValue(true)
+    this.trainingForm.controls['is_group_KPP_C'].patchValue(true)
+    this.trainingForm.controls['is_group_KP_A'].patchValue(true)
+    this.trainingForm.controls['is_group_KP_B'].patchValue(true)
+    this.trainingForm.controls['is_group_KP_C'].patchValue(true)
+    this.trainingForm.controls['is_department_PDB'].patchValue(true)
+    this.trainingForm.controls['is_department_UUU'].patchValue(true)
+    this.trainingForm.controls['is_department_UAD'].patchValue(true)
+    this.trainingForm.controls['is_department_UPP'].patchValue(true)
+    this.trainingForm.controls['is_department_UPS'].patchValue(true)
+    this.trainingForm.controls['is_department_JKP'].patchValue(true)
+    this.trainingForm.controls['is_department_JPD'].patchValue(true)
+    this.trainingForm.controls['is_department_JPH'].patchValue(true)
+    this.trainingForm.controls['is_department_JPP'].patchValue(true)
+    this.trainingForm.controls['is_department_JKJ'].patchValue(true)
+    this.trainingForm.controls['is_department_JKB'].patchValue(true)
+    this.trainingForm.controls['is_department_JKEA'].patchValue(true)
+    this.trainingForm.controls['is_department_JKEB'].patchValue(true)
+    this.trainingForm.controls['is_department_JPR'].patchValue(true)
+    this.trainingForm.controls['is_department_JKK'].patchValue(true)
+    this.trainingForm.controls['is_department_JKW'].patchValue(true)
+    this.trainingForm.controls['is_department_JLK'].patchValue(true)
+    this.trainingForm.controls['is_department_JPU'].patchValue(true)
+    this.trainingForm.controls['is_department_JPB'].patchValue(true)
   }
 
   getData() {
@@ -353,6 +379,63 @@ export class TrainingAddComponent implements OnInit {
       confirmButtonClass: 'btn btn-success',
       confirmButtonText: 'Tambah'
     })
+  }
+
+  onChangeTargetType(event) {
+    if (event == 'TB') {
+      this.trainingForm.controls['is_group_KPP_A'].patchValue(true)
+      this.trainingForm.controls['is_group_KPP_B'].patchValue(true)
+      this.trainingForm.controls['is_group_KPP_C'].patchValue(true)
+      this.trainingForm.controls['is_group_KP_A'].patchValue(true)
+      this.trainingForm.controls['is_group_KP_B'].patchValue(true)
+      this.trainingForm.controls['is_group_KP_C'].patchValue(true)
+      this.trainingForm.controls['is_department_PDB'].patchValue(true)
+      this.trainingForm.controls['is_department_UUU'].patchValue(true)
+      this.trainingForm.controls['is_department_UAD'].patchValue(true)
+      this.trainingForm.controls['is_department_UPP'].patchValue(true)
+      this.trainingForm.controls['is_department_UPS'].patchValue(true)
+      this.trainingForm.controls['is_department_JKP'].patchValue(true)
+      this.trainingForm.controls['is_department_JPD'].patchValue(true)
+      this.trainingForm.controls['is_department_JPH'].patchValue(true)
+      this.trainingForm.controls['is_department_JPP'].patchValue(true)
+      this.trainingForm.controls['is_department_JKJ'].patchValue(true)
+      this.trainingForm.controls['is_department_JKB'].patchValue(true)
+      this.trainingForm.controls['is_department_JKEA'].patchValue(true)
+      this.trainingForm.controls['is_department_JKEB'].patchValue(true)
+      this.trainingForm.controls['is_department_JPR'].patchValue(true)
+      this.trainingForm.controls['is_department_JKK'].patchValue(true)
+      this.trainingForm.controls['is_department_JKW'].patchValue(true)
+      this.trainingForm.controls['is_department_JLK'].patchValue(true)
+      this.trainingForm.controls['is_department_JPU'].patchValue(true)
+      this.trainingForm.controls['is_department_JPB'].patchValue(true)
+    }
+    else {
+      this.trainingForm.controls['is_group_KPP_A'].patchValue(false)
+      this.trainingForm.controls['is_group_KPP_B'].patchValue(false)
+      this.trainingForm.controls['is_group_KPP_C'].patchValue(false)
+      this.trainingForm.controls['is_group_KP_A'].patchValue(false)
+      this.trainingForm.controls['is_group_KP_B'].patchValue(false)
+      this.trainingForm.controls['is_group_KP_C'].patchValue(false)
+      this.trainingForm.controls['is_department_PDB'].patchValue(false)
+      this.trainingForm.controls['is_department_UUU'].patchValue(false)
+      this.trainingForm.controls['is_department_UAD'].patchValue(false)
+      this.trainingForm.controls['is_department_UPP'].patchValue(false)
+      this.trainingForm.controls['is_department_UPS'].patchValue(false)
+      this.trainingForm.controls['is_department_JKP'].patchValue(false)
+      this.trainingForm.controls['is_department_JPD'].patchValue(false)
+      this.trainingForm.controls['is_department_JPH'].patchValue(false)
+      this.trainingForm.controls['is_department_JPP'].patchValue(false)
+      this.trainingForm.controls['is_department_JKJ'].patchValue(false)
+      this.trainingForm.controls['is_department_JKB'].patchValue(false)
+      this.trainingForm.controls['is_department_JKEA'].patchValue(false)
+      this.trainingForm.controls['is_department_JKEB'].patchValue(false)
+      this.trainingForm.controls['is_department_JPR'].patchValue(false)
+      this.trainingForm.controls['is_department_JKK'].patchValue(false)
+      this.trainingForm.controls['is_department_JKW'].patchValue(false)
+      this.trainingForm.controls['is_department_JLK'].patchValue(false)
+      this.trainingForm.controls['is_department_JPU'].patchValue(false)
+      this.trainingForm.controls['is_department_JPB'].patchValue(false)
+    }
   }
 
   navigatePage(path: string) {

@@ -259,6 +259,26 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
     )
   }
 
+  entriesChange($event) {
+    this.tableEntries = $event.target.value;
+  }
+
+  filterTable($event) {
+    let val = $event.target.value.toLowerCase();
+    this.tableTemp = this.tableRows.filter(function (d) {
+      // return d.staff_name.toLowerCase().indexOf(val)!== -1 || !val;
+    });
+  }
+
+  onSelect({ selected }) {
+    this.tableSelected.splice(0, this.tableSelected.length);
+    this.tableSelected.push(...selected);
+  }
+
+  onActivate(event) {
+    this.tableActiveRow = event.row;
+  }
+
   openModal(modalRef: TemplateRef<any>) {
     this.modal = this.modalService.show(modalRef, this.modalConfig);
   }
