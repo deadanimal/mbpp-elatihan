@@ -32,8 +32,12 @@
 							<div class="dataTables_length" id="datatable_length">
 								<label>
 									Lihat
-									<select name="datatable_length" aria-controls="datatable" class="form-control form-control-sm"
-										(change)="entriesChange($event)">
+									<select 
+										name="datatable_length" 
+										aria-controls="datatable" 
+										class="form-control form-control-sm custom-select custom-select-sm"
+										(change)="entriesChange($event)"
+									>
 										<option value="5" [selected]="tableEntries == 5">5</option>
 										<option value="10" [selected]="tableEntries == 10">10</option>
 										<option value="15" [selected]="tableEntries == 15">15</option>

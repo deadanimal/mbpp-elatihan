@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 import uuid
+import pytz
+import datetime
 
 from django.contrib.gis.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -15,9 +17,43 @@ from organisations.models import (
     Organisation
 )
 
+class TrainingCore(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) # Done
+    CORE_PARENT = [
+        ('FN', 'Fungsional'),
+        ('GN', 'Generik')
+    ]
+    parent = models.CharField(max_length=2, choices=CORE_PARENT, default='GN')
+    child = models.CharField(max_length=100, default='NA')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return ('%s %s'%(self.parent, self.child))
+
+
+class TrainingDomain(models.Model):
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100, null=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.name
+
+
 class Training(models.Model):
     
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=True) # Done
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) # Done
     title = models.CharField(max_length=100, default='NA') # Done
     description = models.CharField(max_length=100, default='NA') # Done
 
@@ -66,7 +102,19 @@ class Training(models.Model):
     
     course_type = models.CharField(max_length=2, choices=COURSE_TYPE, default='OT') # Done
     # category = models.CharField(max_length=100, default="-") # Hmm
-    course_code = models.CharField(max_length=100, default='NA') # Hmm
+    core = models.ForeignKey(
+        TrainingCore,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name='training_traininc_core'
+    ) # Done
+    domain = models.ForeignKey(
+        TrainingDomain,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name='training_domain'
+    )
+    course_code = models.CharField(max_length=100, null=True) # Hmm
 
     TARGET_GROUP_TYPE = [
         ('TB', 'Terbuka'),
@@ -142,7 +190,7 @@ class Training(models.Model):
     end_date = models.DateField(null=True) # Done
     end_time = models.TimeField(null=True) # Done
     cost = models.IntegerField(default=0) # Done
-    duration_days = models.IntegerField(default=1) # Done
+    duration_days = models.IntegerField(null=True) # Done
     transportation = models.BooleanField(default=False)
 
     STATUS_TYPE = [
@@ -150,35 +198,81 @@ class Training(models.Model):
         ('DT','Ditutup'),
         ('PN','Penuh'),
         ('TN','Tangguh'),
+        ('SL','Selesai'),
         ('OT','Lain-lain')
     ]
 
-    status = models.CharField(max_length=2, choices=STATUS_TYPE, default='OT') # Done
-    speaker = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='training_speaker') # Done
-    facilitator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='training_facilitator') # Done
+    status = models.CharField(max_length=2, choices=STATUS_TYPE, default='DB') # Done
     attachment = models.FileField(null=True, upload_to=PathAndRename('attachments')) # Done
 
     history = HistoricalRecords()
+    created_by = models.ForeignKey(
+        CustomUser,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name='training_created_by',
+        limit_choices_to={
+            'user_type': 'TC'
+        }
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def save(self,*args, **kwargs):
+        timezone_ = pytz.timezone('Asia/Kuala_Lumpur')
+        if not self.course_code:
+            prefix = 'MBPP{}'.format(datetime.datetime.now(timezone_).strftime('%y%m'))
+            prev_instances = self.__class__.objects.filter(course_code__contains=prefix)
+            print('Prevs', prev_instances)
+            print('Prev', prev_instances.first())
+            if prev_instances.exists():
+                last_instance_id = prev_instances.first().course_code[-4:]
+                self.course_code = prefix+'{0:04d}'.format(int(last_instance_id)+1)
+            else:
+                self.course_code = prefix+'{0:04d}'.format(1)
+
+        if not self.duration_days:
+            delta_duration = self.end_date - self.start_date
+            self.duration_days = delta_duration.days
+            
+        super(Training, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
         return self.title
+    
 
 
 class TrainingNote(models.Model):
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=True)
-    training = models.ForeignKey(Training, on_delete=models.CASCADE, null=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    training = models.ForeignKey(
+        Training, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='training_training_notes'
+    )
     title = models.CharField(max_length=50, default='NA')
     note_code = models.CharField(max_length=10, default='NA')
     note_file = models.FileField(null=True, upload_to=PathAndRename('notes'))
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def save(self,*args, **kwargs):
+        timezone_ = pytz.timezone('Asia/Kuala_Lumpur')
+        if not self.note_code:
+            prefix = 'NOTA{}'.format(datetime.datetime.now(timezone_).strftime('%y%m'))
+            prev_instances = self.__class__.objects.filter(note_code__contains=prefix)
+            if prev_instances.exists():
+                last_instance_id = prev_instances.last().note_code[-4:]
+                self.note_code = prefix+'{0:04d}'.format(int(last_instance_id)+1)
+            else:
+                self.note_code = prefix+'{0:04d}'.format(1)
+            
+        super(TrainingNote, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['-created_at']
@@ -187,26 +281,28 @@ class TrainingNote(models.Model):
         return (self.title)
 
 
-class TrainingCode(models.Model):
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=True)
-    # course_code = models.CharField(max_length=50, null=True, default='NA')
-    code = models.CharField(max_length=70, null=True, default='NA')
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    modified_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['-created_at']
-
-
 class TrainingApplication(models.Model):
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=True)
-    training = models.ForeignKey(Training, on_delete=models.CASCADE, null=True)
-    applicant = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='application_attendee')
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    training = models.ForeignKey(
+        Training, 
+        on_delete=models.CASCADE, 
+        null=True,
+        related_name='training_application'
+    )
+    applicant = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='application_attendee'
+    )
     is_approved = models.BooleanField(default=False)
-    approved_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='application_verified_by')
+    approved_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='application_verified_by'
+    )
 
     APPLICATION_TYPE = [
         ('PS', 'Permohonan Persendirian'),
@@ -226,13 +322,28 @@ class TrainingApplication(models.Model):
 
 class TrainingAttendee(models.Model):
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=True)
-    training = models.ForeignKey(Training, on_delete=models.CASCADE, null=True)
-    attendee = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='attendee')
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    training = models.ForeignKey(
+        Training, 
+        on_delete=models.CASCADE, 
+        null=True,
+        related_name='training_attendee'
+    )
+    attendee = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='attendee'
+    )
     is_attend = models.BooleanField(default=False)
     check_in = models.DateTimeField(null=True)
     check_out = models.DateTimeField(null=True)
-    verified_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='attendee_verified_by')
+    verified_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='attendee_verified_by'
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -246,11 +357,26 @@ class TrainingAttendee(models.Model):
 
 class TrainingAbsenceMemo(models.Model):
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=True)
-    attendee = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='absence_attendee')
-    training = models.ForeignKey(Training, on_delete=models.CASCADE, null=True, related_name='absence_training')
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    attendee = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='training_absence_memo'
+    )
+    training = models.ForeignKey(
+        Training, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='absence_training'
+    )
     reason = models.TextField(blank=True, null=True)
-    verified_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='absence_verified_by')
+    verified_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='absence_verified_by'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -259,3 +385,50 @@ class TrainingAbsenceMemo(models.Model):
 
     def __str__(self):
         return self.attendee.full_name
+
+class TrainingQuota(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    training = models.ForeignKey(
+        Training,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name='training_quota'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.training
+
+
+class Trainer(models.Model):
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100, null=False)
+    phone = models.CharField(max_length=20, null=True)
+    training = models.ForeignKey(
+        Training,
+        on_delete=models.CASCADE,
+        null=True,
+        related_name='trainer_training'
+    )
+
+    TRAINER_TYPE = [
+        ('FC', 'Facilitator'),
+        ('SP', 'Speaker')
+    ]
+    trainer_type = models.CharField(max_length=2, choices=TRAINER_TYPE, default='FC')
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.question
+

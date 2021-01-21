@@ -29,20 +29,27 @@ from django.conf import settings
 from .models import (
     Training,
     TrainingNote,
-    TrainingCode,
+    TrainingCore,
     TrainingApplication,
     TrainingAttendee,
-    TrainingAbsenceMemo
+    TrainingAbsenceMemo,
+    Trainer,
+    TrainingDomain,
+    TrainingQuota
 )
 
 from .serializers import (
     TrainingSerializer,
     TrainingNoteSerializer,
-    TrainingCodeSerializer,
+    TrainingCoreSerializer,
     TrainingApplicationSerializer,
     TrainingAttendeeSerializer,
     TrainingAbsenceMemoSerializer,
-    TrainingLogSerializer
+    TrainingLogSerializer,
+    TrainerSerializer,
+    TrainingDomainSerializer,
+    TrainingQuotaSerializer,
+    TrainingExtendedSerializer
 )
 
 
@@ -166,6 +173,53 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     #     serializer = TrainingSerializer(Training)
     #     return Response(serializer.data)
+    @action(methods=['GET'], detail=False)
+    def extended_all(self, request, *args, **kwargs):
+
+        queryset = Training.objects.all()
+        serializer_class = TrainingExtendedSerializer(queryset, many=True)
+        
+        return Response(serializer_class.data)
+    
+    @action(methods=['GET'], detail=True)
+    def extended(self, request, *args, **kwargs):
+
+        training = self.get_object()
+        serializer_class = TrainingExtendedSerializer(training, many=False)
+        
+        return Response(serializer_class.data)
+    
+    @action(methods=['GET'], detail=False)
+    def get_statistics(self, request, *args, **kwargs):
+
+        # training = self.get_object()
+
+        # trainings = 
+        # internal_trainings = 
+
+        planned_training = len(Training.objects.all())
+        internal_training = len(Training.objects.filter(organiser_type='DD'))
+        external_training = len(Training.objects.filter(organiser_type='LL'))
+        current_budget = 0
+        attendance_internal = 0
+        attendance_external = 2
+        current_expenses = 0
+
+        statistic_data = {
+            'planned_training': planned_training,
+            'internal_training': internal_training,
+            'external_training': external_training,
+            'current_budget': current_budget,
+            'attendance_internal': attendance_internal,
+            'attendance_external': attendance_external,
+            'current_expenses': current_expenses
+        }
+
+        return JsonResponse(statistic_data)
+
+        # serializer_class = TrainingExtendedSerializer(training, many=False)
+        
+        # return Response(serializer_class.data)
 
 
 class TrainingNoteViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
@@ -194,11 +248,11 @@ class TrainingNoteViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         return queryset  
 
 
-class TrainingCodeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
-    queryset = TrainingCode.objects.all()
-    serializer_class = TrainingCodeSerializer
+class TrainingCoreViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = TrainingCore.objects.all()
+    serializer_class = TrainingCoreSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    # filterset_fields = ['code', 'staff', 'date']
+    # filterset_fields = ['core', 'staff', 'date']
 
     def get_permissions(self):
         permission_classes = [AllowAny]#[IsAuthenticated]
@@ -213,7 +267,7 @@ class TrainingCodeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
-        queryset = TrainingCode.objects.all()
+        queryset = TrainingCore.objects.all()
         return queryset  
 
 
@@ -326,4 +380,69 @@ class TrainingLogViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         queryset = Training.history.all()
         return queryset  
 
+class TrainerViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = Trainer.objects.all()
+    serializer_class = TrainerSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    # filterset_fields = ['code', 'staff', 'date']
 
+    def get_permissions(self):
+        permission_classes = [AllowAny]#[IsAuthenticated]
+        """
+        if self.action == 'list':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsAuthenticated]
+        """
+        return [permission() for permission in permission_classes]    
+
+    
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Trainer.objects.all()
+        return queryset  
+
+
+class TrainingDomainViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = TrainingDomain.objects.all()
+    serializer_class = TrainingDomainSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    # filterset_fields = ['code', 'staff', 'date']
+
+    def get_permissions(self):
+        permission_classes = [AllowAny]#[IsAuthenticated]
+        """
+        if self.action == 'list':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsAuthenticated]
+        """
+        return [permission() for permission in permission_classes]    
+
+    
+    def get_queryset(self):
+        user = self.request.user
+        queryset = TrainingDomain.objects.all()
+        return queryset  
+
+class TrainingQuotaViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = TrainingQuota.objects.all()
+    serializer_class = TrainingQuotaSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    # filterset_fields = ['code', 'staff', 'date']
+
+    def get_permissions(self):
+        permission_classes = [AllowAny]#[IsAuthenticated]
+        """
+        if self.action == 'list':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsAuthenticated]
+        """
+        return [permission() for permission in permission_classes]    
+
+    
+    def get_queryset(self):
+        user = self.request.user
+        queryset = TrainingQuota.objects.all()
+        return queryset  

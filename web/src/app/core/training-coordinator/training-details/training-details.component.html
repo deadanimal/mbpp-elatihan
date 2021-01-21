@@ -1,0 +1,941 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
+<div class="header pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-dark d-inline-block mb-0">Butiran Latihan</h6>
+
+                    <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class=" breadcrumb-item">
+                                <a href="javascript:void(0)"> <i class="fas fa-chalkboard-teacher text-dark"> </i> </a>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <div class="col-lg-6 col-5 text-right">
+                    <a
+                        class="btn btn-sm btn-warm-blue text-white" 
+                    > 
+                        Tambah Penganjur 
+                    </a>
+
+                    <a
+                        class="btn btn-sm btn-warm-blue text-white"
+                        (click)="openModal(addNote)"
+                    > 
+                        Tambah Nota 
+                    </a>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <!-- Left column -->
+        <div class="col-lg-4 col-sm-12">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h4 class="m-0">
+                        Butiran Latihan 
+                        <span *ngIf="training?.status == 'DB'" class="ml-2 badge badge-pill badge-default">Dibuka</span>
+                        <span *ngIf="training?.status == 'OT'" class="ml-2 badge badge-pill badge-primary">Lain-lain</span>
+                        <span *ngIf="training?.status == 'PN'" class="ml-2 badge badge-pill badge-info">Penuh</span>
+                        <span *ngIf="training?.status == 'SL'" class="ml-2 badge badge-pill badge-success">Selesai</span>
+                        <span *ngIf="training?.status == 'DT'" class="ml-2 badge badge-pill badge-danger">Ditutup</span>
+                        <span *ngIf="training?.status == 'TN'" class="ml-2 badge badge-pill badge-warning">Tangguh</span>
+                    </h4>
+                </div>
+
+                <div class="card-body">
+                    <form [formGroup]="trainingForm">
+
+                        <h6 class="heading-small text-muted mb-4">Butiran</h6>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Tajuk <span class="text-warning">*</span></label>
+                            <input class="form-control" formControlName="title">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Deskripsi <span class="text-warning">*</span></label>
+                            <textarea class="form-control" formControlName="description"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Status <span class="text-warning">*</span></label>
+                            <select class="form-control custom-select" formControlName="status">
+                                <option *ngFor="let status of statusChoices" value="{{status.value}}">
+                                    {{status.text}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Jenis Teras <span class="text-warning">*</span></label>
+                            <select 
+                                class="form-control custom-select" 
+                                [(ngModel)]="coresParentTemp" 
+                                [ngModelOptions]="{standalone: true}" 
+                                (change)="onChangeCoreParent($event.target.value)"
+                            >
+                                <option value="GN">GENERIK</option>
+                                <option value="FN">FUNGSIONAL</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Teras <span class="text-warning">*</span></label>
+                            <select class="form-control custom-select" formControlName="core">
+                                <option *ngFor="let core of coresTemp" value="{{core.id}}">
+                                    {{core.child}}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Kod Kursus  <span class="text-warning">*akan dijana secara automatik</span></label>
+                            <input class="form-control" formControlName="course_code">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Jumlah Peserta <span class="text-warning">*</span></label>
+                            <input class="form-control" formControlName="max_participant" type="number">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Lokasi <span class="text-warning">*</span></label>
+                            <input class="form-control" formControlName="venue">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Alamat Lokasi <span class="text-warning">*</span></label>
+                            <input class="form-control" formControlName="address">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Kos <span class="text-warning">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-secondary">
+                                        RM
+                                    </span>
+                                </div>
+                                <input class="form-control" formControlName="cost" type="number">
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+                        <h6 class="heading-small text-muted mb-4">Klasifikasi Latihan</h6>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Jenis Penganjur <span class="text-warning">*</span></label>
+                            <!-- organiser_type -->
+                            <select class="form-control custom-select" formControlName="organiser_type" (change)="onChangeOrganiserType($event.target.value)">
+                                <option *ngFor="let choice of organiserChoices" value="{{choice.value}}">{{choice.text}}</option>
+                            </select>
+                        </div>
+        
+                        <div class="form-group">
+                            <label class="form-control-label">Penganjur <span class="text-warning">*</span></label>
+                            <!-- organiser -->
+                            <select class="form-control custom-select" formControlName="organiser" (change)="onChangeOrganiser($event.target.value)">
+                                <option *ngFor="let organisation of organisations" value="{{organisation.id}}">{{organisation.shortname}} - {{organisation.name}}</option>
+                            </select>
+                        </div>
+    
+                        <div class="form-group">
+                            <label class="form-control-label">Jenis Latihan <span class="text-warning">*</span></label>
+                            <!-- course_type -->
+                            <select class="form-control custom-select" formControlName="course_type">
+                                <option *ngFor="let choice of courseTypeChoices" value="{{choice.value}}">{{choice.text}}</option>
+                            </select>
+                        </div>
+    
+                        <div class="form-group">
+                            <label class="form-control-label">Kaedah Latihan <span class="text-warning">*</span></label>
+                            <!-- course_type -->
+                            <select class="form-control custom-select" formControlName="method">
+                                <option *ngFor="let choice of methodChoices" value="{{choice.value}}">{{choice.text}}</option>
+                            </select>
+                        </div>
+    
+                        <div class="form-group">
+                            <label class="form-control-label">Anjuran Latihan <span class="text-warning">*</span></label>
+                            <!-- course_type -->
+                            <select class="form-control custom-select" formControlName="country">
+                                <option *ngFor="let choice of countryChoices" value="{{choice.value}}">{{choice.text}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Domain </label>
+                            <!-- course_type -->
+                            <select class="form-control custom-select" formControlName="domain">
+                                <option *ngFor="let domain of domains" value="{{domain.id}}">{{domain.name}}</option>
+                            </select>
+                        </div>
+
+                        <hr class="my-4" />
+                        <h6 class="heading-small text-muted mb-4">Klasifikasi Sasaran</h6>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Jenis Sasaran <span class="text-warning">*</span></label>
+                            <!-- target_group_type -->
+                            <select class="form-control custom-select" formControlName="target_group_type" (change)="onChangeTargetType($event.target.value)">
+                                <option *ngFor="let choice of targetGroupTypeChoices" value="{{choice.value}}">{{choice.text}}</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Kumpulan Sasaran <span class="text-warning">*</span></label>
+                            <!-- target_group -->
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="kumpulanE" formControlName="is_group_KP_C">
+                                <label class="custom-control-label" for="kumpulanE">Kumpulan Pelaksana 1 (Gred 1 - 10)</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="kumpulanF" formControlName="is_group_KP_B">
+                                <label class="custom-control-label" for="kumpulanF">Kumpulan Pelaksana 1 (Gred 11 - 18)</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="kumpulanD" formControlName="is_group_KP_A">
+                                <label class="custom-control-label" for="kumpulanD">Kumpulan Pelaksana 2 (Gred 19 - 40)</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="kumpulanA" formControlName="is_group_KPP_A">
+                                <label class="custom-control-label" for="kumpulanA">Kumpulan Pengurusan dan Professional (Gred 48 ke atas)</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="kumpulanB" formControlName="is_group_KPP_B">
+                                <label class="custom-control-label" for="kumpulanB">Kumpulan Pengurusan dan Professional (Gred 44)</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="kumpulanC" formControlName="is_group_KPP_C">
+                                <label class="custom-control-label" for="kumpulanC">Kumpulan Pengurusan dan Professional (Gred 41)</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatan_DatukBandar" formControlName="is_department_PDB">
+                                <label class="custom-control-label" for="jabatan_DatukBandar">Pejabat Datuk Bandar</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatan_UndangUndang" formControlName="is_department_UUU">
+                                <label class="custom-control-label" for="jabatan_UndangUndang">Unit Undang-undang</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanAuditDalam" formControlName="is_department_UAD">
+                                <label class="custom-control-label" for="jabatanAuditDalam">Unit Audit Dalaman</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanPenyelarasanPembangunan" formControlName="is_department_UPP">
+                                <label class="custom-control-label" for="jabatanPenyelarasanPembangunan">Unit Penyelarasan Pembangunan</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanPusatSehenti" formControlName="is_department_UPS">
+                                <label class="custom-control-label" for="jabatanPusatSehenti">Unit Pusat Sehenti</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanKhidmatPengurusan" formControlName="is_department_JKP">
+                                <label class="custom-control-label" for="jabatanKhidmatPengurusan">Jabatan Khidmat Pengurusan</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanPerbendaharaan" formControlName="is_department_JPD">
+                                <label class="custom-control-label" for="jabatanPerbendaharaan">Jabatan Perbendaharaan</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanPenilaianPengurusanHarta" formControlName="is_department_JPH">
+                                <label class="custom-control-label" for="jabatanPenilaianPengurusanHarta">Jabatan Penilaian dan Pengurusan Harta</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanPerancanganPembangunan" formControlName="is_department_JPP">
+                                <label class="custom-control-label" for="jabatanPerancanganPembangunan">Jabatan Perancangan Pembangunan</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanKejuruteraan" formControlName="is_department_JKJ">
+                                <label class="custom-control-label" for="jabatanKejuruteraan">Jabatan Kejuruteraan</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanKawalanBangunan" formControlName="is_department_JKB">
+                                <label class="custom-control-label" for="jabatanKawalanBangunan">Jabatan Kawalan Bangunan</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanKesihatanAwam" formControlName="is_department_JKEA">
+                                <label class="custom-control-label" for="jabatanKesihatanAwam">Bahagian Kesihatan Awam</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanPelesenan" formControlName="is_department_JKEB">
+                                <label class="custom-control-label" for="jabatanPelesenan">Bahagian Pelesenan</label>
+                            </div>
+                            
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanPerkhidmatanPerbandaraan" formControlName="is_department_JPR">
+                                <label class="custom-control-label" for="jabatanPerkhidmatanPerbandaraan">Jabatan Perkhidmatan Perbandaraan</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanKhidmatKemasyarakatan" formControlName="is_department_JKK">
+                                <label class="custom-control-label" for="jabatanKhidmatKemasyarakatan">Jabatan Khidmat Kemasyarakatan</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanKonservasiWarisan" formControlName="is_department_JKW">
+                                <label class="custom-control-label" for="jabatanKonservasiWarisan">KJabatan Konservasi Warisan</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanLanskap" formControlName="is_department_JLK">
+                                <label class="custom-control-label" for="jabatanLanskap">Jabatan Lanskap</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanPenguatkuasaan" formControlName="is_department_JPU">
+                                <label class="custom-control-label" for="jabatanPenguatkuasaan">Jabatan Penguatkuasaan</label>
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="jabatanPesuruhjayaBangunan" formControlName="is_department_JPB">
+                                <label class="custom-control-label" for="jabatanPesuruhjayaBangunan">Jabatan Pesuruhjaya Bangunan</label>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+                        <h6 class="heading-small text-muted mb-4">Tarikh & Waktu</h6>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Tarikh Mula <span class="text-warning">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-secondary">
+                                        <i class="far fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <input 
+                                    type="text"
+                                    placeholder="12/12/2019"
+                                    class="form-control"
+                                    bsDatepicker
+                                    formControlName="start_date"
+                                    [minDate]="dateMinStart"
+                                    [bsValue]="dateStart"
+                                    [bsConfig]="dateConfig"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Waktu Mula <span class="text-warning">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-secondary">
+                                        <i class="far fa-clock"></i>
+                                    </span>
+                                </div>
+                                <input type="time" value="10:30:00" class="form-control" formControlName="start_time">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Tarikh Tamat <span class="text-warning">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-secondary">
+                                        <i class="far fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <input 
+                                    type="text"
+                                    placeholder="12/12/2019"
+                                    class="form-control"
+                                    bsDatepicker
+                                    formControlName="end_date"
+                                    [minDate]="dateMinEnd"
+                                    [bsValue]="dateEnd"
+                                    [bsConfig]="dateConfig"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Waktu Tamat <span class="text-warning">*</span></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-secondary">
+                                        <i class="far fa-clock"></i>
+                                    </span>
+                                </div>
+                                <input type="time" value="10:30:00" class="form-control" formControlName="end_time">
+                            </div>
+                        </div>
+
+                        <label class="form-control-label">Pengangkutan <span class="text-warning">*</span></label>
+                        <div class="form-group">
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input 
+                                    type="radio" 
+                                    id="transportationRadio1" 
+                                    name="transportation"
+                                    class="custom-control-input" 
+                                    [value]="true" 
+                                    formControlName="transportation"
+                                >
+                                <label class="custom-control-label" for="transportationRadio1">Ada</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                <input 
+                                    type="radio" 
+                                    id="transportationRadio2" 
+                                    name="transportation"
+                                    class="custom-control-input" 
+                                    [value]="false" 
+                                    formControlName="transportation"
+                                >
+                                <label class="custom-control-label" for="transportationRadio2">Tiada</label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="text-lead">
+                                <span>*Wajib diisi</span>
+                            </div>
+                            <button 
+                                class="btn btn-block btn-warm-blue" 
+                                (click)="confirm()"
+                                [disabled]="!trainingForm.valid"
+                            >
+                                Kemaskini
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="col-lg-8 col-sm-12">
+            <tabset type="pills" class="nav-fill no-tab-content">
+                <!-- Applications -->
+                <tab heading="Permohonan">
+                    <div class="card mt-2">
+                        <div class="card-header bg-secondary">
+                            <h4 class="m-0">Permohonan</h4>
+                        </div>
+        
+                        <div class="dataTables_wrapper py-4">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_length" id="datatable_length">
+                                        <label>
+                                            Lihat
+                                            <select 
+                                                name="datatable_length" 
+                                                aria-controls="datatable" 
+                                                class="form-control form-control-sm custom-select custom-select-sm"
+                                                (change)="entriesChange('applications', $event)">
+                                                <option value="5" [selected]="tableApplicationsEntries == 5">5</option>
+                                                <option value="10" [selected]="tableApplicationsEntries == 10">10</option>
+                                                <option value="15" [selected]="tableApplicationsEntries == 15">15</option>
+                                                <option value="-1" [selected]="tableApplicationsEntries == -1">Semua</option>
+                                            </select>
+                                            rekod
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div id="datatable_filter" class="dataTables_filter">
+                                        <label>
+                                            <input 
+                                                type="search"
+                                                class="form-control form-control-sm"
+                                                placeholder="Cari nama pemohon"
+                                                aria-controls="datatable"
+                                                (keyup)="filterTable('applications', $event)"
+                                            />
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="pt-4 text-center" *ngIf="isApplicationsEmpty">
+                                <img [src]="iconEmpty" class="error-icon">
+                                <p>Tiada rekod dijumpai</p>
+                            </div>
+                    
+                            <ngx-datatable 
+                                class="bootstrap selection-cell" 
+                                [columnMode]="'force'" 
+                                [headerHeight]="50" 
+                                [footerHeight]="50"
+                                [rowHeight]="'auto'"
+                                [limit]="tableApplicationsEntries != -1 ? tableApplicationsEntries : undefined" 
+                                [rows]="tableApplicationsTemp"
+                                [messages]="tableMessages"
+                                (activate)="onActivate('applications', $event)"
+                                *ngIf="!isApplicationsEmpty"
+                            >
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Nama</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.applicant?.full_name}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+                    
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Diterima?</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        <span *ngIf="row.is_approved">Diterima</span>
+                                        <span *ngIf="!row.is_approved">Belum Diterima</span>
+                                    </ng-template>
+                                </ngx-datatable-column>
+                    
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Diterima oleh</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.approved_by?.full_name}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+        
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Aktiviti</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        <button 
+                                            class="btn btn-sm btn-warm-blue"
+                                            (click)="approveApplication(row)"
+                                        >
+                                            Terima
+                                        </button>
+                                    </ng-template>
+                                </ngx-datatable-column>
+                            </ngx-datatable>
+                        </div>
+                    </div>
+                </tab>
+                <!-- Attendance -->
+                <tab heading="Kehadiran">
+                    <div class="card mt-2">
+                        <div class="card-header bg-secondary">
+                            <h4 class="m-0">Kehadiran</h4>
+                        </div>
+        
+                        <div class="dataTables_wrapper py-4">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_length" id="datatable_length">
+                                        <label>
+                                            Lihat
+                                            <select 
+                                                name="datatable_length" 
+                                                aria-controls="datatable" 
+                                                class="form-control form-control-sm custom-select custom-select-sm"
+                                                (change)="entriesChange('attendances', $event)">
+                                                <option value="5" [selected]="tableAttendancesEntries == 5">5</option>
+                                                <option value="10" [selected]="tableAttendancesEntries == 10">10</option>
+                                                <option value="15" [selected]="tableAttendancesEntries == 15">15</option>
+                                                <option value="-1" [selected]="tableAttendancesEntries == -1">Semua</option>
+                                            </select>
+                                            rekod
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div id="datatable_filter" class="dataTables_filter">
+                                        <label>
+                                            <input 
+                                                type="search"
+                                                class="form-control form-control-sm"
+                                                placeholder="Cari nama kakitangan"
+                                                aria-controls="datatable"
+                                                (keyup)="filterTable('attendances', $event)"
+                                            />
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="pt-4 text-center" *ngIf="isAttendancesEmpty">
+                                <img [src]="iconEmpty" class="error-icon">
+                                <p>Tiada rekod dijumpai</p>
+                            </div>
+                    
+                            <ngx-datatable 
+                                class="bootstrap selection-cell" 
+                                [columnMode]="'force'" 
+                                [headerHeight]="50" 
+                                [footerHeight]="50"
+                                [rowHeight]="'auto'"
+                                [limit]="tableAttendancesEntries != -1 ? tableAttendancesEntries : undefined" 
+                                [rows]="tableAttendancesTemp"
+                                [messages]="tableMessages"
+                                (activate)="onActivate('attendances', $event)"
+                                *ngIf="!isAttendancesEmpty"
+                            >
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Nama</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.attendee?.full_name}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+                    
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Hadir</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        <span *ngIf="row.is_attend">Hadir</span>
+                                        <span *ngIf="!row.is_attend">Tidak Hadir</span>
+                                    </ng-template>
+                                </ngx-datatable-column>
+        
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Aktiviti</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        <button 
+                                            class="btn btn-sm btn-warm-blue"
+                                            *ngIf="!row.verified_by"
+                                            (click)="verifyAttendance(row)"
+                                        >
+                                            Sahkan
+                                        </button>
+                                    </ng-template>
+                                </ngx-datatable-column>
+                            </ngx-datatable>
+                        </div>
+                    </div>
+
+                    <div class="card mt-2">
+                        <div class="card-header bg-secondary">
+                            <h4 class="m-0">Ketidakhadiran</h4>
+                        </div>
+        
+                        <div class="dataTables_wrapper py-4">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_length" id="datatable_length">
+                                        <label>
+                                            Lihat
+                                            <select 
+                                                name="datatable_length" 
+                                                aria-controls="datatable" 
+                                                class="form-control form-control-sm custom-select custom-select-sm"
+                                                (change)="entriesChange('absences', $event)">
+                                                <option value="5" [selected]="tableAbsencesEntries == 5">5</option>
+                                                <option value="10" [selected]="tableAbsencesEntries == 10">10</option>
+                                                <option value="15" [selected]="tableAbsencesEntries == 15">15</option>
+                                                <option value="-1" [selected]="tableAbsencesEntries == -1">Semua</option>
+                                            </select>
+                                            rekod
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div id="datatable_filter" class="dataTables_filter">
+                                        <label>
+                                            <input 
+                                                type="search"
+                                                class="form-control form-control-sm"
+                                                placeholder="Cari nama kakitangan"
+                                                aria-controls="datatable"
+                                                (keyup)="filterTable('absences', $event)"
+                                            />
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="pt-4 text-center" *ngIf="isAbsencesEmpty">
+                                <img [src]="iconEmpty" class="error-icon">
+                                <p>Tiada rekod dijumpai</p>
+                            </div>
+                    
+                            <ngx-datatable 
+                                class="bootstrap selection-cell" 
+                                [columnMode]="'force'" 
+                                [headerHeight]="50" 
+                                [footerHeight]="50"
+                                [rowHeight]="'auto'"
+                                [limit]="tableAttendancesEntries != -1 ? tableAttendancesEntries : undefined" 
+                                [rows]="tableAttendancesTemp"
+                                [messages]="tableMessages"
+                                (activate)="onActivate('absences', $event)"
+                                *ngIf="!isAbsencesEmpty"
+                            >
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Nama</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.attendee?.full_name}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+                    
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Sebab</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.reason}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+                    
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Disahkan oleh</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.verified_by?.full_name}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+        
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Aktiviti</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        <button 
+                                            class="btn btn-sm btn-warm-blue"
+                                            *ngIf="!row.verified_by"
+                                            (click)="verifyAbsence(row)"
+                                        >
+                                            Sahkan
+                                        </button>
+                                    </ng-template>
+                                </ngx-datatable-column>
+                            </ngx-datatable>
+                        </div>
+                    </div>
+                </tab>
+                <!-- Report -->
+                <tab heading="Laporan">
+                    <div class="card mt-2">
+                        <div class="card-header bg-secondary">
+                            <h4 class="m-0">Laporan</h4>
+                        </div>
+        
+                        <div class="card-body">
+                            
+                        </div>
+                    </div>
+                </tab>
+                <!-- Notes -->
+                <tab heading="Nota">
+                    <div class="card mt-2">
+                        <div class="card-header bg-secondary">
+                            <h4 class="m-0">Nota</h4>
+                        </div>
+        
+                        <div class="dataTables_wrapper py-4">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_length" id="datatable_length">
+                                        <label>
+                                            Lihat
+                                            <select 
+                                                name="datatable_length" 
+                                                aria-controls="datatable" 
+                                                class="form-control form-control-sm custom-select custom-select-sm"
+                                                (change)="entriesChange('notes', $event)">
+                                                <option value="5" [selected]="tableNotesEntries == 5">5</option>
+                                                <option value="10" [selected]="tableNotesEntries == 10">10</option>
+                                                <option value="15" [selected]="tableNotesEntries == 15">15</option>
+                                                <option value="-1" [selected]="tableNotesEntries == -1">Semua</option>
+                                            </select>
+                                            rekod
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div id="datatable_filter" class="dataTables_filter">
+                                        <label>
+                                            <input 
+                                                type="search"
+                                                class="form-control form-control-sm"
+                                                placeholder="Cari tajuk nota"
+                                                aria-controls="datatable"
+                                                (keyup)="filterTable('notes', $event)"
+                                            />
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="pt-4 text-center" *ngIf="isNotesEmpty">
+                                <img [src]="iconEmpty" class="error-icon">
+                                <p>Tiada rekod dijumpai</p>
+                            </div>
+                    
+                            <ngx-datatable 
+                                class="bootstrap selection-cell" 
+                                [columnMode]="'force'" 
+                                [headerHeight]="50" 
+                                [footerHeight]="50"
+                                [rowHeight]="'auto'"
+                                [limit]="tableNotesEntries != -1 ? tableNotesEntries : undefined" 
+                                [rows]="tableNotesTemp"
+                                [messages]="tableMessages"
+                                (activate)="onActivate('notes', $event)"
+                                *ngIf="!isNotesEmpty"
+                            >
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Tajuk</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.title}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+                    
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Kod</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.note_code}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+        
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Aktiviti</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        <button 
+                                            class="btn btn-sm btn-warm-blue"
+                                            (click)="downloadNote(row)"
+                                        >
+                                            Muatturun
+                                        </button>
+                                    </ng-template>
+                                </ngx-datatable-column>
+                            </ngx-datatable>
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<ng-template #addNote>
+    <div class="modal-header bg-warm-blue">
+        <h6 class="modal-title text-white my-auto" id="modal-title-default">
+            Tambah nota
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            <span aria-hidden="true" class="text-white my-auto"> × </span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="noteForm">
+            <div class="form-group">
+                <label class="form-control-label">Tajuk Nota <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="Tajuk nota"
+                    formControlName="title"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">Kod Nota <span class="text-warning">*akan dijana secara automatik</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="Kod nota"
+                    formControlName="note_code"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">Fail
+                    <span class="text-warning">*Format PDF sahaja, maksimum 5MB</span>
+                </label>
+                <div class="custom-file">
+                    <input 
+                        type="file" 
+                        class="custom-file-input" 
+                        id="files" 
+                        lang="en"
+                        onclick="this.value = null"
+                        (change)="onFileChange($event, 'notes')" 
+                        accept=".pdf"
+                        size="5"
+                    />
+                    <label class="custom-file-label" for="files">Pilih fail</label>
+                </div>
+
+                <ng-container *ngIf="noteForm.value['note_file']">
+                    <div>
+                        <i 
+                            class="fas fa-trash-alt text-warning mr-2"
+                            placement="top" 
+                            tooltip="Remove attachment"
+                            (click)="removeFile('notes')"
+                        >
+                        </i>
+                        {{fileNameInformation}} [{{fileSizeInformation/1000000 | number: '1.2-2'}}MB]
+                    </div>
+                </ng-container>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button 
+            class="btn btn-warm-blue"
+            type="button"
+            (click)="addNote()"
+            [disabled]="!noteForm.valid"
+        >
+            Simpan
+        </button>
+
+        <button
+            class="btn btn-outline-warm-blue ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            Tutup
+        </button>
+    </div>
+</ng-template>

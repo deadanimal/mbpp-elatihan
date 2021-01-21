@@ -31,11 +31,13 @@ from organisations.views import (
 from trainings.views import (
     TrainingViewSet,
     TrainingNoteViewSet,
-    TrainingCodeViewSet,
+    TrainingCoreViewSet,
     TrainingApplicationViewSet,
     TrainingAttendeeViewSet,
     TrainingAbsenceMemoViewSet,
-    TrainingLogViewSet
+    TrainingLogViewSet,
+    TrainerViewSet,
+    TrainingDomainViewSet
 )
 
 class NestedDefaultRouter(NestedRouterMixin, routers.DefaultRouter):
@@ -75,8 +77,8 @@ training_notes_router = router.register(
     'training-notes', TrainingNoteViewSet
 )
 
-training_codes_router = router.register(
-    'training-codes', TrainingCodeViewSet
+training_cores_router = router.register(
+    'training-cores', TrainingCoreViewSet
 )
 
 training_applications_router = router.register(
@@ -93,6 +95,14 @@ training_absences_router = router.register(
 
 training_logs_router = router.register(
     'training-logs', TrainingLogViewSet
+)
+
+trainers_router = router.register(
+    'trainers', TrainerViewSet
+)
+
+training_domains_router = router.register(
+    'training-domains', TrainingDomainViewSet
 )
 
 urlpatterns = [

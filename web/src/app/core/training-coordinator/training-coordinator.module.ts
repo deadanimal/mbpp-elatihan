@@ -25,6 +25,10 @@ import { TrainingsComponent } from './trainings/trainings.component';
 import { ExamsComponent } from './exams/exams.component';
 import { ExamAddComponent } from './exam-add/exam-add.component';
 import { TrainingAddComponent } from './training-add/training-add.component';
+import { TrainingDetailsComponent } from './training-details/training-details.component';
+import { CalendarComponent } from './calendar/calendar.component';
+import { ReportComponent } from './report/report.component';
+import { ConfigurationComponent } from './configuration/configuration.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +36,11 @@ import { TrainingAddComponent } from './training-add/training-add.component';
     ExamsComponent,
     ExamAddComponent,
     TrainingsComponent,
-    TrainingAddComponent
+    TrainingAddComponent,
+    TrainingDetailsComponent,
+    CalendarComponent,
+    ReportComponent,
+    ConfigurationComponent
   ],
   imports: [
     CommonModule,

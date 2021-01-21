@@ -66,5 +66,6 @@ export const TCROUTES: RouteInfo[] = [
       { path: 'add', title: 'Tambah', type: 'link' }
     ]
   },
-  { path: '/tc/report', title: 'Laporan', type: 'link', icontype: 'fas fa-chart-bar text-primary' }
+  { path: '/tc/report', title: 'Laporan', type: 'link', icontype: 'fas fa-chart-bar text-primary' },
+  { path: '/tc/configuration', title: 'Konfigurasi', type: 'link', icontype: 'fas fa-tools text-primary' }
 ];

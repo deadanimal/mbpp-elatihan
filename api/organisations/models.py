@@ -9,7 +9,7 @@ from simple_history.models import HistoricalRecords
 from core.helpers import PathAndRename
 
 class Organisation(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100, default='NA')
     shortname = models.CharField(max_length=10, default='NA')
 

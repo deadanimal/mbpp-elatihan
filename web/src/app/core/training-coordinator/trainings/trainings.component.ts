@@ -100,7 +100,7 @@ export class TrainingsComponent implements OnInit {
   filterTable($event) {
     let val = $event.target.value.toLowerCase();
     this.tableTemp = this.tableRows.filter(function(d) {
-      return d.title.toLowerCase().indexOf(val) ! == -1 || !val;
+      return d.title.toLowerCase().indexOf(val) !== -1 || !val;
     });
   }
 
@@ -113,9 +113,15 @@ export class TrainingsComponent implements OnInit {
     this.tableActiveRow = event.row;
   }
 
-  view(path: string, selected: Training) {
-    
-    this.router.navigate([path])
+  view(selected) {
+    let path = '/tc/trainings/details'
+    let extras = selected['id']
+    let queryParams = {
+      queryParams: {
+        id: extras
+      }
+    }
+    this.router.navigate([path], queryParams)
   }
 
 }

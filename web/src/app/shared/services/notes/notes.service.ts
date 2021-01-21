@@ -56,7 +56,7 @@ export class NotesService {
     return this.http.put<Note>(urlTemp, body).pipe(
       tap((res) => {
         this.note = res
-        console.log('Note', this.note)
+        console.log('Note: ', this.note)
       })
     )
   }
@@ -66,7 +66,7 @@ export class NotesService {
     return this.http.get<Note[]>(urlTemp).pipe(
       tap((res) => {
         this.notesFiltered = res
-        console.log('Notes', this.notesFiltered)
+        console.log('Notes: ', this.notesFiltered)
       })
     )
   }

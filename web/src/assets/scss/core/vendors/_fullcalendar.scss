@@ -3,7 +3,7 @@
 //
 
 .fc-header-toolbar {
-  display: none;
+  display: block;
 }
 
 .fc-scroller {
@@ -118,8 +118,8 @@
   }
 
   .fc-toolbar {
-    height: 250px;
-    background-color: $white;
+    padding: 1.25rem 1.5rem;
+    background-color: #f7fafc;
     border-radius: $border-radius $border-radius 0 0;
     position: relative;
     margin-bottom: -2px;

@@ -16,7 +16,7 @@ export class AuthLayoutComponent implements OnInit, OnDestroy {
     var html = document.getElementsByTagName("html")[0];
     // html.classList.add("auth-layout");
     var body = document.getElementsByTagName("body")[0];
-    body.classList.add("bg-default");
+    body.classList.add("bg-whitish");
     // var navbar = document.getElementsByClassName("navbar-horizontal")[0];
     // navbar.classList.add("navbar-light");
     // navbar.classList.add("navbar-transparent");
@@ -25,7 +25,7 @@ export class AuthLayoutComponent implements OnInit, OnDestroy {
     var html = document.getElementsByTagName("html")[0];
     // html.classList.remove("auth-layout");
     var body = document.getElementsByTagName("body")[0];
-    body.classList.remove("bg-default");
+    body.classList.remove("bg-whitish");
     // var navbar = document.getElementsByClassName("navbar-horizontal")[0];
     // navbar.classList.remove("navbar-light");
     // navbar.classList.remove("navbar-transparent");

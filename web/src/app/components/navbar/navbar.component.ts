@@ -10,6 +10,7 @@ import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
 import { UsersService } from 'src/app/shared/services/users/users.service';
 import { User } from 'src/app/shared/services/users/users.model';
 import { JwtService } from 'src/app/shared/handler/jwt/jwt.service';
+import { AuthService } from "src/app/shared/services/auth/auth.service";
 
 @Component({
   selector: "app-navbar",
@@ -32,6 +33,7 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     location: Location,
+    private authService: AuthService,
     private userService: UsersService,
     private jwtService: JwtService,
     private notifyService: NotifyService,
@@ -68,6 +70,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     // console.log('as: ', this.user)
     this.listTitles = TCROUTES.filter(listTitle => listTitle);
+    this.getCurrentUser()
   }
 
   getTitle() {
@@ -82,6 +85,18 @@ export class NavbarComponent implements OnInit {
       }
     }
     return "Dashboard";
+  }
+
+  getCurrentUser() {
+    this.authService.getDetailByToken().subscribe(
+      () => {
+        this.user = this.authService.userDetail
+      },
+      () => {
+        this.user = this.authService.userDetail
+      },
+      () => {}
+    )
   }
 
   navigatePage(path: String) {

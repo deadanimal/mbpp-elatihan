@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Form } from '@angular/forms';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { Training } from './trainings.model';
+import { Training, TrainingExtended } from './trainings.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +18,9 @@ export class TrainingsService {
   training: Training
   trainings: Training[] = []
   trainingsFiltered: Training[] = []
+  trainingExtended: TrainingExtended
+  trainingsExtended: TrainingExtended[] = []
+  trainingStatistics: any
 
   constructor(
     private http: HttpClient
@@ -42,12 +45,13 @@ export class TrainingsService {
     )
   }
 
-  getOne(id: String): Observable<Training> {
-    let urlTemp = this.urlTraining + id + '/'
-    return this.http.get<Training>(urlTemp).pipe(
+  getOne(id: String): Observable<TrainingExtended> {
+    let urlTemp = this.urlTraining + id + '/extended'
+    // console.log('URL ', urlTemp)
+    return this.http.get<TrainingExtended>(urlTemp).pipe(
       tap((res) => {
-        this.training = res
-        console.log('Training: ', this.training)
+        this.trainingExtended = res
+        console.log('Training: ', this.trainingExtended)
       })
     )
   }
@@ -88,6 +92,16 @@ export class TrainingsService {
       tap((res) => {
         this.training = res
         console.log('Training: ', this.training)
+      })
+    )
+  }
+
+  getStatistics() {
+    let urlTemp = this.urlTraining + 'get_statistics'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.trainingStatistics = res
+        console.log('Statistics: ', this.trainingStatistics)
       })
     )
   }

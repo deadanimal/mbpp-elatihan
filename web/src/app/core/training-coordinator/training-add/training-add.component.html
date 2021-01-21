@@ -1,9 +1,10 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
 <div class="header pb-6">
     <div class="container-fluid">
         <div class="header-body">
             <div class="row align-items-center py-4">
                 <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-dark d-inline-block mb-0">Pengurusan Latihan</h6>
+                    <h6 class="h2 text-dark d-inline-block mb-0">Pengurusan  <span (click)="checkForm()">Latihan</span></h6>
 
                     <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
                         <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
@@ -16,7 +17,7 @@
 
                 <div class="col-lg-6 col-5 text-right">
                     <a
-                        class="btn btn-sm btn-primary text-white" 
+                        class="btn btn-sm btn-warm-blue text-white" 
                         (click)="openModal(modalAdd)"
                     > 
                         Tambah Penganjur 
@@ -49,9 +50,9 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Jenis Penganjur</label>
+                                            <label class="form-control-label">Jenis Penganjur <span class="text-warning">*</span></label>
                                             <!-- organiser_type -->
-                                            <select class="form-control custom-select" formControlName="organiser_type">
+                                            <select class="form-control custom-select" formControlName="organiser_type" (change)="onChangeOrganiserType($event.target.value)">
                                                 <option *ngFor="let choice of organiserChoices" value="{{choice.value}}">{{choice.text}}</option>
                                             </select>
                                         </div>
@@ -59,9 +60,9 @@
 
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Penganjur</label>
+                                            <label class="form-control-label">Penganjur <span class="text-warning">*</span></label>
                                             <!-- organiser -->
-                                            <select class="form-control custom-select" formControlName="organiser">
+                                            <select class="form-control custom-select" formControlName="organiser" (change)="onChangeOrganiser($event.target.value)">
                                                 <option *ngFor="let organisation of organisations" value="{{organisation.id}}">{{organisation.shortname}} - {{organisation.name}}</option>
                                             </select>
                                         </div>
@@ -71,10 +72,42 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Jenis Latihan</label>
+                                            <label class="form-control-label">Jenis Latihan <span class="text-warning">*</span></label>
                                             <!-- course_type -->
                                             <select class="form-control custom-select" formControlName="course_type">
                                                 <option *ngFor="let choice of courseTypeChoices" value="{{choice.value}}">{{choice.text}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-control-label">Kaedah Latihan <span class="text-warning">*</span></label>
+                                            <!-- course_type -->
+                                            <select class="form-control custom-select" formControlName="method">
+                                                <option *ngFor="let choice of methodChoices" value="{{choice.value}}">{{choice.text}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-control-label">Anjuran Latihan <span class="text-warning">*</span></label>
+                                            <!-- course_type -->
+                                            <select class="form-control custom-select" formControlName="country">
+                                                <option *ngFor="let choice of countryChoices" value="{{choice.value}}">{{choice.text}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-control-label">Domain </label>
+                                            <!-- course_type -->
+                                            <select class="form-control custom-select" formControlName="domain">
+                                                <option *ngFor="let domain of domains" value="{{domain.id}}">{{domain.name}}</option>
                                             </select>
                                         </div>
                                     </div>
@@ -86,7 +119,7 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Jenis Sasaran</label>
+                                            <label class="form-control-label">Jenis Sasaran <span class="text-warning">*</span></label>
                                             <!-- target_group_type -->
                                             <select class="form-control custom-select" formControlName="target_group_type" (change)="onChangeTargetType($event.target.value)">
                                                 <option *ngFor="let choice of targetGroupTypeChoices" value="{{choice.value}}">{{choice.text}}</option>
@@ -96,47 +129,47 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-control-label">Kumpulan Sasaran</label>
+                                    <label class="form-control-label">Kumpulan Sasaran <span class="text-warning">*</span></label>
                                     <!-- target_group -->
                                     <div class="row">
                                         <div class="col-lg-6 col-sm-12">
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="kumpulanA" formControlName="is_group_KPP_A">
-                                                <label class="custom-control-label" for="kumpulanA">Kumpulan & Professional (Gred 48 ke atas)</label>
+                                                <input type="checkbox" class="custom-control-input" id="kumpulanD" formControlName="is_group_KP_A">
+                                                <label class="custom-control-label" for="kumpulanD">Kumpulan Pelaksana 1 (Gred 19 - 40)</label>
                                             </div>
-    
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="kumpulanB" formControlName="is_group_KPP_B">
-                                                <label class="custom-control-label" for="kumpulanB">Kumpulan & Professional (Gred 44)</label>
+                                                <input type="checkbox" class="custom-control-input" id="kumpulanF" formControlName="is_group_KP_B">
+                                                <label class="custom-control-label" for="kumpulanF">Kumpulan Pelaksana 2 (Gred 11 - 18)</label>
                                             </div>
-    
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="kumpulanC" formControlName="is_group_KPP_C">
-                                                <label class="custom-control-label" for="kumpulanC">Kumpulan & Professional (Gred 41)</label>
+                                                <input type="checkbox" class="custom-control-input" id="kumpulanE" formControlName="is_group_KP_C">
+                                                <label class="custom-control-label" for="kumpulanE">Kumpulan Pelaksana 2 (Gred 1 - 10)</label>
                                             </div>
                                         </div>
                                         
                                         <div class="col-lg-6 col-sm-12">
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="kumpulanD" formControlName="is_group_KP_A">
-                                                <label class="custom-control-label" for="kumpulanD">Kumpulan & Professional (Gred 19 - 40)</label>
+                                                <input type="checkbox" class="custom-control-input" id="kumpulanA" formControlName="is_group_KPP_A">
+                                                <label class="custom-control-label" for="kumpulanA">Kumpulan Pengurusan dan Professional (Gred 48 ke atas)</label>
                                             </div>
     
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="kumpulanE" formControlName="is_group_KP_B">
-                                                <label class="custom-control-label" for="kumpulanE">Kumpulan Pelaksana (Gred 11 - 18)</label>
+                                                <input type="checkbox" class="custom-control-input" id="kumpulanB" formControlName="is_group_KPP_B">
+                                                <label class="custom-control-label" for="kumpulanB">Kumpulan Pengurusan dan Professional (Gred 44)</label>
                                             </div>
     
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="kumpulanF" formControlName="is_group_KP_C">
-                                                <label class="custom-control-label" for="kumpulanF">Kumpulan Pelaksana (Gred 1 - 10)</label>
+                                                <input type="checkbox" class="custom-control-input" id="kumpulanC" formControlName="is_group_KPP_C">
+                                                <label class="custom-control-label" for="kumpulanC">Kumpulan Pengurusan dan Professional (Gred 41)</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-control-label">Jabatan Sasaran</label>
+                                    <label class="form-control-label">Jabatan Sasaran <span class="text-warning">*</span></label>
                                     <!-- department -->
                                     <div class="row">
                                         <div class="col-lg-6 col-sm-12">
@@ -177,7 +210,7 @@
         
                                             <div class="custom-control custom-checkbox">
                                                 <input type="checkbox" class="custom-control-input" id="jabatanPenilaianPengurusanHarta" formControlName="is_department_JPH">
-                                                <label class="custom-control-label" for="jabatanPenilaianPengurusanHarta">Jabatan Penilaian Pengurusan Harta</label>
+                                                <label class="custom-control-label" for="jabatanPenilaianPengurusanHarta">Jabatan Penilaian dan Pengurusan Harta</label>
                                             </div>
         
                                             <div class="custom-control custom-checkbox">
@@ -241,7 +274,7 @@
                                 </div>
 
                                 <div>
-                                    <button class="btn btn-primary" matStepperNext>Seterusnya</button>
+                                    <button class="btn btn-warm-blue" matStepperNext>Seterusnya</button>
                                 </div>
                             </mat-step>
 
@@ -250,27 +283,39 @@
                                 <!-- <h6 class="heading-small text-muted mb-4"></h6> -->
 
                                 <div class="form-group">
-                                    <label class="form-control-label">Tajuk</label>
+                                    <label class="form-control-label">Tajuk <span class="text-warning">*</span></label>
                                     <input class="form-control" formControlName="title">
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-control-label">Deskripsi</label>
+                                    <label class="form-control-label">Deskripsi <span class="text-warning">*</span></label>
                                     <textarea class="form-control" formControlName="description"></textarea>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Kod Kursus</label>
-                                            <input class="form-control" formControlName="course_code">
+                                            <label class="form-control-label">Jenis Teras <span class="text-warning">*</span></label>
+                                            <select 
+                                                class="form-control custom-select" 
+                                                [(ngModel)]="coresParentTemp" 
+                                                [ngModelOptions]="{standalone: true}" 
+                                                (change)="onChangeCoreParent($event.target.value)"
+                                            >
+                                                <option value="GN">GENERIK</option>
+                                                <option value="FN">FUNGSIONAL</option>
+                                            </select>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Jumlah Peserta</label>
-                                            <input class="form-control" formControlName="max_participant">
+                                            <label class="form-control-label">Teras <span class="text-warning">*</span></label>
+                                            <select class="form-control custom-select" formControlName="core">
+                                                <option *ngFor="let core of coresTemp" value="{{core.id}}">
+                                                    {{core.child}}
+                                                </option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -278,14 +323,30 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Lokasi</label>
+                                            <label class="form-control-label">Kod Kursus  <span class="text-warning">*akan dijana secara automatik</span></label>
+                                            <input class="form-control" formControlName="course_code">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-control-label">Jumlah Peserta <span class="text-warning">*</span></label>
+                                            <input class="form-control" formControlName="max_participant" type="number">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-control-label">Lokasi <span class="text-warning">*</span></label>
                                             <input class="form-control" formControlName="venue">
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Alamat Lokasi</label>
+                                            <label class="form-control-label">Alamat Lokasi <span class="text-warning">*</span></label>
                                             <input class="form-control" formControlName="address">
                                         </div>
                                     </div>
@@ -294,22 +355,22 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Kos</label>
+                                            <label class="form-control-label">Kos <span class="text-warning">*</span></label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text bg-secondary">
                                                         RM
                                                     </span>
                                                 </div>
-                                                <input class="form-control" formControlName="cost">
+                                                <input class="form-control" formControlName="cost" type="number">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <button class="btn btn-outline-primary" matStepperPrevious>Sebelum</button>
-                                    <button class="btn btn-primary" matStepperNext>Seterusnya</button>
+                                    <button class="btn btn-outline-warm-blue" matStepperPrevious>Sebelum</button>
+                                    <button class="btn btn-warm-blue" matStepperNext>Seterusnya</button>
                                 </div>
                             </mat-step>
 
@@ -321,7 +382,7 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-md-12 ">
                                         <div class="form-group">
-                                            <label class="form-control-label">Tarikh Mula</label>
+                                            <label class="form-control-label">Tarikh Mula <span class="text-warning">*</span></label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text bg-secondary">
@@ -334,6 +395,7 @@
                                                     class="form-control"
                                                     bsDatepicker
                                                     formControlName="start_date"
+                                                    [minDate]="dateMinStart"
                                                     [bsValue]="dateStart"
                                                     [bsConfig]="dateConfig"
                                                 >
@@ -343,7 +405,7 @@
 
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Waktu Mula</label>
+                                            <label class="form-control-label">Waktu Mula <span class="text-warning">*</span></label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text bg-secondary">
@@ -359,7 +421,7 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-md-12 ">
                                         <div class="form-group">
-                                            <label class="form-control-label">Tarikh Tamat</label>
+                                            <label class="form-control-label">Tarikh Tamat <span class="text-warning">*</span></label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text bg-secondary">
@@ -372,6 +434,7 @@
                                                     class="form-control"
                                                     bsDatepicker
                                                     formControlName="end_date"
+                                                    [minDate]="dateMinEnd"
                                                     [bsValue]="dateEnd"
                                                     [bsConfig]="dateConfig"
                                                 >
@@ -381,7 +444,7 @@
 
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Waktu Tamat</label>
+                                            <label class="form-control-label">Waktu Tamat <span class="text-warning">*</span></label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text bg-secondary">
@@ -400,34 +463,163 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Penceramah</label>
-                                            <input class="form-control" formControlName="speaker">
+                                            <label class="form-control-label">Lampiran <span class="text-warning">*Format PDF sahaja, maksimum 5MB</span></label>
+                                            <div class="custom-file">
+                                                <input 
+                                                    type="file" 
+                                                    class="custom-file-input" 
+                                                    id="lampiran" 
+                                                    lang="en"
+                                                    (change)="onFileChange($event, 'training')" 
+                                                    accept=".pdf"
+                                                    size="5"
+                                                >
+                                                <label class="custom-file-label" for="lampiran">Sila muat naik lampiran berkenaan</label>
+                                              </div>
+
+                                              <ng-container *ngIf="trainingForm.value['attachment']">
+                                                <div>
+                                                    <i 
+                                                        class="fas fa-trash-alt text-warning mr-2"
+                                                        placement="top" 
+                                                        tooltip="Remove attachment"
+                                                        (click)="removeFile('training')"
+                                                    >
+                                                    </i>
+                                                    {{fileNameInformation}} [{{fileSizeInformation/1000000 | number: '1.2-2'}}MB]
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6 col-sm-12">
+                                        <label class="form-control-label">Pengangkutan <span class="text-warning">*</span></label>
                                         <div class="form-group">
-                                            <label class="form-control-label">Fasilitator</label>
-                                            <input class="form-control" formControlName="fasilitator">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input 
+                                                    type="radio" 
+                                                    id="transportationRadio1" 
+                                                    name="transportation"
+                                                    class="custom-control-input" 
+                                                    [value]="true" 
+                                                    formControlName="transportation"
+                                                >
+                                                <label class="custom-control-label" for="transportationRadio1">Ada</label>
+                                              </div>
+                                              <div class="custom-control custom-radio custom-control-inline">
+                                                <input 
+                                                    type="radio" 
+                                                    id="transportationRadio2" 
+                                                    name="transportation"
+                                                    class="custom-control-input" 
+                                                    [value]="false" 
+                                                    formControlName="transportation"
+                                                >
+                                                <label class="custom-control-label" for="transportationRadio2">Tiada</label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Lampiran</label>
-                                            <div class="custom-file">
-                                                <input type="file" class="custom-file-input" id="lampiran" lang="en">
-                                                <label class="custom-file-label" for="lampiran">Sila muat naik lampiran berkenaan</label>
-                                              </div>
-                                        </div>
+                                    <div class="col-lg-6 col-7"></div>
+                                    <div class="col-lg-6 col-5 text-right">
+                                        <a
+                                            class="btn btn-sm btn-warm-blue text-white" 
+                                            (click)="addSpeaker()"
+                                        > 
+                                            Tambah Penceramah 
+                                        </a>
+
+                                        <a
+                                            class="btn btn-sm btn-warm-blue text-white" 
+                                            (click)="addFacilitator()"
+                                        > 
+                                            Tambah Fasilitator 
+                                        </a>
                                     </div>
                                 </div>
 
+                                <form [formGroup]="trainerSpeakerForm">
+                                    <div formArrayName="trainerSpeakerFormArray">
+                                        <div 
+                                            [formGroupName]="i"
+                                            class="row"
+                                            *ngFor="let ind of trainerSpeakerForm.get('trainerSpeakerFormArray')['controls']; let i = index"
+                                        >
+                                            <div class="col-lg-5 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">Nama Penceramah <span class="text-warning">*</span></label>
+                                                    <input class="form-control" formControlName="name">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-5 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">No. Telefon <span class="text-warning">*</span></label>
+                                                    <input class="form-control" formControlName="phone">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-sm-12">
+                                                <button 
+                                                    *ngIf="i != 0"
+                                                    class="btn btn-warning btn-sm"
+                                                    (click)="removeSpeaker(i)"
+                                                    style="position: absolute; bottom: 1.5rem;"
+                                                >
+                                                    Buang
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <form [formGroup]="trainerFacilitatorForm">
+                                    <div formArrayName="trainerFacilitatorFormArray">
+                                        <div 
+                                            [formGroupName]="i"
+                                            class="row"
+                                            *ngFor="let ind of trainerFacilitatorForm.get('trainerFacilitatorFormArray')['controls']; let i = index"
+                                        >
+                                            <div class="col-lg-5 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">Nama Fasilitator <span class="text-warning">*</span></label>
+                                                    <input class="form-control" formControlName="name">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-5 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">No. Telefon</label>
+                                                    <input class="form-control" formControlName="phone">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-2 col-sm-12">
+                                                <button
+                                                    *ngIf="i != 0"
+                                                    class="btn btn-warning btn-sm"
+                                                    (click)="removeFacilitator(i)"
+                                                    style="position: absolute; bottom: 1.5rem;"
+                                                >
+                                                    Buang
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                
                                 <div>
-                                    <button class="btn btn-outline-primary" matStepperPrevious>Sebelum</button>
-                                    <button class="btn btn-primary" (click)="confirm()">Daftar</button>
+                                    <div class="text-lead">
+                                        <span>*Wajib diisi</span>
+                                    </div>
+                                    <button class="btn btn-outline-warm-blue" matStepperPrevious>Sebelum</button>
+                                    <button 
+                                        class="btn btn-warm-blue" 
+                                        (click)="confirm()"
+                                        [disabled]="!trainingForm.valid"
+                                    >
+                                        Daftar
+                                    </button>
                                 </div>
                             </mat-step>
                         </mat-horizontal-stepper>
@@ -440,7 +632,7 @@
 
 
 <ng-template #modalAdd>
-    <div class="modal-header bg-default">
+    <div class="modal-header bg-warm-blue">
         <h6 class="modal-title text-white my-auto" id="modal-title-default">
             Tambah organisasi
         </h6>
@@ -459,7 +651,7 @@
     <div class="modal-body">
         <form [formGroup]="organisationForm">
             <div class="form-group">
-                <label class="form-control-label">Nama Organisasi</label>
+                <label class="form-control-label">Nama Organisasi <span class="text-warning">*</span></label>
                 <input 
                     class="form-control" 
                     placeholder="Nama organisasi"
@@ -468,7 +660,7 @@
             </div>
 
             <div class="form-group">
-                <label class="form-control-label">Nama Pendek Organisasi</label>
+                <label class="form-control-label">Nama Pendek Organisasi <span class="text-warning">*</span></label>
                 <input 
                     class="form-control" 
                     placeholder="Nama pendek organisasi"
@@ -480,21 +672,21 @@
 
     <div class="modal-footer">
         <button 
-            class="btn btn-primary"
+            class="btn btn-warm-blue"
             type="button"
             (click)="addOrganisation()"
             [disabled]="!organisationForm.valid"
         >
-            Create
+            Simpan
         </button>
 
         <button
-            class="btn btn-outline-primary ml-auto"
+            class="btn btn-outline-warm-blue ml-auto"
             data-dismiss="modal"
             type="button"
             (click)="closeModal()"
         >
-            Close
+            Tutup
         </button>
     </div>
 </ng-template>

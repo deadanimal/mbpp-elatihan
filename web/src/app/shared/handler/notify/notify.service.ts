@@ -16,8 +16,12 @@ export class NotifyService {
     this.toastr.info(message, title)
   }
 
-  openToastrHttp(title: any, message: string) {
+  openToastrError(title: any, message: string) {
     this.toastr.warning(message, title)
+  }
+
+  openToastrInfo(title: any, message: string) {
+    this.toastr.info(message, title)
   }
 
   openToastr(title: any, message: string) {

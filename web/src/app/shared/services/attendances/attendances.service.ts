@@ -12,7 +12,7 @@ import { Attendance } from './attendances.model';
 export class AttendancesService {
 
   // URL
-  public urlAttendances: string = environment.baseUrl + 'v1/Attendance-attendances/'
+  public urlAttendances: string = environment.baseUrl + 'v1/training-attendees/'
 
   // Data
   attendance: Attendance

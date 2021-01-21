@@ -1,1 +1,91 @@
-<p>settings works!</p>
+<ngx-loading-bar height="4px"></ngx-loading-bar>
+<div class="header pb-6">
+	<div class="container-fluid">
+		<div class="header-body">
+			<div class="row align-items-center py-4">
+				<div class="col-lg-6 col-7">
+					<h6 class="h2 text-dark d-inline-block mb-0">Tetapan</h6>
+
+					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+							<li class=" breadcrumb-item">
+								<a href="javascript:void(0)"> <i class="fas fa-cogs text-dark"> </i> </a>
+							</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col-lg-6 col-sm-12">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h4 class="m-0">Kemaskini Kata Laluan</h4>
+                </div>
+
+                <div class="card-body">
+					<form [formGroup]="passwordForm">
+						<div class="form-group">
+							<label class="form-control-label">Kata Laluan Baru</label>
+							<input class="form-control" formControlName="new_password1" placeholder="Kata laluan baru">
+						</div>
+
+						<div class="form-group">
+							<label class="form-control-label">Ulang Kata Laluan Baru</label>
+							<input class="form-control" formControlName="new_password2" placeholder="Ulang kata laluan baru">
+						</div>
+
+						<div>
+							<button
+								class="btn btn-warm-blue btn-block"
+								(click)="changePassword()"
+								[disabled]="!passwordForm.valid"
+							>
+								Kemaskini
+							</button>
+						</div>
+					</form>
+                </div>
+            </div>
+		</div>
+		
+		<div class="col-lg-6 col-sm-12">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h4 class="m-0">Kemaskini Soalan / Jawapan Sekuriti</h4>
+                </div>
+
+                <div class="card-body">
+					<form [formGroup]="securityForm">
+						<div class="form-group">
+							<label class="form-control-label">Soalan Sekuriti</label>
+							<select class="form-control custom-select" formControlName="question">
+								<option *ngFor="let question of questions" value="{{question.id}}">{{question.question}}</option>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label class="form-control-label">Jawapan Sekuriti</label>
+							<input class="form-control" formControlName="answer" placeholder="Jawapan Sekuriti">
+						</div>
+
+						<div>
+							<button
+								class="btn btn-warm-blue btn-block"
+								(click)="changeSecurity()"
+								[disabled]="!securityForm.valid"
+							>
+								Kemaskini
+							</button>
+						</div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

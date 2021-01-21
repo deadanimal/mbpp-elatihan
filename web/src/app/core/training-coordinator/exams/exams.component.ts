@@ -158,10 +158,10 @@ export class ExamsComponent implements OnInit {
   }
 
   getData() {
-    forkJoin(
+    forkJoin([
       this.examService.getAll(),
       this.userService.getAll()
-    ).subscribe(
+    ]).subscribe(
       (res) => {
         // console.log('all', res)
         this.filterData()
@@ -170,7 +170,7 @@ export class ExamsComponent implements OnInit {
   }
 
   filterData() {
-    let filtering = new Promise(
+    let filtering = new Promise<void> (
       (resolve, reject) => {
         this.examService.exams.forEach(
           (exam: Exam, index, array) => {
@@ -480,6 +480,9 @@ export class ExamsComponent implements OnInit {
     // Cursor
     chart.cursor = new am4charts.XYCursor();
 
+    // Export
+    chart.exporting.menu = new am4core.ExportMenu();
+
     this.chartMonth = chart
   }
 
@@ -561,6 +564,9 @@ export class ExamsComponent implements OnInit {
 
     chart.hiddenState.properties.radius = am4core.percent(0);
 
+    // Export
+    chart.exporting.menu = new am4core.ExportMenu();
+
     this.chartDep = chart
   }
 
@@ -584,6 +590,9 @@ export class ExamsComponent implements OnInit {
     let series = chart.series.push(new am4charts.PieSeries3D());
     series.dataFields.value = "total";
     series.dataFields.category = "result";
+
+    // Export
+    chart.exporting.menu = new am4core.ExportMenu();
 
     this.chartResult = chart
   }

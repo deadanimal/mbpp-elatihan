@@ -27,6 +27,8 @@ from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from django_filters.rest_framework import DjangoFilterBackend
 
+import json
+
 from .models import (
     CustomUser,
     SecurityQuestion,
@@ -62,9 +64,17 @@ class CustomUserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         # history(self)
         return queryset
     
+    @action(methods=['GET'], detail=False)
+    def current_user_detail(self, request, *args, **kwargs):
+        
+        user = request.user
+        serializer = CustomUserSerializer(user)
+        return Response(serializer.data)
+    
     @action(methods=['GET'], detail=True)
-    def completed(self, request, *args, **kwargs):
+    def complete_first_login(self, request, *args, **kwargs):
         user = self.get_object()
+        print('User: ', user)
         user.is_first_login = False
         user.save()
 
@@ -167,3 +177,12 @@ class SecurityAnswerViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         queryset = SecurityAnswer.objects.all()
         return queryset
     
+    @action(methods=['POST'], detail=False)
+    def get_user_answer(self, request, *args, **kwargs):
+        request_ = json.loads(request.body)
+        request_user_id_ = request_['user']
+        print('testttt')
+        answer_ = SecurityAnswer.objects.filter(user=request_user_id_).first()
+
+        serializer = SecurityAnswerSerializer(answer_)
+        return Response(serializer.data)

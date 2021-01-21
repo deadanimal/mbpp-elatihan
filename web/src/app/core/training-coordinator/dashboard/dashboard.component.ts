@@ -16,6 +16,7 @@ import { Training } from 'src/app/shared/services/trainings/trainings.model';
 export class DashboardComponent implements OnInit {
 
   // Stats
+  statistics: any
   totalTrainingPlanned: number = 0
   totalTrainingInternal: number = 0
   totalTrainingExternal: number = 0
@@ -31,7 +32,9 @@ export class DashboardComponent implements OnInit {
     private trainingService: TrainingsService,
     private userService: UsersService,
     private loadingBar: LoadingBarService
-  ) { }
+  ) { 
+    this.getData()
+  }
 
   ngOnInit() {
   }
@@ -41,35 +44,47 @@ export class DashboardComponent implements OnInit {
       this.attendanceService.getAll(),
       this.examService.getAll(),
       this.trainingService.getAll(),
-      this.userService.getAll()
+      this.userService.getAll(),
+      this.trainingService.getStatistics()
     ]).subscribe(
-      () => {}
-    )
-  }
-
-  calculateStats() {
-    this.totalTrainingPlanned = 0 //
-    this.totalTrainingInternal = 0 //
-    this.totalTrainingExternal = 0 //
-    this.totalBudgetCurrent = 0 
-    this.totalAttendanceInternal = 0
-    this.totalAttendanceExternal = 0
-    this.totalExpensesCurrent = 0 //
-    
-    this.totalTrainingPlanned = this.trainingService.trainings.length
-
-    this.trainingService.trainings.forEach(
-      (training: Training) => {
-        this.totalExpensesCurrent += training.cost
-
-        if (training.organiser_type == 'DD') {
-          this.totalTrainingInternal += 1
-        }
-        else if (training.organiser_type == 'LL') {
-          this.totalTrainingExternal += 1
-        }
+      () => {},
+      () => {},
+      () => {
+        this.statistics = this.trainingService.trainingStatistics
+        this.totalTrainingPlanned = this.statistics['planned_training']
+        this.totalTrainingInternal = this.statistics['internal_training']
+        this.totalTrainingExternal = this.statistics['external_training']
+        this.totalBudgetCurrent = this.statistics['current_budget']
+        this.totalAttendanceInternal = this.statistics['attendance_internal']
+        this.totalAttendanceExternal = this.statistics['attendance_external']
+        this.totalExpensesCurrent = this.statistics['current_expenses']
       }
     )
   }
+
+  // calculateStats() {
+  //   this.totalTrainingPlanned = 0 //
+  //   this.totalTrainingInternal = 0 //
+  //   this.totalTrainingExternal = 0 //
+  //   this.totalBudgetCurrent = 0 
+  //   this.totalAttendanceInternal = 0
+  //   this.totalAttendanceExternal = 0
+  //   this.totalExpensesCurrent = 0 //
+    
+  //   this.totalTrainingPlanned = this.trainingService.trainings.length
+
+  //   this.trainingService.trainings.forEach(
+  //     (training: Training) => {
+  //       this.totalExpensesCurrent += training.cost
+
+  //       if (training.organiser_type == 'DD') {
+  //         this.totalTrainingInternal += 1
+  //       }
+  //       else if (training.organiser_type == 'LL') {
+  //         this.totalTrainingExternal += 1
+  //       }
+  //     }
+  //   )
+  // }
 
 }

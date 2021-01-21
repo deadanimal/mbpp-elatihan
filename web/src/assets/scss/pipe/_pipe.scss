@@ -1,3 +1,84 @@
+// Button
+.btn-warm-blue
+{
+    color: #fff;
+    border-color: #364eb9;
+    background-color: #364eb9;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
+}
+.btn-warm-blue:hover
+{
+    color: #fff;
+    border-color: #364eb9; 
+    background-color: #364eb9;
+}
+.btn-warm-blue:focus,
+.btn-warm-blue.focus
+{
+    box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08), 0 0 0 0 rgba(94, 114, 228, .5);
+}
+.btn-warm-blue.disabled,
+.btn-warm-blue:disabled
+{
+    color: #fff;
+    border-color: #364eb9; 
+    background-color: #364eb9;
+}
+.btn-warm-blue:not(:disabled):not(.disabled):active,
+.btn-warm-blue:not(:disabled):not(.disabled).active,
+.show > .btn-warm-blue.dropdown-toggle
+{
+    color: #fff;
+    border-color: #5c74e0; 
+    background-color: #364eb9;
+}
+.btn-warm-blue:not(:disabled):not(.disabled):active:focus,
+.btn-warm-blue:not(:disabled):not(.disabled).active:focus,
+.show > .btn-warm-blue.dropdown-toggle:focus
+{
+    box-shadow: none, 0 0 0 0 rgba(94, 114, 228, .5);
+}
+
+.btn-outline-warm-blue
+{
+    color: #364eb9;
+    border-color: #364eb9; 
+    background-color: transparent;
+    background-image: none;
+}
+.btn-outline-warm-blue:hover
+{
+    color: #fff;
+    border-color: #364eb9; 
+    background-color: #364eb9;
+}
+.btn-outline-warm-blue:focus,
+.btn-outline-warm-blue.focus
+{
+    box-shadow: 0 0 0 0 rgba(94, 114, 228, .5);
+}
+.btn-outline-warm-blue.disabled,
+.btn-outline-warm-blue:disabled
+{
+    color: #364eb9;
+    background-color: transparent;
+}
+.btn-outline-warm-blue:not(:disabled):not(.disabled):active,
+.btn-outline-warm-blue:not(:disabled):not(.disabled).active,
+.show > .btn-outline-warm-blue.dropdown-toggle
+{
+    color: #fff;
+    border-color: #364eb9; 
+    background-color: #364eb9;
+}
+.btn-outline-warm-blue:not(:disabled):not(.disabled):active:focus,
+.btn-outline-warm-blue:not(:disabled):not(.disabled).active:focus,
+.show > .btn-outline-warm-blue.dropdown-toggle:focus
+{
+    box-shadow: 0 0 0 0 rgba(94, 114, 228, .5);
+}
+
+// Form
 .custom-select {
     display: inline-block;
     width: 100%;
@@ -61,4 +142,8 @@
     padding-bottom: $input-padding-y-lg !important;
     padding-left: $input-padding-x-lg !important;
     @include font-size($input-font-size-lg);
+}
+
+.bg-whitish {
+    background-color: #ebebeb !important;
 }

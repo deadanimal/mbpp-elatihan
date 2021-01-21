@@ -165,9 +165,14 @@ class SecurityAnswer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+    def save(self,*args, **kwargs):
+        user = self.user
+        user.is_first_login = False
+        user.save()
+        super(SecurityAnswer, self).save(*args, **kwargs)
+
     class Meta:
         ordering = ['question']
 
     def __str__(self):
         return self.question
-

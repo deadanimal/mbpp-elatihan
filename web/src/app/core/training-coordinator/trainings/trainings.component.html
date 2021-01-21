@@ -1,3 +1,4 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
 <div class="header pb-6">
 	<div class="container-fluid">
 		<div class="header-body">
@@ -51,7 +52,7 @@
 									<input 
 										type="search"
 										class="form-control form-control-sm"
-										placeholder="Cari rekod"
+										placeholder="Cari tajuk latihan"
 										aria-controls="datatable"
 										(keyup)="filterTable($event)"
 									/>
@@ -110,6 +111,34 @@
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
 								{{row.end_date}}
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column>
+							<ng-template ngx-datatable-header-template>
+								<span>Status</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								<span *ngIf="row.status == 'DB'" class="badge badge-pill badge-default">Dibuka</span>
+								<span *ngIf="row.status == 'OT'" class="badge badge-pill badge-primary">Lain-lain</span>
+								<span *ngIf="row.status == 'PN'" class="badge badge-pill badge-info">Penuh</span>
+								<span *ngIf="row.status == 'SL'" class="badge badge-pill badge-success">Selesai</span>
+								<span *ngIf="row.status == 'DT'" class="badge badge-pill badge-danger">Ditutup</span>
+								<span *ngIf="row.status == 'TN'" class="badge badge-pill badge-warning">Tangguh</span>
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column>
+							<ng-template ngx-datatable-header-template>
+								<span>Aktiviti</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								<button 
+									class="btn btn-sm btn-warm-blue"
+									(click)="view(row)"
+								>
+									Lihat
+								</button>
 							</ng-template>
 						</ngx-datatable-column>
 					</ngx-datatable>

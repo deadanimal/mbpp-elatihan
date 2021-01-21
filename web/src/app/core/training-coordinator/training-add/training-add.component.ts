@@ -1,5 +1,6 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, TemplateRef } from '@angular/core';
 import { 
+  FormArray,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -16,6 +17,16 @@ import * as moment from 'moment';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { OrganisationsService } from 'src/app/shared/services/organisations/organisations.service';
 import { Organisation } from 'src/app/shared/services/organisations/organisations.model';
+import { UsersService } from 'src/app/shared/services/users/users.service';
+import { User } from 'src/app/shared/services/users/users.model';
+import { Core } from 'src/app/shared/services/cores/cores.model';
+import { forkJoin } from 'rxjs';
+import { CoresService } from 'src/app/shared/services/cores/cores.service';
+import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
+import { TrainersService } from 'src/app/shared/services/trainers/trainers.service';
+import { Trainer } from 'src/app/shared/services/trainers/trainers.model';
+import { DomainsService } from 'src/app/shared/services/domains/domains.service';
+import { Domain } from 'src/app/shared/services/domains/domains.model';
 
 @Component({
   selector: 'app-training-add',
@@ -27,10 +38,20 @@ export class TrainingAddComponent implements OnInit {
   // Data
   training: Training
   organisations: Organisation[] = []
+  currentUser: User
+  users: User[] = []
+  cores: Core[] = []
+  coresTemp: Core[] = []
+  coresParentTemp = 'GN'
+  domains: Domain[] = []
 
   // Form
   trainingForm: FormGroup
   organisationForm: FormGroup
+  trainerSpeakerForm: FormGroup
+  trainerFacilitatorForm: FormGroup
+  trainerSpeakerFormArray: FormArray
+  trainerFacilitatorFormArray: FormArray
 
   // Stepper
   isLinear = false
@@ -55,6 +76,14 @@ export class TrainingAddComponent implements OnInit {
     { value: 'TB', text: 'Terbuka' },
     { value: 'TH', text: 'Terhad' }
   ]
+  methodChoices = [
+    { value: 'BS', text: 'Bersemuka'},
+    { value: 'TB', text: 'Tidak Bersemuka (online)'}
+  ]
+  countryChoices = [
+    { value: 'DN', text: 'Dalam Negara'},
+    { value: 'LN', text: 'Luar Negara'}
+  ]
   // statusTypeChoices = [
   //   { value: 'DB', text: 'Dibuka' },
   //   { value: 'DT', text: 'Ditutup' },
@@ -63,8 +92,11 @@ export class TrainingAddComponent implements OnInit {
   // ]
 
   // Datepicker
-  dateStart = Date()
-  dateEnd = Date()
+  dateToday: Date
+  dateMinStart: Date
+  dateMinEnd: Date
+  dateStart: Date
+  dateEnd: Date
   dateConfig = { 
     isAnimated: true, 
     dateInputFormat: 'DD-MM-YYYY',
@@ -78,39 +110,113 @@ export class TrainingAddComponent implements OnInit {
     class: "modal-dialog-centered"
   };
 
+  // Checker
+  isLogged: boolean = false
+
+  // File
+  fileSize: any
+  fileName: any
+  fileSizeInformation = null
+  fileNameInformation = null
+
 
   constructor(
     private authService: AuthService,
+    private coreService: CoresService,
+    private domainService: DomainsService,
     private organisationService: OrganisationsService,
     private trainingService: TrainingsService,
+    private trainerService: TrainersService,
+    private userService: UsersService,
+    private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder,
     private loadingBar: LoadingBarService,
     private modalService: BsModalService,
+    private notifyService: NotifyService,
     private router: Router
   ) { 
     this.getData()
   }
 
   ngOnInit() {
+    this.initForm()
+  }
+  
+
+  getData() {
+    this.dateToday = new Date()
+    this.dateMinStart = new Date(this.dateToday.getFullYear(), this.dateToday.getMonth(), this.dateToday.getDate() + 1)
+    this.dateMinEnd = new Date(this.dateToday.getFullYear(), this.dateToday.getMonth(), this.dateToday.getDate() + 2)
+
+    this.loadingBar.start()
+    forkJoin([
+      this.organisationService.getAll(),
+      this.userService.getAll(),
+      this.coreService.getAll(),
+      this.authService.getDetailByToken(),
+      this.domainService.getDomains()
+    ]).subscribe(
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        this.organisations = this.organisationService.organisations
+        this.users = this.userService.users
+        this.cores = this.coreService.cores
+        this.currentUser = this.authService.userDetail
+        this.domains = this.domainService.domains
+        this.trainingForm.controls['created_by'].setValue(this.currentUser['id'])
+        
+        this.cores.forEach(
+          (core: Core) => {
+            if (core['parent'] == 'GN') {
+              this.coresTemp.push(core)
+            }
+          }
+        )
+
+        this.organisations.forEach(
+          (organisation) => {
+            if (organisation['shortname'] == 'MBPP') {
+              this.trainingForm.controls['organiser'].setValue(organisation['id'])
+            }
+          }
+        )
+      }
+    )
+  }
+
+  initForm() {
     this.trainingForm = this.formBuilder.group({
-      title: new FormControl('', Validators.compose([
+      title: new FormControl(null, Validators.compose([
         Validators.required
       ])),
-      description: new FormControl('', Validators.compose([
+      description: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      method: new FormControl('BS', Validators.compose([
+        Validators.required
+      ])),
+      country: new FormControl('DN', Validators.compose([
         Validators.required
       ])),
       organiser_type: new FormControl('DD', Validators.compose([
         Validators.required
       ])),
-      organiser: new FormControl('', Validators.compose([
+      organiser: new FormControl(null, Validators.compose([
         Validators.required
       ])),
+      core: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      domain: new FormControl(null),
       course_type: new FormControl('KK', Validators.compose([
         Validators.required
       ])),
-      course_code: new FormControl('', Validators.compose([
-        Validators.required
-      ])),
+      course_code: new FormControl({value: null, disabled: true}),
       target_group_type: new FormControl('TB', Validators.compose([
         Validators.required
       ])),
@@ -192,37 +298,34 @@ export class TrainingAddComponent implements OnInit {
       max_participant: new FormControl(0, Validators.compose([
         Validators.required
       ])),
-      venue: new FormControl('', Validators.compose([
+      venue: new FormControl(null, Validators.compose([
         Validators.required
       ])),
-      address: new FormControl('', Validators.compose([
+      address: new FormControl(null, Validators.compose([
         Validators.required
       ])),
-      start_date: new FormControl('', Validators.compose([
+      start_date: new FormControl(null, Validators.compose([
         Validators.required
       ])),
-      start_time: new FormControl('', Validators.compose([
+      start_time: new FormControl(null, Validators.compose([
         Validators.required
       ])),
-      end_date: new FormControl('', Validators.compose([
+      end_date: new FormControl(null, Validators.compose([
         Validators.required
       ])),
-      end_time: new FormControl('', Validators.compose([
+      end_time: new FormControl(null, Validators.compose([
         Validators.required
       ])),
       cost: new FormControl(0, Validators.compose([
         Validators.required
       ])),
-      duration_days: new FormControl(0, Validators.compose([
+      attachment: new FormControl(null, Validators.compose([
         Validators.required
       ])),
-      speaker: new FormControl('', Validators.compose([
+      transportation: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      fasilitator: new FormControl('', Validators.compose([
-        Validators.required
-      ])),
-      attachment: new FormControl(Validators.compose([
+      created_by: new FormControl(null, Validators.compose([
         Validators.required
       ]))
     })
@@ -234,6 +337,14 @@ export class TrainingAddComponent implements OnInit {
       shortname: new FormControl('', Validators.compose([
         Validators.required
       ]))
+    })
+
+    this.trainerSpeakerForm = this.formBuilder.group({
+      trainerSpeakerFormArray: this.formBuilder.array([this.initSpeakerForm()])
+    })
+
+    this.trainerFacilitatorForm = this.formBuilder.group({
+      trainerFacilitatorFormArray: this.formBuilder.array([this.initFacilitatorForm()])
     })
 
     this.trainingForm.controls['is_group_KPP_A'].patchValue(true)
@@ -261,19 +372,126 @@ export class TrainingAddComponent implements OnInit {
     this.trainingForm.controls['is_department_JLK'].patchValue(true)
     this.trainingForm.controls['is_department_JPU'].patchValue(true)
     this.trainingForm.controls['is_department_JPB'].patchValue(true)
+
+    // while (!this.isLogged) {
+    //   this.currentUser = this.authService.userDetail
+    //   if (this.currentUser) {
+    //     this.trainingForm.controls['created_by'].setValue(this.currentUser['id'])
+    //     this.isLogged = true
+    //   }
+    //   console.log('asfqw ', this.currentUser)
+    // }
+    
+    // let todayDate = new Date()
+    // let startDate = moment(new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() + 1)).format('DD-MM-YYYY')
+    // let endDate = moment(new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() + 2)).format('DD-MM-YYYY')
+    // this.trainingForm.controls['start_date'].setValue(startDate)
+    // this.trainingForm.controls['end_date'].setValue(endDate)
   }
 
-  getData() {
-    this.loadingBar.start()
-    this.organisationService.getAll().subscribe(
-      () => {
-        this.loadingBar.complete()
-      },
-      () => {
-        this.loadingBar.complete()
-      },
-      () => {
-        this.organisations = this.organisationService.organisations
+  initSpeakerForm() {
+    return this.formBuilder.group({
+      name: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      phone: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      training: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      trainer_type: new FormControl('SP', Validators.compose([
+        Validators.required
+      ]))
+    })
+  }
+
+  initFacilitatorForm() {
+    return this.formBuilder.group({
+      name: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      phone: new FormControl(null),
+      training: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      trainer_type: new FormControl('FC', Validators.compose([
+        Validators.required
+      ]))
+    })
+  }
+
+  addSpeaker() {
+    this.trainerSpeakerFormArray = this.trainerSpeakerForm.get('trainerSpeakerFormArray') as FormArray
+    this.trainerSpeakerFormArray.push(this.initSpeakerForm())
+  }
+
+  removeSpeaker(ind: number) {
+    this.trainerSpeakerFormArray.removeAt(ind)
+  }
+
+  addFacilitator() {
+    this.trainerFacilitatorFormArray = this.trainerFacilitatorForm.get('trainerFacilitatorFormArray') as FormArray
+    this.trainerFacilitatorFormArray.push(this.initFacilitatorForm())
+  }
+
+  removeFacilitator(ind: number) {
+    this.trainerFacilitatorFormArray.removeAt(ind)
+  }
+
+  onChangeCoreParent(value) {
+    if (value == 'GN') {
+      this.coresTemp = []
+      this.cores.forEach(
+        (core: Core) => {
+          if (core['parent'] == 'GN') {
+            this.coresTemp.push(core)
+          }
+        }
+      )
+    }
+    else if (value == 'FN') {
+      this.coresTemp = []
+      this.cores.forEach(
+        (core: Core) => {
+          if (core['parent'] == 'FN') {
+            this.coresTemp.push(core)
+          }
+        }
+      )
+    }
+  }
+
+  onChangeOrganiserType(value) {
+    if (value == 'DD') {
+      this.organisations.forEach(
+        (organisation) => {
+          if (organisation['shortname'] == 'MBPP') {
+            this.trainingForm.controls['organiser'].setValue(organisation['id'])
+            console.log('Type found D: ', organisation['shortname'])
+          }
+        }
+      )
+    }
+    else if (value == 'LL') {
+      this.trainingForm.controls['organiser'].setValue(this.organisations[0]['id'])
+      console.log('Type found L: ', this.organisations[0]['id'])
+    }
+  }
+
+  onChangeOrganiser(value) {
+    let isDD = false
+    this.organisations.forEach(
+      (organisation) => {
+        if (organisation['shortname'] == 'MBPP') {
+          if (organisation['id'] == value) {
+            this.trainingForm.controls['organiser_type'].setValue('DD')
+            isDD = true
+          }
+          else if (isDD == false) {
+            this.trainingForm.controls['organiser_type'].setValue('LL')
+          }
+        }
       }
     )
   }
@@ -307,25 +525,96 @@ export class TrainingAddComponent implements OnInit {
 
   add() {
     this.loadingBar.start()
-    console.log('add training')
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Latihan sedang ditambah'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+    // console.log('add training')
+    // console.log('Trainining: ', this.trainingForm.value)
+    // console.log('Speaker ', this.trainerSpeakerForm.value)
+    // console.log('Faci ', this.trainerFacilitatorForm.value)
+    // console.log('Speaker Ar ', this.trainerSpeakerFormArray)
+    // console.log('Faci Ar ', this.trainerFacilitatorFormArray)
+
+    this.loadingBar.complete()
 
     this.trainingService.post(this.trainingForm.value).subscribe(
       () => {
         this.loadingBar.complete()
       },
       () => {
+        let title = 'Tidak berjaya'
+        let message = 'Anda tidak berjaya untuk menambah latihan. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
         this.loadingBar.complete()
       },
       () => {
-        this.success()
+        let title = 'Berjaya'
+        let message = 'Latihan berjaya ditambah.'
+        this.notifyService.openToastr(title, message)
+        if (
+          this.trainerSpeakerForm.value.trainerSpeakerFormArray ||
+          this.trainerFacilitatorForm.value.trainerFacilitatorFormArray
+        ) {
+          this.addTrainer()
+        }
+        // this.success()
       }
     )
   }
 
+  addTrainer() {
+    let trainingID = this.trainingService.training['id']
+    let infoTitle = 'Sedang proses'
+    let infoMessageSpeaker = 'Penceramah sedang ditambah'
+    let infoMessageFacilitator = 'Fasilitator sedang ditambah'
+
+    if (this.trainerSpeakerForm.value.trainerSpeakerFormArray) {
+      this.loadingBar.start()
+      this.notifyService.openToastrInfo(infoTitle, infoMessageSpeaker)
+      this.trainerSpeakerForm.value.trainerSpeakerFormArray.forEach(
+        (speakerForm) => {
+          speakerForm['training'] = trainingID
+          this.trainerService.create(speakerForm).subscribe(
+            () => {
+              this.loadingBar.complete()
+            },
+            () => {
+              this.loadingBar.complete()
+            },
+            () => {}
+          )
+        }
+      )
+    }
+
+    if (this.trainerFacilitatorForm.value.trainerFacilitatorFormArray) {
+      this.loadingBar.start()
+      this.notifyService.openToastrInfo(infoTitle, infoMessageFacilitator)
+      this.trainerFacilitatorForm.value.trainerFacilitatorFormArray.forEach(
+        (facilitatorForm) => {
+          facilitatorForm['training'] = trainingID
+          this.trainerService.create(facilitatorForm).subscribe(
+            () => {
+              this.loadingBar.complete()
+            },
+            () => {
+              this.loadingBar.complete()
+            },
+            () => {}
+          )
+        }
+      )
+    }
+
+    this.trainingForm.reset()
+    this.navigatePage('/tc/trainings/summary')
+  }
+
+
   success() {
     swal.fire({
       title: 'Berjaya',
-      text: 'Peperiksaan telah ditambah. Tambah lagi?',
+      text: 'Latihan telah ditambah. Tambah lagi?',
       type: 'success',
       buttonsStyling: false,
       showCancelButton: true,
@@ -338,7 +627,29 @@ export class TrainingAddComponent implements OnInit {
         this.trainingForm.reset()
       }
       else {
-        this.navigatePage('/tc/exams/summary')
+        this.navigatePage('/tc/trainings/summary')
+      }
+    })
+  }
+
+  failed() {
+    swal.fire({
+      title: 'Tidak berjaya',
+      text: 'Latihan tidak berjaya ditambah. Sila cuba sekali lagi.',
+      type: 'warning',
+      buttonsStyling: false,
+      showCancelButton: true,
+      confirmButtonClass: 'btn btn-warning',
+      confirmButtonText: 'Tambah',
+      cancelButtonClass: 'btn btn-warning-info',
+      cancelButtonText: 'Tidak'
+    }).then((result) => {
+      if (result.value) {
+        // this.trainingForm.reset()
+      }
+      else {
+        this.trainingForm.reset()
+        this.navigatePage('/tc/trainings/summary')
       }
     })
   }
@@ -438,9 +749,63 @@ export class TrainingAddComponent implements OnInit {
     }
   }
 
+  onFileChange(event, type) {
+    let reader = new FileReader();
+    this.fileSize = event.target.files[0].size
+    this.fileName = event.target.files[0].name
+    
+    if (
+      event.target.files && 
+      event.target.files.length &&
+      this.fileSize < 5000000
+    ) {
+      
+      
+      const [file] = event.target.files;
+      reader.readAsDataURL(file)
+      // readAsDataURL(file);
+      // console.log(event.target)
+      // console.log(reader)
+      
+      
+      reader.onload = () => {
+        // console.log(reader['result'])
+        if (type == 'training') {
+          this.trainingForm.controls['attachment'].setValue(reader.result)
+          this.fileSizeInformation = this.fileSize
+          this.fileNameInformation = this.fileName
+        }
+        // console.log(this.registerForm.value)
+        // console.log('he', this.registerForm.valid)
+        // console.log(this.isAgree)
+        // !registerForm.valid || !isAgree
+        // need to run CD since file load runs outside of zone
+        this.cd.markForCheck();
+      };
+    }
+  }
+
+  removeFile(type) {
+    if (type == 'training') {
+     this.fileSize = 0;
+     this.fileName = null;
+     this.trainingForm.value['attachment'] = null;
+     this.fileSizeInformation = null
+     this.fileNameInformation = null
+     //this.cd.markForCheck();
+     //this.cd.detectChanges();
+   }
+    this.fileName = null
+    this.fileSize = null
+  }
+
   navigatePage(path: string) {
     // console.log(path)
     this.router.navigate([path])
+  }
+
+  checkForm() {
+    console.log('form: ', this.trainingForm.value)
   }
 
 }

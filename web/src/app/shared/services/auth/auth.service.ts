@@ -31,6 +31,7 @@ export class AuthService {
   public username: string
   public userType: string
   public userRole: number = 1
+  public isLogged = false
 
   // Temp
   userDetail: any
@@ -120,6 +121,27 @@ export class AuthService {
       tap((res) => {
         this.userDetail = res
         // console.log('User detail', this.userDetail)
+      })
+    )
+  }
+
+  getDetailByToken():Observable<any> {
+    console.log('getuserbytoken')
+    let urlTemp = this.urlUser + 'current_user_detail'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.userDetail = res
+        this.isLogged = true
+        console.log('User detail', this.userDetail)
+      })
+    )
+  }
+
+  completeFirstLogin(): Observable<any> {
+    let urlTemp = this.urlUser + this.userID + '/complete_first_login/'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        console.log('Complete first login', res)
       })
     )
   }
