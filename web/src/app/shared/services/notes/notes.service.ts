@@ -23,7 +23,7 @@ export class NotesService {
     private http: HttpClient
   ) { }
 
-  post(body: Form): Observable<Note> {
+  post(body: any): Observable<Note> {
     return this.http.post<any>(this.urlNotes, body).pipe(
       tap((res) => {
         this.note = res

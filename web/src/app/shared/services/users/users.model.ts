@@ -5,15 +5,14 @@ export class User {
     public nric: string
     public email: string
     public mobile: string
+    public service_status: string
     public gender: string
     public user_type: string
     public organisation: string
-    public service_status: string
     public appointed_at: string
     public confirmed_at: string
     public department_code: string
-    public unit_code: string
-    public grade: string
+    public section_code: string
     public grade_code: string
     public position: string
     public salary_code: string
@@ -32,15 +31,14 @@ export class User {
         nric: string,
         email: string,
         mobile: string,
+        service_status: string,
         gender: string,
         user_type: string,
         organisation: string,
-        service_status: string,
         appointed_at: string,
         confirmed_at: string,
         department_code: string,
-        unit_code: string,
-        grade: string,
+        section_code: string,
         grade_code: string,
         position: string,
         salary_code: string,
@@ -65,8 +63,7 @@ export class User {
         this.appointed_at = appointed_at
         this.confirmed_at = confirmed_at
         this.department_code = department_code
-        this.unit_code = unit_code
-        this.grade = grade
+        this.section_code = section_code
         this.grade_code = grade_code
         this.position = position
         this.salary_code = salary_code

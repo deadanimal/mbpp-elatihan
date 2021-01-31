@@ -18,9 +18,16 @@
                 <div class="col-lg-6 col-5 text-right">
                     <a
                         class="btn btn-sm btn-warm-blue text-white" 
-                        (click)="openModal(modalAdd)"
+                        (click)="openModal(modalAddOrganisation)"
                     > 
                         Tambah Penganjur 
+                    </a>
+
+                    <a
+                        class="btn btn-sm btn-warm-blue text-white" 
+                        (click)="openModal(modalAddType)"
+                    > 
+                        Tambah Jenis Latihan 
                     </a>
 				</div>
             </div>
@@ -55,6 +62,12 @@
                                             <select class="form-control custom-select" formControlName="organiser_type" (change)="onChangeOrganiserType($event.target.value)">
                                                 <option *ngFor="let choice of organiserChoices" value="{{choice.value}}">{{choice.text}}</option>
                                             </select>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.organiser_type">
+                                                <div *ngIf="trainingForm.get('organiser_type').hasError(message.type) && (trainingForm.get('organiser_type').dirty || trainingForm.get('organiser_type').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
 
@@ -63,8 +76,16 @@
                                             <label class="form-control-label">Penganjur <span class="text-warning">*</span></label>
                                             <!-- organiser -->
                                             <select class="form-control custom-select" formControlName="organiser" (change)="onChangeOrganiser($event.target.value)">
-                                                <option *ngFor="let organisation of organisations" value="{{organisation.id}}">{{organisation.shortname}} - {{organisation.name}}</option>
+                                                <ng-container *ngFor="let organisation of organisations">
+                                                    <option *ngIf="organisation.active" value="{{organisation.id}}">{{organisation.shortname}} - {{organisation.name}}</option>
+                                                </ng-container>
                                             </select>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.organiser">
+                                                <div *ngIf="trainingForm.get('organiser').hasError(message.type) && (trainingForm.get('organiser').dirty || trainingForm.get('organiser').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </div>
@@ -74,9 +95,17 @@
                                         <div class="form-group">
                                             <label class="form-control-label">Jenis Latihan <span class="text-warning">*</span></label>
                                             <!-- course_type -->
-                                            <select class="form-control custom-select" formControlName="course_type">
-                                                <option *ngFor="let choice of courseTypeChoices" value="{{choice.value}}">{{choice.text}}</option>
+                                            <select class="form-control custom-select" formControlName="training_type">
+                                                <ng-container *ngFor="let choice of trainingTypes">
+                                                    <option *ngIf="choice.active" value="{{choice.id}}">{{choice.name}}</option>
+                                                </ng-container>
                                             </select>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.training_type">
+                                                <div *ngIf="trainingForm.get('training_type').hasError(message.type) && (trainingForm.get('training_type').dirty || trainingForm.get('training_type').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
 
@@ -87,6 +116,12 @@
                                             <select class="form-control custom-select" formControlName="method">
                                                 <option *ngFor="let choice of methodChoices" value="{{choice.value}}">{{choice.text}}</option>
                                             </select>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.method">
+                                                <div *ngIf="trainingForm.get('method').hasError(message.type) && (trainingForm.get('method').dirty || trainingForm.get('method').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </div>
@@ -99,16 +134,30 @@
                                             <select class="form-control custom-select" formControlName="country">
                                                 <option *ngFor="let choice of countryChoices" value="{{choice.value}}">{{choice.text}}</option>
                                             </select>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.country">
+                                                <div *ngIf="trainingForm.get('country').hasError(message.type) && (trainingForm.get('country').dirty || trainingForm.get('country').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Domain </label>
+                                            <label class="form-control-label">Domain <span class="text-warning">*</span></label>
                                             <!-- course_type -->
                                             <select class="form-control custom-select" formControlName="domain">
-                                                <option *ngFor="let domain of domains" value="{{domain.id}}">{{domain.name}}</option>
+                                                <ng-container *ngFor="let domain of domains">
+                                                    <option *ngIf="domain.active" value="{{domain.id}}">{{domain.name}}</option>
+                                                </ng-container>
                                             </select>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.domain">
+                                                <div *ngIf="trainingForm.get('domain').hasError(message.type) && (trainingForm.get('domain').dirty || trainingForm.get('domain').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </div>
@@ -124,6 +173,12 @@
                                             <select class="form-control custom-select" formControlName="target_group_type" (change)="onChangeTargetType($event.target.value)">
                                                 <option *ngFor="let choice of targetGroupTypeChoices" value="{{choice.value}}">{{choice.text}}</option>
                                             </select>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.target_group_type">
+                                                <div *ngIf="trainingForm.get('target_group_type').hasError(message.type) && (trainingForm.get('target_group_type').dirty || trainingForm.get('target_group_type').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </div>
@@ -134,35 +189,25 @@
                                     <div class="row">
                                         <div class="col-lg-6 col-sm-12">
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="kumpulanD" formControlName="is_group_KP_A">
-                                                <label class="custom-control-label" for="kumpulanD">Kumpulan Pelaksana 1 (Gred 19 - 40)</label>
+                                                <input type="checkbox" class="custom-control-input" id="kumpulanA" formControlName="is_group_KP_A">
+                                                <label class="custom-control-label" for="kumpulanA">Kumpulan A (Gred 41 dan ke atas)</label>
                                             </div>
 
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="kumpulanF" formControlName="is_group_KP_B">
-                                                <label class="custom-control-label" for="kumpulanF">Kumpulan Pelaksana 2 (Gred 11 - 18)</label>
-                                            </div>
-
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="kumpulanE" formControlName="is_group_KP_C">
-                                                <label class="custom-control-label" for="kumpulanE">Kumpulan Pelaksana 2 (Gred 1 - 10)</label>
+                                                <input type="checkbox" class="custom-control-input" id="kumpulanB" formControlName="is_group_KP_B">
+                                                <label class="custom-control-label" for="kumpulanB">Kumpulan B (Gred 27 - 40)</label>
                                             </div>
                                         </div>
                                         
                                         <div class="col-lg-6 col-sm-12">
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="kumpulanA" formControlName="is_group_KPP_A">
-                                                <label class="custom-control-label" for="kumpulanA">Kumpulan Pengurusan dan Professional (Gred 48 ke atas)</label>
+                                                <input type="checkbox" class="custom-control-input" id="kumpulanC" formControlName="is_group_KP_C">
+                                                <label class="custom-control-label" for="kumpulanC">Kumpulan C (Gred 17 - 26)</label>
                                             </div>
-    
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="kumpulanB" formControlName="is_group_KPP_B">
-                                                <label class="custom-control-label" for="kumpulanB">Kumpulan Pengurusan dan Professional (Gred 44)</label>
-                                            </div>
-    
-                                            <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="kumpulanC" formControlName="is_group_KPP_C">
-                                                <label class="custom-control-label" for="kumpulanC">Kumpulan Pengurusan dan Professional (Gred 41)</label>
+                                                <input type="checkbox" class="custom-control-input" id="kumpulanD" formControlName="is_group_KP_D">
+                                                <label class="custom-control-label" for="kumpulanD">Kumpulan D (Gred 1 - 16)</label>
                                             </div>
                                         </div>
                                     </div>
@@ -174,100 +219,762 @@
                                     <div class="row">
                                         <div class="col-lg-6 col-sm-12">
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatan_DatukBandar" formControlName="is_department_PDB">
-                                                <label class="custom-control-label" for="jabatan_DatukBandar">Pejabat Datuk Bandar</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan11" formControlName="is_department_11">
+                                                <label class="custom-control-label" for="jabatan11">Jabatan Khidmat Pengurusan</label>
                                             </div>
         
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatan_UndangUndang" formControlName="is_department_UUU">
-                                                <label class="custom-control-label" for="jabatan_UndangUndang">Unit Undang-undang</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan15" formControlName="is_department_15">
+                                                <label class="custom-control-label" for="jabatan15">Jabatan Penguatkuasaan</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanAuditDalam" formControlName="is_department_UAD">
-                                                <label class="custom-control-label" for="jabatanAuditDalam">Unit Audit Dalaman</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan21" formControlName="is_department_21">
+                                                <label class="custom-control-label" for="jabatan21">Jabatan Perbendaharaan</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanPenyelarasanPembangunan" formControlName="is_department_UPP">
-                                                <label class="custom-control-label" for="jabatanPenyelarasanPembangunan">Unit Penyelarasan Pembangunan</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan31" formControlName="is_department_31">
+                                                <label class="custom-control-label" for="jabatan31">Jabatan Kejuruteraan</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanPusatSehenti" formControlName="is_department_UPS">
-                                                <label class="custom-control-label" for="jabatanPusatSehenti">Unit Pusat Sehenti</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan41" formControlName="is_department_41">
+                                                <label class="custom-control-label" for="jabatan41">Jabatan Kesihatan Persekitaran dan Pelesenan</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanKhidmatPengurusan" formControlName="is_department_JKP">
-                                                <label class="custom-control-label" for="jabatanKhidmatPengurusan">Jabatan Khidmat Pengurusan</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan45" formControlName="is_department_45">
+                                                <label class="custom-control-label" for="jabatan45">Jabatan Perkhidmatan dan Perbandaraan</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanPerbendaharaan" formControlName="is_department_JPD">
-                                                <label class="custom-control-label" for="jabatanPerbendaharaan">Jabatan Perbendaharaan</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan47" formControlName="is_department_47">
+                                                <label class="custom-control-label" for="jabatan47">Jabatan Kesihatan Persekitaran dan Pelesenan - Pelesenan</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanPenilaianPengurusanHarta" formControlName="is_department_JPH">
-                                                <label class="custom-control-label" for="jabatanPenilaianPengurusanHarta">Jabatan Penilaian dan Pengurusan Harta</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan51" formControlName="is_department_51">
+                                                <label class="custom-control-label" for="jabatan51">Jabatan Kawalan Bangunan</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanPerancanganPembangunan" formControlName="is_department_JPP">
-                                                <label class="custom-control-label" for="jabatanPerancanganPembangunan">Jabatan Perancangan Pembangunan</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan55" formControlName="is_department_55">
+                                                <label class="custom-control-label" for="jabatan55">Jabatan Konservasi Warisan</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanKejuruteraan" formControlName="is_department_JKJ">
-                                                <label class="custom-control-label" for="jabatanKejuruteraan">Jabatan Kejuruteraan</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan61" formControlName="is_department_61">
+                                                <label class="custom-control-label" for="jabatan61">Jabatan Penilaian dan Pengurusan Harta</label>
                                             </div>
                                         </div>
 
                                         <div class="col-lg-6 col-sm-12">
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanKawalanBangunan" formControlName="is_department_JKB">
-                                                <label class="custom-control-label" for="jabatanKawalanBangunan">Jabatan Kawalan Bangunan</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan63" formControlName="is_department_63">
+                                                <label class="custom-control-label" for="jabatan63">Jabatan Pesuruhjaya Bangunan</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanKesihatanAwam" formControlName="is_department_JKEA">
-                                                <label class="custom-control-label" for="jabatanKesihatanAwam">Bahagian Kesihatan Awam</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan71" formControlName="is_department_71">
+                                                <label class="custom-control-label" for="jabatan71">Jabatan Perancangan Pembangunan</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanPelesenan" formControlName="is_department_JKEB">
-                                                <label class="custom-control-label" for="jabatanPelesenan">Bahagian Pelesenan</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan81" formControlName="is_department_81">
+                                                <label class="custom-control-label" for="jabatan81">Jabatan Khidmat Kemasyarakatan</label>
                                             </div>
-                                            
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanPerkhidmatanPerbandaraan" formControlName="is_department_JPR">
-                                                <label class="custom-control-label" for="jabatanPerkhidmatanPerbandaraan">Jabatan Perkhidmatan Perbandaraan</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan86" formControlName="is_department_86">
+                                                <label class="custom-control-label" for="jabatan86">Jabatan Landskap</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanKhidmatKemasyarakatan" formControlName="is_department_JKK">
-                                                <label class="custom-control-label" for="jabatanKhidmatKemasyarakatan">Jabatan Khidmat Kemasyarakatan</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan90" formControlName="is_department_90">
+                                                <label class="custom-control-label" for="jabatan90">Pejabat Datuk Bandar</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanKonservasiWarisan" formControlName="is_department_JKW">
-                                                <label class="custom-control-label" for="jabatanKonservasiWarisan">KJabatan Konservasi Warisan</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan91" formControlName="is_department_91">
+                                                <label class="custom-control-label" for="jabatan91">Pejabat Datuk Bandar - Undang-undang</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanLanskap" formControlName="is_department_JLK">
-                                                <label class="custom-control-label" for="jabatanLanskap">Jabatan Lanskap</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan92" formControlName="is_department_92">
+                                                <label class="custom-control-label" for="jabatan92">Pejabat Datuk Bandar - Penyelarasan Pembangunan</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanPenguatkuasaan" formControlName="is_department_JPU">
-                                                <label class="custom-control-label" for="jabatanPenguatkuasaan">Jabatan Penguatkuasaan</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan93" formControlName="is_department_93">
+                                                <label class="custom-control-label" for="jabatan93">Pejabat Datuk Bandar - Audit Dalam</label>
                                             </div>
-        
+
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" id="jabatanPesuruhjayaBangunan" formControlName="is_department_JPB">
-                                                <label class="custom-control-label" for="jabatanPesuruhjayaBangunan">Jabatan Pesuruhjaya Bangunan</label>
+                                                <input type="checkbox" class="custom-control-input" id="jabatan94" formControlName="is_department_94">
+                                                <label class="custom-control-label" for="jabatan94">Pejabat Datuk Bandar - OSC </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-control-label">Jawatan Sasaran <span class="text-warning">*</span></label>
+
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-12">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan01" formControlName="is_position_01">
+                                                <label class="custom-control-label" for="jawatan01">Akauntan</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan02" formControlName="is_position_02">
+                                                <label class="custom-control-label" for="jawatan02">Arkitek</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan03" formControlName="is_position_03">
+                                                <label class="custom-control-label" for="jawatan03">Arkitek Landskap</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan04" formControlName="is_position_04">
+                                                <label class="custom-control-label" for="jawatan04">Datuk Bandar</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan05" formControlName="is_position_05">
+                                                <label class="custom-control-label" for="jawatan05">Juruaudio Visual</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan06" formControlName="is_position_06">
+                                                <label class="custom-control-label" for="jawatan06">Juruaudit</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan07" formControlName="is_position_07">
+                                                <label class="custom-control-label" for="jawatan07">Jururawat</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan08" formControlName="is_position_08">
+                                                <label class="custom-control-label" for="jawatan08">Jururawat Masyarakat</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan09" formControlName="is_position_09">
+                                                <label class="custom-control-label" for="jawatan09">Juruteknik Komputer</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan10" formControlName="is_position_10">
+                                                <label class="custom-control-label" for="jawatan10">Jurutera</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan11" formControlName="is_position_11">
+                                                <label class="custom-control-label" for="jawatan11">Juruukur Bahan</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan12" formControlName="is_position_12">
+                                                <label class="custom-control-label" for="jawatan12">Pegawai Keselamatan</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan13" formControlName="is_position_13">
+                                                <label class="custom-control-label" for="jawatan13">Pegawai Kesihatan Persekitaran</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan14" formControlName="is_position_14">
+                                                <label class="custom-control-label" for="jawatan14">Pegawai Khidmat Pelanggan</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan15" formControlName="is_position_15">
+                                                <label class="custom-control-label" for="jawatan15">Pegawai Penilaian</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan16" formControlName="is_position_16">
+                                                <label class="custom-control-label" for="jawatan16">Pegawai Perancang Bandar dan Desa</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan17" formControlName="is_position_17">
+                                                <label class="custom-control-label" for="jawatan17">Pegawai Pertanian</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan18" formControlName="is_position_18">
+                                                <label class="custom-control-label" for="jawatan18">Pegawai Perubatan</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan19" formControlName="is_position_19">
+                                                <label class="custom-control-label" for="jawatan19">Pegawai Tadbir</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan20" formControlName="is_position_20">
+                                                <label class="custom-control-label" for="jawatan20">Pegawai Teknologi Maklumat</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan21" formControlName="is_position_21">
+                                                <label class="custom-control-label" for="jawatan21">Pegawai Undang-undang</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan22" formControlName="is_position_22">
+                                                <label class="custom-control-label" for="jawatan22">Pegawai Veterinar</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan23" formControlName="is_position_23">
+                                                <label class="custom-control-label" for="jawatan23">Pegawai Pekerja Awam</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan24" formControlName="is_position_24">
+                                                <label class="custom-control-label" for="jawatan24">Pelukis Pelan</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan25" formControlName="is_position_25">
+                                                <label class="custom-control-label" for="jawatan25">Pelukis Pelan (Kejuruteraan Awam) / Penolong Jurutera</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan26" formControlName="is_position_26">
+                                                <label class="custom-control-label" for="jawatan26">Pelukis Pelan (Seni Bina) / Penolong Pegawai Seni Bina</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan27" formControlName="is_position_27">
+                                                <label class="custom-control-label" for="jawatan27">Pemandu Kenderaan</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan28" formControlName="is_position_28">
+                                                <label class="custom-control-label" for="jawatan28">Pemandu Kenderaan Bermotor</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-6 col-sm-12">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan29" formControlName="is_position_29">
+                                                <label class="custom-control-label" for="jawatan29">Pembantu Awam</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan30" formControlName="is_position_30">
+                                                <label class="custom-control-label" for="jawatan30">Pembantu Kemahiran</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan31" formControlName="is_position_31">
+                                                <label class="custom-control-label" for="jawatan31">Pembantu Kesihatan Awam</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan32" formControlName="is_position_32">
+                                                <label class="custom-control-label" for="jawatan32">Pembantu Operasi</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan33" formControlName="is_position_33">
+                                                <label class="custom-control-label" for="jawatan33">Pembantu Penguatkuasa</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan34" formControlName="is_position_34">
+                                                <label class="custom-control-label" for="jawatan34">Pembantu Penguatkuasa Rendah</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan35" formControlName="is_position_35">
+                                                <label class="custom-control-label" for="jawatan35">Pembantu Penilaian</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan36" formControlName="is_position_36">
+                                                <label class="custom-control-label" for="jawatan36">Pembantu Perawatan Kesihatan</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan37" formControlName="is_position_37">
+                                                <label class="custom-control-label" for="jawatan37">Pembantu Setiausaha Pejabat / Setiausaha Pejabat</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan38" formControlName="is_position_38">
+                                                <label class="custom-control-label" for="jawatan38">Pembantu Tadbir (Perkeranian / Operasi)</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan39" formControlName="is_position_39">
+                                                <label class="custom-control-label" for="jawatan39">Pembantu Tadbir Kewangan</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan40" formControlName="is_position_40">
+                                                <label class="custom-control-label" for="jawatan40">Pembantu Veterinar</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan41" formControlName="is_position_41">
+                                                <label class="custom-control-label" for="jawatan41">Pembantu Keselamatan</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan42" formControlName="is_position_42">
+                                                <label class="custom-control-label" for="jawatan42">Penghantar Notis</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan43" formControlName="is_position_43">
+                                                <label class="custom-control-label" for="jawatan43">Penolong Akauntan</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan44" formControlName="is_position_44">
+                                                <label class="custom-control-label" for="jawatan44">Penolong Arkitek Landskap</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan45" formControlName="is_position_45">
+                                                <label class="custom-control-label" for="jawatan45">Penolong Pegawai Juruaudit</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan46" formControlName="is_position_46">
+                                                <label class="custom-control-label" for="jawatan46">Penolong Pegawai Kesihatan Persekitaran</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan47" formControlName="is_position_47">
+                                                <label class="custom-control-label" for="jawatan47">Penolong Pegawai Penguatkuasa</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan48" formControlName="is_position_48">
+                                                <label class="custom-control-label" for="jawatan48">Penolong Penolong Penilaian</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan49" formControlName="is_position_49">
+                                                <label class="custom-control-label" for="jawatan49">Penolong Pegawai Perancang Bandar dan Desa</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan50" formControlName="is_position_50">
+                                                <label class="custom-control-label" for="jawatan50">Penolong Pegawai Pertanian</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan51" formControlName="is_position_51">
+                                                <label class="custom-control-label" for="jawatan51">Penolong Pegawai Tadbir</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan52" formControlName="is_position_52">
+                                                <label class="custom-control-label" for="jawatan52">Penolong Pegawai Teknologi Maklumat</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan53" formControlName="is_position_53">
+                                                <label class="custom-control-label" for="jawatan53">Penolong Pegawai Undang-undang</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan54" formControlName="is_position_54">
+                                                <label class="custom-control-label" for="jawatan54">Penolong Pegawai Veterinar</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan55" formControlName="is_position_55">
+                                                <label class="custom-control-label" for="jawatan55">Pereka</label>
+                                            </div>
+
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="jawatan60" formControlName="is_position_60">
+                                                <label class="custom-control-label" for="jawatan60">Setiausaha</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-control-label">Gred Sasaran <span class="text-warning">*</span></label>
+
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-12">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaba19" formControlName="is_ba19">
+                                                <label class="custom-control-label" for="sckemaba19">BA19</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemafa29" formControlName="is_fa29">
+                                                <label class="custom-control-label" for="sckemafa29">FA29</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemafa32" formControlName="is_fa32">
+                                                <label class="custom-control-label" for="sckemafa32">FA32</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemafa41" formControlName="is_fa41">
+                                                <label class="custom-control-label" for="sckemafa41">FA41</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemafa44" formControlName="is_fa44">
+                                                <label class="custom-control-label" for="sckemafa44">FA44</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemafa48" formControlName="is_fa48">
+                                                <label class="custom-control-label" for="sckemafa48">FA48</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaft19" formControlName="is_ft19">
+                                                <label class="custom-control-label" for="sckemaft19">FT19</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaga17" formControlName="is_ga17">
+                                                <label class="custom-control-label" for="sckemaga17">GA17</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaga19" formControlName="is_ga19">
+                                                <label class="custom-control-label" for="sckemaga19">GA19</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaga22" formControlName="is_ga22">
+                                                <label class="custom-control-label" for="sckemaga22">GA22</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaga26" formControlName="is_ga26">
+                                                <label class="custom-control-label" for="sckemaga26">GA26</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaga29" formControlName="is_ga29">
+                                                <label class="custom-control-label" for="sckemaga29">GA29</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaga32" formControlName="is_ga32">
+                                                <label class="custom-control-label" for="sckemaga32">GA32</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaga41" formControlName="is_ga41">
+                                                <label class="custom-control-label" for="sckemaga41">GA41</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemagv41" formControlName="is_gv41">
+                                                <label class="custom-control-label" for="sckemagv41">GV41</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaha11" formControlName="is_ha11">
+                                                <label class="custom-control-label" for="sckemaha11">HA11</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaha14" formControlName="is_ha14">
+                                                <label class="custom-control-label" for="sckemaha14">HA14</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaha16" formControlName="is_ha16">
+                                                <label class="custom-control-label" for="sckemaha16">HA16</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaha19" formControlName="is_ha19">
+                                                <label class="custom-control-label" for="sckemaha19">HA19</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaha22" formControlName="is_ha22">
+                                                <label class="custom-control-label" for="sckemaha22">HA22</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaja19" formControlName="is_ja19">
+                                                <label class="custom-control-label" for="sckemaja19">JA19</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaja22" formControlName="is_ja22">
+                                                <label class="custom-control-label" for="sckemaja22">JA22</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaja29" formControlName="is_ja29">
+                                                <label class="custom-control-label" for="sckemaja29">JA29</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaja36" formControlName="is_ja36">
+                                                <label class="custom-control-label" for="sckemaja36">JA36</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaja38" formControlName="is_ja38">
+                                                <label class="custom-control-label" for="sckemaja38">JA38</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaja40" formControlName="is_ja40">
+                                                <label class="custom-control-label" for="sckemaja40">JA40</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaja41" formControlName="is_ja41">
+                                                <label class="custom-control-label" for="sckemaja41">JA41</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaja44" formControlName="is_ja44">
+                                                <label class="custom-control-label" for="sckemaja44">JA44</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaja48" formControlName="is_ja48">
+                                                <label class="custom-control-label" for="sckemaja48">JA48</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaja52" formControlName="is_ja52">
+                                                <label class="custom-control-label" for="sckemaja52">JA52</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaja54" formControlName="is_ja54">
+                                                <label class="custom-control-label" for="sckemaja54">JA54</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemakp11" formControlName="is_kp11">
+                                                <label class="custom-control-label" for="sckemakp11">KP11</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemakp14" formControlName="is_kp14">
+                                                <label class="custom-control-label" for="sckemakp14">KP14</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemakp19" formControlName="is_kp19">
+                                                <label class="custom-control-label" for="sckemakp19">KP19</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemakp22" formControlName="is_kp22">
+                                                <label class="custom-control-label" for="sckemakp22">KP22</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemakp29" formControlName="is_kp29">
+                                                <label class="custom-control-label" for="sckemakp29">KP29</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemakp32" formControlName="is_kp32">
+                                                <label class="custom-control-label" for="sckemakp32">KP32</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemakp41" formControlName="is_kp41">
+                                                <label class="custom-control-label" for="sckemakp41">KP41</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemala29" formControlName="is_la29">
+                                                <label class="custom-control-label" for="sckemala29">LA29</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemala41" formControlName="is_la41">
+                                                <label class="custom-control-label" for="sckemala41">LA41</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemala44" formControlName="is_la44">
+                                                <label class="custom-control-label" for="sckemala44">LA44</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemala52" formControlName="is_la52">
+                                                <label class="custom-control-label" for="sckemala52">LA52</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemala54" formControlName="is_la54">
+                                                <label class="custom-control-label" for="sckemala54">LA54</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana01" formControlName="is_na01">
+                                                <label class="custom-control-label" for="sckemana01">NA01</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana11" formControlName="is_na11">
+                                                <label class="custom-control-label" for="sckemana11">NA11</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-sm-12">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana14" formControlName="is_na14">
+                                                <label class="custom-control-label" for="skemana14">NA14</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana17" formControlName="is_na17">
+                                                <label class="custom-control-label" for="skemana17">NA17</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana19" formControlName="is_na19">
+                                                <label class="custom-control-label" for="skemana19">NA19</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana22" formControlName="is_na22">
+                                                <label class="custom-control-label" for="skemana22">NA22</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana26" formControlName="is_na26">
+                                                <label class="custom-control-label" for="skemana26">NA26</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana29" formControlName="is_na29">
+                                                <label class="custom-control-label" for="skemana29">NA29</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana30" formControlName="is_na30">
+                                                <label class="custom-control-label" for="skemana30">NA30</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana32" formControlName="is_na32">
+                                                <label class="custom-control-label" for="skemana32">NA32</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana36" formControlName="is_na36">
+                                                <label class="custom-control-label" for="skemana36">NA36</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana41" formControlName="is_na41">
+                                                <label class="custom-control-label" for="skemana41">NA41</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana44" formControlName="is_na44">
+                                                <label class="custom-control-label" for="skemana44">NA44</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana48" formControlName="is_na48">
+                                                <label class="custom-control-label" for="skemana48">NA48</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana52" formControlName="is_na52">
+                                                <label class="custom-control-label" for="skemana52">NA52</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemana54" formControlName="is_na54">
+                                                <label class="custom-control-label" for="skemana54">NA54</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemara01" formControlName="is_ra01">
+                                                <label class="custom-control-label" for="skemara01">RA01</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemara03" formControlName="is_ra03">
+                                                <label class="custom-control-label" for="skemara03">RA03</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaua11" formControlName="is_ua11">
+                                                <label class="custom-control-label" for="skemaua11">UA11</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaua14" formControlName="is_ua14">
+                                                <label class="custom-control-label" for="skemaua14">UA14</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaua17" formControlName="is_ua17">
+                                                <label class="custom-control-label" for="skemaua17">UA17</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaua19" formControlName="is_ua19">
+                                                <label class="custom-control-label" for="skemaua19">UA19</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaua24" formControlName="is_ua24">
+                                                <label class="custom-control-label" for="skemaua24">UA24</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaua29" formControlName="is_ua29">
+                                                <label class="custom-control-label" for="skemaua29">UA29</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaua32" formControlName="is_ua32">
+                                                <label class="custom-control-label" for="skemaua32">UA32</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaua36" formControlName="is_ua36">
+                                                <label class="custom-control-label" for="skemaua36">UA36</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaua41" formControlName="is_ua41">
+                                                <label class="custom-control-label" for="skemaua41">UA41</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaud43" formControlName="is_ud43">
+                                                <label class="custom-control-label" for="skemaud43">UD43</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaud48" formControlName="is_ud48">
+                                                <label class="custom-control-label" for="skemaud48">UD48</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemaud52" formControlName="is_ud52">
+                                                <label class="custom-control-label" for="skemaud52">UD52</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemavu06" formControlName="is_vu06">
+                                                <label class="custom-control-label" for="skemavu06">VU06</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemavu07" formControlName="is_vu07">
+                                                <label class="custom-control-label" for="skemavu07">VU07</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa17" formControlName="is_wa17">
+                                                <label class="custom-control-label" for="skemawa17">WA17</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa19" formControlName="is_wa19">
+                                                <label class="custom-control-label" for="skemawa19">WA19</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa22" formControlName="is_wa22">
+                                                <label class="custom-control-label" for="skemawa22">WA22</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa26" formControlName="is_wa26">
+                                                <label class="custom-control-label" for="skemawa26">WA26</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa28" formControlName="is_wa28">
+                                                <label class="custom-control-label" for="skemawa28">WA28</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa29" formControlName="is_wa29">
+                                                <label class="custom-control-label" for="skemawa29">WA29</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa32" formControlName="is_wa32">
+                                                <label class="custom-control-label" for="skemawa32">WA32</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa36" formControlName="is_wa36">
+                                                <label class="custom-control-label" for="skemawa36">WA36</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa41" formControlName="is_wa41">
+                                                <label class="custom-control-label" for="skemawa41">WA41</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa44" formControlName="is_wa44">
+                                                <label class="custom-control-label" for="skemawa44">WA44</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa48" formControlName="is_wa48">
+                                                <label class="custom-control-label" for="skemawa48">WA48</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa52" formControlName="is_wa52">
+                                                <label class="custom-control-label" for="skemawa52">WA52</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawa54" formControlName="is_wa54">
+                                                <label class="custom-control-label" for="skemawa54">WA54</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawaa41" formControlName="is_waa41">
+                                                <label class="custom-control-label" for="skemawaa41">WAA41</label>
+                                            </div>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="skemawaa44" formControlName="is_waa44">
+                                                <label class="custom-control-label" for="skemawaa44">WAA44</label>
                                             </div>
                                         </div>
                                     </div>
@@ -285,11 +992,23 @@
                                 <div class="form-group">
                                     <label class="form-control-label">Tajuk <span class="text-warning">*</span></label>
                                     <input class="form-control" formControlName="title">
+
+                                    <ng-container *ngFor="let message of trainingFormMessages.title">
+                                        <div *ngIf="trainingForm.get('title').hasError(message.type) && (trainingForm.get('title').dirty || trainingForm.get('title').touched)">
+                                            <p class="error-message"><span>*{{ message.message }}</span></p>
+                                        </div>
+                                    </ng-container>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="form-control-label">Deskripsi <span class="text-warning">*</span></label>
                                     <textarea class="form-control" formControlName="description"></textarea>
+
+                                    <ng-container *ngFor="let message of trainingFormMessages.description">
+                                        <div *ngIf="trainingForm.get('description').hasError(message.type) && (trainingForm.get('description').dirty || trainingForm.get('description').touched)">
+                                            <p class="error-message"><span>*{{ message.message }}</span></p>
+                                        </div>
+                                    </ng-container>
                                 </div>
 
                                 <div class="row">
@@ -316,6 +1035,12 @@
                                                     {{core.child}}
                                                 </option>
                                             </select>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.core">
+                                                <div *ngIf="trainingForm.get('core').hasError(message.type) && (trainingForm.get('core').dirty || trainingForm.get('core').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </div>
@@ -324,7 +1049,7 @@
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
                                             <label class="form-control-label">Kod Kursus  <span class="text-warning">*akan dijana secara automatik</span></label>
-                                            <input class="form-control" formControlName="course_code">
+                                            <input class="form-control" [value]="nextCode" disabled>
                                         </div>
                                     </div>
 
@@ -332,6 +1057,12 @@
                                         <div class="form-group">
                                             <label class="form-control-label">Jumlah Peserta <span class="text-warning">*</span></label>
                                             <input class="form-control" formControlName="max_participant" type="number">
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.max_participant">
+                                                <div *ngIf="trainingForm.get('max_participant').hasError(message.type) && (trainingForm.get('max_participant').dirty || trainingForm.get('max_participant').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </div>
@@ -341,12 +1072,18 @@
                                         <div class="form-group">
                                             <label class="form-control-label">Lokasi <span class="text-warning">*</span></label>
                                             <input class="form-control" formControlName="venue">
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.venue">
+                                                <div *ngIf="trainingForm.get('venue').hasError(message.type) && (trainingForm.get('venue').dirty || trainingForm.get('venue').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Alamat Lokasi <span class="text-warning">*</span></label>
+                                            <label class="form-control-label">Alamat Lokasi</label>
                                             <input class="form-control" formControlName="address">
                                         </div>
                                     </div>
@@ -355,7 +1092,7 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-sm-12">
                                         <div class="form-group">
-                                            <label class="form-control-label">Kos <span class="text-warning">*</span></label>
+                                            <label class="form-control-label">Anggaran Kos <span class="text-warning">*</span></label>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text bg-secondary">
@@ -364,6 +1101,12 @@
                                                 </div>
                                                 <input class="form-control" formControlName="cost" type="number">
                                             </div>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.cost">
+                                                <div *ngIf="trainingForm.get('cost').hasError(message.type) && (trainingForm.get('cost').dirty || trainingForm.get('cost').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </div>
@@ -395,11 +1138,16 @@
                                                     class="form-control"
                                                     bsDatepicker
                                                     formControlName="start_date"
-                                                    [minDate]="dateMinStart"
                                                     [bsValue]="dateStart"
                                                     [bsConfig]="dateConfig"
                                                 >
                                             </div>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.start_date">
+                                                <div *ngIf="trainingForm.get('start_date').hasError(message.type) && (trainingForm.get('start_date').dirty || trainingForm.get('start_date').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
 
@@ -414,6 +1162,12 @@
                                                 </div>
                                                 <input type="time" value="10:30:00" class="form-control" formControlName="start_time">
                                             </div>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.start_time">
+                                                <div *ngIf="trainingForm.get('start_time').hasError(message.type) && (trainingForm.get('start_time').dirty || trainingForm.get('start_time').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
                                 </div>
@@ -434,11 +1188,16 @@
                                                     class="form-control"
                                                     bsDatepicker
                                                     formControlName="end_date"
-                                                    [minDate]="dateMinEnd"
                                                     [bsValue]="dateEnd"
                                                     [bsConfig]="dateConfig"
                                                 >
                                             </div>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.end_date">
+                                                <div *ngIf="trainingForm.get('end_date').hasError(message.type) && (trainingForm.get('end_date').dirty || trainingForm.get('end_date').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
 
@@ -453,8 +1212,22 @@
                                                 </div>
                                                 <input type="time" value="10:30:00" class="form-control" formControlName="end_time">
                                             </div>
+
+                                            <ng-container *ngFor="let message of trainingFormMessages.end_time">
+                                                <div *ngIf="trainingForm.get('end_time').hasError(message.type) && (trainingForm.get('end_time').dirty || trainingForm.get('end_time').touched)">
+                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
+                                                </div>
+                                            </ng-container>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-control-label">Nota Jadual</label>
+                                    <quill-editor
+                                        #scheduleNotes 
+                                        formControlName="schedule_notes">
+                                    </quill-editor>
                                 </div>
 
                                 <hr class="my-4" />
@@ -470,8 +1243,8 @@
                                                     class="custom-file-input" 
                                                     id="lampiran" 
                                                     lang="en"
-                                                    (change)="onFileChange($event, 'training')" 
-                                                    accept=".pdf"
+                                                    (change)="onFileChange($event, 'attachment')" 
+                                                    accept=".pdf, image/*"
                                                     size="5"
                                                 >
                                                 <label class="custom-file-label" for="lampiran">Sila muat naik lampiran berkenaan</label>
@@ -483,15 +1256,48 @@
                                                         class="fas fa-trash-alt text-warning mr-2"
                                                         placement="top" 
                                                         tooltip="Remove attachment"
-                                                        (click)="removeFile('training')"
+                                                        (click)="removeFile('attachment')"
                                                     >
                                                     </i>
-                                                    {{fileNameInformation}} [{{fileSizeInformation/1000000 | number: '1.2-2'}}MB]
+                                                    {{fileNameInformationAttachment}} [{{fileSizeInformationAttachment/1000000 | number: '1.2-2'}}MB]
                                                 </div>
                                             </ng-container>
                                         </div>
                                     </div>
 
+                                    <div class="col-lg-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-control-label">Lampiran Kelulusan <span class="text-warning">*Format PDF sahaja, maksimum 5MB</span></label>
+                                            <div class="custom-file">
+                                                <input 
+                                                    type="file" 
+                                                    class="custom-file-input" 
+                                                    id="lampiran" 
+                                                    lang="en"
+                                                    (change)="onFileChange($event, 'attachment_approval')" 
+                                                    accept=".pdf, image/*"
+                                                    size="5"
+                                                >
+                                                <label class="custom-file-label" for="lampiran">Sila muat naik lampiran berkenaan</label>
+                                              </div>
+
+                                              <ng-container *ngIf="trainingForm.value['attachment_approval']">
+                                                <div>
+                                                    <i 
+                                                        class="fas fa-trash-alt text-warning mr-2"
+                                                        placement="top" 
+                                                        tooltip="Remove attachment"
+                                                        (click)="removeFile('attachment_approval')"
+                                                    >
+                                                    </i>
+                                                    {{fileNameInformationAttachmentApproval}} [{{fileSizeInformationAttachmentApproval/1000000 | number: '1.2-2'}}MB]
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
                                     <div class="col-lg-6 col-sm-12">
                                         <label class="form-control-label">Pengangkutan <span class="text-warning">*</span></label>
                                         <div class="form-group">
@@ -549,14 +1355,14 @@
                                         >
                                             <div class="col-lg-5 col-sm-12">
                                                 <div class="form-group">
-                                                    <label class="form-control-label">Nama Penceramah <span class="text-warning">*</span></label>
+                                                    <label class="form-control-label">Nama Penceramah </label>
                                                     <input class="form-control" formControlName="name">
                                                 </div>
                                             </div>
 
                                             <div class="col-lg-5 col-sm-12">
                                                 <div class="form-group">
-                                                    <label class="form-control-label">No. Telefon <span class="text-warning">*</span></label>
+                                                    <label class="form-control-label">No. Telefon </label>
                                                     <input class="form-control" formControlName="phone">
                                                 </div>
                                             </div>
@@ -583,7 +1389,7 @@
                                         >
                                             <div class="col-lg-5 col-sm-12">
                                                 <div class="form-group">
-                                                    <label class="form-control-label">Nama Fasilitator <span class="text-warning">*</span></label>
+                                                    <label class="form-control-label">Nama Fasilitator </label>
                                                     <input class="form-control" formControlName="name">
                                                 </div>
                                             </div>
@@ -631,10 +1437,10 @@
 </div>
 
 
-<ng-template #modalAdd>
+<ng-template #modalAddOrganisation>
     <div class="modal-header bg-warm-blue">
         <h6 class="modal-title text-white my-auto" id="modal-title-default">
-            Tambah organisasi
+            Tambah penganjur
         </h6>
 
         <button
@@ -651,19 +1457,19 @@
     <div class="modal-body">
         <form [formGroup]="organisationForm">
             <div class="form-group">
-                <label class="form-control-label">Nama Organisasi <span class="text-warning">*</span></label>
+                <label class="form-control-label">Nama Penganjur <span class="text-warning">*</span></label>
                 <input 
                     class="form-control" 
-                    placeholder="Nama organisasi"
+                    placeholder="Nama penganjur"
                     formControlName="name"
                 >
             </div>
 
             <div class="form-group">
-                <label class="form-control-label">Nama Pendek Organisasi <span class="text-warning">*</span></label>
+                <label class="form-control-label">Nama Pendek Penganjur <span class="text-warning">*</span></label>
                 <input 
                     class="form-control" 
-                    placeholder="Nama pendek organisasi"
+                    placeholder="Nama pendek penganjur"
                     formControlName="shortname"
                 >
             </div>
@@ -676,6 +1482,57 @@
             type="button"
             (click)="addOrganisation()"
             [disabled]="!organisationForm.valid"
+        >
+            Simpan
+        </button>
+
+        <button
+            class="btn btn-outline-warm-blue ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            Tutup
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #modalAddType>
+    <div class="modal-header bg-warm-blue">
+        <h6 class="modal-title text-white my-auto" id="modal-title-default">
+            Tambah jenis latihan
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            <span aria-hidden="true" class="text-white my-auto"> × </span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="typeForm">
+            <div class="form-group">
+                <label class="form-control-label">Jenis Latihan <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="Jenis latihan"
+                    formControlName="name"
+                >
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button 
+            class="btn btn-warm-blue"
+            type="button"
+            (click)="addType()"
+            [disabled]="!typeForm.valid"
         >
             Simpan
         </button>

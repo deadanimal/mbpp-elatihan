@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Form } from '@angular/forms';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { Application } from './applications.model';
+import { Application, ApplicationSelfExtended } from './applications.model';
 
 
 @Injectable({
@@ -19,6 +19,10 @@ export class ApplicationsService {
   application: Application
   applications: Application[] = []
   applicationsFiltered: Application[] = []
+
+  applicationsSelf: ApplicationSelfExtended[] = []
+
+  statisticSelf: any
 
   constructor(
     private http: HttpClient
@@ -38,6 +42,16 @@ export class ApplicationsService {
       tap((res) => {
         this.applications = res
         console.log('Applications: ', this.applications)
+      })
+    )
+  }
+
+  getSelf(): Observable<ApplicationSelfExtended[]> {
+    let urlTemp = this.urlApplications + 'get_self_latest'
+    return this.http.get<ApplicationSelfExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        this.applicationsSelf = res
+        console.log('Applications: ', this.applicationsSelf)
       })
     )
   }
@@ -88,6 +102,16 @@ export class ApplicationsService {
       tap((res) => {
         this.application = res
         console.log('Application: ', this.application)
+      })
+    )
+  }
+
+  getStatisticsSelf() {
+    let urlTemp = this.urlApplications + 'get_statistics_self'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.statisticSelf = res
+        console.log('Statistics: ', this.statisticSelf)
       })
     )
   }

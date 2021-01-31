@@ -1,16 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
+import { NgSelectConfig } from '@ng-select/ng-select';
+import { Router } from '@angular/router';
+
+import { User } from 'src/app/shared/services/users/users.model';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { ExamsService } from 'src/app/shared/services/exams/exams.service';
 import { UsersService } from 'src/app/shared/services/users/users.service';
-import { User } from 'src/app/shared/services/users/users.model';
-import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { LoadingBarService } from '@ngx-loading-bar/core';
-import { Router } from '@angular/router';
 
 import swal from 'sweetalert2';
 import * as moment from 'moment';
-import Selectr from 'mobius1-selectr';
-import { NgSelectConfig } from '@ng-select/ng-select';
+import { Exam } from 'src/app/shared/services/exams/exams.model';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-exam-add',
@@ -22,41 +25,48 @@ export class ExamAddComponent implements OnInit {
   // Data
   staffs: User[] = []
   selectedStaff: User
-
-  // Selectr
-  // selectr: any = document.getElementById("selectr");
-  // options = {};
-  // selectorDefault = new Selectr(this.selectr, this.options)
+  exams: Exam[] = []
+  examsTemp: Exam[] = []
+  examTypeTemp = 'FKW'
 
   // Form
   examForm: FormGroup
+  examFormData: FormData
 
   // Datepicker
   dateValue: Date
   dateConfig = { 
     isAnimated: true, 
-    dateInputFormate: 'YYYY-MM-DDTHH:mm:ss.SSSSZ',
+    dateInputFormate: 'YYYY-MM-DD',
     containerClass: 'theme-dark-blue' 
   }
 
   // Choices
   choicesResult = [
-    { text: 'Lulus', value: 'PA' },
-    { text: 'Gagal', value: 'FA' }
+    { text: 'LULUS', value: 'PA' },
+    { text: 'GAGAL', value: 'FA' }
   ]
-  choicesClassification = [
-    { text: 'Faedah Kewangan', value: 'FKW' },
-    { text: 'Pengesahan Dalam Perkhidmatan', value: 'PDP' },
-    { text: 'Peperiksaan Peningkatan Secara Lantikan (PSL)', value: 'PSL' }
+  choicesType = [
+    { text: 'FAEDAH KEWANGAN', value: 'FKW' },
+    { text: 'PENGESAHAN DALAM PERKHIDMATAN', value: 'PDP' },
+    { text: 'PEPERIKSAAN PENINGKATAN SECARA LANTIKAN (PSL)', value: 'PSL' }
   ]
+
+  // File
+  fileSize
+  fileName
+  fileSizeInformation
+  fileNameInformation
 
   constructor(
     private authService: AuthService,
     private examService: ExamsService,
     private userService: UsersService,
-    private loadingBar: LoadingBarService,
+    private cd: ChangeDetectorRef,
     private config: NgSelectConfig,
     private formBuilder: FormBuilder,
+    private loadingBar: LoadingBarService,
+    private notifyService: NotifyService,
     private router: Router
   ) { 
     this.getData()
@@ -65,62 +75,78 @@ export class ExamAddComponent implements OnInit {
   }
 
   ngOnInit() {
-    // var selectr: any = document.getElementById("selectr");
-    // var options = {};
-    // this.selectorDefault = new Selectr(selectr, options);
-    
-    this.examForm = this.formBuilder.group({
-      title: new FormControl('', Validators.compose([
-        Validators.required
-      ])),
-      code: new FormControl('', Validators.compose([
-        Validators.required
-      ])),
-      date: new FormControl('', Validators.compose([
-        Validators.required
-      ])),
-      result: new FormControl(this.choicesResult[0].value, Validators.compose([
-        Validators.required
-      ])),
-      staff: new FormControl(Validators.compose([
-        Validators.required
-      ])),
-      document_copy: new FormControl(),
-      classification: new FormControl(this.choicesClassification[0].value, Validators.compose([
-        Validators.required
-      ])),
-      note: new FormControl()
-    })
+    this.initForm()
   }
 
   getData() {
     this.loadingBar.start()
-    this.userService.getAll().subscribe(
+    forkJoin([
+      this.authService.getDetailByToken(),
+      this.examService.getExamList(),
+      this.userService.getAll()
+    ]).subscribe(
       () => {
         this.loadingBar.complete()
+        this.exams = this.examService.exams
+      },
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        this.exams.forEach(
+          (exam: Exam) => {
+            if (
+              exam['classification'] == 'FKW' &&
+              exam['active']
+            ) {
+              this.examsTemp.push(exam)
+              if (!this.examForm.value['exam']) {
+                this.examForm.controls['exam'].setValue(this.examsTemp[0]['id'])
+              }
+            }
+          }
+        )
+
         this.userService.users.forEach(
           (user: User) => {
             if(user.nric) {
               this.staffs.push(user)
-              // console.log(this.staffs)
+              console.log(this.staffs)
             }
           }
         )
-      },
-      () => {
-        this.loadingBar.complete()
-      },
-      () => {
-        // this.selectorDefault.add(this.staffs)
       }
     )
   }
 
+  initForm() {
+    this.examForm = this.formBuilder.group({
+      exam: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      staff: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      date: new FormControl(null),
+      document_copy: new FormControl(null),
+      result: new FormControl(this.choicesResult[0].value, Validators.compose([
+        Validators.required
+      ])),
+      note: new FormControl(null)
+    })
+  }
+
   confirm() {
-    let examDate = moment(this.dateValue).format('YYYY-MM-DDTHH:mm:ss.SSSSZ')
+    let examDate = moment(this.examForm.value['date']).format('YYYY-MM-DDTHH:mm:ss.SSSSZ') 
     this.examForm.controls['date'].setValue(examDate)
-    this.examForm.controls['staff'].setValue(this.selectedStaff.id)
-    // this.examForm.controls['staff'].setValue()
+    // console.log(this.examForm.value)
+    this.examFormData = new FormData()
+    this.examFormData.append('exam', this.examForm.value['exam'])
+    this.examFormData.append('staff', this.examForm.value['staff'])
+    this.examFormData.append('date', this.examForm.value['date'])
+    this.examFormData.append('result', this.examForm.value['result'])
+    this.examFormData.append('document_copy', this.examForm.value['document_copy'])
+    this.examFormData.append('note', this.examForm.value['note'])
     // console.log(examDate)
     // console.log(this.examForm.value)
     swal.fire({
@@ -142,16 +168,25 @@ export class ExamAddComponent implements OnInit {
 
   add() {
     this.loadingBar.start()
-    this.examService.post(this.examForm.value).subscribe(
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Peperiksaan sedang ditambah'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+
+    this.examService.createAttendee(this.examFormData).subscribe(
       () => {
         this.loadingBar.complete()
       },
       () => {
+        let title = 'Tidak berjaya'
+        let message = 'Anda tidak berjaya untuk menambah peperiksaan. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
         this.loadingBar.complete()
       },
       () => {
+        let title = 'Berjaya'
+        let message = 'Peperiksaan berjaya ditambah.'
+        this.notifyService.openToastr(title, message)
         this.success()
-        this.examForm.reset()
       }
     )
   }
@@ -177,8 +212,102 @@ export class ExamAddComponent implements OnInit {
     })
   }
 
+  onClassificationChange(value) {
+    this.examsTemp = []
+    if (value == 'FKW') {
+      this.exams.forEach(
+        (exam: Exam) => {
+          if (
+            exam['classification'] == 'FKW' &&
+            exam['active']
+          ) {
+            this.examsTemp.push(exam)
+            this.examForm.controls['exam'].setValue(this.examsTemp[0]['id'])
+          }
+        }
+      )
+    }
+    else if (value == 'PDP') {
+      this.exams.forEach(
+        (exam: Exam) => {
+          if (
+            exam['classification'] == 'PDP' &&
+            exam['active']
+          ) {
+            this.examsTemp.push(exam)
+            this.examForm.controls['exam'].setValue(this.examsTemp[0]['id'])
+          }
+        }
+      )
+    }
+    else if (value == 'PSL') {
+      this.exams.forEach(
+        (exam: Exam) => {
+          if (
+            exam['classification'] == 'PSL' &&
+            exam['active']
+          ) {
+            this.examsTemp.push(exam)
+            this.examForm.controls['exam'].setValue(this.examsTemp[0]['id'])
+          }
+        }
+      )
+    }
+  }
+
+  onFileChange(event) {
+    let reader = new FileReader();
+    this.fileSize = event.target.files[0].size
+    this.fileName = event.target.files[0].name
+    
+    if (
+      event.target.files && 
+      event.target.files.length &&
+      this.fileSize < 5000000
+    ) {
+      
+      
+      const file = event.target.files[0];
+      reader.readAsDataURL(file)
+      // readAsDataURL(file);
+      // console.log(event.target)
+      // console.log(reader)
+      
+      
+      reader.onload = () => {
+        // console.log(reader['result'])
+        this.examForm.controls['document_copy'].setValue(file)
+        this.fileSizeInformation = this.fileSize
+        this.fileNameInformation = this.fileName
+        // console.log(this.registerForm.value)
+        // console.log('he', this.registerForm.valid)
+        // console.log(this.isAgree)
+        // !registerForm.valid || !isAgree
+        // need to run CD since file load runs outside of zone
+        this.cd.markForCheck();
+      };
+    }
+  }
+
+  removeFile() {
+    this.fileSize = 0;
+    this.fileName = null;
+    this.examForm.controls['document_copy'].patchValue(null);
+    this.fileSizeInformation = null
+    this.fileNameInformation = null
+  }
+
   navigatePage(path: string) {
     this.router.navigate([path])
+  }
+
+  checkValue() {
+    console.log('> ', this.examForm.value)
+  }
+
+  onStaffChange(value) {
+    // console.log(value)
+    this.examForm.controls['staff'].setValue(value['id'])
   }
 
 }

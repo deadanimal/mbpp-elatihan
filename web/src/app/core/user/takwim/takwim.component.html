@@ -61,95 +61,154 @@
 
             <div 
                 aria-hidden="true" 
-                aria-labelledby="new-event-label" 
+                aria-labelledby="edit-event-label" 
                 class="modal fade" 
-                id="new-event" 
+                id="edit-event" 
                 role="dialog"
                 tabindex="-1"
             >
                 <div class="modal-dialog modal-dialog-centered modal-secondary" role="document">
-                    <ng-template #modalAdd>
+                    <ng-template #modalView>
+                        <div class="modal-header bg-warm-blue">
+                            <h6 class="modal-title text-white my-auto" id="modal-title-default">
+                                Informasi Latihan
+                            </h6>
+                    
+                            <button
+                                aria-label="Close"
+                                class="close"
+                                data-dismiss="modal"
+                                type="button"
+                                (click)="closeModal()"
+                            >
+                                <span aria-hidden="true" class="text-white my-auto"> × </span>
+                            </button>
+                        </div>
+
                         <div class="modal-body">
-                            <form class="new-event--form">
-                                <div class="form-group">
-                                    <label class="form-control-label"> Event title </label>
+                            <div class="form-group">
+                                <label class="form-control-label">Tajuk</label>
+                                <input class="form-control" disabled value="[{{selectedTraining._def.extendedProps.course_code}}] {{selectedTraining?.title}}">
+                            </div>
 
-                                    <input 
-                                        class="form-control form-control-alternative new-event--title"
-                                        id="new-event--title" 
-                                        placeholder="Event Title" 
-                                        type="text"
-                                        (change)="getNewEventTitle($event)" 
-                                    />
-                                </div>
+                            <div class="form-group">
+                                <label class="form-control-label">Deskripsi</label>
+                                <textarea class="form-control" disabled value="{{selectedTraining?._def.extendedProps.description}}"></textarea>
+                            </div>
 
-                                <div class="form-group mb-0">
-                                    <label class=" form-control-label d-block mb-3">
-                                        Status color
-                                    </label>
-
-                                    <div class=" btn-group btn-group-toggle btn-group-colors event-tag"
-                                        data-toggle="buttons">
-                                        <label class=" btn bg-info" [ngClass]="{ active: radios === 'bg-info' }">
-                                            <input autocomplete="off" checked="checked" name="event-tag" type="radio"
-                                                value="bg-info" (click)="radios = 'bg-info'" />
-                                        </label>
-
-                                        <label class=" btn bg-warning" [ngClass]="{ active: radios === 'bg-warning' }">
-                                            <input autocomplete="off" name="event-tag" type="radio" value="bg-warning"
-                                                (click)="radios = 'bg-warning'" />
-                                        </label>
-
-                                        <label class=" btn bg-danger" [ngClass]="{ active: radios === 'bg-danger' }">
-                                            <input autocomplete="off" name="event-tag" type="radio" value="bg-danger"
-                                                (click)="radios = 'bg-danger'" />
-                                        </label>
-
-                                        <label class=" btn bg-success" [ngClass]="{ active: radios === 'bg-success' }">
-                                            <input autocomplete="off" name="event-tag" type="radio" value="bg-success"
-                                                (click)="radios = 'bg-success'" />
-                                        </label>
-
-                                        <label class=" btn bg-default" [ngClass]="{ active: radios === 'bg-default' }">
-                                            <input autocomplete="off" name="event-tag" type="radio" value="bg-default"
-                                                (click)="radios = 'bg-default'" />
-                                        </label>
-
-                                        <label class=" btn bg-primary" [ngClass]="{ active: radios === 'bg-primary' }">
-                                            <input autocomplete="off" name="event-tag" type="radio" value="bg-primary"
-                                                (click)="radios = 'bg-primary'" />
-                                        </label>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Tarikh Mula</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.start_date}}">
                                     </div>
                                 </div>
 
-                                <input class=" new-event--start" type="hidden" />
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Tarikh Tamat</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.end_date}}">
+                                    </div>
+                                </div>
+                            </div>
 
-                                <input class=" new-event--end" type="hidden" />
-                            </form>
-                        </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Masa Mula</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.start_time}}">
+                                    </div>
+                                </div>
 
-                        <div class=" modal-footer">
-                            <button class=" btn btn-primary new-event--add" type="submit" (click)="addNewEvent()">
-                                Add event
-                            </button>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Masa Tamat</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.end_time}}">
+                                    </div>
+                                </div>
+                            </div>
 
-                            <button (click)="addModal.hide()" class=" btn btn-link ml-auto" data-dismiss="modal"
-                                type="button">
-                                Close
-                            </button>
-                        </div>
-                    </ng-template>
-                </div>
-            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Jenis Penganjur</label>
+                                        <input *ngIf="selectedTraining?._def.extendedProps.organiser_type == 'DD'" class="form-control" disabled value="Dalaman">
+                                        <input *ngIf="selectedTraining?._def.extendedProps.organiser_type == 'LL'" class="form-control" disabled value="Luaran">
+                                    </div>
+                                </div>
 
-            <div aria-hidden="true" aria-labelledby="edit-event-label" class=" modal fade" id="edit-event" role="dialog"
-                tabindex="-1">
-                <div class=" modal-dialog modal-dialog-centered modal-secondary" role="document">
-                    <ng-template #modalEdit>
-                        <div class=" modal-body">
-                            <form class=" edit-event--form">
-                                <div class=" form-group">
-                                    <label class=" form-control-label"> Event title </label>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Penganjur</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.organiser.name}} ({{selectedTraining?._def.extendedProps.organiser.shortname}})">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Jenis Latihan</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.training_type.name}}">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Kaedah Latihan</label>
+                                        <input *ngIf="selectedTraining?._def.extendedProps.method == 'BS'" class="form-control" disabled value="Bersemuka (offline)">
+                                        <input *ngIf="selectedTraining?._def.extendedProps.method == 'TB'" class="form-control" disabled value="Tidak bersemuka (online)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Anjuran Latihan</label>
+                                        <input *ngIf="selectedTraining?._def.extendedProps.country == 'DN'" class="form-control" disabled value="Dalam negara">
+                                        <input *ngIf="selectedTraining?._def.extendedProps.country == 'LN'" class="form-control" disabled value="Luar negara">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Domain</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.domain.name}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Jenis Teras</label>
+                                        <input *ngIf="selectedTraining?._def.extendedProps.core.parent == 'GN'" class="form-control" disabled value="GENERIK">
+                                        <input *ngIf="selectedTraining?._def.extendedProps.core.parent == 'FN'" class="form-control" disabled value="FUNGSIONAL">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Teras</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.core.child}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label">Tempat</label>
+                                <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.venue}}">
+                            </div>
+                            
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="checkTransportation" disabled [checked]="selectedTraining?._def.extendedProps.transportation">
+                                <label class="custom-control-label" for="checkTransportation">Pengangkutan</label>
+                            </div>
+
+                            <!-- <form class="edit-event--form">
+                                <div class="form-group">
+                                    <label class="form-control-label"> Event title </label>
 
                                     <input class=" form-control form-control-alternative edit-event--title"
                                         placeholder="Event Title" type="text" value="{{ eventTitle }}"
@@ -207,19 +266,20 @@
                                 </div>
 
                                 <input class=" edit-event--id" type="hidden" />
-                            </form>
+                            </form> -->
+                            
                         </div>
 
-                        <div class=" modal-footer">
-                            <button class=" btn btn-primary" data-calendar="update" (click)="updateEvent()">
-                                Update
+                        <div class="modal-footer">
+                            <button class="btn btn-warm-blue" (click)="applyTraining(selectedTraining?.id)">
+                                Daftar
                             </button>
 
-                            <button class=" btn btn-danger" data-calendar="delete" (click)="deleteEventSweetAlert()">
-                                Delete
+                            <button class="btn btn-outline-warm-blue" (click)="viewInformation(selectedTraining?.id)">
+                                Informasi
                             </button>
 
-                            <button class=" btn btn-link ml-auto" data-dismiss="modal" (click)="editModal.hide()">
+                            <button class="btn btn-warm-blue-link ml-auto" (click)="closeModal()">
                                 Close
                             </button>
                         </div>

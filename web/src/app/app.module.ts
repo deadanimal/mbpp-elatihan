@@ -10,6 +10,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { TagInputModule } from 'ngx-chips';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxGaugeModule } from 'ngx-gauge';
+import { QuillModule } from 'ngx-quill';
 
 import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
@@ -39,7 +40,21 @@ import { ComponentsModule } from './components/components.module';
     }),
     LeafletModule,
     PresentationModule,
-    NgxGaugeModule
+    NgxGaugeModule,
+    QuillModule.forRoot({
+      modules: {
+        toolbar: [
+          ['bold', 'italic'],
+          ['link', 'blockquote', 'code'],
+          [{
+            'list': 'ordered'
+          }, {
+            'list': 'bullet'
+          }]
+        ],
+      },
+      theme: 'snow'
+    })
   ],
   declarations: [
     AppComponent, 

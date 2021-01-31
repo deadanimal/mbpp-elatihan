@@ -1,8 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import {
-  ADMINROUTES,
-  TCROUTES 
+  STROUTES,
+  TCROUTES,
+  DCROUTES,
+  ADROUTES
 } from '../../shared/menu/menu-items';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 
@@ -30,16 +32,39 @@ export class SidebarComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if (this.authService.userRole == 1) {
-      this.menu = TCROUTES
-    }
-    else if (this.authService.userRole == 2) {
-      this.menu = ADMINROUTES
-    }
+    this.menu = STROUTES
     this.menuItems = this.menu.filter(menuItem => menuItem);
     this.router.events.subscribe(event => {
       this.isCollapsed = true;
     });
+    this.getCurrentUser()
+  }
+
+  getCurrentUser() {
+    this.authService.getDetailByToken().subscribe(
+      () => {
+      },
+      () => {
+      },
+      () => {
+        if (this.authService.userRole == 1) { // Staff
+          this.menu = STROUTES
+        }
+        else if (this.authService.userRole == 2) { // Training coordinator
+          this.menu = TCROUTES
+        }
+        else if (this.authService.userRole == 3) { // Department coordinator
+          this.menu = DCROUTES
+        }
+        else if (this.authService.userRole == 4) { // Admin
+          this.menu = ADROUTES
+        }
+        this.menuItems = this.menu.filter(menuItem => menuItem);
+        this.router.events.subscribe(event => {
+          this.isCollapsed = true;
+        });
+      }
+    )
   }
 
   onMouseEnterSidenav() {

@@ -83,6 +83,17 @@
 @import '~ngx-toastr/toastr';
 @import 'custom/pipeline';
 @import 'pipe/pipe';
+@import 'pipe/pipe-select';
 
 // Angular Material
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+// Quill
+@import '~quill/dist/quill.core.css';
+@import '~quill/dist/quill.bubble.css';
+@import '~quill/dist/quill.snow.css';
+
+// Ng-Select
+// @import "~@ng-select/ng-select/themes/default.theme.css";
+@import '~@ng-select/ng-select/themes/ant.design.theme.css';
+// @import '~@ng-select/ng-select/themes/material.theme.css';

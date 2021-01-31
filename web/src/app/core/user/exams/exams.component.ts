@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ExamsService } from 'src/app/shared/services/exams/exams.service';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { Exam } from 'src/app/shared/services/exams/exams.model';
+import { Exam, ExamAttendee, ExamAttendeeExtended } from 'src/app/shared/services/exams/exams.model';
 
 import * as moment from 'moment';
 
@@ -22,7 +22,7 @@ export enum SelectionType {
 export class ExamsComponent implements OnInit {
 
   // Data
-  exams: Exam[] = []
+  exams: ExamAttendeeExtended[] = []
 
   // Table
   tableEntries: number = 5
@@ -54,14 +54,13 @@ export class ExamsComponent implements OnInit {
   }
 
   getData() {
-    let filterField = 'staff=' + this.authService.userID
     // console.log(filterField)
     // console.log('boom')
     this.loadingBar.start()
-    this.examService.filter(filterField).subscribe(
+    this.examService.getSelf().subscribe(
       () => {
         this.loadingBar.complete()
-        this.exams = this.examService.examsFiltered
+        this.exams = this.examService.attendees
         this.tableRows = this.exams
         this.tableRows.forEach(
           (row) => {
@@ -98,7 +97,7 @@ export class ExamsComponent implements OnInit {
   filterTable($event) {
     let val = $event.target.value.toLowerCase();
     this.tableTemp = this.tableRows.filter(function(d) {
-      return d.title.toLowerCase().indexOf(val) ! == -1 || !val;
+      return d.title.toLowerCase().indexOf(val) !== -1 || !val;
     });
   }
 

@@ -25,6 +25,8 @@ import { TakwimComponent } from './takwim/takwim.component';
 import { TrainingListComponent } from './training-list/training-list.component';
 import { TrainingHistoryComponent } from './training-history/training-history.component';
 import { TrainingDetailComponent } from './training-detail/training-detail.component';
+import { TrainingInformationComponent } from './training-information/training-information.component';
+import { NeedAnalysisComponent } from './need-analysis/need-analysis.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { TrainingDetailComponent } from './training-detail/training-detail.compo
     TakwimComponent,
     TrainingListComponent,
     TrainingHistoryComponent,
-    TrainingDetailComponent
+    TrainingDetailComponent,
+    TrainingInformationComponent,
+    NeedAnalysisComponent
   ],
   imports: [
     CommonModule,

@@ -1,3 +1,4 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
 <nav class="navbar navbar-top navbar-expand navbar-dark bg-warm-blue border-bottom" id="navbar-main">
 	<div class="container-fluid">
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -130,7 +131,9 @@
 								<img alt="Image placeholder" [src]="imgAvatar" />
 							</span>
 							<div class="media-body ml-2 d-none d-lg-block">
-								<span class="mb-0 text-sm  font-weight-bold">Ali Imran</span>
+								<span class="mb-0 text-sm font-weight-bold" *ngIf="user">
+									{{user.full_name}}
+								</span>
 							</div>
 						</div>
 					</a>
@@ -147,7 +150,7 @@
 						<div class="dropdown-divider"></div>
 						<a (click)="logout()" class="dropdown-item">
 							<i class="fas fa-sign-out-alt fa-fw"></i>
-							<span>Logout</span>
+							<span>Log keluar</span>
 						</a>
 					</div>
 				</li>

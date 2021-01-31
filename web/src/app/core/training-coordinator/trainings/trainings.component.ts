@@ -3,8 +3,11 @@ import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
 import { Router } from '@angular/router';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { Training } from 'src/app/shared/services/trainings/trainings.model';
+import { Training, TrainingType } from 'src/app/shared/services/trainings/trainings.model';
+
 import * as moment from 'moment';
+import * as xlsx from 'xlsx';
+import { forkJoin } from 'rxjs';
 
 export enum SelectionType {
   single = "single",
@@ -23,6 +26,7 @@ export class TrainingsComponent implements OnInit {
 
   // Data
   trainings: Training[] = []
+  trainingTypes: TrainingType[] = []
 
   // Table
   tableEntries: number = 5
@@ -38,6 +42,7 @@ export class TrainingsComponent implements OnInit {
 
   // Checker
   isEmpty: boolean = true
+  isSummaryTableHidden: boolean = true
 
   // Icon
   iconEmpty = 'assets/img/icons/box.svg'
@@ -55,19 +60,24 @@ export class TrainingsComponent implements OnInit {
   }
 
   getData() {
-    let filterField = 'staff=' + this.authService.userID
+    // let filterField = 'staff=' + this.authService.userID
     // console.log(filterField)
     // console.log('boom')
     this.loadingBar.start()
-    this.trainingService.filter(filterField).subscribe(
+    forkJoin([
+      this.trainingService.getAll(),
+      this.trainingService.getTrainingTypes()
+    ]).subscribe(
       () => {
         this.loadingBar.complete()
-        this.trainings = this.trainingService.trainingsFiltered
+        this.trainings = this.trainingService.trainings
+        this.trainingTypes = this.trainingService.trainingTypes
         this.tableRows = this.trainings
         this.tableRows.forEach(
           (row) => {
-            row.start_date = moment(row.start_date).format('DD/MM/YYYY')
-            row.end_date = moment(row.end_date).format('DD/MM/YYYY')
+            row['start_date'] = moment(row.start_date).format('DD/MM/YYYY')
+            row['end_date'] = moment(row.end_date).format('DD/MM/YYYY')
+            row['start_date_year'] = moment(row.end_date).format('YYYY')
           }
         )
         // console.log(this.tableRows)
@@ -97,11 +107,23 @@ export class TrainingsComponent implements OnInit {
     this.tableEntries = $event.target.value;
   }
 
-  filterTable($event) {
+  filterTable($event, type) {
     let val = $event.target.value.toLowerCase();
-    this.tableTemp = this.tableRows.filter(function(d) {
-      return d.title.toLowerCase().indexOf(val) !== -1 || !val;
-    });
+    if (type == 'title') {
+      this.tableTemp = this.tableRows.filter(function(d) {
+        return d.title.toLowerCase().indexOf(val) !== -1 || !val;
+      });
+    }
+    else if (type == 'type') {
+      this.tableTemp = this.tableRows.filter(function(d) {
+        return d.training_type.toLowerCase().indexOf(val) !== -1 || !val;
+      });
+    }
+    else if (type == 'year') {
+      this.tableTemp = this.tableRows.filter(function(d) {
+        return d.start_date_year.toLowerCase().indexOf(val) !== -1 || !val;
+      });
+    }
   }
 
   onSelect({ selected }) {
@@ -122,6 +144,21 @@ export class TrainingsComponent implements OnInit {
       }
     }
     this.router.navigate([path], queryParams)
+  }
+
+  exportExcel() {
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileName = 'Ringkasan_Latihan_' + todayDateFormat + '.xlsx'
+    let element = document.getElementById('summaryTable'); 
+    const ws: xlsx.WorkSheet = xlsx.utils.table_to_sheet(element);
+
+    /* generate workbook and add the worksheet */
+    const wb: xlsx.WorkBook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    xlsx.writeFile(wb, fileName);
   }
 
 }

@@ -148,6 +148,9 @@ export class LoginComponent implements OnInit {
         if (this.questions.length > 0) {
           this.securityForm.controls['question'].setValue(this.questions[0]['id'])
         }
+        if (!this.questions) {
+          this.getData()
+        }
         break;
     }
   }

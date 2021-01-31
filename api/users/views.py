@@ -181,7 +181,7 @@ class SecurityAnswerViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_user_answer(self, request, *args, **kwargs):
         request_ = json.loads(request.body)
         request_user_id_ = request_['user']
-        print('testttt')
+        # print('testttt')
         answer_ = SecurityAnswer.objects.filter(user=request_user_id_).first()
 
         serializer = SecurityAnswerSerializer(answer_)

@@ -23,7 +23,8 @@ from users.views import (
     SecurityAnswerViewSet
 )
 from exams.views import (
-    ExamViewSet
+    ExamViewSet,
+    ExamAttendeeViewSet
 )
 from organisations.views import (
     OrganisationViewSet
@@ -37,7 +38,10 @@ from trainings.views import (
     TrainingAbsenceMemoViewSet,
     TrainingLogViewSet,
     TrainerViewSet,
-    TrainingDomainViewSet
+    TrainingDomainViewSet,
+    TrainingTypeViewSet,
+    ConfigurationViewSet,
+    TrainingNeedAnalysisViewSet
 )
 
 class NestedDefaultRouter(NestedRouterMixin, routers.DefaultRouter):
@@ -63,6 +67,10 @@ security_answers_router = router.register(
 
 exams_router = router.register(
     'exams', ExamViewSet
+)
+
+exam_attendees_router = router.register(
+    'exam-attendees', ExamAttendeeViewSet
 )
 
 organisations_router = router.register(
@@ -103,6 +111,18 @@ trainers_router = router.register(
 
 training_domains_router = router.register(
     'training-domains', TrainingDomainViewSet
+)
+
+training_types_router = router.register(
+    'training-types', TrainingTypeViewSet
+)
+
+trainning_need_analyses_router = router.register(
+    'training-need-analyses', TrainingNeedAnalysisViewSet
+)
+
+configurations_router = router.register(
+    'configurations', ConfigurationViewSet
 )
 
 urlpatterns = [

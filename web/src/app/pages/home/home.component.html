@@ -1,7 +1,7 @@
-<ngx-loading-bar></ngx-loading-bar>
-<nav id="navbar-main" class="navbar navbar-horizontal navbar-main navbar-expand-lg navbar-dark bg-warm-blue">
+<ngx-loading-bar height="4px"></ngx-loading-bar>
+<nav id="navbar-main" class="navbar navbar-horizontal navbar-main navbar-expand-lg navbar-dark bg-warm-blue navbar-brand-home">
     <div class="container">
-        <a class="navbar-brand" [routerLink]="['/pages/home']">
+        <a class="navbar-brand" [routerLink]="['/home']">
             <img src="assets/img/logo/mbpp-logo.png" />
         </a>
         <button 
@@ -17,6 +17,7 @@
         >
             <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="navbar-collapse navbar-custom-collapse collapse" id="collapseBasic" [collapse]="isCollapsed">
             <div class="navbar-collapse-header">
                 <div class="row">
@@ -32,6 +33,7 @@
                     </div>
                 </div>
             </div>
+
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <h2 class="text-white mb-0">MAJLIS BANDARAYA PULAU PINANG</h2>
@@ -40,7 +42,9 @@
                     </h4>
                 </li>
             </ul>
+
             <hr class="d-lg-none" />
+
             <ul class="navbar-nav align-items-lg-center ml-lg-auto">
                 <li class="nav-item d-none d-lg-block ml-lg-4">
                     <a [routerLink]="['/auth/login']" class="btn btn-neutral btn-icon">
@@ -53,7 +57,6 @@
 </nav>
 
 <div class="main-content">
-
     <section class="py-5 section-nucleo-icons bg-white overflow-hidden auth-content">
         <div class="container">
             <div class="row justify-content-center">
@@ -67,61 +70,24 @@
                     </p>
                 </div>
             </div>
+
             <div class="row">
-                <div class="col-xl-3">
-                    <div class="card bg-secondary">
-                        <div class="bg-white text-center p-3">
-                            <h4 class="m-0">Motivasi Awal Tahun</h4>
-                            <h5 class="m-0 text-light">2 Julai 2020</h5>
+                <div class="col-xl-3" *ngFor="let training of trainings; let i=index">
+                    <ng-container *ngIf="training.status != 'SL' && i<4">
+                        <div class="card bg-secondary">
+                            <div class="card-header bg-white text-center p-3">
+                                <h4 class="m-0">{{training.title}}</h4>
+                                <h5 class="m-0 text-light">{{training.start_date | date: 'd/M/y'}} - {{training.end_date | date: 'd/M/y'}}</h5>
+                            </div>
+                            <img src="assets/img/default/teamwork.jpg">
+                            <div class="card-body text-center">
+                                <p>{{training.description}}</p>
+                                <button type="button" class="btn btn-block btn-primary">Lihat</button>
+                            </div>
                         </div>
-                        <img src="assets/img/photo/punctual.jpg">
-                        <div class="card-body text-center">
-                            <p>Motivasi ini akan membincangkan tentang perancangan awal tahun</p>
-                            <button type="button" class="btn btn-block btn-primary">Lihat</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3">
-                    <div class="card bg-secondary">
-                        <div class="bg-white text-center p-3">
-                            <h4 class="m-0">Kursus Fotografi</h4>
-                            <h5 class="m-0 text-light">3 Julai 2020</h5>
-                        </div>
-                        <img src="assets/img/photo/teamwork.jpg">
-                        <div class="card-body text-center">
-                            <p>Kursus ini akan menumpukan tentang teknik khas fotografi.</p>
-                            <button type="button" class="btn btn-block btn-primary">Lihat</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3">
-                    <div class="card bg-secondary">
-                        <div class="bg-white text-center p-3">
-                            <h4 class="m-0">Kursus PHP</h4>
-                            <h5 class="m-0 text-light">6 Julai 2020</h5>
-                        </div>
-                        <img src="assets/img/photo/team.jpg">
-                        <div class="card-body text-center">
-                            <p>Kursus ini akan menumpukan lebih mendalam tentang PHP</p>
-                            <button type="button" class="btn btn-block btn-primary">Lihat</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3">
-                    <div class="card bg-secondary">
-                        <div class="bg-white text-center p-3">
-                            <h4 class="m-0">Kursus Pengurusan Data</h4>
-                            <h5 class="m-0 text-light">6 Julai 2020</h5>
-                        </div>
-                        <img src="assets/img/photo/arrangement.jpg">
-                        <div class="card-body text-center">
-                            <p>Kursus ini akan menumpukan tentang pengurusan data</p>
-                            <button type="button" class="btn btn-block btn-primary">Lihat</button>
-                        </div>
-                    </div>
+                    </ng-container>
                 </div>
             </div>
-
         </div>
     </section>
 </div>
@@ -147,6 +113,7 @@
                         <th scope="col"></th>
                     </tr>
                 </thead>
+
                 <tbody class="list">
                     <tr>
                         <th scope="row">Tajuk</th>

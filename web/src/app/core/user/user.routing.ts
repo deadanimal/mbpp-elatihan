@@ -8,6 +8,8 @@ import { TrainingAddComponent } from './training-add/training-add.component';
 import { TrainingDetailComponent } from './training-detail/training-detail.component';
 import { TrainingHistoryComponent } from './training-history/training-history.component';
 import { TrainingListComponent } from './training-list/training-list.component';
+import { TrainingInformationComponent } from './training-information/training-information.component';
+import { NeedAnalysisComponent } from './need-analysis/need-analysis.component';
 
 export const UserRoutes: Routes = [
     {
@@ -56,6 +58,19 @@ export const UserRoutes: Routes = [
                     {
                         path: 'list',
                         component: TrainingListComponent
+                    },
+                    {
+                        path: 'information',
+                        component: TrainingInformationComponent
+                    }
+                ]
+            },
+            {
+                path: 'need-analysis',
+                children: [
+                    {
+                        path: '',
+                        component: NeedAnalysisComponent
                     }
                 ]
             }

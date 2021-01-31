@@ -1,29 +1,29 @@
-import { Component, OnInit, NgZone, TemplateRef } from '@angular/core';
-import { ExamsService } from 'src/app/shared/services/exams/exams.service';
-import { AuthService } from 'src/app/shared/services/auth/auth.service';
-import { LoadingBarService } from '@ngx-loading-bar/core';
-import { Exam, ExamTemp } from 'src/app/shared/services/exams/exams.model';
-
-import * as moment from 'moment';
-import { UsersService } from 'src/app/shared/services/users/users.service';
-import { User } from 'src/app/shared/services/users/users.model';
-import { forkJoin } from 'rxjs';
-
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import { Component, OnInit, NgZone, TemplateRef, ChangeDetectorRef } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-am4core.useTheme(am4themes_animated);
+import { forkJoin } from 'rxjs';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
 
+import * as moment from 'moment';
+import * as xlsx from 'xlsx';
 import swal from 'sweetalert2';
 
+import { ExamExtended, ExamAttendeeExtended, ExamAttendee, Exam } from 'src/app/shared/services/exams/exams.model';
+import { ExamsService } from 'src/app/shared/services/exams/exams.service';
+
+import * as am4core from '@amcharts/amcharts4/core';
+import * as am4charts from '@amcharts/amcharts4/charts';
+import am4themes_animated from '@amcharts/amcharts4/themes/animated';
+am4core.useTheme(am4themes_animated);
+
+
 export enum SelectionType {
-  single = "single",
-  multi = "multi",
-  multiClick = "multiClick",
-  cell = "cell",
-  checkbox = "checkbox"
+  single = 'single',
+  multi = 'multi',
+  multiClick = 'multiClick',
+  cell = 'cell',
+  checkbox = 'checkbox'
 }
 
 @Component({
@@ -34,9 +34,14 @@ export enum SelectionType {
 export class ExamsComponent implements OnInit {
 
   // Data
-  exams: ExamTemp[] = []
-  staffs: User[] = []
-  selectedExam: Exam
+  exams: ExamExtended[] = []
+  selectedExam: ExamExtended
+  selectedAttendee: ExamAttendee
+  attendees: ExamAttendeeExtended[] = []
+  statistics: any
+  examsOption: Exam[] = []
+  examsTemp: Exam[] = []
+  examTypeTemp = 'FKW'
 
   // Table
   tableEntries: number = 5
@@ -52,7 +57,8 @@ export class ExamsComponent implements OnInit {
 
   // Checker
   isEmpty: boolean = true
-
+  isSummaryTableHidden: boolean = true
+  
   // Icon
   iconEmpty = 'assets/img/icons/box.svg'
 
@@ -64,25 +70,25 @@ export class ExamsComponent implements OnInit {
   dateConfig = { 
     isAnimated: true, 
     dateInputFormate: 'YYYY-MM-DDTHH:mm:ss.SSSSZ',
-    containerClass: 'theme-dark-blue' 
+    containerClass: 'theme-dark-blue modal-lg' 
   }
 
   // Choices
   choicesResult = [
-    { text: 'Lulus', value: 'PA' },
-    { text: 'Gagal', value: 'FA' }
+    { text: 'LULUS', value: 'PA' },
+    { text: 'GAGAL', value: 'FA' }
   ]
-  choicesClassification = [
-    { text: 'Faedah Kewangan', value: 'FKW' },
-    { text: 'Pengesahan Dalam Perkhidmatan', value: 'PDP' },
-    { text: 'Peperiksaan Peningkatan Secara Lantikan (PSL)', value: 'PSL' }
+  choicesType = [
+    { text: 'FAEDAH KEWANGAN', value: 'FKW' },
+    { text: 'PENGESAHAN DALAM PERKHIDMATAN', value: 'PDP' },
+    { text: 'PEPERIKSAAN PENINGKATAN SECARA LANTIKAN (PSL)', value: 'PSL' }
   ]
 
   // Modal
   modal: BsModalRef;
   modalConfig = {
     keyboard: true,
-    class: "modal-dialog-centered"
+    class: 'modal-dialog-centered'
   };
 
   // Chart
@@ -90,55 +96,26 @@ export class ExamsComponent implements OnInit {
   chartDep: any
   chartResult: any
 
-  chartMonthJan: number = 0
-  chartMonthFeb: number = 0
-  chartMonthMar: number = 0
-  chartMonthApr: number = 0
-  chartMonthMay: number = 0
-  chartMonthJun: number = 0
-  chartMonthJul: number = 0
-  chartMonthAug: number = 0
-  chartMonthSep: number = 0
-  chartMonthOct: number = 0
-  chartMonthNov: number = 0
-  chartMonthDec: number = 0
-
-  chartDepPDB: number = 0 // Pejabat Datuk Bandar
-  chartDepUUU: number = 0 // Pejabat Datuk Bandar ; Unit Undang-undang
-  chartDepUAD: number = 0 // Pejabat Datuk Bandar ; Unit Audit Dalam
-  chartDepUPP: number = 0 // Pejabat Datuk Bandar ; Unit Penyelarasan Pembangunan
-  chartDepUPS: number = 0 // Pejabat Datuk Bandar ; Unit Pusat Sehenti
-  chartDepJKP: number = 0 // Jabatan Khidmat Pengurusan
-  chartDepJPD: number = 0 // Jabatan Perbendaharaan
-  chartDepJPH: number = 0 // Jabatan Penilaian Pengurusan Harta
-  chartDepJPP: number = 0 // Jabatan Perancangan Pembangunan
-  chartDepJKJ: number = 0 // Jabatan Kejuruteraan
-  chartDepJKB: number = 0 // Jabatan Kawalan Bangunan
-  chartDepJKEA: number = 0 // Jabatan Kesihatan Persekitaran dan Pelesenan ; Bahagian Kesihatan Awam
-  chartDepJKEB: number = 0 // Jabatan Kesihatan Persekitaran dan Pelesenan ; Bahagian Pelesenan
-  chartDepJPR: number = 0 // Jabatan Perkhidmatan Perbandaraan
-  chartDepJKK: number = 0 // Jabatan Khidmat Kemasyarakatan
-  chartDepJKW: number = 0 // Jabatan Konservasi Warisan
-  chartDepJLK: number = 0 // Jabatan Lanskap
-  chartDepJPU: number = 0 // Jabatan Penguatkuasaan
-  chartDepJPB: number = 0 // Jabatan Pesuruhjaya Bangunan
-
-  chartResultPass: number = 0
-  chartResultFail: number = 0
-
+  // File
+  fileName
+  fileSize
+  fileNameInformation
+  fileSizeInformation
+  
   constructor(
-    private authService: AuthService,
-    private userService: UsersService,
     private examService: ExamsService,
-    private loadingBar: LoadingBarService,
-    private zone: NgZone,
+    private cd: ChangeDetectorRef,
     private formBuilder: FormBuilder,
-    private modalService: BsModalService
+    private loadingBar: LoadingBarService,
+    private modalService: BsModalService,
+    private notifyService: NotifyService,
+    private zone: NgZone
   ) {
     this.getData()
   }
 
   ngOnInit() {
+    this.initForm()
   }
 
   ngOnDestroy() {
@@ -158,57 +135,27 @@ export class ExamsComponent implements OnInit {
   }
 
   getData() {
+    this.loadingBar.start()
     forkJoin([
-      this.examService.getAll(),
-      this.userService.getAll()
+      this.examService.getExams(),
+      this.examService.getAttendees(),
+      this.examService.getStatistics(),
+      this.examService.getExamList()
     ]).subscribe(
       (res) => {
+        this.loadingBar.complete()
         // console.log('all', res)
-        this.filterData()
-      }
-    );
-  }
-
-  filterData() {
-    let filtering = new Promise<void> (
-      (resolve, reject) => {
-        this.examService.exams.forEach(
-          (exam: Exam, index, array) => {
-            // console.log('ex', exam)
-            this.userService.users.forEach(
-              (staff: User) => {
-                // console.log('st', staff)
-                if (exam.staff === staff.id) {
-                  this.exams.push(
-                    {
-                      id: exam.id,
-                      staff: exam.staff,
-                      staff_name: staff.full_name,
-                      department: staff.department,
-                      title: exam.title,
-                      code: exam.code,
-                      date: moment(exam.date).format('DD/MM/YYYY'),
-                      document_copy: exam.document_copy,
-                      result: exam.result,
-                      classification: exam.classification,
-                      note: exam.note,
-                      created_at: exam.created_at,
-                      modified_at: exam.modified_at
-                    }
-                  )
-                  // console.log('For', this.exams)
-                }
-              }
-            )
-            if (index == array.length - 1) resolve();
-          }
-        )
-      }
-    )
-
-    filtering.then(
+        this.examsOption = this.examService.exams
+        this.exams = this.examService.examsExtended
+        this.attendees = this.examService.attendees
+        this.statistics = this.examService.statistic
+        // console.log('Ehh', this.statistics)
+      },
       () => {
-        this.tableRows = this.exams
+        this.loadingBar.complete()
+      },
+      () => {
+        this.tableRows = this.attendees
         this.tableTemp = this.tableRows.map((prop, key) => {
           return {
             ...prop,
@@ -222,158 +169,45 @@ export class ExamsComponent implements OnInit {
         else {
           this.isEmpty = true
         }
-        this.calculateChartData()
+
+        this.examsOption.forEach(
+          (exam: Exam) => {
+            if (
+              exam['classification'] == 'FKW' &&
+              exam['active']
+            ) {
+              this.examsTemp.push(exam)
+              if (!this.examForm.value['exam']) {
+                this.examForm.controls['exam'].setValue(this.examsTemp[0]['id'])
+              }
+            }
+          }
+        )
+
+        this.getCharts()
       }
-    )
+    );
   }
 
-  calculateChartData() {
-    this.chartMonthJan = 0
-    this.chartMonthFeb = 0
-    this.chartMonthMar = 0
-    this.chartMonthApr = 0
-    this.chartMonthMay = 0
-    this.chartMonthJun = 0
-    this.chartMonthJul = 0
-    this.chartMonthAug = 0
-    this.chartMonthSep = 0
-    this.chartMonthOct = 0
-    this.chartMonthNov = 0
-    this.chartMonthDec = 0
-
-    this.chartDepPDB = 0
-    this.chartDepUUU = 0
-    this.chartDepUAD = 0
-    this.chartDepUPP = 0
-    this.chartDepUPS = 0
-    this.chartDepJKP = 0
-    this.chartDepJPD = 0
-    this.chartDepJPH = 0
-    this.chartDepJPP = 0
-    this.chartDepJKJ = 0
-    this.chartDepJKB = 0
-    this.chartDepJKEA = 0
-    this.chartDepJKEB = 0
-    this.chartDepJPR = 0
-    this.chartDepJKK = 0
-    this.chartDepJKW = 0
-    this.chartDepJLK = 0
-    this.chartDepJPU = 0
-    this.chartDepJPB = 0
-
-    this.exams.forEach(
-      (exam: ExamTemp) => {
-        let checkerDate = moment(exam.date, 'DD/MM/YYYY')
-        let checkerMonth = checkerDate.month()
-        //console.log(checkerDate)
-        //console.log(exam.date)
-        //console.log(moment().year())
-        // Chart month
-        if (checkerDate.year() == moment().year()) {
-          if (checkerMonth == 0) {
-            this.chartMonthJan += 1
-          }
-          else if (checkerMonth == 1) {
-            this.chartMonthFeb += 1
-          }
-          else if (checkerMonth == 2) {
-            this.chartMonthMar += 1
-          }
-          else if (checkerMonth == 3) {
-            this.chartMonthApr += 1
-          }
-          else if (checkerMonth == 4) {
-            this.chartMonthMay += 1
-          }
-          else if (checkerMonth == 5) {
-            this.chartMonthJun += 1
-          }
-          else if (checkerMonth == 6) {
-            this.chartMonthJul += 1
-          }
-          else if (checkerMonth == 7) {
-            this.chartMonthAug += 1
-          }
-          else if (checkerMonth == 8) {
-            this.chartMonthSep += 1
-          }
-          else if (checkerMonth == 9) {
-            this.chartMonthOct += 1
-          }
-          else if (checkerMonth == 10) {
-            this.chartMonthNov += 1
-          }
-          else if (checkerMonth == 11) {
-            this.chartMonthDec += 1
-          }
-        }
-
-        // Chart department
-
-        if (exam.department == 'PDB') {
-          this.chartDepPDB += 1
-        }
-        else if (exam.department == 'UUU') {
-          this.chartDepUUU += 1
-        }
-        else if (exam.department == 'UAD') {
-          this.chartDepUAD += 1
-        }
-        else if (exam.department == 'UPP') {
-          this.chartDepUPP += 1
-        }
-        else if (exam.department == 'UPS') {
-          this.chartDepUPS += 1
-        }
-        else if (exam.department == 'JKP') {
-          this.chartDepJKP += 1
-        }
-        else if (exam.department == 'JPD') {
-          this.chartDepJPD += 1
-        }
-        else if (exam.department == 'JPH') {
-          this.chartDepJPH += 1
-        }
-        else if (exam.department == 'JPP') {
-          this.chartDepJPP += 1
-        }
-        else if (exam.department == 'JKJ') {
-          this.chartDepJKJ += 1
-        }
-        else if (exam.department == 'JKB') {
-          this.chartDepJKB += 1
-        }
-        else if (exam.department == 'JKEA') {
-          this.chartDepJKEA += 1
-        }
-        else if (exam.department == 'JKEB') {
-          this.chartDepJKEB += 1
-        }
-        else if (exam.department == 'JPR') {
-          this.chartDepJPR += 1
-        }
-        else if (exam.department == 'JKK') {
-          this.chartDepJKK += 1
-        }
-        else if (exam.department == 'JKW') {
-          this.chartDepJKW += 1
-        }
-        else if (exam.department == 'JLK') {
-          this.chartDepJLK += 1
-        }
-        else if (exam.department == 'JPU') {
-          this.chartDepJPU += 1
-        }
-
-        if (exam.result == 'PA') {
-          this.chartResultPass += 1
-        }
-        else if (exam.result == 'FA') {
-          this.chartResultFail += 1
-        }
-      }
-    )
-    this.getCharts()
+  initForm() {
+    this.examForm = this.formBuilder.group({
+      exam: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      staff: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      date: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      result: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      note: new FormControl(null),
+      document_copy: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+    })
   }
 
   entriesChange($event) {
@@ -383,7 +217,7 @@ export class ExamsComponent implements OnInit {
   filterTable($event) {
     let val = $event.target.value.toLowerCase();
     this.tableTemp = this.tableRows.filter(function (d) {
-      return d.staff_name.toLowerCase().indexOf(val)!== -1 || !val;
+      return d.staff_name.toLowerCase().indexOf(val) !== -1 || !val;
     });
   }
 
@@ -397,55 +231,68 @@ export class ExamsComponent implements OnInit {
   }
 
   initChartMonth() {
-    let chart = am4core.create("chart-tc-month", am4charts.XYChart);
+    let chart = am4core.create('chart-tc-month', am4charts.XYChart);
     // chart.scrollbarX = new am4core.Scrollbar();
 
     // Add data
-    chart.data = [{
-      "month": "Jan",
-      "total": this.chartMonthJan
-    }, {
-      "month": "Feb",
-      "total": this.chartMonthFeb
-    }, {
-      "month": "Mac",
-      "total": this.chartMonthMar
-    }, {
-      "month": "Apr",
-      "total": this.chartMonthApr
-    }, {
-      "month": "Mei",
-      "total": this.chartMonthMay
-    }, {
-      "month": "Jun",
-      "total": this.chartMonthJun
-    }, {
-      "month": "Jul",
-      "total": this.chartMonthJul
-    }, {
-      "month": "Ogs",
-      "total": this.chartMonthAug
-    }, {
-      "month": "Sep",
-      "total": this.chartMonthSep
-    }, {
-      "month": "Okt",
-      "total": this.chartMonthOct
-    }, {
-      "month": "Nov",
-      "total": this.chartMonthNov
-    }, {
-      "month": "Dis",
-      "total": this.chartMonthDec
-    }];
+    chart.data = [
+      {
+        'month': 'Jan',
+        'total': this.statistics['months']['january']
+      }, 
+      {
+        'month': 'Feb',
+        'total': this.statistics['months']['february']
+      },
+      {
+        'month': 'Mac',
+        'total': this.statistics['months']['march']
+        }, 
+        {
+        'month': 'Apr',
+        'total': this.statistics['months']['april']
+      }, 
+      {
+        'month': 'Mei',
+        'total': this.statistics['months']['may']
+      }, 
+      {
+        'month': 'Jun',
+        'total': this.statistics['months']['june']
+      }, 
+      {
+        'month': 'Jul',
+        'total': this.statistics['months']['july']
+      }, 
+      {
+        'month': 'Ogs',
+        'total': this.statistics['months']['august']
+      }, 
+      {
+        'month': 'Sep',
+        'total': this.statistics['months']['september']
+      }, 
+      {
+        'month': 'Okt',
+        'total': this.statistics['months']['october']
+      }, 
+      {
+        'month': 'Nov',
+        'total': this.statistics['months']['november']
+      }, 
+      {
+        'month': 'Dis',
+        'total': this.statistics['months']['december']
+      }
+    ];
 
     // Create axes
     let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-    categoryAxis.dataFields.category = "month";
+    categoryAxis.dataFields.category = 'month';
     categoryAxis.renderer.grid.template.location = 0;
     categoryAxis.renderer.minGridDistance = 30;
-    categoryAxis.renderer.labels.template.horizontalCenter = "right";
-    categoryAxis.renderer.labels.template.verticalCenter = "middle";
+    categoryAxis.renderer.labels.template.horizontalCenter = 'right';
+    categoryAxis.renderer.labels.template.verticalCenter = 'middle';
     // categoryAxis.renderer.labels.template.rotation = 270;
     categoryAxis.tooltip.disabled = true;
     categoryAxis.renderer.minHeight = 110;
@@ -456,24 +303,24 @@ export class ExamsComponent implements OnInit {
     // Create series
     let series = chart.series.push(new am4charts.ColumnSeries());
     series.sequencedInterpolation = true;
-    series.dataFields.valueY = "total";
-    series.dataFields.categoryX = "month";
-    series.tooltipText = "[{categoryX}: bold]{valueY}[/]";
+    series.dataFields.valueY = 'total';
+    series.dataFields.categoryX = 'month';
+    series.tooltipText = '[{categoryX}: bold]{valueY}[/]';
     series.columns.template.strokeWidth = 0;
 
-    series.tooltip.pointerOrientation = "vertical";
+    series.tooltip.pointerOrientation = 'vertical';
 
     series.columns.template.column.cornerRadiusTopLeft = 10;
     series.columns.template.column.cornerRadiusTopRight = 10;
     series.columns.template.column.fillOpacity = 0.8;
 
     // on hover, make corner radiuses bigger
-    let hoverState = series.columns.template.column.states.create("hover");
+    let hoverState = series.columns.template.column.states.create('hover');
     hoverState.properties.cornerRadiusTopLeft = 0;
     hoverState.properties.cornerRadiusTopRight = 0;
     hoverState.properties.fillOpacity = 1;
 
-    series.columns.template.adapter.add("fill", function (fill, target) {
+    series.columns.template.adapter.add('fill', function (fill, target) {
       return chart.colors.getIndex(target.dataItem.index);
     });
 
@@ -481,157 +328,373 @@ export class ExamsComponent implements OnInit {
     chart.cursor = new am4charts.XYCursor();
 
     // Export
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileNamePrefix = 'Laporan_Peperiksaan_Mengikut_Bulan_' + todayDateFormat
+
     chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.filePrefix = fileNamePrefix; 
 
     this.chartMonth = chart
   }
 
   initChartDepartment() {
-    let chart = am4core.create("chart-tc-department", am4charts.PieChart);
+    let container = am4core.create('chart-tc-department', am4core.Container);
+    container.width = am4core.percent(100);
+    container.height = am4core.percent(100);
+    container.layout = 'horizontal';
+
+    let chart = container.createChild(am4charts.PieChart);
+    chart.radius = am4core.percent(50);
+    chart.innerRadius = 60;
 
     // Add data
-    chart.data = [{
-      "department": "Pejabat Datuk Bandar",
-      "total": this.chartDepPDB
-    }, {
-      "department": "Unit Undang-undang",
-      "total": this.chartDepUUU
-    }, {
-      "department": "Unit Audit Dalaman",
-      "total": this.chartDepUAD
-    }, {
-      "department": "Unit Penyelarasan Pembangunan",
-      "total": this.chartDepUPP
-    }, {
-      "department": "Unit Pusat Sehenti",
-      "total": this.chartDepUPS
-    }, {
-      "department": "Jabatan Khidmat Pengurusan",
-      "total": this.chartDepJKP
-    }, {
-      "department": "Jabatan Perbendaharaan",
-      "total": this.chartDepJPD
-    }, {
-      "department": "Jabatan Penilaian Pengurusan Harta",
-      "total": this.chartDepJPH
-    }, {
-      "department": "Jabatan Perancangan Pembangunan",
-      "total": this.chartDepJPP
-    }, {
-      "department": "Jabatan Kejuruteraan",
-      "total": this.chartDepJKJ
-    }, {
-      "department": "Jabatan Kawalan Bangunan",
-      "total": this.chartDepJKB
-    }, {
-      "department": "Bahagian Kesihatan Awam",
-      "total": this.chartDepJKEA
-    }, {
-      "department": "Bahagian Pelesenan",
-      "total": this.chartDepJKEB
-    }, {
-      "department": "Jabatan Perkhidmatan Perbandaraan",
-      "total": this.chartDepJPR
-    }, {
-      "department": "Jabatan Khidmat Kemasyarakatan",
-      "total": this.chartDepJKK
-    }, {
-      "department": "Jabatan Konservasi Warisan",
-      "total": this.chartDepJKW
-    }, {
-      "department": "Jabatan Lanskap",
-      "total": this.chartDepJLK
-    }, {
-      "department": "Jabatan Penguatkuasaan",
-      "total": this.chartDepJPU
-    }, {
-      "department": "Jabatan Pesuruhjaya Bangunan",
-      "total": this.chartDepJPB
-    }
+    chart.data = [
+      {
+        'department': 'Pejabat Datuk Bandar',
+        'total': this.statistics['departments']['dep_90']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_90']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_90']['failed'] }
+        ]
+      },
+      {
+        'department': 'Pejabat Datuk Bandar: Undang-undang',
+        'total': this.statistics['departments']['dep_91']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_91']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_91']['failed'] }
+        ]
+      },
+      {
+        'department': 'Pejabat Datuk Bandar: Audit Dalaman',
+        'total': this.statistics['departments']['dep_92']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_92']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_92']['failed'] }
+        ]
+      },
+      {
+        'department': 'Pejabat Datuk Bandar: Penyelarasan Pembangunan',
+        'total': this.statistics['departments']['dep_93']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_93']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_93']['failed'] }
+        ]
+      },
+      {
+        'department': 'Pejabat Datuk Bandar: OSC',
+        'total': this.statistics['departments']['dep_94']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_94']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_94']['failed'] }
+        ]
+      },
+      {
+        'department': 'Pejabat Datuk Bandar',
+        'total': this.statistics['departments']['dep_90']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_90']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_90']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Landskap',
+        'total': this.statistics['departments']['dep_86']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_86']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_86']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Khidmat Kemasyarakatan',
+        'total': this.statistics['departments']['dep_81']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_81']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_81']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Perancangan Pembangunan',
+        'total': this.statistics['departments']['dep_71']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_71']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_71']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Pesuruhjaya Bangunan',
+        'total': this.statistics['departments']['dep_63']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_63']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_63']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Penilaian dan Pengurusan Harta',
+        'total': this.statistics['departments']['dep_61']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_61']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_61']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Konservasi Warisan',
+        'total': this.statistics['departments']['dep_55']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_55']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_55']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Kawalan Bangunan',
+        'total': this.statistics['departments']['dep_51']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_51']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_51']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Kesihatan dan Pelesenan - Pelesenan',
+        'total': this.statistics['departments']['dep_47']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_47']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_47']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Perkhidmatan dan Perbandaraan',
+        'total': this.statistics['departments']['dep_45']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_45']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_45']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Kesihatan dan Pelesenan',
+        'total': this.statistics['departments']['dep_41']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_41']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_41']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Kejuruteraan',
+        'total': this.statistics['departments']['dep_31']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_31']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_31']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Perbendaharaan',
+        'total': this.statistics['departments']['dep_21']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_21']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_21']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Penguatkuasaan',
+        'total': this.statistics['departments']['dep_15']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_15']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_15']['failed'] }
+        ]
+      },
+      {
+        'department': 'Jabatan Khidmat Pengurusan',
+        'total': this.statistics['departments']['dep_11']['total'],
+        'subData': [
+          { name: 'Lulus', value: this.statistics['departments']['dep_11']['passed'] }, 
+          { name: 'Gagal', value: this.statistics['departments']['dep_11']['failed'] }
+        ]
+      }
     ];
 
     // Add and configure Series
     let pieSeries = chart.series.push(new am4charts.PieSeries());
-    pieSeries.dataFields.value = "total";
-    pieSeries.dataFields.category = "department";
-    pieSeries.slices.template.stroke = am4core.color("#fff");
-    pieSeries.slices.template.strokeOpacity = 1;
+    pieSeries.dataFields.value = 'total';
+    pieSeries.dataFields.category = 'department';
+    pieSeries.labels.template.fontSize = 13;
+    pieSeries.slices.template.states.getKey('active').properties.shiftRadius = 0;
+    //pieSeries.labels.template.text = '{category}\n{value.percent.formatNumber('#.#')}%';
 
-    // This creates initial animation
-    pieSeries.hiddenState.properties.opacity = 1;
-    pieSeries.hiddenState.properties.endAngle = -90;
-    pieSeries.hiddenState.properties.startAngle = -90;
+    pieSeries.slices.template.events.on('hit', function(event) {
+      selectSlice(event.target.dataItem);
+    })
 
-    chart.hiddenState.properties.radius = am4core.percent(0);
+    let chart2 = container.createChild(am4charts.PieChart);
+    chart2.width = am4core.percent(30);
+    chart2.radius = am4core.percent(80);
 
-    // Export
-    chart.exporting.menu = new am4core.ExportMenu();
+    // Add and configure Series
+    let pieSeries2 = chart2.series.push(new am4charts.PieSeries());
+    pieSeries2.dataFields.value = 'value';
+    pieSeries2.dataFields.category = 'name';
+    pieSeries2.slices.template.states.getKey('active').properties.shiftRadius = 0;
+    //pieSeries2.labels.template.radius = am4core.percent(50);
+    //pieSeries2.labels.template.inside = true;
+    //pieSeries2.labels.template.fill = am4core.color('#ffffff');
+    pieSeries2.labels.template.disabled = true;
+    pieSeries2.ticks.template.disabled = true;
+    pieSeries2.alignLabels = false;
+    pieSeries2.events.on('positionchanged', updateLines);
 
-    this.chartDep = chart
-  }
+    let interfaceColors = new am4core.InterfaceColorSet();
 
-  initChartResult() {
-    let chart = am4core.create("chart-tc-result", am4charts.PieChart3D);
-    chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+    let line1 = container.createChild(am4core.Line);
+    line1.strokeDasharray = '2,2';
+    line1.strokeOpacity = 0.5;
+    line1.stroke = interfaceColors.getFor('alternativeBackground');
+    line1.isMeasured = false;
 
-    chart.legend = new am4charts.Legend();
+    let line2 = container.createChild(am4core.Line);
+    line2.strokeDasharray = '2,2';
+    line2.strokeOpacity = 0.5;
+    line2.stroke = interfaceColors.getFor('alternativeBackground');
+    line2.isMeasured = false;
 
-    chart.data = [
-      {
-        result: "Lulus",
-        total: this.chartResultPass
-      },
-      {
-        result: "Gagal",
-        total: this.chartResultFail
+    let selectedSlice;
+
+    function selectSlice(dataItem) {
+
+      selectedSlice = dataItem.slice;
+
+      let fill = selectedSlice.fill;
+
+      let count = dataItem.dataContext.subData.length;
+      pieSeries2.colors.list = [];
+      for (var i = 0; i < count; i++) {
+        if (fill) {
+          pieSeries2.colors.list.push(fill.brighten(i * 2 / count));
+        }
       }
-    ];
 
-    let series = chart.series.push(new am4charts.PieSeries3D());
-    series.dataFields.value = "total";
-    series.dataFields.category = "result";
+      chart2.data = dataItem.dataContext.subData;
+      pieSeries2.appear();
+
+      let middleAngle = selectedSlice.middleAngle;
+      let firstAngle = pieSeries.slices.getIndex(0).startAngle;
+      let animation = pieSeries.animate([{ property: 'startAngle', to: firstAngle - middleAngle }, { property: 'endAngle', to: firstAngle - middleAngle + 360 }], 600, am4core.ease.sinOut);
+      animation.events.on('animationprogress', updateLines);
+
+      selectedSlice.events.on('transformed', updateLines);
+
+    //  var animation = chart2.animate({property:'dx', from:-container.pixelWidth / 2, to:0}, 2000, am4core.ease.elasticOut)
+    //  animation.events.on('animationprogress', updateLines)
+    }
+
+
+    function updateLines() {
+      if (selectedSlice) {
+        let p11 = { x: selectedSlice.radius * am4core.math.cos(selectedSlice.startAngle), y: selectedSlice.radius * am4core.math.sin(selectedSlice.startAngle) };
+        let p12 = { x: selectedSlice.radius * am4core.math.cos(selectedSlice.startAngle + selectedSlice.arc), y: selectedSlice.radius * am4core.math.sin(selectedSlice.startAngle + selectedSlice.arc) };
+
+        p11 = am4core.utils.spritePointToSvg(p11, selectedSlice);
+        p12 = am4core.utils.spritePointToSvg(p12, selectedSlice);
+
+        let p21 = { x: 0, y: -pieSeries2.pixelRadius };
+        let p22 = { x: 0, y: pieSeries2.pixelRadius };
+
+        p21 = am4core.utils.spritePointToSvg(p21, pieSeries2);
+        p22 = am4core.utils.spritePointToSvg(p22, pieSeries2);
+
+        line1.x1 = p11.x;
+        line1.x2 = p21.x;
+        line1.y1 = p11.y;
+        line1.y2 = p21.y;
+
+        line2.x1 = p12.x;
+        line2.x2 = p22.x;
+        line2.y1 = p12.y;
+        line2.y2 = p22.y;
+      }
+    }
+
+    chart.events.on('datavalidated', function() {
+      setTimeout(function() {
+        selectSlice(pieSeries.dataItems.getIndex(0));
+      }, 1000);
+    });
 
     // Export
-    chart.exporting.menu = new am4core.ExportMenu();
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileNamePrefix = 'Laporan_Peperiksaan_Mengikut_Jabatan_' + todayDateFormat
 
-    this.chartResult = chart
+    chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.filePrefix = fileNamePrefix; 
+
+    this.chartDep = container
   }
+
+  // initChartResult() {
+  //   let chart = am4core.create('chart-tc-result', am4charts.PieChart3D);
+  //   chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+  //   chart.legend = new am4charts.Legend();
+
+  //   chart.data = [
+  //     {
+  //       result: 'Lulus',
+  //       total: this.statistics['results']['passed']
+  //     },
+  //     {
+  //       result: 'Gagal',
+  //       total: this.statistics['results']['failed']
+  //     }
+  //   ];
+
+  //   let series = chart.series.push(new am4charts.PieSeries3D());
+  //   series.dataFields.value = 'total';
+  //   series.dataFields.category = 'result';
+
+  //   // Export
+  //   let todayDate = new Date()
+  //   let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+  //   let fileNamePrefix = 'Laporan_Peperiksaan_Mengikut_Keputusan_' + todayDateFormat
+
+  //   chart.exporting.menu = new am4core.ExportMenu();
+  //   chart.exporting.filePrefix = fileNamePrefix; 
+
+  //   this.chartResult = chart
+  // }
 
   getCharts() {
     this.zone.runOutsideAngular(
       () => {
         this.initChartMonth()
         this.initChartDepartment()
-        this.initChartResult()
+        // this.initChartResult()
       }
     )
   }
 
-  openModal(modalRef: TemplateRef<any>, selectedRow) {
-    this.selectedExam = selectedRow
-    this.examForm = this.formBuilder.group({
-      title: new FormControl(this.selectedExam.title, Validators.compose([
-        Validators.required
-      ])),
-      code: new FormControl(this.selectedExam.code, Validators.compose([
-        Validators.required
-      ])),
-      date: new FormControl(this.selectedExam.date, Validators.compose([
-        Validators.required
-      ])),
-      result: new FormControl(this.selectedExam.result, Validators.compose([
-        Validators.required
-      ])),
-      staff: new FormControl(this.selectedExam.staff, Validators.compose([
-        Validators.required
-      ])),
-      document_copy: new FormControl(this.selectedExam.document_copy),
-      classification: new FormControl(this.selectedExam.classification, Validators.compose([
-        Validators.required
-      ])),
-      note: new FormControl(this.selectedExam.note)
-    })
+  openModal(modalRef: TemplateRef<any>, row) {
+    this.selectedAttendee = row
+    this.examForm.controls['exam'].setValue(this.selectedAttendee['exam']['id'])
+    this.examForm.controls['staff'].setValue(this.selectedAttendee['staff']['id'])
+    this.examForm.controls['document_copy'].setValue(this.selectedAttendee['document_copy'])
+    this.examForm.controls['result'].setValue(this.selectedAttendee['result'])
+    this.examForm.controls['note'].setValue(this.selectedAttendee['note'])
+    this.examForm.controls['date'].setValue(this.selectedAttendee['date'])
+    this.dateValue = moment(this.selectedAttendee['date'], 'YYYY-MM-DDTHH:mm:ss.SSSSZ').toDate()
+    this.examTypeTemp = this.selectedAttendee['exam']['classification']
+
+    this.examsOption.forEach(
+      (exam: Exam) => {
+        if (
+          exam['classification'] == this.examTypeTemp &&
+          exam['active']
+        ) {
+          this.examsTemp.push(exam)
+        }
+      }
+    )
+
     this.modal = this.modalService.show(modalRef, this.modalConfig);
+    // console.log('Wee', this.examForm.value)
   }
 
   closeModal() {
@@ -643,9 +706,14 @@ export class ExamsComponent implements OnInit {
   confirm() {
     let examDate = moment(this.dateValue).format('YYYY-MM-DDTHH:mm:ss.SSSSZ')
     this.examForm.controls['date'].setValue(examDate)
-    // this.examForm.controls['staff'].setValue()
-    // console.log(examDate)
-    // console.log(this.examForm.value)
+    // console.log(typeof this.examForm.value['document_copy'])
+    if (typeof this.examForm.value['document_copy'] == 'string') {
+      this.examForm.removeControl('document_copy')
+    }
+    if (this.examForm.value['note'] === '') {
+      this.examForm.controls['note'].patchValue(null)
+    }
+    // console.log('Wee', this.examForm.value)
     swal.fire({
       title: 'Pengesahan',
       text: 'Anda pasti untuk menyunting peperiksaan ini?',
@@ -665,17 +733,29 @@ export class ExamsComponent implements OnInit {
 
   update() {
     this.loadingBar.start()
-    this.examService.update(this.selectedExam.id, this.examForm.value).subscribe(
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Peperiksaan sedang ditambah'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+
+    this.examService.updateAttendee(this.selectedAttendee.id, this.examForm.value).subscribe(
       () => {
         this.loadingBar.complete()
       },
       () => {
+        let title = 'Tidak berjaya'
+        let message = 'Anda tidak berjaya untuk menambah peperiksaan. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
         this.loadingBar.complete()
       },
       () => {
+        let title = 'Berjaya'
+        let message = 'Peperiksaan berjaya ditambah.'
+        this.notifyService.openToastr(title, message)
         this.success()
         this.getData()
         this.examForm.reset()
+        this.closeModal()
+        this.initForm()
       }
     )
   }
@@ -687,9 +767,115 @@ export class ExamsComponent implements OnInit {
       type: 'success',
       buttonsStyling: false,
       showCancelButton: true,
+      showConfirmButton: false,
       cancelButtonClass: 'btn btn-outline-success',
       cancelButtonText: 'Tutup'
     })
+  }
+
+  onFileChange(event) {
+    let reader = new FileReader();
+    this.fileSize = event.target.files[0].size
+    this.fileName = event.target.files[0].name
+    
+    if (
+      event.target.files && 
+      event.target.files.length &&
+      this.fileSize < 5000000
+    ) {
+      
+      
+      const [file] = event.target.files;
+      reader.readAsDataURL(file)
+      // readAsDataURL(file);
+      // console.log(event.target)
+      // console.log(reader)
+      
+      
+      reader.onload = () => {
+        // console.log(reader['result'])
+        this.examForm.controls['document_copy'].setValue(file)
+        this.fileSizeInformation = this.fileSize
+        this.fileNameInformation = this.fileName
+        // console.log(this.registerForm.value)
+        // console.log('he', this.registerForm.valid)
+        // console.log(this.isAgree)
+        // !registerForm.valid || !isAgree
+        // need to run CD since file load runs outside of zone
+        this.cd.markForCheck();
+      };
+    }
+  }
+
+  removeFile() {
+    this.fileSize = 0;
+    this.fileName = null;
+    this.examForm.controls['document_copy'].patchValue(null);
+    this.fileSizeInformation = null
+    this.fileNameInformation = null
+  }
+
+  onClassificationChange(value) {
+    this.examsTemp = []
+    if (value == 'FKW') {
+      this.exams.forEach(
+        (exam: Exam) => {
+          if (
+            exam['classification'] == 'FKW' &&
+            exam['active']
+          ) {
+            this.examsTemp.push(exam)
+            this.examForm.controls['exam'].setValue(this.examsTemp[0]['id'])
+          }
+        }
+      )
+    }
+    else if (value == 'PDP') {
+      this.exams.forEach(
+        (exam: Exam) => {
+          if (
+            exam['classification'] == 'PDP' &&
+            exam['active']
+          ) {
+            this.examsTemp.push(exam)
+            this.examForm.controls['exam'].setValue(this.examsTemp[0]['id'])
+          }
+        }
+      )
+    }
+    else if (value == 'PSL') {
+      this.exams.forEach(
+        (exam: Exam) => {
+          if (
+            exam['classification'] == 'PSL' &&
+            exam['active']
+          ) {
+            this.examsTemp.push(exam)
+            this.examForm.controls['exam'].setValue(this.examsTemp[0]['id'])
+          }
+        }
+      )
+    }
+  }
+
+  exportExcel() {
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileName = 'Ringkasan_Peperiksaan_' + todayDateFormat + '.xlsx'
+    let element = document.getElementById('summaryTable'); 
+    const ws: xlsx.WorkSheet = xlsx.utils.table_to_sheet(element);
+
+    /* generate workbook and add the worksheet */
+    const wb: xlsx.WorkBook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    xlsx.writeFile(wb, fileName);
+  }
+
+  viewDocument() {
+    let url = this.selectedAttendee['document_copy']
+    window.open(url, '_blank');
   }
 
 }

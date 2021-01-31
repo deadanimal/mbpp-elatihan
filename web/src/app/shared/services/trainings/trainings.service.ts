@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Form } from '@angular/forms';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { Training, TrainingExtended } from './trainings.model';
+import { Training, TrainingExtended, TrainingType } from './trainings.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +13,7 @@ export class TrainingsService {
 
   // URL
   public urlTraining: string = environment.baseUrl + 'v1/trainings/'
+  public urlTrainingType: string = environment.baseUrl + 'v1/training-types/'
 
   // Data
   training: Training
@@ -21,12 +22,15 @@ export class TrainingsService {
   trainingExtended: TrainingExtended
   trainingsExtended: TrainingExtended[] = []
   trainingStatistics: any
+  trainingNextCode: string
+  trainingType: TrainingType
+  trainingTypes: TrainingType[] = []
 
   constructor(
     private http: HttpClient
   ) { }
 
-  post(body: Form): Observable<Training> {
+  post(body: any): Observable<Training> {
     console.log('hello')
     return this.http.post<any>(this.urlTraining, body).pipe(
       tap((res) => {
@@ -41,6 +45,26 @@ export class TrainingsService {
       tap((res) => {
         this.trainings = res
         console.log('Trainings: ', this.trainings)
+      })
+    )
+  }
+
+  getLatest(): Observable<Training[]> {
+    let urlTemp = this.urlTraining + 'get_latest'
+    return this.http.get<Training[]>(urlTemp).pipe(
+      tap((res) => {
+        this.trainings = res
+        console.log('Trainings: ', this.trainings)
+      })
+    )
+  }
+
+  getAllExtended(): Observable<TrainingExtended[]> {
+    let urlTemp = this.urlTraining + 'extended_all'
+    return this.http.get<TrainingExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        this.trainingsExtended = res
+        console.log('Trainings: ', this.trainingsExtended)
       })
     )
   }
@@ -102,6 +126,56 @@ export class TrainingsService {
       tap((res) => {
         this.trainingStatistics = res
         console.log('Statistics: ', this.trainingStatistics)
+      })
+    )
+  }
+
+  getNextCode() {
+    let urlTemp = this.urlTraining + 'get_next_code'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.trainingNextCode = res['code']
+        console.log(res)
+      })
+    )
+  }
+
+  createTrainingType(body: Form): Observable<TrainingType> {
+    // console.log('hello')
+    return this.http.post<any>(this.urlTrainingType, body).pipe(
+      tap((res) => {
+        this.trainingType = res
+        console.log('Training type: ', this.trainingType)
+      })
+    )
+  }
+
+  getTrainingTypes(): Observable<TrainingType[]> {
+    return this.http.get<TrainingType[]>(this.urlTrainingType).pipe(
+      tap((res) => {
+        this.trainingTypes = res
+        console.log('Training types: ', this.trainingTypes)
+      })
+    )
+  }
+
+  getTrainingType(id: String): Observable<TrainingType> {
+    let urlTemp = this.urlTrainingType + id
+    // console.log('URL ', urlTemp)
+    return this.http.get<TrainingType>(urlTemp).pipe(
+      tap((res) => {
+        this.trainingType = res
+        console.log('Training type: ', this.trainingType)
+      })
+    )
+  }
+
+  updateTrainingType(id: String, body: Form): Observable<TrainingType> {
+    let urlTemp = this.urlTrainingType + id + '/'
+    return this.http.put<TrainingType>(urlTemp, body).pipe(
+      tap((res) => {
+        this.trainingType = res
+        console.log('Training type', this.trainingType)
       })
     )
   }

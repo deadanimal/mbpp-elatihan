@@ -4,7 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { Form } from '@angular/forms';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { Exam } from './exams.model';
+import { 
+  Exam, 
+  ExamExtended, 
+  ExamAttendee, 
+  ExamAttendeeExtended 
+} from './exams.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,26 +18,32 @@ export class ExamsService {
 
   // URL
   public urlExams: string = environment.baseUrl + 'v1/exams/'
+  public urlAttendees: string = environment.baseUrl + 'v1/exam-attendees/'
 
   // Data
   exam: Exam
+  examExtended: ExamExtended
   exams: Exam[] = []
-  examsFiltered: Exam[] = []
+  examsExtended: ExamExtended[] = []
+  attendee: ExamAttendee
+  attendeeExtended: ExamAttendeeExtended
+  attendees: ExamAttendeeExtended[] = []
+  statistic: any
 
   constructor(
     private http: HttpClient
   ) { }
 
-  post(body: Form): Observable<Exam> {
+  createExam(body: any): Observable<Exam> {
     return this.http.post<any>(this.urlExams, body).pipe(
       tap((res) => {
-        this.exam
+        this.exam = res
         console.log('Exam: ', this.exam)
       })
     )
   }
 
-  getAll(): Observable<Exam[]> {
+  getExamList(): Observable<Exam[]> {
     return this.http.get<Exam[]>(this.urlExams).pipe(
       tap((res) => {
         this.exams = res
@@ -41,33 +52,32 @@ export class ExamsService {
     )
   }
 
-  getOne(id: String): Observable<Exam> {
-    let urlTemp = this.urlExams + id + '/'
-    return this.http.get<Exam>(urlTemp).pipe(
+  getExams(): Observable<ExamExtended[]> {
+    let urlTemp = this.urlExams + 'extended_all'
+    return this.http.get<ExamExtended[]>(urlTemp).pipe(
       tap((res) => {
-        this.exam = res
-        console.log('Exam: ', this.exam)
+        this.examsExtended = res
+        console.log('Exams: ', this.examsExtended)
       })
     )
   }
 
-  update(id: String, body: Form): Observable<Exam> {
+  getExam(id: string): Observable<ExamExtended> {
+    let urlTemp = this.urlExams + id + '/extended'
+    return this.http.get<ExamExtended>(urlTemp).pipe(
+      tap((res) => {
+        this.examExtended = res
+        console.log('Exam: ', this.examExtended)
+      })
+    )
+  }
+
+  updateExam(id: string, body: Form): Observable<Exam> {
     let urlTemp = this.urlExams + id + '/'
-    return this.http.put<Exam>(urlTemp, body).pipe(
+    return this.http.patch<Exam>(urlTemp, body).pipe(
       tap((res) => {
         this.exam = res
         console.log('Exam', this.exam)
-      })
-    )
-  }
-
-  filter(field: String): Observable<Exam[]> {
-    let urlTemp = this.urlExams + '?' + field
-    console.log(urlTemp)
-    return this.http.get<Exam[]>(urlTemp).pipe(
-      tap((res) => {
-        this.examsFiltered = res
-        console.log('Exams', this.examsFiltered)
       })
     )
   }
@@ -91,5 +101,66 @@ export class ExamsService {
       })
     )
   }
+
+  createAttendee(body: any): Observable<ExamAttendee> {
+    return this.http.post<any>(this.urlAttendees, body).pipe(
+      tap((res) => {
+        this.attendee = res
+        console.log('Attendee: ', this.attendee)
+      })
+    )
+  }
+
+  getAttendees(): Observable<ExamAttendeeExtended[]> {
+    let urlTemp = this.urlAttendees + 'extended_all'
+    return this.http.get<ExamAttendeeExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        this.attendees = res
+        console.log('Attendees: ', this.attendees)
+      })
+    )
+  }
+
+  getAttendee(id: string): Observable<ExamAttendeeExtended> {
+    let urlTemp = this.urlAttendees + id + 'extended'
+    return this.http.get<ExamAttendeeExtended>(urlTemp).pipe(
+      tap((res) => {
+        this.attendeeExtended = res
+        console.log('Attendee: ', this.attendeeExtended)
+      })
+    )
+  }
+
+  getSelf(): Observable<ExamAttendeeExtended[]> {
+    let urlTemp = this.urlAttendees + 'get_self'
+    return this.http.get<ExamAttendeeExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        this.attendees = res
+        console.log('Attendees: ', this.attendees)
+      })
+    )
+  }
+
+  updateAttendee(id: string, body: Form): Observable<Exam> {
+    let urlTemp = this.urlAttendees + id + '/'
+    return this.http.patch<Exam>(urlTemp, body).pipe(
+      tap((res) => {
+        this.exam = res
+        console.log('Attendee', this.exam)
+      })
+    )
+  }
+
+  getStatistics(): Observable<any> {
+    let urlTemp = this.urlExams + 'get_statistics'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.statistic = res
+        console.log('Statistics', this.statistic)
+      })
+    )
+  }
+
+
 
 }

@@ -1,21 +1,21 @@
-import { Component, OnInit, ElementRef } from "@angular/core";
-import { TCROUTES } from "../../shared/menu/menu-items";
+import { Component, OnInit, ElementRef } from '@angular/core';
+import { TCROUTES } from '../../shared/menu/menu-items';
 import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import {
   Location,
   LocationStrategy,
   PathLocationStrategy
-} from "@angular/common";
+} from '@angular/common';
 import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
 import { UsersService } from 'src/app/shared/services/users/users.service';
 import { User } from 'src/app/shared/services/users/users.model';
 import { JwtService } from 'src/app/shared/handler/jwt/jwt.service';
-import { AuthService } from "src/app/shared/services/auth/auth.service";
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
 
 @Component({
-  selector: "app-navbar",
-  templateUrl: "./navbar.component.html",
-  styleUrls: ["./navbar.component.scss"]
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
 
@@ -51,8 +51,8 @@ export class NavbarComponent implements OnInit {
            // Hide loading indicator
 
            if (window.innerWidth < 1200) {
-             document.body.classList.remove("g-sidenav-pinned");
-             document.body.classList.add("g-sidenav-hidden");
+             document.body.classList.remove('g-sidenav-pinned');
+             document.body.classList.add('g-sidenav-hidden');
              this.sidenavOpen = false;
            }
        }
@@ -75,7 +75,7 @@ export class NavbarComponent implements OnInit {
 
   getTitle() {
     var titlee = this.location.prepareExternalUrl(this.location.path());
-    if (titlee.charAt(0) === "#") {
+    if (titlee.charAt(0) === '#') {
       titlee = titlee.slice(1);
     }
 
@@ -84,7 +84,7 @@ export class NavbarComponent implements OnInit {
         return this.listTitles[item].title;
       }
     }
-    return "Dashboard";
+    return 'Dashboard';
   }
 
   getCurrentUser() {
@@ -126,51 +126,51 @@ export class NavbarComponent implements OnInit {
   }
 
   openSearch() {
-    document.body.classList.add("g-navbar-search-showing");
+    document.body.classList.add('g-navbar-search-showing');
     setTimeout(function() {
-      document.body.classList.remove("g-navbar-search-showing");
-      document.body.classList.add("g-navbar-search-show");
+      document.body.classList.remove('g-navbar-search-showing');
+      document.body.classList.add('g-navbar-search-show');
     }, 150);
     setTimeout(function() {
-      document.body.classList.add("g-navbar-search-shown");
+      document.body.classList.add('g-navbar-search-shown');
     }, 300);
   }
 
   closeSearch() {
-    document.body.classList.remove("g-navbar-search-shown");
+    document.body.classList.remove('g-navbar-search-shown');
     setTimeout(function() {
-      document.body.classList.remove("g-navbar-search-show");
-      document.body.classList.add("g-navbar-search-hiding");
+      document.body.classList.remove('g-navbar-search-show');
+      document.body.classList.add('g-navbar-search-hiding');
     }, 150);
     setTimeout(function() {
-      document.body.classList.remove("g-navbar-search-hiding");
-      document.body.classList.add("g-navbar-search-hidden");
+      document.body.classList.remove('g-navbar-search-hiding');
+      document.body.classList.add('g-navbar-search-hidden');
     }, 300);
     setTimeout(function() {
-      document.body.classList.remove("g-navbar-search-hidden");
+      document.body.classList.remove('g-navbar-search-hidden');
     }, 500);
   }
 
   openSidebar() {
-    if (document.body.classList.contains("g-sidenav-pinned")) {
-      document.body.classList.remove("g-sidenav-pinned");
-      document.body.classList.add("g-sidenav-hidden");
+    if (document.body.classList.contains('g-sidenav-pinned')) {
+      document.body.classList.remove('g-sidenav-pinned');
+      document.body.classList.add('g-sidenav-hidden');
       this.sidenavOpen = false;
     } else {
-      document.body.classList.add("g-sidenav-pinned");
-      document.body.classList.remove("g-sidenav-hidden");
+      document.body.classList.add('g-sidenav-pinned');
+      document.body.classList.remove('g-sidenav-hidden');
       this.sidenavOpen = true;
     }
   }
 
   toggleSidenav() {
-    if (document.body.classList.contains("g-sidenav-pinned")) {
-      document.body.classList.remove("g-sidenav-pinned");
-      document.body.classList.add("g-sidenav-hidden");
+    if (document.body.classList.contains('g-sidenav-pinned')) {
+      document.body.classList.remove('g-sidenav-pinned');
+      document.body.classList.add('g-sidenav-hidden');
       this.sidenavOpen = false;
     } else {
-      document.body.classList.add("g-sidenav-pinned");
-      document.body.classList.remove("g-sidenav-hidden");
+      document.body.classList.add('g-sidenav-pinned');
+      document.body.classList.remove('g-sidenav-hidden');
       this.sidenavOpen = true;
     }
   }

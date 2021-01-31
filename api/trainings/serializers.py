@@ -19,7 +19,9 @@ from .models import (
     TrainingAbsenceMemo,
     Trainer,
     TrainingDomain,
-    TrainingQuota
+    TrainingType,
+    Configuration,
+    TrainingNeedAnalysis
 )
 
 from organisations.serializers import(
@@ -36,9 +38,31 @@ class PDFBase64File(Base64FileField):
     def get_file_extension(self, filename, decoded_file):
         return 'pdf'
 
+class FileBase64File(Base64FileField):
+    ALLOWED_TYPES = [
+        'pdf',
+        'jpeg',
+        'jpg',
+        'png',
+        'tiff',
+        'webp'
+    ]
+
+    def get_file_extension(self, filename, decoded_file):
+        # print('self ', self)
+        # print('filename ', filename)
+        # print('decoded_file ', decoded_file)
+        return ('pdf',
+        'jpeg',
+        'jpg',
+        'png',
+        'tiff',
+        'webp')
+
 class TrainingSerializer(serializers.ModelSerializer):
 
-    attachment = PDFBase64File()
+    # attachment = PDFBase64File()
+    # attachment_approval = PDFBase64File()
     class Meta:
         model = Training
         fields = '__all__'
@@ -46,7 +70,7 @@ class TrainingSerializer(serializers.ModelSerializer):
 
 class TrainingNoteSerializer(serializers.ModelSerializer):
 
-    note_file = PDFBase64File()
+    # note_file = PDFBase64File()
     class Meta:
         model = TrainingNote
         fields = '__all__'
@@ -75,6 +99,15 @@ class TrainingApplicationExtendedSerializer(serializers.ModelSerializer):
         model = TrainingApplication
         fields = '__all__'
 
+
+class TrainingApplicationExtendedSelfSerializer(serializers.ModelSerializer):
+
+    training = TrainingSerializer(read_only=True)
+    approved_by = CustomUserSerializer(read_only=True)
+
+    class Meta:
+        model = TrainingApplication
+        fields = '__all__'
 
 class TrainingAttendeeSerializer(serializers.ModelSerializer):
 
@@ -125,25 +158,48 @@ class TrainingDomainSerializer(serializers.ModelSerializer):
         model = TrainingDomain
         fields = '__all__'
 
-class TrainingQuotaSerializer(serializers.ModelSerializer):
+class TrainingTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = TrainingQuota
+        model = TrainingType
         fields = '__all__'
 
 class TrainingExtendedSerializer(serializers.ModelSerializer):
 
     organiser = OrganisationSerializer(read_only=True)
+    training_type = TrainingTypeSerializer(read_only=True)
     core = TrainingCoreSerializer(read_only=True)
     domain = TrainingDomainSerializer(read_only=True)
     speaker = CustomUserSerializer(read_only=True)
     facilitator = CustomUserSerializer(read_only=True)
     training_training_notes = TrainingNoteSerializer(read_only=True, many=True)
-    training_application = TrainingApplicationExtendedSerializer(read_only=True)
-    training_attendee = TrainingAttendeeExtendedSerializer(read_only=True)
-    training_absence_memo = TrainingAbsenceMemoExtendedSerializer(read_only=True)
+    training_application = TrainingApplicationExtendedSerializer(read_only=True, many=True)
+    training_attendee = TrainingAttendeeExtendedSerializer(read_only=True, many=True)
+    training_absence_memo = TrainingAbsenceMemoExtendedSerializer(read_only=True, many=True)
     created_by = CustomUserSerializer(read_only=True)
     
     class Meta:
         model = Training
         fields = '__all__'   
+
+
+class TrainingNeedAnalysisSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TrainingNeedAnalysis
+        fields = '__all__'
+
+
+class TrainingNeedAnalysisExtendedSerializer(serializers.ModelSerializer):
+
+    staff = CustomUserSerializer(read_only=True)
+    core = TrainingCoreSerializer(read_only=True)
+    class Meta:
+        model = TrainingNeedAnalysis
+        fields = '__all__'
+
+class ConfigurationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Configuration
+        fields = '__all__'

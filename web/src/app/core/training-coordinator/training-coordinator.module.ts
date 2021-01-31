@@ -18,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatStepperModule } from '@angular/material/stepper'; 
 import { MatIconModule } from '@angular/material/icon';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { NgxMaskModule, IConfig } from 'ngx-mask'
 
 import { TrainingCoordinatorRoutes } from './training-coordinator.routing';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -29,6 +30,10 @@ import { TrainingDetailsComponent } from './training-details/training-details.co
 import { CalendarComponent } from './calendar/calendar.component';
 import { ReportComponent } from './report/report.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
+import { QuillModule } from 'ngx-quill';
+import { NeedAnalysisComponent } from './need-analysis/need-analysis.component';
+
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 @NgModule({
   declarations: [
@@ -40,7 +45,8 @@ import { ConfigurationComponent } from './configuration/configuration.component'
     TrainingDetailsComponent,
     CalendarComponent,
     ReportComponent,
-    ConfigurationComponent
+    ConfigurationComponent,
+    NeedAnalysisComponent
   ],
   imports: [
     CommonModule,
@@ -55,9 +61,11 @@ import { ConfigurationComponent } from './configuration/configuration.component'
     TabsModule.forRoot(),
     TooltipModule.forRoot(),
     FormsModule,
+    QuillModule,
     ReactiveFormsModule,
     LoadingBarModule,
     NgxDatatableModule,
+    NgxMaskModule.forRoot(),
     NgSelectModule,
     RouterModule.forChild(TrainingCoordinatorRoutes)
   ]

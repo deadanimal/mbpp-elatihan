@@ -8,6 +8,7 @@ import { ReportComponent } from './report/report.component';
 import { TrainingsComponent } from './trainings/trainings.component';
 import { TrainingAddComponent } from './training-add/training-add.component';
 import { TrainingDetailsComponent } from './training-details/training-details.component';
+import { NeedAnalysisComponent } from './need-analysis/need-analysis.component';
 
 export const TrainingCoordinatorRoutes: Routes = [
     {
@@ -58,6 +59,10 @@ export const TrainingCoordinatorRoutes: Routes = [
             {
                 path: 'report',
                 component: ReportComponent
+            },
+            {
+                path: 'need-analyses',
+                component: NeedAnalysisComponent
             }
         ]
     }

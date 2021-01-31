@@ -11,13 +11,15 @@ import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { JwtService } from '../handler/jwt/jwt.service';
 import { NotifyService } from '../handler/notify/notify.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class HttpTokenInterceptor implements HttpInterceptor {
 
     constructor(
-        private handlerNotification: NotifyService,
-        private jwtService: JwtService
+        private notifyService: NotifyService,
+        private jwtService: JwtService,
+        private router: Router
     ){ }
 
     private handleError(error: HttpErrorResponse) {
@@ -30,10 +32,17 @@ export class HttpTokenInterceptor implements HttpInterceptor {
             // Server or connection error happened
             if (!navigator.onLine) {
                 // Handle offline error
-                // this.handlerNotification.openToastrConnection()
+                // this.notifyService.openToastrConnection()
             } else {
                 // Handle Http Error (error.status === 403, 404...)
-                // this.handlerNotification.openToastrError(error.status, error.statusText)
+                // this.notifyService.openToastrError(error.status, error.statusText)
+                // console.log('Maka disinilah error akan ditunjuk: ', error)
+                if (error.error.code == 'token_not_valid') {
+                    let title = 'Ralat'
+                    let message = 'Sesi anda telah tamat. Anda diminta untuk log masuk sekali lagi'
+                    this.notifyService.openToastrInfo(title, message)
+                    this.router.navigate(['/auth/login'])
+                }
             }
         } else {
             // Handle Client Error (Angular Error, ReferenceError...)     
@@ -45,13 +54,15 @@ export class HttpTokenInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const headersConfig = {
-            'Content-Type': 'application/json',
             'Accept': '*/*'
         };
-
+        // 'Content-Type': 'application/json',
         const token = this.jwtService.getToken('accessToken');
-
-        if (token) {
+        // console.log('Route: ', this.router.url)
+        if (
+            token &&
+            this.router.url != '/home'
+        ) {
             headersConfig['Authorization'] = `Bearer ${token}`;
             // console.log(headersConfig)
         }
@@ -62,7 +73,7 @@ export class HttpTokenInterceptor implements HttpInterceptor {
         return next.handle(request).pipe(
             map((event: HttpEvent<any>) => {
                 if (event instanceof HttpResponse) {
-                    console.log('Event: ', event);
+                    // console.log('Event: ', event);
                 }
                 return event;
             }),

@@ -16,6 +16,7 @@ import { CollapseModule } from "ngx-bootstrap/collapse";
 import { DxVectorMapModule } from "devextreme-angular";
 import { BsDropdownModule } from "ngx-bootstrap";
 import { Footer1Component } from './footer1/footer1.component';
+import { LoadingBarModule } from "@ngx-loading-bar/core";
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { Footer1Component } from './footer1/footer1.component';
     CollapseModule.forRoot(),
     DxVectorMapModule,
     PerfectScrollbarModule,
-    BsDropdownModule.forRoot()
+    BsDropdownModule.forRoot(),
+    LoadingBarModule
   ],
   declarations: [
     FooterComponent,

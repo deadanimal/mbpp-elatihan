@@ -24,7 +24,7 @@
         <div class="col">
             <div class="card">
                 <div class="card-header bg-secondary">
-                    <h3 class="m-0">Laporan Peperiksaan Mengikut Bulan</h3>
+                    <h4 class="m-0">Laporan Peperiksaan Mengikut Bulan</h4>
                 </div>
                 <div class="card-body">
                     <div class="chart">
@@ -39,22 +39,22 @@
         <div class="col">
             <div class="card">
                 <div class="card-header bg-secondary">
-                    <h3 class="m-0">Laporan Peperiksaan Mengikut Jabatan</h3>
+                    <h4 class="m-0">Laporan Peperiksaan Mengikut Jabatan dan Keputusan</h4>
                 </div>
                 <div class="card-body">
-                    <div class="chart">
-                        <div class="amchart" id="chart-tc-department"></div>
-                    </div>
+                    <div class="chart-500">
+						<div class="amchart" id="chart-tc-department"></div>
+					</div>
                 </div>
             </div>
         </div>
 	</div>
 
-	<div class="row">
+	<!-- <div class="row">
         <div class="col">
             <div class="card">
                 <div class="card-header bg-secondary">
-                    <h3 class="m-0">Laporan Mengikut Keputusan Lulus/Gagal</h3>
+                    <h4 class="m-0">Laporan Mengikut Keputusan Lulus/Gagal</h4>
                 </div>
                 <div class="card-body">
                     <div class="chart">
@@ -63,13 +63,27 @@
                 </div>
             </div>
         </div>
-	</div>
+	</div> -->
 	
     <div class="row">
         <div class="col">
             <div class="card">
                 <div class="card-header bg-secondary">
-                    <h4 class="m-0">Senarai Peperiksaan</h4>
+                    <div class="row">
+						<div class="col my-auto">
+							<h4 class="m-0">Senarai Peperiksaan</h4>
+						</div>
+						
+						<div class="col text-right">
+							<button
+								class="btn btn-sm btn-warm-blue"
+								(click)="exportExcel()"
+							>
+								Cetak
+							</button>
+						</div>
+					</div>
+
 				</div>
 				
 				<div class="dataTables_wrapper py-4">
@@ -125,71 +139,86 @@
 						(activate)="onActivate($event)"
 						*ngIf="!isEmpty"
 					>
-						<ngx-datatable-column>
+						<ngx-datatable-column
+							prop="row.staff.full_name"
+						>
 							<ng-template ngx-datatable-header-template>
-								<span>Kakitangan</span>
+								<span>Nama Kakitangan</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
-								{{row.staff_name}}
+								{{row.staff.full_name}}
 							</ng-template>
 						</ngx-datatable-column>
 	
-						<ngx-datatable-column>
+						<ngx-datatable-column
+							prop="row.staff.username"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Kad Pengenalan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.staff.username}}
+							</ng-template>
+						</ngx-datatable-column>
+	
+						<ngx-datatable-column
+							prop="row.staff.position"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Jawatan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.staff.position}}
+							</ng-template>
+						</ngx-datatable-column>
+			
+						<ngx-datatable-column
+							prop="row.staff.salary_code"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Gred</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.staff.salary_code}}
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column
+							prop="row.staff.department"
+						>
 							<ng-template ngx-datatable-header-template>
 								<span>Jabatan</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
-								<span *ngIf="row.department == 'PDB'">Pejabat Datuk Bandar</span>
-								<span *ngIf="row.department == 'UUU'">Unit Undang-undang</span>
-								<span *ngIf="row.department == 'UAD'">Unit Audit Dalam'</span>
-								<span *ngIf="row.department == 'UPP'">Unit Penyelarasan Pembangunan</span>
-								<span *ngIf="row.department == 'UPS'">Unit Pusat Sehenti</span>
-								<span *ngIf="row.department == 'JKP'">Jabatan Khidmat Pengurusan</span>
-								<span *ngIf="row.department == 'JKD'">Jabatan Perbendaharaan</span>
-								<span *ngIf="row.department == 'JPH'">Jabatan Penilaian Pengurusan Harta</span>
-								<span *ngIf="row.department == 'JPP'">Jabatan Perancangan Pembangunan</span>
-								<span *ngIf="row.department == 'JKJ'">Jabatan Kejuruteraan</span>
-								<span *ngIf="row.department == 'JKB'">Jabatan Kawalan Bangunan</span>
-								<span *ngIf="row.department == 'JKEA'">Bahagian Kesihatan Awam</span>
-								<span *ngIf="row.department == 'JKEB'">Bahagian Pelesenan</span>
-								<span *ngIf="row.department == 'JPR'">Jabatan Perkhidmatan Perbandaraan</span>
-								<span *ngIf="row.department == 'JKK'">Jabatan Khidmat Kemasyarakatan</span>
-								<span *ngIf="row.department == 'JKW'">Jabatan Konservasi Warisan</span>
-								<span *ngIf="row.department == 'JKL'">Jabatan Lanskap</span>
-								<span *ngIf="row.department == 'JPU'">Jabatan Penguatkuasaan</span>
-								<span *ngIf="row.department == 'JPB'">Jabatan Pesuruhjaya Bangunan</span>
-								<span *ngIf="row.department == 'NA'">-</span>
-							</ng-template>
-						</ngx-datatable-column>
-	
-						<ngx-datatable-column>
-							<ng-template ngx-datatable-header-template>
-								<span>Tajuk</span>
-							</ng-template>
-							<ng-template let-row="row" ngx-datatable-cell-template>
-								{{row.title}}
+								{{row.staff.department}}
 							</ng-template>
 						</ngx-datatable-column>
 			
-						<ngx-datatable-column>
+						<ngx-datatable-column
+							prop="row.date"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Tarikh Peperiksaan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.date | date: 'd/M/y'}}
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column
+							prop="row.exam.code"
+						>
 							<ng-template ngx-datatable-header-template>
 								<span>Kod</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
-								{{row.code}}
+								{{row.exam.code}}
 							</ng-template>
 						</ngx-datatable-column>
 			
-						<ngx-datatable-column>
-							<ng-template ngx-datatable-header-template>
-								<span>Tarikh</span>
-							</ng-template>
-							<ng-template let-row="row" ngx-datatable-cell-template>
-								{{row.date}}
-							</ng-template>
-						</ngx-datatable-column>
-			
-						<ngx-datatable-column>
+						<ngx-datatable-column
+							prop="row.result"
+						>
 							<ng-template ngx-datatable-header-template>
 								<span>Keputusan</span>
 							</ng-template>
@@ -214,7 +243,7 @@
 								<span>Tindakan</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
-								<button class="btn btn-primary" type="button" (click)="openModal(editExam, row)">Kemaskini</button>
+								<button class="btn btn-warm-blue" type="button" (click)="openModal(editExam, row)">Kemaskini</button>
 							</ng-template>
 						</ngx-datatable-column>
 					</ngx-datatable>
@@ -225,7 +254,7 @@
 </div>
 
 <ng-template #editExam>
-    <div class="modal-header bg-default">
+    <div class="modal-header bg-warm-blue">
         <h6 class="modal-title text-white my-auto" id="modal-title-default">
             Kemaskini Peperiksaan
         </h6>
@@ -244,21 +273,25 @@
     <div class="modal-body">
         <form [formGroup]="examForm">
 			<div class="form-group">
-				<label class="form-control-label">Tajuk</label>
-				<input
-					class="form-control"
-					placeholder="Tajuk"
-					formControlName="title"
+				<label class="form-control-label">Jenis Peperiksaan <span class="text-warning">*</span></label>
+				<select
+					class="form-control custom-select"
+					[(ngModel)]="examTypeTemp"
+					[ngModelOptions]="{standalone: true}"
+					(change)="onClassificationChange($event.target.value)"
 				>
+					<option *ngFor="let choice of choicesType" value="{{choice.value}}">{{choice.text}}</option>
+				</select>
 			</div>
-			
+
 			<div class="form-group">
-				<label class="form-control-label">Kod</label>
-				<input
-					class="form-control"
-					placeholder="Kod"
-					formControlName="code"
+				<label class="form-control-label">Peperiksaan <span class="text-warning">*</span></label>
+				<select
+					class="form-control custom-select"
+					formControlName="exam"
 				>
+					<option *ngFor="let exam_ of examsTemp" value="{{exam_.id}}">[{{exam_.code}}] {{exam_.title}}</option>
+				</select>
 			</div>
 
 			<div class="form-group">
@@ -281,24 +314,12 @@
 			<div class="form-group">
 				<label class="form-control-label">Keputusan</label>
 				<select
-					class="form-control"
+					class="form-control custom-select"
 					placeholder="Keputusan"
 					formControlName="result"
 					type="text"
 				>
 					<option *ngFor="let result of choicesResult" value="{{result.value}}">{{result.text}}</option>
-				</select>
-			</div>
-		
-			<div class="form-group">
-				<label class="form-control-label">Pengkelasan</label>
-				<select
-					class="form-control"
-					placeholder="Pengkelasan"
-					formControlName="classification"
-					type="text"
-				>
-					<option *ngFor="let classification of choicesClassification" value="{{classification.value}}">{{classification.text}}</option>
 				</select>
 			</div>
 
@@ -311,24 +332,63 @@
 				>
 			</div>
 
-			<div class="custom-file">
-				<input
-				  class="custom-file-input"
-				  id="customFileLang"
-				  lang="ms"
-				  type="file"
-				/>
+			<!-- <div class="form-group">
+				<div class="custom-file">
+					<input
+					  class="custom-file-input"
+					  id="customFileLang"
+					  lang="ms"
+					  type="file"
+					/>
+	
+					<label class="custom-file-label" for="customFileLang">
+					  Pilih dokumen
+					</label>
+				</div>
+			</div> -->
 
-				<label class="custom-file-label" for="customFileLang">
-				  Pilih dokumen
-				</label>
+			<div class="form-group">
+				<label class="form-control-label">Dokumen <span class="text-warning">*</span></label>
+				<div class="custom-file">
+					<input 
+						type="file" 
+						class="custom-file-input" 
+						id="lampiran" 
+						lang="en"
+						(change)="onFileChange($event)" 
+						accept=".pdf, image/*"
+						size="5"
+					>
+					<label class="custom-file-label" for="lampiran">Sila muat naik lampiran berkenaan</label>
+				</div>
+
+				<ng-container *ngIf="examForm.value['document_copy'] && fileSizeInformation && fileNameInformation">
+					<div>
+						<i 
+							class="fas fa-trash-alt text-warning mr-2"
+							placement="top" 
+							tooltip="Remove attachment"
+							(click)="removeFile()"
+						>
+						</i>
+						{{fileNameInformation}} [{{fileSizeInformation/1000000 | number: '1.2-2'}}MB]
+					</div>
+				</ng-container>
 			</div>
+
+			<button 
+				class="btn btn-block btn-outline-warm-blue"
+				(click)="viewDocument()"
+				[hidden]="fileSizeInformation && fileNameInformation"
+			>
+				Cetak dokumen
+			</button>
 		</form>
     </div>
 
     <div class="modal-footer">
         <button 
-            class="btn btn-success"
+            class="btn btn-warm-blue"
             type="button"
             (click)="confirm()"
             [disabled]="!examForm.valid"
@@ -337,7 +397,7 @@
         </button>
 
         <button
-            class="btn btn-outline-danger ml-auto"
+            class="btn btn-outline-warm-blue ml-auto"
             data-dismiss="modal"
             type="button"
             (click)="closeModal()"
@@ -347,9 +407,55 @@
     </div>
 </ng-template>
 
+<div class="table" id="summaryTable" #summaryTable [hidden]="isSummaryTableHidden">
+	<table class="table table-responsive table-flush">
+		<thead>
+			<tr>
+				<th>Kakitangan</th>
+				<th>Kad Pengenalan</th>
+				<th>Jawatan</th>
+				<th>Gred</th>
+				<th>Jabatan</th>
+				<th>Peperiksaan</th>
+				<th>Tarikh</th>
+				<th>Keputusan</th>
+				<th>Catatan</th>
+			</tr>
+		</thead>
 
-
-
-
-
-
+		<tbody>
+			<tr *ngFor="let row of tableRows">
+				<td>
+					{{row?.staff?.full_name}}
+				</td>
+				<td>
+					{{row?.staff.username}}
+				</td>
+				<td>
+					{{row?.staff.position}}
+				</td>
+				<td>
+					{{row?.staff.salary_code}}
+				</td>
+				<td>
+					{{row?.staff.department}}
+				</td>
+				<td>
+					[{{row?.exam.code}}] {{row?.exam.title}}
+				</td>
+				<td>
+					{{row?.date | date: 'd/M/y'}}
+				</td>
+				
+				<td>
+					<span *ngIf="row?.result == 'PA'">Lulus</span>
+					<span *ngIf="row?.result == 'FA'">Gagal</span>
+					<span *ngIf="row?.result == 'NA'">-</span>
+				</td>
+				<td>
+					{{row?.note}}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

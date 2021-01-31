@@ -1,8 +1,9 @@
 .auth-content {
     background-image: url("../../../assets/img/default/home.jpg");
     background-repeat: no-repeat;
+    background-attachment: fixed;
     -webkit-background-size: cover;
     background-size: cover; 
-    height: 100vh;
+    height: 90vh;
     overflow: hidden;
 }

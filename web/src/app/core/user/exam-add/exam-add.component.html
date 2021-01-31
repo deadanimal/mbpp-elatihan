@@ -1,11 +1,12 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
 <div class="header pb-6">
 	<div class="container-fluid">
 		<div class="header-body">
 			<div class="row align-items-center py-4">
 				<div class="col-lg-6 col-7">
-					<h6 class="h2 text-dark d-inline-block mb-0">Peperiksaan</h6>
+					<h6 class="h2 text-dark d-inline-block mb-0"><span (click)="checkForm()">Peperiksaan</span></h6>
 
-					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+					<nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
 						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
 							<li class=" breadcrumb-item">
 								<a href="javascript:void(0)"> <i class="fas fa-home text-dark"> </i> </a>
@@ -30,23 +31,27 @@
                         <div class="row">
                             <div class="col-md-12 col-lg-6">
                                 <div class="form-group">
-                                    <label class="form-control-label">Tajuk</label>
-                                    <input
-                                        class="form-control"
-                                        placeholder="Tajuk"
-                                        formControlName="title"
+                                    <label class="form-control-label">Jenis Peperiksaan <span class="text-warning">*</span></label>
+                                    <select
+                                        class="form-control custom-select"
+                                        [(ngModel)]="examTypeTemp"
+                                        [ngModelOptions]="{standalone: true}"
+                                        (change)="onClassificationChange($event.target.value)"
                                     >
+                                        <option *ngFor="let choice of choicesType" value="{{choice.value}}">{{choice.text}}</option>
+                                    </select>
                                 </div>
                             </div>
-    
+
                             <div class="col-md-12 col-lg-6">
                                 <div class="form-group">
-                                    <label class="form-control-label">Kod</label>
-                                    <input
-                                        class="form-control"
-                                        placeholder="Kod"
-                                        formControlName="code"
+                                    <label class="form-control-label">Peperiksaan <span class="text-warning">*</span></label>
+                                    <select
+                                        class="form-control custom-select"
+                                        formControlName="exam"
                                     >
+                                        <option *ngFor="let exam_ of examsTemp" value="{{exam_.id}}">[{{exam_.code}}] {{exam_.title}}</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -54,7 +59,7 @@
                         <div class="row">
                             <div class="col-md-12 col-lg-6">
                                 <div class="form-group">
-                                    <label class="form-control-label">Tarikh</label>
+                                    <label class="form-control-label">Tarikh <span class="text-warning">*</span></label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                           <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -64,6 +69,7 @@
                                             placeholder="12/12/2019"
                                             class="form-control"
                                             bsDatepicker
+                                            formControlName="date"
                                             [bsValue]="dateValue"
                                             [bsConfig]="dateConfig"
                                         >
@@ -73,7 +79,7 @@
     
                             <div class="col-md-12 col-lg-6">
                                 <div class="form-group">
-                                    <label class="form-control-label">Keputusan</label>
+                                    <label class="form-control-label">Keputusan <span class="text-warning">*</span></label>
                                     <select
                                         class="form-control custom-select"
                                         placeholder="Keputusan"
@@ -87,26 +93,54 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-12 col-lg-6">
-                                <div class="custom-file">
+                            <div class="col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <label class="form-control-label">Nota</label>
                                     <input
-                                      class="custom-file-input"
-                                      id="customFileLang"
-                                      lang="ms"
-                                      type="file"
-                                    />
-                    
-                                    <label class="custom-file-label" for="customFileLang">
-                                      Pilih dokumen
-                                    </label>
+                                        class="form-control"
+                                        placeholder="Nota"
+                                        formControlName="note"
+                                    >
                                 </div>
                             </div>
-                            
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Dokumen <span class="text-warning">*</span></label>
+                                    <div class="custom-file">
+                                        <input 
+                                            type="file" 
+                                            class="custom-file-input" 
+                                            id="lampiran" 
+                                            lang="en"
+                                            (change)="onFileChange($event)" 
+                                            accept=".pdf, image/*"
+                                            size="5"
+                                        >
+                                        <label class="custom-file-label" for="lampiran">Sila muat naik lampiran berkenaan</label>
+                                      </div>
+
+                                      <ng-container *ngIf="examForm.value['document_copy']">
+                                        <div>
+                                            <i 
+                                                class="fas fa-trash-alt text-warning mr-2"
+                                                placement="top" 
+                                                tooltip="Remove attachment"
+                                                (click)="removeFile()"
+                                            >
+                                            </i>
+                                            {{fileNameInformation}} [{{fileSizeInformation/1000000 | number: '1.2-2'}}MB]
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
                         </div>
     
                         <div class="text-right">
                             <button
-                                class="btn btn-primary"
+                                class="btn btn-warm-blue"
                                 (click)="confirm()"
                             >
                                 Daftar

@@ -1,0 +1,1041 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
+<div class="header pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-dark d-inline-block mb-0">Informasi Latihan</h6>
+
+                    <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class=" breadcrumb-item">
+                                <a href="javascript:void(0)"> <i class="fas fa-chalkboard-teacher text-dark"> </i> </a>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <!-- <div class="col-lg-6 col-5 text-right">
+                    <a
+                        class="btn btn-sm btn-warm-blue text-white" 
+                    > 
+                        Tambah Penganjur 
+                    </a>
+
+                    <a
+                        class="btn btn-sm btn-warm-blue text-white"
+                        (click)="openModal(addNoteModal)"
+                    > 
+                        Tambah Nota 
+                    </a>
+				</div> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <!-- Left column -->
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <div class="row">
+                        <div class="col my-auto">
+                            <h4 class="m-0">
+                                Informasi Latihan 
+                                <span *ngIf="training?.status == 'DB'" class="ml-2 badge badge-pill badge-default">Dibuka</span>
+                                <span *ngIf="training?.status == 'OT'" class="ml-2 badge badge-pill badge-primary">Lain-lain</span>
+                                <span *ngIf="training?.status == 'PN'" class="ml-2 badge badge-pill badge-info">Penuh</span>
+                                <span *ngIf="training?.status == 'SL'" class="ml-2 badge badge-pill badge-success">Selesai</span>
+                                <span *ngIf="training?.status == 'DT'" class="ml-2 badge badge-pill badge-danger">Ditutup</span>
+                                <span *ngIf="training?.status == 'TN'" class="ml-2 badge badge-pill badge-warning">Tangguh</span>
+        
+                                <span class="badge badge-pill badge-primary ml-2">{{training?.created_at | date: 'd/M/y, h:mm a'}}</span>
+                            </h4>
+                        </div>
+                        
+                        <div class="col text-right">
+                            <button
+                                class="btn btn-warm-blue"
+                                (click)="confirm()"
+                            >
+                                Daftar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h6 class="heading-small text-muted mb-4">Butiran</h6>
+                    <div class="form-group">
+                        <label class="form-control-label">Tajuk</label>
+                        <input class="form-control" value="[{{training?.course_code}}] {{training?.title}}" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-control-label">Deskripsi</label>
+                        <input class="form-control" value="{{training?.description}}" disabled>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Jenis Teras</label>
+                                <input *ngIf="training?.core.parent == 'GN'" class="form-control" value="GENERIK" disabled>
+                                <input *ngIf="training?.core.parent == 'FN'" class="form-control" value="FUNGSIONAL" disabled>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Teras</label>
+                                <input class="form-control" value="{{training?.core.child}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Lokasi</label>
+                                <input class="form-control" value="{{training?.venue}}" disabled>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Alamat Lokasi</label>
+                                <input class="form-control" value="{{training?.address}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+                    <h6 class="heading-small text-muted mb-4">Tarikh & Waktu</h6>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Tarikh Mula</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-secondary">
+                                            <i class="far fa-calendar-alt"></i>
+                                        </span>
+                                    </div>
+                                    <input type="text" class="form-control" value="{{training?.start_date | date: 'd/M/y'}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Waktu Mula</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-secondary">
+                                            <i class="far fa-clock"></i>
+                                        </span>
+                                    </div>
+                                    <input class="form-control" value="{{training?.start_time}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Tarikh Tamat</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-secondary">
+                                            <i class="far fa-calendar-alt"></i>
+                                        </span>
+                                    </div>
+                                    <input type="text" class="form-control" value="{{training?.end_date | date: 'd/M/y'}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Waktu Tamat</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-secondary">
+                                            <i class="far fa-clock"></i>
+                                        </span>
+                                    </div>
+                                    <input class="form-control" value="{{training?.end_time}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="checkTransportation" disabled [checked]="training?.transportation">
+                        <label class="custom-control-label" for="checkTransportation">Pengangkutan</label>
+                    </div>
+                    
+                    <hr class="my-4" />
+                    <h6 class="heading-small text-muted mb-4">Klasifikasi Latihan</h6>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Jenis Penganjur</label>
+                                <input *ngIf="training?.organiser_type == 'DD'" class="form-control" value="Dalaman" disabled>
+                                <input *ngIf="training?.organiser_type == 'LL'" class="form-control" value="Luaran" disabled>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Penganjur</label>
+                                <input class="form-control" value="{{training?.organiser.name}} ({{training?.organiser.shortname}})" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Jenis Latihan</label>
+                                <input class="form-control" value="{{training?.training_type.name}}" disabled>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Kaedah Latihan</label>
+                                <input *ngIf="training?.method == 'BS'" class="form-control" value="Bersemuka (offline)" disabled>
+                                <input *ngIf="training?.method == 'TB'" class="form-control" value="Tidak bersemuka (online)" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Anjuran Latihan</label>
+                                <input *ngIf="training?.country == 'DN'" class="form-control" value="Dalam negara" disabled>
+                                <input *ngIf="training?.country == 'LN'" class="form-control" value="Luar negara" disabled>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="form-control-label">Domain</label>
+                                <input class="form-control" value="{{training?.domain.name}}" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+                    <h6 class="heading-small text-muted mb-4">Klasifikasi Sasaran</h6>
+
+                    <div class="form-group">
+                        <label class="form-control-label">Kumpulan Sasaran</label>
+                        <div class="row">
+                            <div class="col">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="kumpulanA" [checked]="training?.is_group_KP_A" disabled>
+                                    <label class="custom-control-label" for="kumpulanA">Kumpulan A (Gred 41 dan ke atas)</label>
+                                </div>
+
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="kumpulanB" [checked]="training?.is_group_KP_B" disabled>
+                                    <label class="custom-control-label" for="kumpulanB">Kumpulan B (Gred 27 - 40)</label>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="kumpulanC" [checked]="training?.is_group_KP_C" disabled>
+                                    <label class="custom-control-label" for="kumpulanC">Kumpulan C (Gred 17 - 26)</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="kumpulanD" [checked]="training?.is_group_KP_D" disabled>
+                                    <label class="custom-control-label" for="kumpulanD">Kumpulan D (Gred 1 - 16)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="form-control-label">Jabatan Sasaran</label>
+                        <div class="row">
+                            <div class="col">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan11" [checked]="training?.is_department_11" disabled>
+                                    <label class="custom-control-label" for="jabatan11">Jabatan Khidmat Pengurusan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan15" [checked]="training?.is_department_15" disabled>
+                                    <label class="custom-control-label" for="jabatan15">Jabatan Penguatkuasaan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan21" [checked]="training?.is_department_21" disabled>
+                                    <label class="custom-control-label" for="jabatan21">Jabatan Perbendaharaan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan31" [checked]="training?.is_department_31" disabled>
+                                    <label class="custom-control-label" for="jabatan31">Jabatan Kejuruteraan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan41" [checked]="training?.is_department_41" disabled>
+                                    <label class="custom-control-label" for="jabatan41">Jabatan Kesihatan Persekitaran dan Pelesenan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan45" [checked]="training?.is_department_45" disabled>
+                                    <label class="custom-control-label" for="jabatan45">Jabatan Perkhidmatan dan Perbandaraan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan47" [checked]="training?.is_department_47" disabled>
+                                    <label class="custom-control-label" for="jabatan47">Jabatan Kesihatan Persekitaran dan Pelesenan - Pelesenan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan51" [checked]="training?.is_department_51" disabled>
+                                    <label class="custom-control-label" for="jabatan51">Jabatan Kawalan Bangunan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan55" [checked]="training?.is_department_55" disabled>
+                                    <label class="custom-control-label" for="jabatan55">Jabatan Konservasi Warisan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan61" [checked]="training?.is_department_61" disabled>
+                                    <label class="custom-control-label" for="jabatan61">Jabatan Penilaian dan Pengurusan Harta</label>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan63" [checked]="training?.is_department_63" disabled>
+                                    <label class="custom-control-label" for="jabatan63">Jabatan Pesuruhjaya Bangunan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan71" [checked]="training?.is_department_71" disabled>
+                                    <label class="custom-control-label" for="jabatan71">Jabatan Perancangan Pembangunan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan81" [checked]="training?.is_department_81" disabled>
+                                    <label class="custom-control-label" for="jabatan81">Jabatan Khidmat Kemasyarakatan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan86" [checked]="training?.is_department_86" disabled>
+                                    <label class="custom-control-label" for="jabatan86">Jabatan Landskap</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan90" [checked]="training?.is_department_90" disabled>
+                                    <label class="custom-control-label" for="jabatan90">Pejabat Datuk Bandar</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan91" [checked]="training?.is_department_91" disabled>
+                                    <label class="custom-control-label" for="jabatan91">Pejabat Datuk Bandar - Undang-undang</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan92" [checked]="training?.is_department_92" disabled>
+                                    <label class="custom-control-label" for="jabatan92">Pejabat Datuk Bandar - Penyelarasan Pembangunan</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan93" [checked]="training?.is_department_93" disabled>
+                                    <label class="custom-control-label" for="jabatan93">Pejabat Datuk Bandar - Audit Dalam</label>
+                                </div>
+    
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jabatan94" [checked]="training?.is_department_94" disabled>
+                                    <label class="custom-control-label" for="jabatan94">Pejabat Datuk Bandar - OSC</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-control-label">Jawatan Sasaran</label>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan01" [checked]="training?.is_position_01" disabled>
+                                    <label class="custom-control-label" for="jawatan01">Akauntan</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan02" [checked]="training?.is_position_02" disabled>
+                                    <label class="custom-control-label" for="jawatan02">Arkitek</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan03" [checked]="training?.is_position_03" disabled>
+                                    <label class="custom-control-label" for="jawatan03">Arkitek Landskap</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan04" [checked]="training?.is_position_04" disabled>
+                                    <label class="custom-control-label" for="jawatan04">Datuk Bandar</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan05" [checked]="training?.is_position_05" disabled>
+                                    <label class="custom-control-label" for="jawatan05">Juruaudio Visual</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan06" [checked]="training?.is_position_06" disabled>
+                                    <label class="custom-control-label" for="jawatan06">Juruaudit</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan07" [checked]="training?.is_position_07" disabled>
+                                    <label class="custom-control-label" for="jawatan07">Jururawat</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan08" [checked]="training?.is_position_08" disabled>
+                                    <label class="custom-control-label" for="jawatan08">Jururawat Masyarakat</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan09" [checked]="training?.is_position_09" disabled>
+                                    <label class="custom-control-label" for="jawatan09">Juruteknik Komputer</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan10" [checked]="training?.is_position_10" disabled>
+                                    <label class="custom-control-label" for="jawatan10">Jurutera</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan11" [checked]="training?.is_position_11" disabled>
+                                    <label class="custom-control-label" for="jawatan11">Juruukur Bahan</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan12" [checked]="training?.is_position_12" disabled>
+                                    <label class="custom-control-label" for="jawatan12">Pegawai Keselamatan</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan13" [checked]="training?.is_position_13" disabled>
+                                    <label class="custom-control-label" for="jawatan13">Pegawai Kesihatan Persekitaran</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan14" [checked]="training?.is_position_14" disabled>
+                                    <label class="custom-control-label" for="jawatan14">Pegawai Khidmat Pelanggan</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan15" [checked]="training?.is_position_15" disabled>
+                                    <label class="custom-control-label" for="jawatan15">Pegawai Penilaian</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan16" [checked]="training?.is_position_16" disabled>
+                                    <label class="custom-control-label" for="jawatan16">Pegawai Perancang Bandar dan Desa</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan17" [checked]="training?.is_position_17" disabled>
+                                    <label class="custom-control-label" for="jawatan17">Pegawai Pertanian</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan18" [checked]="training?.is_position_18" disabled>
+                                    <label class="custom-control-label" for="jawatan18">Pegawai Perubatan</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan19" [checked]="training?.is_position_19" disabled>
+                                    <label class="custom-control-label" for="jawatan19">Pegawai Tadbir</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan20" [checked]="training?.is_position_20" disabled>
+                                    <label class="custom-control-label" for="jawatan20">Pegawai Teknologi Maklumat</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan21" [checked]="training?.is_position_21" disabled>
+                                    <label class="custom-control-label" for="jawatan21">Pegawai Undang-undang</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan22" [checked]="training?.is_position_22" disabled>
+                                    <label class="custom-control-label" for="jawatan22">Pegawai Veterinar</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan23" [checked]="training?.is_position_23" disabled>
+                                    <label class="custom-control-label" for="jawatan23">Pegawai Pekerja Awam</label>
+                                </div>
+
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan24" [checked]="training?.is_position_24" disabled>
+                                    <label class="custom-control-label" for="jawatan24">Pelukis Pelan</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan25" [checked]="training?.is_position_25" disabled>
+                                    <label class="custom-control-label" for="jawatan25">Pelukis Pelan (Kejuruteraan Awam) / Penolong Jurutera</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan26" [checked]="training?.is_position_26" disabled>
+                                    <label class="custom-control-label" for="jawatan26">Pelukis Pelan (Seni Bina) / Penolong Pegawai Seni Bina</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan27" [checked]="training?.is_position_27" disabled>
+                                    <label class="custom-control-label" for="jawatan27">Pemandu Kenderaan</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan28" [checked]="training?.is_position_28" disabled>
+                                    <label class="custom-control-label" for="jawatan28">Pemandu Kenderaan Bermotor</label>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan29" [checked]="training?.is_position_29" disabled>
+                                    <label class="custom-control-label" for="jawatan29">Pembantu Awam</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan30" [checked]="training?.is_position_30" disabled>
+                                    <label class="custom-control-label" for="jawatan30">Pembantu Kemahiran</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan31" [checked]="training?.is_position_31" disabled>
+                                    <label class="custom-control-label" for="jawatan31">Pembantu Kesihatan Awam</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan32" [checked]="training?.is_position_32" disabled>
+                                    <label class="custom-control-label" for="jawatan32">Pembantu Operasi</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan33" [checked]="training?.is_position_33" disabled>
+                                    <label class="custom-control-label" for="jawatan33">Pembantu Penguatkuasa</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan34" [checked]="training?.is_position_34" disabled>
+                                    <label class="custom-control-label" for="jawatan34">Pembantu Penguatkuasa Rendah</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan35" [checked]="training?.is_position_35" disabled>
+                                    <label class="custom-control-label" for="jawatan35">Pembantu Penilaian</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan36" [checked]="training?.is_position_36" disabled>
+                                    <label class="custom-control-label" for="jawatan36">Pembantu Perawatan Kesihatan</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan37" [checked]="training?.is_position_37" disabled>
+                                    <label class="custom-control-label" for="jawatan37">Pembantu Setiausaha Pejabat / Setiausaha Pejabat</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan38" [checked]="training?.is_position_38" disabled>
+                                    <label class="custom-control-label" for="jawatan38">Pembantu Tadbir (Perkeranian / Operasi)</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan39" [checked]="training?.is_position_39" disabled>
+                                    <label class="custom-control-label" for="jawatan39">Pembantu Tadbir Kewangan</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan40" [checked]="training?.is_position_40" disabled>
+                                    <label class="custom-control-label" for="jawatan40">Pembantu Veterinar</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan41" [checked]="training?.is_position_41" disabled>
+                                    <label class="custom-control-label" for="jawatan41">Pembantu Keselamatan</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan42" [checked]="training?.is_position_42" disabled>
+                                    <label class="custom-control-label" for="jawatan42">Penghantar Notis</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan43" [checked]="training?.is_position_43" disabled>
+                                    <label class="custom-control-label" for="jawatan43">Penolong Akauntan</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan44" [checked]="training?.is_position_44" disabled>
+                                    <label class="custom-control-label" for="jawatan44">Penolong Arkitek Landskap</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan45" [checked]="training?.is_position_45" disabled>
+                                    <label class="custom-control-label" for="jawatan45">Penolong Pegawai Juruaudit</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan46" [checked]="training?.is_position_46" disabled>
+                                    <label class="custom-control-label" for="jawatan46">Penolong Pegawai Kesihatan Persekitaran</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan47" [checked]="training?.is_position_47" disabled>
+                                    <label class="custom-control-label" for="jawatan47">Penolong Pegawai Penguatkuasa</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan48" [checked]="training?.is_position_48" disabled>
+                                    <label class="custom-control-label" for="jawatan48">Penolong Penolong Penilaian</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan49" [checked]="training?.is_position_49" disabled>
+                                    <label class="custom-control-label" for="jawatan49">Penolong Pegawai Perancang Bandar dan Desa</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan50" [checked]="training?.is_position_50" disabled>
+                                    <label class="custom-control-label" for="jawatan50">Penolong Pegawai Pertanian</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan51" [checked]="training?.is_position_51" disabled>
+                                    <label class="custom-control-label" for="jawatan51">Penolong Pegawai Tadbir</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan52" [checked]="training?.is_position_52" disabled>
+                                    <label class="custom-control-label" for="jawatan52">Penolong Pegawai Teknologi Maklumat</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan53" [checked]="training?.is_position_53" disabled>
+                                    <label class="custom-control-label" for="jawatan53">Penolong Pegawai Undang-undang</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan54" [checked]="training?.is_position_54" disabled>
+                                    <label class="custom-control-label" for="jawatan54">Penolong Pegawai Veterinar</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan55" [checked]="training?.is_position_55" disabled>
+                                    <label class="custom-control-label" for="jawatan55">Pereka</label>
+                                </div>
+        
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="jawatan60" [checked]="training?.is_position_60" disabled>
+                                    <label class="custom-control-label" for="jawatan60">Setiausaha</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-control-label">Gred Sasaran</label>
+                        <div class="row">
+                            <div class="col">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaba19" [checked]="training?.is_ba19" disabled>
+                                    <label class="custom-control-label" for="sckemaba19">BA19</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemafa29" [checked]="training?.is_fa29" disabled>
+                                    <label class="custom-control-label" for="sckemafa29">FA29</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemafa32" [checked]="training?.is_fa32" disabled>
+                                    <label class="custom-control-label" for="sckemafa32">FA32</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemafa41" [checked]="training?.is_fa41" disabled>
+                                    <label class="custom-control-label" for="sckemafa41">FA41</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemafa44" [checked]="training?.is_fa44" disabled>
+                                    <label class="custom-control-label" for="sckemafa44">FA44</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemafa48" [checked]="training?.is_fa48" disabled>
+                                    <label class="custom-control-label" for="sckemafa48">FA48</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaft19" [checked]="training?.is_ft19" disabled>
+                                    <label class="custom-control-label" for="sckemaft19">FT19</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaga17" [checked]="training?.is_ga17" disabled>
+                                    <label class="custom-control-label" for="sckemaga17">GA17</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaga19" [checked]="training?.is_ga19" disabled>
+                                    <label class="custom-control-label" for="sckemaga19">GA19</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaga22" [checked]="training?.is_ga22" disabled>
+                                    <label class="custom-control-label" for="sckemaga22">GA22</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaga26" [checked]="training?.is_ga26" disabled>
+                                    <label class="custom-control-label" for="sckemaga26">GA26</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaga29" [checked]="training?.is_ga29" disabled>
+                                    <label class="custom-control-label" for="sckemaga29">GA29</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaga32" [checked]="training?.is_ga32" disabled>
+                                    <label class="custom-control-label" for="sckemaga32">GA32</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaga41" [checked]="training?.is_ga41" disabled>
+                                    <label class="custom-control-label" for="sckemaga41">GA41</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemagv41" [checked]="training?.is_gv41" disabled>
+                                    <label class="custom-control-label" for="sckemagv41">GV41</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaha11" [checked]="training?.is_ha11" disabled>
+                                    <label class="custom-control-label" for="sckemaha11">HA11</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaha14" [checked]="training?.is_ha14" disabled>
+                                    <label class="custom-control-label" for="sckemaha14">HA14</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaha16" [checked]="training?.is_ha16" disabled>
+                                    <label class="custom-control-label" for="sckemaha16">HA16</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaha19" [checked]="training?.is_ha19" disabled>
+                                    <label class="custom-control-label" for="sckemaha19">HA19</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaha22" [checked]="training?.is_ha22" disabled>
+                                    <label class="custom-control-label" for="sckemaha22">HA22</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaja19" [checked]="training?.is_ja19" disabled>
+                                    <label class="custom-control-label" for="sckemaja19">JA19</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaja22" [checked]="training?.is_ja22" disabled>
+                                    <label class="custom-control-label" for="sckemaja22">JA22</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaja29" [checked]="training?.is_ja29" disabled>
+                                    <label class="custom-control-label" for="sckemaja29">JA29</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaja36" [checked]="training?.is_ja36" disabled>
+                                    <label class="custom-control-label" for="sckemaja36">JA36</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaja38" [checked]="training?.is_ja38" disabled>
+                                    <label class="custom-control-label" for="sckemaja38">JA38</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaja40" [checked]="training?.is_ja40" disabled>
+                                    <label class="custom-control-label" for="sckemaja40">JA40</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaja41" [checked]="training?.is_ja41" disabled>
+                                    <label class="custom-control-label" for="sckemaja41">JA41</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaja44" [checked]="training?.is_ja44" disabled>
+                                    <label class="custom-control-label" for="sckemaja44">JA44</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaja48" [checked]="training?.is_ja48" disabled>
+                                    <label class="custom-control-label" for="sckemaja48">JA48</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaja52" [checked]="training?.is_ja52" disabled>
+                                    <label class="custom-control-label" for="sckemaja52">JA52</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaja54" [checked]="training?.is_ja54" disabled>
+                                    <label class="custom-control-label" for="sckemaja54">JA54</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemakp11" [checked]="training?.is_kp11" disabled>
+                                    <label class="custom-control-label" for="sckemakp11">KP11</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemakp14" [checked]="training?.is_kp14" disabled>
+                                    <label class="custom-control-label" for="sckemakp14">KP14</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemakp19" [checked]="training?.is_kp19" disabled>
+                                    <label class="custom-control-label" for="sckemakp19">KP19</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemakp22" [checked]="training?.is_kp22" disabled>
+                                    <label class="custom-control-label" for="sckemakp22">KP22</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemakp29" [checked]="training?.is_kp29" disabled>
+                                    <label class="custom-control-label" for="sckemakp29">KP29</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemakp32" [checked]="training?.is_kp32" disabled>
+                                    <label class="custom-control-label" for="sckemakp32">KP32</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemakp41" [checked]="training?.is_kp41" disabled>
+                                    <label class="custom-control-label" for="sckemakp41">KP41</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemala29" [checked]="training?.is_la29" disabled>
+                                    <label class="custom-control-label" for="sckemala29">LA29</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemala41" [checked]="training?.is_la41" disabled>
+                                    <label class="custom-control-label" for="sckemala41">LA41</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemala44" [checked]="training?.is_la44" disabled>
+                                    <label class="custom-control-label" for="sckemala44">LA44</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemala52" [checked]="training?.is_la52" disabled>
+                                    <label class="custom-control-label" for="sckemala52">LA52</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemala54" [checked]="training?.is_la54" disabled>
+                                    <label class="custom-control-label" for="sckemala54">LA54</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana01" [checked]="training?.is_na01" disabled>
+                                    <label class="custom-control-label" for="sckemana01">NA01</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana11" [checked]="training?.is_na11" disabled>
+                                    <label class="custom-control-label" for="sckemana11">NA11</label>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana14" [checked]="training?.is_na14" disabled>
+                                    <label class="custom-control-label" for="skemana14">NA14</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana17" [checked]="training?.is_na17" disabled>
+                                    <label class="custom-control-label" for="skemana17">NA17</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana19" [checked]="training?.is_na19" disabled>
+                                    <label class="custom-control-label" for="skemana19">NA19</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana22" [checked]="training?.is_na22" disabled>
+                                    <label class="custom-control-label" for="skemana22">NA22</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana26" [checked]="training?.is_na26" disabled>
+                                    <label class="custom-control-label" for="skemana26">NA26</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana29" [checked]="training?.is_na29" disabled>
+                                    <label class="custom-control-label" for="skemana29">NA29</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana30" [checked]="training?.is_na30" disabled>
+                                    <label class="custom-control-label" for="skemana30">NA30</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana32" [checked]="training?.is_na32" disabled>
+                                    <label class="custom-control-label" for="skemana32">NA32</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana36" [checked]="training?.is_na36" disabled>
+                                    <label class="custom-control-label" for="skemana36">NA36</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana41" [checked]="training?.is_na41" disabled>
+                                    <label class="custom-control-label" for="skemana41">NA41</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana44" [checked]="training?.is_na44" disabled>
+                                    <label class="custom-control-label" for="skemana44">NA44</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana48" [checked]="training?.is_na48" disabled>
+                                    <label class="custom-control-label" for="skemana48">NA48</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana52" [checked]="training?.is_na52" disabled>
+                                    <label class="custom-control-label" for="skemana52">NA52</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemana54" [checked]="training?.is_na54" disabled>
+                                    <label class="custom-control-label" for="skemana54">NA54</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemara01" [checked]="training?.is_ra01" disabled>
+                                    <label class="custom-control-label" for="skemara01">RA01</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemara03" [checked]="training?.is_ra03" disabled>
+                                    <label class="custom-control-label" for="skemara03">RA03</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaua11" [checked]="training?.is_ua11" disabled>
+                                    <label class="custom-control-label" for="skemaua11">UA11</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaua14" [checked]="training?.is_ua14" disabled>
+                                    <label class="custom-control-label" for="skemaua14">UA14</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaua17" [checked]="training?.is_ua17" disabled>
+                                    <label class="custom-control-label" for="skemaua17">UA17</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaua19" [checked]="training?.is_ua19" disabled>
+                                    <label class="custom-control-label" for="skemaua19">UA19</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaua24" [checked]="training?.is_ua24" disabled>
+                                    <label class="custom-control-label" for="skemaua24">UA24</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaua29" [checked]="training?.is_ua29" disabled>
+                                    <label class="custom-control-label" for="skemaua29">UA29</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaua32" [checked]="training?.is_ua32" disabled>
+                                    <label class="custom-control-label" for="skemaua32">UA32</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaua36" [checked]="training?.is_ua36" disabled>
+                                    <label class="custom-control-label" for="skemaua36">UA36</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaua41" [checked]="training?.is_ua41" disabled>
+                                    <label class="custom-control-label" for="skemaua41">UA41</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaud43" [checked]="training?.is_ud43" disabled>
+                                    <label class="custom-control-label" for="skemaud43">UD43</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaud48" [checked]="training?.is_ud48" disabled>
+                                    <label class="custom-control-label" for="skemaud48">UD48</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemaud52" [checked]="training?.is_ud52" disabled>
+                                    <label class="custom-control-label" for="skemaud52">UD52</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemavu06" [checked]="training?.is_vu06" disabled>
+                                    <label class="custom-control-label" for="skemavu06">VU06</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemavu07" [checked]="training?.is_vu07" disabled>
+                                    <label class="custom-control-label" for="skemavu07">VU07</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa17" [checked]="training?.is_wa17" disabled>
+                                    <label class="custom-control-label" for="skemawa17">WA17</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa19" [checked]="training?.is_wa19" disabled>
+                                    <label class="custom-control-label" for="skemawa19">WA19</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa22" [checked]="training?.is_wa22" disabled>
+                                    <label class="custom-control-label" for="skemawa22">WA22</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa26" [checked]="training?.is_wa26" disabled>
+                                    <label class="custom-control-label" for="skemawa26">WA26</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa28" [checked]="training?.is_wa28" disabled>
+                                    <label class="custom-control-label" for="skemawa28">WA28</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa29" [checked]="training?.is_wa29" disabled>
+                                    <label class="custom-control-label" for="skemawa29">WA29</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa32" [checked]="training?.is_wa32" disabled>
+                                    <label class="custom-control-label" for="skemawa32">WA32</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa36" [checked]="training?.is_wa36" disabled>
+                                    <label class="custom-control-label" for="skemawa36">WA36</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa41" [checked]="training?.is_wa41" disabled>
+                                    <label class="custom-control-label" for="skemawa41">WA41</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa44" [checked]="training?.is_wa44" disabled>
+                                    <label class="custom-control-label" for="skemawa44">WA44</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa48" [checked]="training?.is_wa48" disabled>
+                                    <label class="custom-control-label" for="skemawa48">WA48</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa52" [checked]="training?.is_wa52" disabled>
+                                    <label class="custom-control-label" for="skemawa52">WA52</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawa54" [checked]="training?.is_wa54" disabled>
+                                    <label class="custom-control-label" for="skemawa54">WA54</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawaa41" [checked]="training?.is_waa41" disabled>
+                                    <label class="custom-control-label" for="skemawaa41">WAA41</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="skemawaa44" [checked]="training?.is_waa44" disabled>
+                                    <label class="custom-control-label" for="skemawaa44">WAA44</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p>{{training?.schedule_notes}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

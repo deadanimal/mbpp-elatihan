@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit {
   getData() {
     forkJoin([
       this.attendanceService.getAll(),
-      this.examService.getAll(),
+      this.examService.getExams(),
       this.trainingService.getAll(),
       this.userService.getAll(),
       this.trainingService.getStatistics()

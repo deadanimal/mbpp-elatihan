@@ -22,12 +22,22 @@ class CustomUser(AbstractUser):
     email = models.CharField(blank=True, max_length=100)
     mobile = models.CharField(blank=True, max_length=12)
 
+    SERVICE_STATUS = [
+        ('K', 'Kontrak'),
+        ('S', 'Sementara'),
+        ('T', 'Tetap')
+    ]
+    service_status = models.CharField(
+        max_length=1,
+        choices=SERVICE_STATUS,
+        default='T'
+    )
+
     GENDER = [
         ('ML', 'Male'),
         ('FM', 'Female'),
         ('NA', 'Not Available')
     ]
-
     gender = models.CharField(
         max_length=2,
         choices=GENDER,
@@ -41,7 +51,6 @@ class CustomUser(AbstractUser):
         ('AD', 'Administrator'),
         ('TR', 'Trainer')
     ]
-
     user_type = models.CharField(
         max_length=2,
         choices=USER_TYPE,
@@ -49,46 +58,15 @@ class CustomUser(AbstractUser):
     )
 
     organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE, null=True)
-    service_status = models.CharField(blank=True, max_length=5)
 
-    appointed_at = models.DateTimeField(blank=True, null=True)
-    confirmed_at = models.DateTimeField(blank=True, null=True)
+    appointed_at = models.DateTimeField(null=True)
+    confirmed_at = models.DateTimeField(null=True)
 
     department_code = models.CharField(blank=True, max_length=5)
-    unit_code = models.CharField(blank=True, max_length=5)
-    grade = models.CharField(blank=True, max_length=100)
+    section_code = models.CharField(blank=True, max_length=5)
     grade_code = models.CharField(blank=True, max_length=10)
     position = models.CharField(blank=True, max_length=100)
     salary_code = models.CharField(blank=True, max_length=100)
-
-    DEPARTMENT = [
-        ('PDB', 'Pejabat Datuk Bandar'),
-        ('UUU', 'Unit Undang-undang'),
-        ('UAD', 'Unit Audit Dalam'),
-        ('UPP', 'Unit Penyelarasan Pembangunan'),
-        ('UPS', 'Unit Pusat Sehenti'),
-        ('JKP', 'Jabatan Khidmat Pengurusan'),
-        ('JKD', 'Jabatan Perbendaharaan'),
-        ('JPH', 'Jabatan Penilaian Pengurusan Harta'),
-        ('JPP', 'Jabatan Perancangan Pembangunan'),
-        ('JKJ', 'Jabatan Kejuruteraan'),
-        ('JKB', 'Jabatan Kawalan Bangunan'),
-        ('JKEA', 'Bahagian Kesihatan Awam'),
-        ('JKEB', 'Bahagian Pelesenan'),
-        ('JPR', 'Jabatan Perkhidmatan Perbandaraan'),
-        ('JKK', 'Jabatan Khidmat Kemasyarakatan'),
-        ('JKW', 'Jabatan Konservasi Warisan'),
-        ('JKL', 'Jabatan Lanskap'),
-        ('JPU', 'Jabatan Penguatkuasaan'),
-        ('JPB', 'Jabatan Pesuruhjaya Bangunan'),
-        ('NA', 'Not Available')
-    ]
-
-    department = models.CharField(
-        max_length=4,
-        choices=DEPARTMENT,
-        default='NA'
-    )
 
     MARITAL_TYPE = [
         ('BW', 'Berkahwin'),

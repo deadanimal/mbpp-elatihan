@@ -88,6 +88,18 @@ export class AuthService {
         // console.log('Username: ', this.username)
         // console.log('User ID: ', this.userID)
         // console.log('User type: ', this.userType)
+        if (this.userType == 'ST') {
+          this.userRole = 1
+        }
+        else if (this.userType == 'TC') {
+          this.userRole = 2
+        }
+        else if (this.userType == 'DC') {
+          this.userRole = 3
+        }
+        else if (this.userType == 'AD') {
+          this.userRole = 4
+        }
         this.jwtService.saveToken('accessToken', this.tokenAccess)
         this.jwtService.saveToken('refreshToken', this.tokenRefresh)
       })
@@ -126,13 +138,37 @@ export class AuthService {
   }
 
   getDetailByToken():Observable<any> {
-    console.log('getuserbytoken')
+    // console.log('getuserbytoken')
     let urlTemp = this.urlUser + 'current_user_detail'
+    let jwtHelper: JwtHelperService = new JwtHelperService()
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.userDetail = res
         this.isLogged = true
-        console.log('User detail', this.userDetail)
+        // console.log('User detail', this.userDetail)
+
+        this.tokenRefresh = this.jwtService.getToken('accessToken') as string
+        this.tokenAccess = this.jwtService.getToken('refreshToken') as string
+
+        let decodedToken = jwtHelper.decodeToken(this.tokenAccess)
+        this.email = decodedToken.email
+        this.username = decodedToken.username
+        this.userID = decodedToken.user_id
+        this.userType = decodedToken.user_type
+
+        if (this.userType == 'ST') {
+          this.userRole = 1
+        }
+        else if (this.userType == 'TC') {
+          this.userRole = 2
+        }
+        else if (this.userType == 'DC') {
+          this.userRole = 3
+        }
+        else if (this.userType == 'AD') {
+          this.userRole = 4
+        }
+        // console.log(this.userType, this.userRole)
       })
     )
   }
@@ -141,7 +177,7 @@ export class AuthService {
     let urlTemp = this.urlUser + this.userID + '/complete_first_login/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
-        console.log('Complete first login', res)
+        // console.log('Complete first login', res)
       })
     )
   }

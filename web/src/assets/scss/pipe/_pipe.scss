@@ -78,6 +78,32 @@
     box-shadow: 0 0 0 0 rgba(94, 114, 228, .5);
 }
 
+// Make a button look and behave like a link
+.btn-warm-blue-link {
+    font-weight: $font-weight-normal;
+    color: #364eb9 !important;
+    text-decoration: $link-decoration;
+  
+    @include hover {
+      color: #364eb9 !important;
+      text-decoration: $link-hover-decoration;
+    }
+  
+    &:focus,
+    &.focus {
+      text-decoration: $link-hover-decoration;
+      box-shadow: none;
+    }
+  
+    &:disabled,
+    &.disabled {
+      color: $btn-link-disabled-color;
+      pointer-events: none;
+    }
+  
+    // No need for an active state here
+}
+
 // Form
 .custom-select {
     display: inline-block;
@@ -146,4 +172,39 @@
 
 .bg-whitish {
     background-color: #ebebeb !important;
+}
+
+.navbar-brand-home {
+    padding: 0.5rem 0.5rem !important;
+}
+
+.error-message {
+    color: #fb6340;
+    text-align: right;
+    font-size: 0.8em;
+    padding-top: 5px;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+// Chart
+.chart-500 {
+    height: 500px !important;
+}
+
+// Datatable
+ngx-datatable {
+    &.ngx-datatable.bootstrap
+    .datatable-footer
+    .datatable-pager
+    ul
+    li:not(.disabled).active
+    a {
+        background-color: #364eb9; // $default;
+    }
+}
+
+// Icon
+.error-icon {
+    max-width: 5rem;
 }

@@ -1,0 +1,362 @@
+[
+    {
+        "department_code": "11",
+        "department": "JABATAN KHIDMAT PENGURUSAN",
+        "section_code": "111",
+        "section": "JABATAN KHIDMAT PENGURUSAN"
+    },
+    {
+        "department_code": "11",
+        "department": "JABATAN KHIDMAT PENGURUSAN",
+        "section_code": "11A",
+        "section": "JABATAN KHIDMAT PENGURUSAN - PENTADBIRAN DAN KEURUSETIAAN"
+    },
+    {
+        "department_code": "11",
+        "department": "JABATAN KHIDMAT PENGURUSAN",
+        "section_code": "11B",
+        "section": "JABATAN KHIDMAT PENGURUSAN - PENGURUSAN MODAL INSAN"
+    },
+    {
+        "department_code": "11",
+        "department": "JABATAN KHIDMAT PENGURUSAN",
+        "section_code": "11C",
+        "section": "JABATAN KHIDMAT PENGURUSAN - KOMUNIKASI KORPORAT DAN PERHUBUNGAN AWAM"
+    },
+    {
+        "department_code": "11",
+        "department": "JABATAN KHIDMAT PENGURUSAN",
+        "section_code": "11D",
+        "section": "JABATAN KHIDMAT PENGURUSAN - TEKNOLOGI MAKLUMAT"
+    },
+    {
+        "department_code": "11",
+        "department": "JABATAN KHIDMAT PENGURUSAN",
+        "section_code": "11E",
+        "section": "JABATAN KHIDMAT PENGURUSAN - KESELAMATAN"
+    },
+    {
+        "department_code": "15",
+        "department": "JABATAN PENGUATKUASAAN",
+        "section_code": "115",
+        "section": "JABATAN PENGUATKUASAAN"
+    },
+    {
+        "department_code": "21",
+        "department": "JABATAN PERBENDAHARAAN",
+        "section_code": "221",
+        "section": "JABATAN PERBENDAHARAAN"
+    },
+    {
+        "department_code": "21",
+        "department": "JABATAN PERBENDAHARAAN",
+        "section_code": "21A",
+        "section": "JABATAN PERBENDAHARAAN - AKAUN DAN HASIL"
+    },
+    {
+        "department_code": "21",
+        "department": "JABATAN PERBENDAHARAAN",
+        "section_code": "21B",
+        "section": "JABATAN PERBENDAHARAANC - KAWANGAN DAN BELANJAWAN"
+    },
+    {
+        "department_code": "21",
+        "department": "JABATAN PERBENDAHARAAN",
+        "section_code": "21C",
+        "section": "JABATAN PERBENDAHARAAN - LETAK KERETA"
+    },
+    {
+        "department_code": "31",
+        "department": "JABATAN KEJURUTERAAN",
+        "section_code": "331",
+        "section": "JABATAN KEJURUTERAAN"
+    },
+    {
+        "department_code": "31",
+        "department": "JABATAN KEJURUTERAAN",
+        "section_code": "31A",
+        "section": "JABATAN KEJURUTERAAN - LALULINTAS DAN PENGANGKUTAN AWAM"
+    },
+    {
+        "department_code": "31",
+        "department": "JABATAN KEJURUTERAAN",
+        "section_code": "31B",
+        "section": "JABATAN KEJURUTERAAN - MEKANIKAL DAN ELEKTRIKAL"
+    },
+    {
+        "department_code": "31",
+        "department": "JABATAN KEJURUTERAAN",
+        "section_code": "31C",
+        "section": "JABATAN KEJURUTERAAN - PENYELENGGARAAN"
+    },
+    {
+        "department_code": "31",
+        "department": "JABATAN KEJURUTERAAN",
+        "section_code": "31D",
+        "section": "JABATAN KEJURUTERAAN - GEOTEKNIKAL"
+    },
+    {
+        "department_code": "31",
+        "department": "JABATAN KEJURUTERAAN",
+        "section_code": "31E",
+        "section": "JABATAN KEJURUTERAAN - PENTADBIRAN"
+    },
+    {
+        "department_code": "41",
+        "department": "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN",
+        "section_code": "410",
+        "section": "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN"
+    },
+    {
+        "department_code": "41",
+        "department": "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN",
+        "section_code": "441",
+        "section": "BAHAGIAN KESIHATAN AWAM"
+    },
+    {
+        "department_code": "41",
+        "department": "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN",
+        "section_code": "41A",
+        "section": "BAHAGIAN KESIHATAN AWAM - PERKHIDMATAN VETERINAR"
+    },
+    {
+        "department_code": "41",
+        "department": "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN",
+        "section_code": "41B",
+        "section": "BAHAGIAN KESIHATAN AWAM - KESIHATAN AWAM"
+    },
+    {
+        "department_code": "41",
+        "department": "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN",
+        "section_code": "41C",
+        "section": "BAHAGIAN KESIHATAN AWAM - KLINIK"
+    },
+    {
+        "department_code": "41",
+        "department": "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN",
+        "section_code": "41D",
+        "section": "BAHAGIAN KESIHATAN AWAM - PENTADBIRAN"
+    },
+    {
+        "department_code": "45",
+        "department": "JABATAN PERKHIDMATAN DAN PERBANDARAN",
+        "section_code": "445",
+        "section": "JABATAN PERKHIDMATAN PERBANDARAN"
+    },
+    {
+        "department_code": "45",
+        "department": "JABATAN PERKHIDMATAN DAN PERBANDARAN",
+        "section_code": "45A",
+        "section": "JABATAN PERKHIDMATAN PERBANDARAN - PERKHIDMATAN PERBANDARAN (PEMBERSIHAN)"
+    },
+    {
+        "department_code": "45",
+        "department": "JABATAN PERKHIDMATAN DAN PERBANDARAN",
+        "section_code": "45B",
+        "section": "JABATAN PERKHIDMATAN PERBANDARAN - ZON PERINDUSTRIAN DAN PASAR-PASAR"
+    },
+    {
+        "department_code": "45",
+        "department": "JABATAN PERKHIDMATAN DAN PERBANDARAN",
+        "section_code": "45C",
+        "section": "JABATAN PERKHIDMATAN PERBANDARAN - PENTADBIRAN"
+    },
+    {
+        "department_code": "47",
+        "department": "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN",
+        "section_code": "447",
+        "section": "BAHAGIAN PELESENAN"
+    },
+    {
+        "department_code": "47",
+        "department": "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN",
+        "section_code": "47A",
+        "section": "BAHAGIAN PELESENAN - PELESENAN"
+    },
+    {
+        "department_code": "47",
+        "department": "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN",
+        "section_code": "47B",
+        "section": "BAHAGIAN PELESENAN - PERNIAGAAN KECIL"
+    },
+    {
+        "department_code": "47",
+        "department": "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN",
+        "section_code": "47C",
+        "section": "BAHAGIAN PELESENAN - TRED PERNIAGAAN INDUSTRI DAN MAKANAN"
+    },
+    {
+        "department_code": "51",
+        "department": "JABATAN KAWALAN BANGUNAN",
+        "section_code": "551",
+        "section": "JABATAN KAWALAN BANGUNAN"
+    },
+    {
+        "department_code": "51",
+        "department": "JABATAN KAWALAN BANGUNAN",
+        "section_code": "51A",
+        "section": "JABATAN KAWALAN BANGUNAN - SENIBINA DAN KEMAJUAN"
+    },
+    {
+        "department_code": "51",
+        "department": "JABATAN KAWALAN BANGUNAN",
+        "section_code": "51B",
+        "section": "JABATAN KAWALAN BANGUNAN - KAWALAN BANGUNAN"
+    },
+    {
+        "department_code": "51",
+        "department": "JABATAN KAWALAN BANGUNAN",
+        "section_code": "51C",
+        "section": "JABATAN KAWALAN BANGUNAN - PENTADBIRAN"
+    },
+    {
+        "department_code": "55",
+        "department": "JABATAN KONSERVASI WARISAN",
+        "section_code": "555",
+        "section": "JABATAN KONSERVASI WARISAN"
+    },
+    {
+        "department_code": "55",
+        "department": "JABATAN KONSERVASI WARISAN",
+        "section_code": "55A",
+        "section": "JABATAN KONSERVASI WARISAN - PENYELIDIKAN DAN PEMBANGUNAN (RnD)"
+    },
+    {
+        "department_code": "61",
+        "department": "JABATAN PENILAIAN DAN PENGURUSAN HARTA",
+        "section_code": "661",
+        "section": "JABATAN PENILAIAN DAN PENGURUSAN HARTA"
+    },
+    {
+        "department_code": "61",
+        "department": "JABATAN PENILAIAN DAN PENGURUSAN HARTA",
+        "section_code": "61A",
+        "section": "JABATAN PENILAIAN DAN PENGURUSAN HARTA - PENTADBIRAN"
+    },
+    {
+        "department_code": "61",
+        "department": "JABATAN PENILAIAN DAN PENGURUSAN HARTA",
+        "section_code": "61B",
+        "section": "JABATAN PENILAIAN DAN PENGURUSAN HARTA - PENILAIAN"
+    },
+    {
+        "department_code": "61",
+        "department": "JABATAN PENILAIAN DAN PENGURUSAN HARTA",
+        "section_code": "61C",
+        "section": "JABATAN PENILAIAN DAN PENGURUSAN HARTA - PENGURUSAN HARTA"
+    },
+    {
+        "department_code": "63",
+        "department": "JABATAN PESURUHJAYA BANGUNAN",
+        "section_code": "663",
+        "section": "BAHAGIAN PESURUHJAYA BANGUNAN"
+    },
+    {
+        "department_code": "71",
+        "department": "JABATAN PERANCANGAN PEMBANGUNAN",
+        "section_code": "771",
+        "section": "JABATAN PERANCANGAN PEMBANGUNAN"
+    },
+    {
+        "department_code": "71",
+        "department": "JABATAN PERANCANGAN PEMBANGUNAN",
+        "section_code": "71A",
+        "section": "JABATAN PERANCANGAN PEMBANGUNAN - PERANCANGAN PEMAJUAN"
+    },
+    {
+        "department_code": "71",
+        "department": "JABATAN PERANCANGAN PEMBANGUNAN",
+        "section_code": "71B",
+        "section": "JABATAN PERANCANGAN PEMBANGUNAN - KAWALAN PEMAJUAN"
+    },
+    {
+        "department_code": "71",
+        "department": "JABATAN PERANCANGAN PEMBANGUNAN",
+        "section_code": "71C",
+        "section": "JABATAN PERANCANGAN PEMBANGUNAN - PENYELIDIKAN PROJEK/GIS"
+    },
+    {
+        "department_code": "71",
+        "department": "JABATAN PERANCANGAN PEMBANGUNAN",
+        "section_code": "71D",
+        "section": "JABATAN PERANCANGAN PEMBANGUNAN - PENTADBIRAN"
+    },
+    {
+        "department_code": "81",
+        "department": "JABATAN KHIDMAT KEMASYARAKATAN ",
+        "section_code": "881",
+        "section": "JABATAN KHIDMAT KEMASYARAKATAN"
+    },
+    {
+        "department_code": "81",
+        "department": "JABATAN KHIDMAT KEMASYARAKATAN ",
+        "section_code": "81A",
+        "section": "JABATAN KHIDMAT KEMASYARAKATAN - PERINDUSTRIAN DAN REKREASI"
+    },
+    {
+        "department_code": "81",
+        "department": "JABATAN KHIDMAT KEMASYARAKATAN ",
+        "section_code": "81B",
+        "section": "JABATAN KHIDMAT KEMASYARAKATAN - SUKAN, KEBUDAYAAN & PELANCONGAN"
+    },
+    {
+        "department_code": "86",
+        "department": "JABATAN LANDSKAP",
+        "section_code": "886",
+        "section": "JABATAN LANDSKAP"
+    },
+    {
+        "department_code": "90",
+        "department": "PEJABAT DATUK BANDAR",
+        "section_code": "990",
+        "section": "PEJABAT DATUK BANDAR"
+    },
+    {
+        "department_code": "91",
+        "department": "PEJABAT DATUK BANDAR",
+        "section_code": "991",
+        "section": "UNIT UNDANG-UNDANG"
+    },
+    {
+        "department_code": "91",
+        "department": "PEJABAT DATUK BANDAR",
+        "section_code": "91A",
+        "section": "UNIT UNDANG-UNDANG - PENDAKWAAN"
+    },
+    {
+        "department_code": "91",
+        "department": "PEJABAT DATUK BANDAR",
+        "section_code": "91B",
+        "section": "UNIT UNDANG-UNDANG - SIVIL"
+    },
+    {
+        "department_code": "91",
+        "department": "PEJABAT DATUK BANDAR",
+        "section_code": "91C",
+        "section": "UNIT UNDANG-UNDANG - PENTADBIRAN"
+    },
+    {
+        "department_code": "91",
+        "department": "PEJABAT DATUK BANDAR",
+        "section_code": "91D",
+        "section": "UNIT UNDANG-UNDANG - LEMBAGA RAYUAN DAN KONTRAK"
+    },
+    {
+        "department_code": "92",
+        "department": "PEJABAT DATUK BANDAR",
+        "section_code": "992",
+        "section": "UNIT PENYELARASAN PEMBANGUNAN"
+    },
+    {
+        "department_code": "93",
+        "department": "PEJABAT DATUK BANDAR",
+        "section_code": "993",
+        "section": "UNIT AUDIT DALAM"
+    },
+    {
+        "department_code": "94",
+        "department": "PEJABAT DATUK BANDAR",
+        "section_code": "994",
+        "section": "UNIT PUSAT SEHENTI (OSC)"
+    }
+]

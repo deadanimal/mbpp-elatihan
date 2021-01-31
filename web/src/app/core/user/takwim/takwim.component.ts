@@ -11,6 +11,10 @@ import swal from 'sweetalert2';
 import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interaction from '@fullcalendar/interaction';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
+import { TrainingExtended } from 'src/app/shared/services/trainings/trainings.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-takwim',
@@ -19,13 +23,16 @@ import interaction from '@fullcalendar/interaction';
 })
 export class TakwimComponent implements OnInit {
 
-  addModal: BsModalRef;
-  editModal: BsModalRef;
-  @ViewChild('modalAdd') modalAdd: ElementRef;
-  @ViewChild('modalEdit') modalEdit: ElementRef;
+  // Data
+  trainings: TrainingExtended[] = []
+  selectedTraining: any
+
+  // Calendar
+  viewModal: BsModalRef;
+  @ViewChild('modalView') modalView: ElementRef;
   default = {
     keyboard: true,
-    class: 'modal-dialog-centered modal-secondary'
+    class: 'modal-dialog-centered modal-secondary modal-lg'
   };
   radios = 'bg-danger';
   eventTitle = undefined;
@@ -42,11 +49,45 @@ export class TakwimComponent implements OnInit {
   events = []
 
   constructor(
-    private modalService: BsModalService
+    private trainingService: TrainingsService,
+    private modalService: BsModalService,
+    private loadingBar: LoadingBarService,
+    private router: Router
   ) { }
 
   ngOnInit() {
-    this.initCalendar()
+    // this.initCalendar()
+    this.getData()
+  }
+
+  getData() {
+    this.loadingBar.start()
+    this.trainingService.getAllExtended().subscribe(
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        this.trainings = this.trainingService.trainingsExtended
+        this.trainings.forEach(
+          (training: TrainingExtended) => {
+            training['start'] = training['start_date']
+            training['end'] = training['end_date']
+            training['allDay'] = true
+            training['className'] = 'bg-orange'
+            if (training['organiser_type'] == 'DD') {
+              training['className'] = 'bg-green'
+            }
+            else if (training['organiser_type'] == 'LL') {
+              training['className'] = 'bg-blue'
+            }
+          }
+        )
+        this.initCalendar()
+      }
+    )
   }
 
   changeView(newView) {
@@ -55,12 +96,15 @@ export class TakwimComponent implements OnInit {
   }
 
   initCalendar() {
+    if (this.calendar) {
+      delete this.calendar
+    }
     this.calendar = new Calendar(document.getElementById('calendar'), {
       plugins: [interaction, dayGridPlugin],
       defaultView: 'dayGridMonth',
       selectable: true,
       editable: true,
-      events: this.events,
+      events: this.trainings,
       header: {
         left:   '',
         center: 'title',
@@ -78,111 +122,39 @@ export class TakwimComponent implements OnInit {
           titleFormat: { month: 'short', year: 'numeric', day: 'numeric' }
         }
       },
-      // Add new event
-      select: info => {
-        this.addModal = this.modalService.show(this.modalAdd, this.default);
-        this.startDate = info.startStr;
-        this.endDate = info.endStr;
-      },
       // Edit calendar event action
       eventClick: ({ event }) => {
         this.eventId = event.id;
         this.eventTitle = event.title;
         this.eventDescription = event.extendedProps.description;
         this.radios = 'bg-danger';
-        this.event = event;
-        this.editModal = this.modalService.show(this.modalEdit, this.default);
+        this.selectedTraining = event
+        console.log('aa', this.selectedTraining)
+        this.viewModal = this.modalService.show(this.modalView, this.default);
       }
     });
     this.calendar.render();
   }
 
-  getNewEventTitle(e) {
-    this.eventTitle = e.target.value;
+  closeModal() {
+    this.viewModal.hide()
+    delete this.selectedTraining
   }
 
-  getNewEventDescription(e) {
-    this.eventDescription = e.target.value;
+  applyTraining(id) {
+    
   }
 
-  addNewEvent() {
-    this.events.push({
-      title: this.eventTitle,
-      start: this.startDate,
-      end: this.endDate,
-      className: this.radios,
-      id: this.events.length
-    });
-    this.calendar.addEvent({
-      title: this.eventTitle,
-      start: this.startDate,
-      end: this.endDate,
-      className: this.radios,
-      id: this.events.length
-    });
-    this.addModal.hide();
-    this.radios = 'bg-danger';
-    (this.eventTitle = undefined),
-      (this.eventDescription = undefined),
-      (this.eventId = undefined),
-      (this.event = undefined);
-  }
-
-  deleteEventSweetAlert() {
-    this.editModal.hide();
-    swal
-      .fire({
-        title: 'Are you sure?',
-        text: 'You won\'t be able to revert this!',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonClass: 'btn btn-danger',
-        cancelButtonClass: 'btn btn-secondary',
-        confirmButtonText: 'Yes, delete it!',
-        buttonsStyling: false
-      })
-      .then(result => {
-        if (result.value) {
-          this.events = this.events.filter(
-            prop => prop.id + '' !== this.eventId
-          );
-          this.initCalendar();
-          swal.fire({
-            title: 'Deleted!',
-            text: 'Your file has been deleted.',
-            type: 'success',
-            confirmButtonClass: 'btn btn-primary',
-            buttonsStyling: false
-          });
-        }
-      });
-    this.radios = 'bg-danger';
-    (this.eventTitle = undefined),
-      (this.eventDescription = undefined),
-      (this.eventId = undefined),
-      (this.event = undefined);
-  }
-  
-  updateEvent() {
-    this.events = this.events.map((prop, key) => {
-      if (prop.id + '' === this.eventId + '') {
-        return {
-          ...prop,
-          title: this.eventTitle,
-          className: this.radios,
-          description: this.eventDescription
-        };
-      } else {
-        return prop;
+  viewInformation(id) {
+    let path = '/trainings/information'
+    let extras = id
+    let queryParams = {
+      queryParams: {
+        id: extras
       }
-    });
-    this.radios = 'bg-danger';
-    (this.eventTitle = undefined),
-      (this.eventDescription = undefined),
-      (this.eventId = undefined),
-      (this.event = undefined);
-    this.initCalendar();
-    this.editModal.hide();
+    }
+    this.router.navigate([path], queryParams)
+    this.closeModal()
   }
 
 }

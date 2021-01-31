@@ -4,14 +4,20 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { forkJoin } from 'rxjs';
 import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
+import { Configuration } from 'src/app/shared/services/configurations/configurations.model';
+import { ConfigurationsService } from 'src/app/shared/services/configurations/configurations.service';
 import { Core } from 'src/app/shared/services/cores/cores.model';
 import { CoresService } from 'src/app/shared/services/cores/cores.service';
 import { Domain } from 'src/app/shared/services/domains/domains.model';
 import { DomainsService } from 'src/app/shared/services/domains/domains.service';
+import { Exam } from 'src/app/shared/services/exams/exams.model';
+import { ExamsService } from 'src/app/shared/services/exams/exams.service';
 import { Organisation } from 'src/app/shared/services/organisations/organisations.model';
 import { OrganisationsService } from 'src/app/shared/services/organisations/organisations.service';
 import { Trainer } from 'src/app/shared/services/trainers/trainers.model';
 import { TrainersService } from 'src/app/shared/services/trainers/trainers.service';
+import { TrainingType } from 'src/app/shared/services/trainings/trainings.model';
+import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
 
 export enum SelectionType {
   single = "single",
@@ -33,9 +39,14 @@ export class ConfigurationComponent implements OnInit {
   domains: Domain[] = []
   organisations: Organisation[] = []
   trainers: Trainer[] = []
+  trainingTypes: TrainingType[] = []
   coreSelected
   domainSelected
   organisationSelected
+  typeSelected
+  configuration: Configuration
+  exams: Exam[] = []
+  examSelected
 
   // Table
   SelectionType = SelectionType;
@@ -43,6 +54,12 @@ export class ConfigurationComponent implements OnInit {
     emptyMessage: 'Tiada rekod dijumpai',
     totalMessage: 'rekod'
   }
+  // Types
+  tableTypeEntries: number = 5
+  tableTypeSelected: any[] = []
+  tableTypeTemp = []
+  tableTypeActiveRow: any
+  tableTypeRows: any = []
   // Cores
   tableCoreEntries: number = 5
   tableCoreSelected: any[] = []
@@ -67,12 +84,20 @@ export class ConfigurationComponent implements OnInit {
   tableTrainerTemp = []
   tableTrainerActiveRow: any
   tableTrainerRows: any = []
+  // Exams
+  tableExamEntries: number = 5
+  tableExamSelected: any[] = []
+  tableExamTemp = []
+  tableExamActiveRow: any
+  tableExamRows: any = []
   
   // Checker
+  isTypeEmpty: boolean = true
   isCoreEmpty: boolean = true
   isDomainEmpty: boolean = true
   isOrganisationEmpty: boolean = true
   isTrainerEmpty: boolean = true
+  isExamEmpty: boolean = true
 
   // Icon
   iconEmpty = 'assets/img/icons/box.svg'
@@ -85,10 +110,13 @@ export class ConfigurationComponent implements OnInit {
   };
 
   // Form
+  typeForm: FormGroup
   coreForm: FormGroup
   domainForm: FormGroup
   organisationForm: FormGroup
   trainerForm: FormGroup
+  examForm: FormGroup
+  configurationForm: FormGroup
 
   // Choices
   coreChoices = [
@@ -99,13 +127,21 @@ export class ConfigurationComponent implements OnInit {
     { value: 'SP', text: 'Penceramah' },
     { value: 'FC', text: 'Fasilitator' }
   ]
+  examChoices = [
+    { text: 'FAEDAH KEWANGAN', value: 'FKW' },
+    { text: 'PENGESAHAN DALAM PERKHIDMATAN', value: 'PDP' },
+    { text: 'PEPERIKSAAN PENINGKATAN SECARA LANTIKAN (PSL)', value: 'PSL' }
+  ]
 
 
   constructor(
     private coreService: CoresService,
+    private configurationService: ConfigurationsService,
     private domainService: DomainsService,
+    private examService: ExamsService,
     private organisationService: OrganisationsService,
     private trainerService: TrainersService,
+    private trainingService: TrainingsService,
     private fb: FormBuilder,
     private loadingBar: LoadingBarService,
     private modalService: BsModalService,
@@ -124,7 +160,10 @@ export class ConfigurationComponent implements OnInit {
       this.coreService.getAll(),
       this.domainService.getDomains(),
       this.organisationService.getAll(),
-      this.trainerService.getTrainers()
+      this.trainerService.getTrainers(),
+      this.trainingService.getTrainingTypes(),
+      this.configurationService.getAll(),
+      this.examService.getExamList()
     ]).subscribe(
       () => {
         this.loadingBar.complete()
@@ -137,6 +176,23 @@ export class ConfigurationComponent implements OnInit {
         this.domains = this.domainService.domains
         this.organisations = this.organisationService.organisations
         this.trainers = this.trainerService.trainers
+        this.trainingTypes = this.trainingService.trainingTypes
+        this.exams = this.examService.exams
+
+        this.tableTypeRows = this.trainingTypes
+        this.tableTypeTemp = this.tableTypeRows.map((prop, key) => {
+          return {
+            ...prop,
+            id_index: key+1
+          };
+        });
+
+        if (this.tableTypeTemp.length >= 1) {
+          this.isTypeEmpty = false
+        }
+        else {
+          this.isTypeEmpty = true
+        }
 
         this.tableCoreRows = this.cores
         this.tableCoreTemp = this.tableCoreRows.map((prop, key) => {
@@ -197,22 +253,61 @@ export class ConfigurationComponent implements OnInit {
         else {
           this.isTrainerEmpty = true
         }
+
+        this.tableExamRows = this.exams
+        this.tableExamTemp = this.tableExamRows.map((prop, key) => {
+          return {
+            ...prop,
+            id_index: key+1
+          };
+        });
+
+        if (this.tableExamTemp.length >= 1) {
+          this.isExamEmpty = false
+        }
+        else {
+          this.isExamEmpty = true
+        }
+
+        this.configurationService.configurations.forEach(
+          (configuration: Configuration) => {
+            if (configuration['slug'] == 'current_budget') {
+              this.configuration = configuration
+              this.configurationForm.controls['value'].setValue(this.configuration['value'])
+            }
+          }
+        )
       }
     )
   }
 
   initForm() {
+    this.typeForm = this.fb.group({
+      name: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      active: new FormControl(true, Validators.compose([
+        Validators.required
+      ]))
+    })
+
     this.coreForm = this.fb.group({
       parent: new FormControl(null, Validators.compose([
         Validators.required
       ])),
       child: new FormControl(null, Validators.compose([
         Validators.required
+      ])),
+      active: new FormControl(true, Validators.compose([
+        Validators.required
       ]))
     })
 
     this.domainForm = this.fb.group({
       name: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      active: new FormControl(true, Validators.compose([
         Validators.required
       ]))
     })
@@ -222,6 +317,9 @@ export class ConfigurationComponent implements OnInit {
         Validators.required
       ])),
       shortname: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      active: new FormControl(true, Validators.compose([
         Validators.required
       ]))
     })
@@ -240,6 +338,30 @@ export class ConfigurationComponent implements OnInit {
         Validators.required
       ]))
     })
+
+    this.examForm = this.fb.group({
+      title: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      code: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      classification: new FormControl('FKW', Validators.compose([
+        Validators.required
+      ])),
+      organiser: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      active: new FormControl(true, Validators.compose([
+        Validators.required
+      ]))
+    })
+
+    this.configurationForm = this.fb.group({
+      value: new FormControl(0, Validators.compose([
+        Validators.required
+      ]))
+    })
   }
 
   openModalAdd(modalRef: TemplateRef<any>) {
@@ -249,7 +371,11 @@ export class ConfigurationComponent implements OnInit {
   openModalPatch(modalRef: TemplateRef<any>, row, type) {
     this.modal = this.modalService.show(modalRef, this.modalConfig);
 
-    if (type == 'cores') {
+    if (type == 'types') {
+      this.typeForm.controls['name'].setValue(row['name'])
+      this.typeSelected = row
+    }
+    else if (type == 'cores') {
       this.coreForm.controls['parent'].setValue(row['parent'])
       this.coreForm.controls['child'].setValue(row['child'])
       this.coreSelected = row
@@ -263,42 +389,77 @@ export class ConfigurationComponent implements OnInit {
       this.organisationForm.controls['shortname'].setValue(row['shortname'])
       this.organisationSelected = row
     }
+    else if (type == 'configurations') {
+      this.configurationForm.controls['value'].setValue(row['value'])
+    }
+    else if (type == 'exams') {
+      this.examForm.controls['title'].setValue(row['title'])
+      this.examForm.controls['code'].setValue(row['code'])
+      this.examForm.controls['classification'].setValue(row['classification'])
+      this.examForm.controls['organiser'].setValue(row['organiser'])
+      this.examForm.controls['active'].setValue(row['active'])
+      this.examSelected = row
+    }
   }
 
   closeModal(type) {
-    if (type == 'core') {
+    if (type == 'types') {
+      this.typeForm.controls['name'].patchValue(null)
+    }
+    else if (type == 'cores') {
       this.coreForm.controls['parent'].patchValue(null)
       this.coreForm.controls['child'].patchValue(null)
     }
-    else if (type == 'domain') {
+    else if (type == 'domains') {
       this.domainForm.controls['name'].patchValue(null)
     }
-    else if (type == 'organisation') {
+    else if (type == 'organisations') {
       this.organisationForm.controls['name'].patchValue(null)
       this.organisationForm.controls['shortname'].patchValue(null)
+    }
+    else if (type == 'configurations') {
+      this.configurationForm.controls['value'].patchValue(0)
+    }
+    else if (type == 'exams') {
+      this.examForm.controls['title'].patchValue(null)
+      this.examForm.controls['code'].patchValue(null)
+      this.examForm.controls['classification'].patchValue('FKW')
+      this.examForm.controls['organiser'].patchValue(null)
+      this.examForm.controls['active'].patchValue(true)
     }
     this.modal.hide()
     // this.organisationForm.reset()
   }
 
   entriesChange($event, type) {
-    if (type == 'cores') {
+    if (type == 'types') {
+      this.tableTypeEntries = $event.target.value;
+    }
+    else if (type == 'cores') {
       this.tableCoreEntries = $event.target.value;
     }
     else if (type == 'domains') {
       this.tableDomainEntries = $event.target.value;
     }
-    else if (type == 'cores') {
-      this.tableCoreEntries = $event.target.value;
+    else if (type == 'organisations') {
+      this.tableOrganisationEntries = $event.target.value;
     }
-    else if (type == 'cores') {
-      this.tableCoreEntries = $event.target.value;
+    else if (type == 'trainers') {
+      this.tableTrainerEntries = $event.target.value;
+    }
+    else if (type == 'exams') {
+      this.tableExamEntries = $event.target.value;
     }
   }
 
   filterTable($event, type) {
     let val = $event.target.value.toLowerCase();
-    if (type == 'cores') {
+    if (type == 'types') {
+      this.tableTypeTemp = this.tableTypeRows.filter(function(d) {
+        return d.name.toLowerCase().indexOf(val) !== -1 || !val;
+      });
+    }
+    else if (type == 'cores') {
       this.tableCoreTemp = this.tableCoreRows.filter(function(d) {
         return d.child.toLowerCase().indexOf(val) !== -1 || !val;
       });
@@ -318,10 +479,19 @@ export class ConfigurationComponent implements OnInit {
         return d.name.toLowerCase().indexOf(val) !== -1 || !val;
       });
     }
+    else if (type == 'exams') {
+      this.tableExamTemp = this.tableExamRows.filter(function(d) {
+        return d.title.toLowerCase().indexOf(val) !== -1 || !val;
+      });
+    }
   }
 
   onSelect({ selected }, type) {
-    if (type == 'cores') {
+    if (type == 'types') {
+      this.tableTypeSelected.splice(0, this.tableTypeSelected.length);
+      this.tableTypeSelected.push(...selected);
+    }
+    else if (type == 'cores') {
       this.tableCoreSelected.splice(0, this.tableCoreSelected.length);
       this.tableCoreSelected.push(...selected);
     }
@@ -337,10 +507,17 @@ export class ConfigurationComponent implements OnInit {
       this.tableTrainerSelected.splice(0, this.tableTrainerSelected.length);
       this.tableTrainerSelected.push(...selected);
     }
+    else if (type == 'exams') {
+      this.tableExamSelected.splice(0, this.tableExamSelected.length);
+      this.tableExamSelected.push(...selected);
+    }
   }
 
   onActivate(event, type) {
-    if (type == 'cores') {
+    if (type == 'types') {
+      this.tableTypeActiveRow = event.row;
+    }
+    else if (type == 'cores') {
       this.tableCoreActiveRow = event.row;
     }
     else if (type == 'domains') {
@@ -352,6 +529,55 @@ export class ConfigurationComponent implements OnInit {
     else if (type == 'trainers') {
       this.tableTrainerActiveRow = event.row;
     }
+    else if (type == 'exams') {
+      this.tableExamActiveRow = event.row;
+    }
+  }
+
+  addType() {
+    // console.log('masuk')
+    this.loadingBar.start()
+    this.trainingService.createTrainingType(this.typeForm.value).subscribe(
+      () => {
+        let title = 'Berjaya'
+        let message = 'Jenis latihan berjaya ditambah.'
+        this.notifyService.openToastr(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        let title = 'Tidak berjaya'
+        let message = 'Anda tidak berjaya untuk menambah jenis latihan. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        this.getData()
+        this.closeModal('types')
+      }
+    )
+  }
+
+  patchType() {
+    this.loadingBar.start()
+    this.trainingService.updateTrainingType(this.typeSelected['id'], this.typeForm.value).subscribe(
+      () => {
+        let title = 'Berjaya'
+        let message = 'Jenis latihan berjaya dikemaskini'
+        this.notifyService.openToastr(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        let title = 'Tidak berjaya'
+        let message = 'Jenis latihan tidak berjaya dikemaskini. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        delete this.typeSelected
+        this.closeModal('types')
+        this.getData()
+      }
+    )
   }
 
   addCore() {
@@ -366,11 +592,11 @@ export class ConfigurationComponent implements OnInit {
       () => {
         let title = 'Tidak berjaya'
         let message = 'Teras tidak berjaya ditambah. Sila cuba sekali lagi'
-        this.notifyService.openToastr(title, message)
+        this.notifyService.openToastrError(title, message)
         this.loadingBar.complete()
       },
       () => {
-        this.closeModal('core')
+        this.closeModal('cores')
         this.getData()
       }
     )
@@ -388,12 +614,12 @@ export class ConfigurationComponent implements OnInit {
       () => {
         let title = 'Tidak berjaya'
         let message = 'Teras tidak berjaya dikemaskini. Sila cuba sekali lagi'
-        this.notifyService.openToastr(title, message)
+        this.notifyService.openToastrError(title, message)
         this.loadingBar.complete()
       },
       () => {
         delete this.coreSelected
-        this.closeModal('core')
+        this.closeModal('cores')
         this.getData()
       }
     )
@@ -415,7 +641,7 @@ export class ConfigurationComponent implements OnInit {
         this.loadingBar.complete()
       },
       () => {
-        this.closeModal('domain')
+        this.closeModal('domains')
         this.getData()
       }
     )
@@ -438,7 +664,7 @@ export class ConfigurationComponent implements OnInit {
       },
       () => {
         delete this.domainSelected
-        this.closeModal('domain')
+        this.closeModal('domains')
         this.getData()
       }
     )
@@ -460,7 +686,7 @@ export class ConfigurationComponent implements OnInit {
         this.loadingBar.complete()
       },
       () => {
-        this.closeModal('organisation')
+        this.closeModal('organisations')
         this.getData()
       }
     )
@@ -478,12 +704,79 @@ export class ConfigurationComponent implements OnInit {
       () => {
         let title = 'Tidak berjaya'
         let message = 'Penganjur tidak berjaya dikemaskini. Sila cuba sekali lagi'
-        this.notifyService.openToastr(title, message)
+        this.notifyService.openToastrError(title, message)
         this.loadingBar.complete()
       },
       () => {
         delete this.organisationSelected
-        this.closeModal('organisation')
+        this.closeModal('organisations')
+        this.getData()
+      }
+    )
+  }
+
+  patchConfiguration() {
+    this.loadingBar.start()
+    this.configurationService.update(this.configuration['id'], this.configurationForm.value).subscribe(
+      () => {
+        let title = 'Berjaya'
+        let message = 'Bajet semasa berjaya dikemaskini'
+        this.notifyService.openToastr(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        let title = 'Tidak berjaya'
+        let message = 'Bajet semasa tidak berjaya dikemaskini. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        this.closeModal('configurations')
+        this.getData()
+      }
+    )
+  }
+
+  addExam() {
+    this.loadingBar.start()
+    this.examService.createExam(this.examForm.value).subscribe(
+      () => {
+        let title = 'Berjaya'
+        let message = 'Peperiksaan berjaya ditambah'
+        this.notifyService.openToastr(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        let title = 'Tidak berjaya'
+        let message = 'Peperiksaan tidak berjaya ditambah. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        this.closeModal('exams')
+        this.getData()
+      }
+    )
+  }
+
+  patchExam() {
+    this.loadingBar.start()
+    this.examService.updateExam(this.examSelected['id'], this.examForm.value).subscribe(
+      () => {
+        let title = 'Berjaya'
+        let message = 'Peperiksaan berjaya dikemaskini'
+        this.notifyService.openToastr(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        let title = 'Tidak berjaya'
+        let message = 'Peperiksaan tidak berjaya dikemaskini. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        delete this.organisationSelected
+        this.closeModal('exams')
         this.getData()
       }
     )

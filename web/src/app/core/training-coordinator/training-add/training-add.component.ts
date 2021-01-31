@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, TemplateRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { 
   FormArray,
   FormBuilder,
@@ -9,7 +9,7 @@ import {
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { Training } from 'src/app/shared/services/trainings/trainings.model';
+import { Training, TrainingType } from 'src/app/shared/services/trainings/trainings.model';
 import { Router } from '@angular/router';
 
 import swal from 'sweetalert2';
@@ -27,6 +27,7 @@ import { TrainersService } from 'src/app/shared/services/trainers/trainers.servi
 import { Trainer } from 'src/app/shared/services/trainers/trainers.model';
 import { DomainsService } from 'src/app/shared/services/domains/domains.service';
 import { Domain } from 'src/app/shared/services/domains/domains.model';
+import { QuillViewHTMLComponent } from 'ngx-quill';
 
 @Component({
   selector: 'app-training-add',
@@ -44,14 +45,71 @@ export class TrainingAddComponent implements OnInit {
   coresTemp: Core[] = []
   coresParentTemp = 'GN'
   domains: Domain[] = []
+  nextCode: string = ''
+  trainingTypes: TrainingType[] = []
 
   // Form
   trainingForm: FormGroup
   organisationForm: FormGroup
+  typeForm: FormGroup
   trainerSpeakerForm: FormGroup
   trainerFacilitatorForm: FormGroup
   trainerSpeakerFormArray: FormArray
   trainerFacilitatorFormArray: FormArray
+
+  trainingFormMessages = {
+    'title': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'description': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'method': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'country': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'organiser_type': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'organiser': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'core': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'domain': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'training_type': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'target_group_type': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'max_participant': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'venue': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'start_date': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'start_time': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'end_date': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'end_time': [
+      { type: 'required', message: 'Diperlukan' }
+    ],
+    'cost': [
+      { type: 'required', message: 'Diperlukan' }
+    ]
+  }
 
   // Stepper
   isLinear = false
@@ -116,9 +174,15 @@ export class TrainingAddComponent implements OnInit {
   // File
   fileSize: any
   fileName: any
-  fileSizeInformation = null
-  fileNameInformation = null
+  fileSizeInformationAttachment = null
+  fileNameInformationAttachment = null
+  fileSizeInformationAttachmentApproval = null
+  fileNameInformationAttachmentApproval = null
 
+  // Quill
+  @ViewChild('scheduleNotes', {
+    static: true
+  }) headerEN: QuillViewHTMLComponent
 
   constructor(
     private authService: AuthService,
@@ -145,8 +209,8 @@ export class TrainingAddComponent implements OnInit {
 
   getData() {
     this.dateToday = new Date()
-    this.dateMinStart = new Date(this.dateToday.getFullYear(), this.dateToday.getMonth(), this.dateToday.getDate() + 1)
-    this.dateMinEnd = new Date(this.dateToday.getFullYear(), this.dateToday.getMonth(), this.dateToday.getDate() + 2)
+    // this.dateMinStart = new Date(this.dateToday.getFullYear(), this.dateToday.getMonth(), this.dateToday.getDate() + 1)
+    // this.dateMinEnd = new Date(this.dateToday.getFullYear(), this.dateToday.getMonth(), this.dateToday.getDate() + 2)
 
     this.loadingBar.start()
     forkJoin([
@@ -154,7 +218,9 @@ export class TrainingAddComponent implements OnInit {
       this.userService.getAll(),
       this.coreService.getAll(),
       this.authService.getDetailByToken(),
-      this.domainService.getDomains()
+      this.domainService.getDomains(),
+      this.trainingService.getNextCode(),
+      this.trainingService.getTrainingTypes()
     ]).subscribe(
       () => {
         this.loadingBar.complete()
@@ -168,12 +234,42 @@ export class TrainingAddComponent implements OnInit {
         this.cores = this.coreService.cores
         this.currentUser = this.authService.userDetail
         this.domains = this.domainService.domains
+        this.nextCode = this.trainingService.trainingNextCode
+        this.trainingTypes = this.trainingService.trainingTypes
         this.trainingForm.controls['created_by'].setValue(this.currentUser['id'])
+
+        this.trainingTypes.forEach(
+          (type_) => {
+            if (
+              type_['active'] &&
+              !this.trainingForm.value['training_type']
+            ) {
+              this.trainingForm.controls['training_type'].setValue(type_['id'])
+            }
+          }
+        )
+
+        this.domains.forEach(
+          (domain_) => {
+            if (
+              domain_['active'] &&
+              !this.trainingForm.value['domain']
+            ) {
+              this.trainingForm.controls['domain'].setValue(domain_['id'])
+            }
+          }
+        )
         
         this.cores.forEach(
           (core: Core) => {
-            if (core['parent'] == 'GN') {
+            if (
+              core['parent'] == 'GN' &&
+              core['active']
+            ) {
               this.coresTemp.push(core)
+              if (!this.trainingForm.value['core']) {
+                this.trainingForm.controls['core'].setValue(core['id'])
+              }
             }
           }
         )
@@ -212,87 +308,521 @@ export class TrainingAddComponent implements OnInit {
       core: new FormControl(null, Validators.compose([
         Validators.required
       ])),
-      domain: new FormControl(null),
-      course_type: new FormControl('KK', Validators.compose([
+      domain: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      training_type: new FormControl(null, Validators.compose([
         Validators.required
       ])),
       course_code: new FormControl({value: null, disabled: true}),
       target_group_type: new FormControl('TB', Validators.compose([
         Validators.required
       ])),
-      is_group_KPP_A: new FormControl(0, Validators.compose([
+      is_group_KP_A: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_group_KPP_B: new FormControl(0, Validators.compose([
+      is_group_KP_B: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_group_KPP_C: new FormControl(0, Validators.compose([
+      is_group_KP_C: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_group_KP_A: new FormControl(0, Validators.compose([
+      is_group_KP_D: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_group_KP_B: new FormControl(0, Validators.compose([
+      is_department_11: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_group_KP_C: new FormControl(0, Validators.compose([
+      is_department_15: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_PDB: new FormControl(0, Validators.compose([
+      is_department_21: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_UUU: new FormControl(0, Validators.compose([
+      is_department_31: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_UAD: new FormControl(0, Validators.compose([
+      is_department_41: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_UPP: new FormControl(0, Validators.compose([
+      is_department_45: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_UPS: new FormControl(0, Validators.compose([
+      is_department_47: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JKP: new FormControl(0, Validators.compose([
+      is_department_51: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JPD: new FormControl(0, Validators.compose([
+      is_department_55: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JPH: new FormControl(0, Validators.compose([
+      is_department_61: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JPP: new FormControl(0, Validators.compose([
+      is_department_63: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JKJ: new FormControl(0, Validators.compose([
+      is_department_71: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JKB: new FormControl(0, Validators.compose([
+      is_department_81: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JKEA: new FormControl(0, Validators.compose([
+      is_department_86: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JKEB: new FormControl(0, Validators.compose([
+      is_department_90: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JPR: new FormControl(0, Validators.compose([
+      is_department_91: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JKK: new FormControl(0, Validators.compose([
+      is_department_92: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JKW: new FormControl(0, Validators.compose([
+      is_department_93: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JLK: new FormControl(0, Validators.compose([
+      is_department_94: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JPU: new FormControl(0, Validators.compose([
+      is_position_01: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_JPB: new FormControl(0, Validators.compose([
+      is_position_02: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_03: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_04: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_05: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_06: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_07: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_08: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_09: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_10: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_11: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_12: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_13: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_14: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_15: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_16: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_17: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_18: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_19: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_20: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_21: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_22: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_23: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_24: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_25: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_26: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_27: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_28: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_29: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_30: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_31: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_32: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_33: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_34: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_35: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_36: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_37: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_38: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_39: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_40: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_41: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_42: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_43: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_44: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_45: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_46: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_47: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_48: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_49: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_50: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_51: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_52: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_53: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_54: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_55: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_position_60: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ba19: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_fa29: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_fa32: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_fa41: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_fa44: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_fa48: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ft19: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ga17: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ga19: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ga22: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ga26: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ga29: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ga32: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ga41: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_gv41: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ha11: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ha14: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ha16: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ha19: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ha22: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ja19: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ja22: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ja29: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ja36: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ja38: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ja40: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ja41: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ja44: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ja48: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ja52: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ja54: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_kp11: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_kp14: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_kp19: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_kp22: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_kp29: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_kp32: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_kp41: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_la29: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_la41: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_la44: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_la52: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_la54: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na01: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na11: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na14: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na17: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na19: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na22: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na26: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na29: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na30: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na32: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na36: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na41: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na44: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na48: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na52: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_na54: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ra01: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ra03: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ua11: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ua14: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ua17: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ua19: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ua24: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ua29: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ua32: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ua36: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ua41: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ud43: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ud48: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_ud52: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_vu06: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_vu07: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa17: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa19: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa22: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa26: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa28: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa29: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa32: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa36: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa41: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa44: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa48: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa52: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_wa54: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_waa41: new FormControl(true, Validators.compose([
+        Validators.required
+      ])),
+      is_waa44: new FormControl(true, Validators.compose([
         Validators.required
       ])),
       max_participant: new FormControl(0, Validators.compose([
@@ -301,9 +831,7 @@ export class TrainingAddComponent implements OnInit {
       venue: new FormControl(null, Validators.compose([
         Validators.required
       ])),
-      address: new FormControl(null, Validators.compose([
-        Validators.required
-      ])),
+      address: new FormControl(null),
       start_date: new FormControl(null, Validators.compose([
         Validators.required
       ])),
@@ -316,10 +844,14 @@ export class TrainingAddComponent implements OnInit {
       end_time: new FormControl(null, Validators.compose([
         Validators.required
       ])),
+      schedule_notes: new FormControl(null),
       cost: new FormControl(0, Validators.compose([
         Validators.required
       ])),
       attachment: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      attachment_approval: new FormControl(null, Validators.compose([
         Validators.required
       ])),
       transportation: new FormControl(false, Validators.compose([
@@ -339,6 +871,12 @@ export class TrainingAddComponent implements OnInit {
       ]))
     })
 
+    this.typeForm = this.formBuilder.group({
+      name: new FormControl('', Validators.compose([
+        Validators.required
+      ]))
+    })
+
     this.trainerSpeakerForm = this.formBuilder.group({
       trainerSpeakerFormArray: this.formBuilder.array([this.initSpeakerForm()])
     })
@@ -346,57 +884,12 @@ export class TrainingAddComponent implements OnInit {
     this.trainerFacilitatorForm = this.formBuilder.group({
       trainerFacilitatorFormArray: this.formBuilder.array([this.initFacilitatorForm()])
     })
-
-    this.trainingForm.controls['is_group_KPP_A'].patchValue(true)
-    this.trainingForm.controls['is_group_KPP_B'].patchValue(true)
-    this.trainingForm.controls['is_group_KPP_C'].patchValue(true)
-    this.trainingForm.controls['is_group_KP_A'].patchValue(true)
-    this.trainingForm.controls['is_group_KP_B'].patchValue(true)
-    this.trainingForm.controls['is_group_KP_C'].patchValue(true)
-    this.trainingForm.controls['is_department_PDB'].patchValue(true)
-    this.trainingForm.controls['is_department_UUU'].patchValue(true)
-    this.trainingForm.controls['is_department_UAD'].patchValue(true)
-    this.trainingForm.controls['is_department_UPP'].patchValue(true)
-    this.trainingForm.controls['is_department_UPS'].patchValue(true)
-    this.trainingForm.controls['is_department_JKP'].patchValue(true)
-    this.trainingForm.controls['is_department_JPD'].patchValue(true)
-    this.trainingForm.controls['is_department_JPH'].patchValue(true)
-    this.trainingForm.controls['is_department_JPP'].patchValue(true)
-    this.trainingForm.controls['is_department_JKJ'].patchValue(true)
-    this.trainingForm.controls['is_department_JKB'].patchValue(true)
-    this.trainingForm.controls['is_department_JKEA'].patchValue(true)
-    this.trainingForm.controls['is_department_JKEB'].patchValue(true)
-    this.trainingForm.controls['is_department_JPR'].patchValue(true)
-    this.trainingForm.controls['is_department_JKK'].patchValue(true)
-    this.trainingForm.controls['is_department_JKW'].patchValue(true)
-    this.trainingForm.controls['is_department_JLK'].patchValue(true)
-    this.trainingForm.controls['is_department_JPU'].patchValue(true)
-    this.trainingForm.controls['is_department_JPB'].patchValue(true)
-
-    // while (!this.isLogged) {
-    //   this.currentUser = this.authService.userDetail
-    //   if (this.currentUser) {
-    //     this.trainingForm.controls['created_by'].setValue(this.currentUser['id'])
-    //     this.isLogged = true
-    //   }
-    //   console.log('asfqw ', this.currentUser)
-    // }
-    
-    // let todayDate = new Date()
-    // let startDate = moment(new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() + 1)).format('DD-MM-YYYY')
-    // let endDate = moment(new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() + 2)).format('DD-MM-YYYY')
-    // this.trainingForm.controls['start_date'].setValue(startDate)
-    // this.trainingForm.controls['end_date'].setValue(endDate)
   }
 
   initSpeakerForm() {
     return this.formBuilder.group({
-      name: new FormControl(null, Validators.compose([
-        Validators.required
-      ])),
-      phone: new FormControl(null, Validators.compose([
-        Validators.required
-      ])),
+      name: new FormControl(null),
+      phone: new FormControl(null),
       training: new FormControl(null, Validators.compose([
         Validators.required
       ])),
@@ -408,9 +901,7 @@ export class TrainingAddComponent implements OnInit {
 
   initFacilitatorForm() {
     return this.formBuilder.group({
-      name: new FormControl(null, Validators.compose([
-        Validators.required
-      ])),
+      name: new FormControl(null),
       phone: new FormControl(null),
       training: new FormControl(null, Validators.compose([
         Validators.required
@@ -444,7 +935,10 @@ export class TrainingAddComponent implements OnInit {
       this.coresTemp = []
       this.cores.forEach(
         (core: Core) => {
-          if (core['parent'] == 'GN') {
+          if (
+            core['parent'] == 'GN' &&
+            core['active']
+          ) {
             this.coresTemp.push(core)
           }
         }
@@ -454,7 +948,10 @@ export class TrainingAddComponent implements OnInit {
       this.coresTemp = []
       this.cores.forEach(
         (core: Core) => {
-          if (core['parent'] == 'FN') {
+          if (
+            core['parent'] == 'FN' &&
+            core['active']
+          ) {
             this.coresTemp.push(core)
           }
         }
@@ -535,9 +1032,19 @@ export class TrainingAddComponent implements OnInit {
     // console.log('Speaker Ar ', this.trainerSpeakerFormArray)
     // console.log('Faci Ar ', this.trainerFacilitatorFormArray)
 
-    this.loadingBar.complete()
+    const trainingFormData = new FormData()
+    let trainingFormDataKey = []
+    for (let key in this.trainingForm.value) {
+      trainingFormDataKey.push(key)
+    }
+    trainingFormDataKey.forEach(
+      (key) => {
+        trainingFormData.append(key, this.trainingForm.value[key])
+      }
+    )
 
-    this.trainingService.post(this.trainingForm.value).subscribe(
+    this.loadingBar.complete()
+    this.trainingService.post(trainingFormData).subscribe(
       () => {
         this.loadingBar.complete()
       },
@@ -671,11 +1178,43 @@ export class TrainingAddComponent implements OnInit {
         this.loadingBar.complete()
       },
       () => {
+        let title = 'Tidak berjaya'
+        let message = 'Anda tidak berjaya untuk menambah penganjur. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
         this.loadingBar.complete()
       },
       () => {
+        let title = 'Berjaya'
+        let message = 'Penganjur berjaya ditambah.'
+        this.notifyService.openToastr(title, message)
         this.getData()
-        this.successOrganisation()
+        this.organisationForm.reset()
+        // this.successOrganisation()
+        this.closeModal()
+      }
+    )
+  }
+
+  addType() {
+    // console.log('masuk')
+    this.loadingBar.start()
+    this.trainingService.createTrainingType(this.typeForm.value).subscribe(
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        let title = 'Tidak berjaya'
+        let message = 'Anda tidak berjaya untuk menambah jenis latihan. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        let title = 'Berjaya'
+        let message = 'Jenis latihan berjaya ditambah.'
+        this.notifyService.openToastr(title, message)
+        this.getData()
+        this.organisationForm.reset()
+        // this.successOrganisation()
         this.closeModal()
       }
     )
@@ -694,58 +1233,346 @@ export class TrainingAddComponent implements OnInit {
 
   onChangeTargetType(event) {
     if (event == 'TB') {
-      this.trainingForm.controls['is_group_KPP_A'].patchValue(true)
-      this.trainingForm.controls['is_group_KPP_B'].patchValue(true)
-      this.trainingForm.controls['is_group_KPP_C'].patchValue(true)
       this.trainingForm.controls['is_group_KP_A'].patchValue(true)
       this.trainingForm.controls['is_group_KP_B'].patchValue(true)
       this.trainingForm.controls['is_group_KP_C'].patchValue(true)
-      this.trainingForm.controls['is_department_PDB'].patchValue(true)
-      this.trainingForm.controls['is_department_UUU'].patchValue(true)
-      this.trainingForm.controls['is_department_UAD'].patchValue(true)
-      this.trainingForm.controls['is_department_UPP'].patchValue(true)
-      this.trainingForm.controls['is_department_UPS'].patchValue(true)
-      this.trainingForm.controls['is_department_JKP'].patchValue(true)
-      this.trainingForm.controls['is_department_JPD'].patchValue(true)
-      this.trainingForm.controls['is_department_JPH'].patchValue(true)
-      this.trainingForm.controls['is_department_JPP'].patchValue(true)
-      this.trainingForm.controls['is_department_JKJ'].patchValue(true)
-      this.trainingForm.controls['is_department_JKB'].patchValue(true)
-      this.trainingForm.controls['is_department_JKEA'].patchValue(true)
-      this.trainingForm.controls['is_department_JKEB'].patchValue(true)
-      this.trainingForm.controls['is_department_JPR'].patchValue(true)
-      this.trainingForm.controls['is_department_JKK'].patchValue(true)
-      this.trainingForm.controls['is_department_JKW'].patchValue(true)
-      this.trainingForm.controls['is_department_JLK'].patchValue(true)
-      this.trainingForm.controls['is_department_JPU'].patchValue(true)
-      this.trainingForm.controls['is_department_JPB'].patchValue(true)
+      this.trainingForm.controls['is_group_KP_D'].patchValue(true)
+      this.trainingForm.controls['is_department_11'].patchValue(true)
+      this.trainingForm.controls['is_department_15'].patchValue(true)
+      this.trainingForm.controls['is_department_21'].patchValue(true)
+      this.trainingForm.controls['is_department_31'].patchValue(true)
+      this.trainingForm.controls['is_department_41'].patchValue(true)
+      this.trainingForm.controls['is_department_45'].patchValue(true)
+      this.trainingForm.controls['is_department_47'].patchValue(true)
+      this.trainingForm.controls['is_department_51'].patchValue(true)
+      this.trainingForm.controls['is_department_55'].patchValue(true)
+      this.trainingForm.controls['is_department_61'].patchValue(true)
+      this.trainingForm.controls['is_department_63'].patchValue(true)
+      this.trainingForm.controls['is_department_71'].patchValue(true)
+      this.trainingForm.controls['is_department_81'].patchValue(true)
+      this.trainingForm.controls['is_department_86'].patchValue(true)
+      this.trainingForm.controls['is_department_90'].patchValue(true)
+      this.trainingForm.controls['is_department_91'].patchValue(true)
+      this.trainingForm.controls['is_department_92'].patchValue(true)
+      this.trainingForm.controls['is_department_93'].patchValue(true)
+      this.trainingForm.controls['is_department_94'].patchValue(true)
+      this.trainingForm.controls['is_position_01'].patchValue(true)
+      this.trainingForm.controls['is_position_02'].patchValue(true)
+      this.trainingForm.controls['is_position_03'].patchValue(true)
+      this.trainingForm.controls['is_position_04'].patchValue(true)
+      this.trainingForm.controls['is_position_05'].patchValue(true)
+      this.trainingForm.controls['is_position_06'].patchValue(true)
+      this.trainingForm.controls['is_position_07'].patchValue(true)
+      this.trainingForm.controls['is_position_08'].patchValue(true)
+      this.trainingForm.controls['is_position_09'].patchValue(true)
+      this.trainingForm.controls['is_position_10'].patchValue(true)
+      this.trainingForm.controls['is_position_11'].patchValue(true)
+      this.trainingForm.controls['is_position_12'].patchValue(true)
+      this.trainingForm.controls['is_position_13'].patchValue(true)
+      this.trainingForm.controls['is_position_14'].patchValue(true)
+      this.trainingForm.controls['is_position_15'].patchValue(true)
+      this.trainingForm.controls['is_position_16'].patchValue(true)
+      this.trainingForm.controls['is_position_17'].patchValue(true)
+      this.trainingForm.controls['is_position_18'].patchValue(true)
+      this.trainingForm.controls['is_position_19'].patchValue(true)
+      this.trainingForm.controls['is_position_20'].patchValue(true)
+      this.trainingForm.controls['is_position_21'].patchValue(true)
+      this.trainingForm.controls['is_position_22'].patchValue(true)
+      this.trainingForm.controls['is_position_23'].patchValue(true)
+      this.trainingForm.controls['is_position_24'].patchValue(true)
+      this.trainingForm.controls['is_position_25'].patchValue(true)
+      this.trainingForm.controls['is_position_26'].patchValue(true)
+      this.trainingForm.controls['is_position_27'].patchValue(true)
+      this.trainingForm.controls['is_position_28'].patchValue(true)
+      this.trainingForm.controls['is_position_29'].patchValue(true)
+      this.trainingForm.controls['is_position_30'].patchValue(true)
+      this.trainingForm.controls['is_position_31'].patchValue(true)
+      this.trainingForm.controls['is_position_32'].patchValue(true)
+      this.trainingForm.controls['is_position_33'].patchValue(true)
+      this.trainingForm.controls['is_position_34'].patchValue(true)
+      this.trainingForm.controls['is_position_35'].patchValue(true)
+      this.trainingForm.controls['is_position_36'].patchValue(true)
+      this.trainingForm.controls['is_position_37'].patchValue(true)
+      this.trainingForm.controls['is_position_38'].patchValue(true)
+      this.trainingForm.controls['is_position_39'].patchValue(true)
+      this.trainingForm.controls['is_position_40'].patchValue(true)
+      this.trainingForm.controls['is_position_41'].patchValue(true)
+      this.trainingForm.controls['is_position_42'].patchValue(true)
+      this.trainingForm.controls['is_position_43'].patchValue(true)
+      this.trainingForm.controls['is_position_44'].patchValue(true)
+      this.trainingForm.controls['is_position_45'].patchValue(true)
+      this.trainingForm.controls['is_position_46'].patchValue(true)
+      this.trainingForm.controls['is_position_47'].patchValue(true)
+      this.trainingForm.controls['is_position_48'].patchValue(true)
+      this.trainingForm.controls['is_position_49'].patchValue(true)
+      this.trainingForm.controls['is_position_50'].patchValue(true)
+      this.trainingForm.controls['is_position_51'].patchValue(true)
+      this.trainingForm.controls['is_position_52'].patchValue(true)
+      this.trainingForm.controls['is_position_53'].patchValue(true)
+      this.trainingForm.controls['is_position_54'].patchValue(true)
+      this.trainingForm.controls['is_position_55'].patchValue(true)
+      this.trainingForm.controls['is_position_60'].patchValue(true)
+      this.trainingForm.controls['is_ba19'].patchValue(true)
+      this.trainingForm.controls['is_fa29'].patchValue(true)
+      this.trainingForm.controls['is_fa32'].patchValue(true)
+      this.trainingForm.controls['is_fa41'].patchValue(true)
+      this.trainingForm.controls['is_fa44'].patchValue(true)
+      this.trainingForm.controls['is_fa48'].patchValue(true)
+      this.trainingForm.controls['is_ft19'].patchValue(true)
+      this.trainingForm.controls['is_ga17'].patchValue(true)
+      this.trainingForm.controls['is_ga19'].patchValue(true)
+      this.trainingForm.controls['is_ga22'].patchValue(true)
+      this.trainingForm.controls['is_ga26'].patchValue(true)
+      this.trainingForm.controls['is_ga29'].patchValue(true)
+      this.trainingForm.controls['is_ga32'].patchValue(true)
+      this.trainingForm.controls['is_ga41'].patchValue(true)
+      this.trainingForm.controls['is_gv41'].patchValue(true)
+      this.trainingForm.controls['is_ha11'].patchValue(true)
+      this.trainingForm.controls['is_ha14'].patchValue(true)
+      this.trainingForm.controls['is_ha16'].patchValue(true)
+      this.trainingForm.controls['is_ha19'].patchValue(true)
+      this.trainingForm.controls['is_ha22'].patchValue(true)
+      this.trainingForm.controls['is_ja19'].patchValue(true)
+      this.trainingForm.controls['is_ja22'].patchValue(true)
+      this.trainingForm.controls['is_ja29'].patchValue(true)
+      this.trainingForm.controls['is_ja36'].patchValue(true)
+      this.trainingForm.controls['is_ja38'].patchValue(true)
+      this.trainingForm.controls['is_ja40'].patchValue(true)
+      this.trainingForm.controls['is_ja41'].patchValue(true)
+      this.trainingForm.controls['is_ja44'].patchValue(true)
+      this.trainingForm.controls['is_ja48'].patchValue(true)
+      this.trainingForm.controls['is_ja52'].patchValue(true)
+      this.trainingForm.controls['is_ja54'].patchValue(true)
+      this.trainingForm.controls['is_kp11'].patchValue(true)
+      this.trainingForm.controls['is_kp14'].patchValue(true)
+      this.trainingForm.controls['is_kp19'].patchValue(true)
+      this.trainingForm.controls['is_kp22'].patchValue(true)
+      this.trainingForm.controls['is_kp29'].patchValue(true)
+      this.trainingForm.controls['is_kp32'].patchValue(true)
+      this.trainingForm.controls['is_kp41'].patchValue(true)
+      this.trainingForm.controls['is_la29'].patchValue(true)
+      this.trainingForm.controls['is_la41'].patchValue(true)
+      this.trainingForm.controls['is_la44'].patchValue(true)
+      this.trainingForm.controls['is_la52'].patchValue(true)
+      this.trainingForm.controls['is_la54'].patchValue(true)
+      this.trainingForm.controls['is_na01'].patchValue(true)
+      this.trainingForm.controls['is_na11'].patchValue(true)
+      this.trainingForm.controls['is_na14'].patchValue(true)
+      this.trainingForm.controls['is_na17'].patchValue(true)
+      this.trainingForm.controls['is_na19'].patchValue(true)
+      this.trainingForm.controls['is_na22'].patchValue(true)
+      this.trainingForm.controls['is_na26'].patchValue(true)
+      this.trainingForm.controls['is_na29'].patchValue(true)
+      this.trainingForm.controls['is_na30'].patchValue(true)
+      this.trainingForm.controls['is_na32'].patchValue(true)
+      this.trainingForm.controls['is_na36'].patchValue(true)
+      this.trainingForm.controls['is_na41'].patchValue(true)
+      this.trainingForm.controls['is_na44'].patchValue(true)
+      this.trainingForm.controls['is_na48'].patchValue(true)
+      this.trainingForm.controls['is_na52'].patchValue(true)
+      this.trainingForm.controls['is_na54'].patchValue(true)
+      this.trainingForm.controls['is_ra01'].patchValue(true)
+      this.trainingForm.controls['is_ra03'].patchValue(true)
+      this.trainingForm.controls['is_ua11'].patchValue(true)
+      this.trainingForm.controls['is_ua14'].patchValue(true)
+      this.trainingForm.controls['is_ua17'].patchValue(true)
+      this.trainingForm.controls['is_ua19'].patchValue(true)
+      this.trainingForm.controls['is_ua24'].patchValue(true)
+      this.trainingForm.controls['is_ua29'].patchValue(true)
+      this.trainingForm.controls['is_ua32'].patchValue(true)
+      this.trainingForm.controls['is_ua36'].patchValue(true)
+      this.trainingForm.controls['is_ua41'].patchValue(true)
+      this.trainingForm.controls['is_ud43'].patchValue(true)
+      this.trainingForm.controls['is_ud48'].patchValue(true)
+      this.trainingForm.controls['is_ud52'].patchValue(true)
+      this.trainingForm.controls['is_vu06'].patchValue(true)
+      this.trainingForm.controls['is_vu07'].patchValue(true)
+      this.trainingForm.controls['is_wa17'].patchValue(true)
+      this.trainingForm.controls['is_wa19'].patchValue(true)
+      this.trainingForm.controls['is_wa22'].patchValue(true)
+      this.trainingForm.controls['is_wa26'].patchValue(true)
+      this.trainingForm.controls['is_wa28'].patchValue(true)
+      this.trainingForm.controls['is_wa29'].patchValue(true)
+      this.trainingForm.controls['is_wa32'].patchValue(true)
+      this.trainingForm.controls['is_wa36'].patchValue(true)
+      this.trainingForm.controls['is_wa41'].patchValue(true)
+      this.trainingForm.controls['is_wa44'].patchValue(true)
+      this.trainingForm.controls['is_wa48'].patchValue(true)
+      this.trainingForm.controls['is_wa52'].patchValue(true)
+      this.trainingForm.controls['is_wa54'].patchValue(true)
+      this.trainingForm.controls['is_waa41'].patchValue(true)
+      this.trainingForm.controls['is_waa44'].patchValue(true)
     }
     else {
-      this.trainingForm.controls['is_group_KPP_A'].patchValue(false)
-      this.trainingForm.controls['is_group_KPP_B'].patchValue(false)
-      this.trainingForm.controls['is_group_KPP_C'].patchValue(false)
       this.trainingForm.controls['is_group_KP_A'].patchValue(false)
       this.trainingForm.controls['is_group_KP_B'].patchValue(false)
       this.trainingForm.controls['is_group_KP_C'].patchValue(false)
-      this.trainingForm.controls['is_department_PDB'].patchValue(false)
-      this.trainingForm.controls['is_department_UUU'].patchValue(false)
-      this.trainingForm.controls['is_department_UAD'].patchValue(false)
-      this.trainingForm.controls['is_department_UPP'].patchValue(false)
-      this.trainingForm.controls['is_department_UPS'].patchValue(false)
-      this.trainingForm.controls['is_department_JKP'].patchValue(false)
-      this.trainingForm.controls['is_department_JPD'].patchValue(false)
-      this.trainingForm.controls['is_department_JPH'].patchValue(false)
-      this.trainingForm.controls['is_department_JPP'].patchValue(false)
-      this.trainingForm.controls['is_department_JKJ'].patchValue(false)
-      this.trainingForm.controls['is_department_JKB'].patchValue(false)
-      this.trainingForm.controls['is_department_JKEA'].patchValue(false)
-      this.trainingForm.controls['is_department_JKEB'].patchValue(false)
-      this.trainingForm.controls['is_department_JPR'].patchValue(false)
-      this.trainingForm.controls['is_department_JKK'].patchValue(false)
-      this.trainingForm.controls['is_department_JKW'].patchValue(false)
-      this.trainingForm.controls['is_department_JLK'].patchValue(false)
-      this.trainingForm.controls['is_department_JPU'].patchValue(false)
-      this.trainingForm.controls['is_department_JPB'].patchValue(false)
+      this.trainingForm.controls['is_group_KP_D'].patchValue(false)
+      this.trainingForm.controls['is_department_11'].patchValue(false)
+      this.trainingForm.controls['is_department_15'].patchValue(false)
+      this.trainingForm.controls['is_department_21'].patchValue(false)
+      this.trainingForm.controls['is_department_31'].patchValue(false)
+      this.trainingForm.controls['is_department_41'].patchValue(false)
+      this.trainingForm.controls['is_department_45'].patchValue(false)
+      this.trainingForm.controls['is_department_47'].patchValue(false)
+      this.trainingForm.controls['is_department_51'].patchValue(false)
+      this.trainingForm.controls['is_department_55'].patchValue(false)
+      this.trainingForm.controls['is_department_61'].patchValue(false)
+      this.trainingForm.controls['is_department_63'].patchValue(false)
+      this.trainingForm.controls['is_department_71'].patchValue(false)
+      this.trainingForm.controls['is_department_81'].patchValue(false)
+      this.trainingForm.controls['is_department_86'].patchValue(false)
+      this.trainingForm.controls['is_department_90'].patchValue(false)
+      this.trainingForm.controls['is_department_91'].patchValue(false)
+      this.trainingForm.controls['is_department_92'].patchValue(false)
+      this.trainingForm.controls['is_department_93'].patchValue(false)
+      this.trainingForm.controls['is_department_94'].patchValue(false)
+      this.trainingForm.controls['is_position_01'].patchValue(false)
+      this.trainingForm.controls['is_position_02'].patchValue(false)
+      this.trainingForm.controls['is_position_03'].patchValue(false)
+      this.trainingForm.controls['is_position_04'].patchValue(false)
+      this.trainingForm.controls['is_position_05'].patchValue(false)
+      this.trainingForm.controls['is_position_06'].patchValue(false)
+      this.trainingForm.controls['is_position_07'].patchValue(false)
+      this.trainingForm.controls['is_position_08'].patchValue(false)
+      this.trainingForm.controls['is_position_09'].patchValue(false)
+      this.trainingForm.controls['is_position_10'].patchValue(false)
+      this.trainingForm.controls['is_position_11'].patchValue(false)
+      this.trainingForm.controls['is_position_12'].patchValue(false)
+      this.trainingForm.controls['is_position_13'].patchValue(false)
+      this.trainingForm.controls['is_position_14'].patchValue(false)
+      this.trainingForm.controls['is_position_15'].patchValue(false)
+      this.trainingForm.controls['is_position_16'].patchValue(false)
+      this.trainingForm.controls['is_position_17'].patchValue(false)
+      this.trainingForm.controls['is_position_18'].patchValue(false)
+      this.trainingForm.controls['is_position_19'].patchValue(false)
+      this.trainingForm.controls['is_position_20'].patchValue(false)
+      this.trainingForm.controls['is_position_21'].patchValue(false)
+      this.trainingForm.controls['is_position_22'].patchValue(false)
+      this.trainingForm.controls['is_position_23'].patchValue(false)
+      this.trainingForm.controls['is_position_24'].patchValue(false)
+      this.trainingForm.controls['is_position_25'].patchValue(false)
+      this.trainingForm.controls['is_position_26'].patchValue(false)
+      this.trainingForm.controls['is_position_27'].patchValue(false)
+      this.trainingForm.controls['is_position_28'].patchValue(false)
+      this.trainingForm.controls['is_position_29'].patchValue(false)
+      this.trainingForm.controls['is_position_30'].patchValue(false)
+      this.trainingForm.controls['is_position_31'].patchValue(false)
+      this.trainingForm.controls['is_position_32'].patchValue(false)
+      this.trainingForm.controls['is_position_33'].patchValue(false)
+      this.trainingForm.controls['is_position_34'].patchValue(false)
+      this.trainingForm.controls['is_position_35'].patchValue(false)
+      this.trainingForm.controls['is_position_36'].patchValue(false)
+      this.trainingForm.controls['is_position_37'].patchValue(false)
+      this.trainingForm.controls['is_position_38'].patchValue(false)
+      this.trainingForm.controls['is_position_39'].patchValue(false)
+      this.trainingForm.controls['is_position_40'].patchValue(false)
+      this.trainingForm.controls['is_position_41'].patchValue(false)
+      this.trainingForm.controls['is_position_42'].patchValue(false)
+      this.trainingForm.controls['is_position_43'].patchValue(false)
+      this.trainingForm.controls['is_position_44'].patchValue(false)
+      this.trainingForm.controls['is_position_45'].patchValue(false)
+      this.trainingForm.controls['is_position_46'].patchValue(false)
+      this.trainingForm.controls['is_position_47'].patchValue(false)
+      this.trainingForm.controls['is_position_48'].patchValue(false)
+      this.trainingForm.controls['is_position_49'].patchValue(false)
+      this.trainingForm.controls['is_position_50'].patchValue(false)
+      this.trainingForm.controls['is_position_51'].patchValue(false)
+      this.trainingForm.controls['is_position_52'].patchValue(false)
+      this.trainingForm.controls['is_position_53'].patchValue(false)
+      this.trainingForm.controls['is_position_54'].patchValue(false)
+      this.trainingForm.controls['is_position_55'].patchValue(false)
+      this.trainingForm.controls['is_position_60'].patchValue(false)
+      this.trainingForm.controls['is_ba19'].patchValue(false)
+      this.trainingForm.controls['is_fa29'].patchValue(false)
+      this.trainingForm.controls['is_fa32'].patchValue(false)
+      this.trainingForm.controls['is_fa41'].patchValue(false)
+      this.trainingForm.controls['is_fa44'].patchValue(false)
+      this.trainingForm.controls['is_fa48'].patchValue(false)
+      this.trainingForm.controls['is_ft19'].patchValue(false)
+      this.trainingForm.controls['is_ga17'].patchValue(false)
+      this.trainingForm.controls['is_ga19'].patchValue(false)
+      this.trainingForm.controls['is_ga22'].patchValue(false)
+      this.trainingForm.controls['is_ga26'].patchValue(false)
+      this.trainingForm.controls['is_ga29'].patchValue(false)
+      this.trainingForm.controls['is_ga32'].patchValue(false)
+      this.trainingForm.controls['is_ga41'].patchValue(false)
+      this.trainingForm.controls['is_gv41'].patchValue(false)
+      this.trainingForm.controls['is_ha11'].patchValue(false)
+      this.trainingForm.controls['is_ha14'].patchValue(false)
+      this.trainingForm.controls['is_ha16'].patchValue(false)
+      this.trainingForm.controls['is_ha19'].patchValue(false)
+      this.trainingForm.controls['is_ha22'].patchValue(false)
+      this.trainingForm.controls['is_ja19'].patchValue(false)
+      this.trainingForm.controls['is_ja22'].patchValue(false)
+      this.trainingForm.controls['is_ja29'].patchValue(false)
+      this.trainingForm.controls['is_ja36'].patchValue(false)
+      this.trainingForm.controls['is_ja38'].patchValue(false)
+      this.trainingForm.controls['is_ja40'].patchValue(false)
+      this.trainingForm.controls['is_ja41'].patchValue(false)
+      this.trainingForm.controls['is_ja44'].patchValue(false)
+      this.trainingForm.controls['is_ja48'].patchValue(false)
+      this.trainingForm.controls['is_ja52'].patchValue(false)
+      this.trainingForm.controls['is_ja54'].patchValue(false)
+      this.trainingForm.controls['is_kp11'].patchValue(false)
+      this.trainingForm.controls['is_kp14'].patchValue(false)
+      this.trainingForm.controls['is_kp19'].patchValue(false)
+      this.trainingForm.controls['is_kp22'].patchValue(false)
+      this.trainingForm.controls['is_kp29'].patchValue(false)
+      this.trainingForm.controls['is_kp32'].patchValue(false)
+      this.trainingForm.controls['is_kp41'].patchValue(false)
+      this.trainingForm.controls['is_la29'].patchValue(false)
+      this.trainingForm.controls['is_la41'].patchValue(false)
+      this.trainingForm.controls['is_la44'].patchValue(false)
+      this.trainingForm.controls['is_la52'].patchValue(false)
+      this.trainingForm.controls['is_la54'].patchValue(false)
+      this.trainingForm.controls['is_na01'].patchValue(false)
+      this.trainingForm.controls['is_na11'].patchValue(false)
+      this.trainingForm.controls['is_na14'].patchValue(false)
+      this.trainingForm.controls['is_na17'].patchValue(false)
+      this.trainingForm.controls['is_na19'].patchValue(false)
+      this.trainingForm.controls['is_na22'].patchValue(false)
+      this.trainingForm.controls['is_na26'].patchValue(false)
+      this.trainingForm.controls['is_na29'].patchValue(false)
+      this.trainingForm.controls['is_na30'].patchValue(false)
+      this.trainingForm.controls['is_na32'].patchValue(false)
+      this.trainingForm.controls['is_na36'].patchValue(false)
+      this.trainingForm.controls['is_na41'].patchValue(false)
+      this.trainingForm.controls['is_na44'].patchValue(false)
+      this.trainingForm.controls['is_na48'].patchValue(false)
+      this.trainingForm.controls['is_na52'].patchValue(false)
+      this.trainingForm.controls['is_na54'].patchValue(false)
+      this.trainingForm.controls['is_ra01'].patchValue(false)
+      this.trainingForm.controls['is_ra03'].patchValue(false)
+      this.trainingForm.controls['is_ua11'].patchValue(false)
+      this.trainingForm.controls['is_ua14'].patchValue(false)
+      this.trainingForm.controls['is_ua17'].patchValue(false)
+      this.trainingForm.controls['is_ua19'].patchValue(false)
+      this.trainingForm.controls['is_ua24'].patchValue(false)
+      this.trainingForm.controls['is_ua29'].patchValue(false)
+      this.trainingForm.controls['is_ua32'].patchValue(false)
+      this.trainingForm.controls['is_ua36'].patchValue(false)
+      this.trainingForm.controls['is_ua41'].patchValue(false)
+      this.trainingForm.controls['is_ud43'].patchValue(false)
+      this.trainingForm.controls['is_ud48'].patchValue(false)
+      this.trainingForm.controls['is_ud52'].patchValue(false)
+      this.trainingForm.controls['is_vu06'].patchValue(false)
+      this.trainingForm.controls['is_vu07'].patchValue(false)
+      this.trainingForm.controls['is_wa17'].patchValue(false)
+      this.trainingForm.controls['is_wa19'].patchValue(false)
+      this.trainingForm.controls['is_wa22'].patchValue(false)
+      this.trainingForm.controls['is_wa26'].patchValue(false)
+      this.trainingForm.controls['is_wa28'].patchValue(false)
+      this.trainingForm.controls['is_wa29'].patchValue(false)
+      this.trainingForm.controls['is_wa32'].patchValue(false)
+      this.trainingForm.controls['is_wa36'].patchValue(false)
+      this.trainingForm.controls['is_wa41'].patchValue(false)
+      this.trainingForm.controls['is_wa44'].patchValue(false)
+      this.trainingForm.controls['is_wa48'].patchValue(false)
+      this.trainingForm.controls['is_wa52'].patchValue(false)
+      this.trainingForm.controls['is_wa54'].patchValue(false)
+      this.trainingForm.controls['is_waa41'].patchValue(false)
+      this.trainingForm.controls['is_waa44'].patchValue(false)
     }
   }
 
@@ -770,10 +1597,15 @@ export class TrainingAddComponent implements OnInit {
       
       reader.onload = () => {
         // console.log(reader['result'])
-        if (type == 'training') {
-          this.trainingForm.controls['attachment'].setValue(reader.result)
-          this.fileSizeInformation = this.fileSize
-          this.fileNameInformation = this.fileName
+        if (type == 'attachment') {
+          this.trainingForm.controls['attachment'].setValue(file)
+          this.fileSizeInformationAttachment = this.fileSize
+          this.fileNameInformationAttachment = this.fileName
+        }
+        else if (type == 'attachment_approval') {
+          this.trainingForm.controls['attachment_approval'].setValue(file)
+          this.fileSizeInformationAttachmentApproval = this.fileSize
+          this.fileNameInformationAttachmentApproval = this.fileName
         }
         // console.log(this.registerForm.value)
         // console.log('he', this.registerForm.valid)
@@ -786,17 +1618,24 @@ export class TrainingAddComponent implements OnInit {
   }
 
   removeFile(type) {
-    if (type == 'training') {
-     this.fileSize = 0;
-     this.fileName = null;
-     this.trainingForm.value['attachment'] = null;
-     this.fileSizeInformation = null
-     this.fileNameInformation = null
-     //this.cd.markForCheck();
-     //this.cd.detectChanges();
-   }
-    this.fileName = null
-    this.fileSize = null
+    if (type == 'attachment') {
+      this.fileSize = 0;
+      this.fileName = null;
+      this.trainingForm.controls['attachment'].patchValue(null);
+      this.fileSizeInformationAttachment = null
+      this.fileNameInformationAttachment = null
+      //this.cd.markForCheck();
+      //this.cd.detectChanges();
+    }
+    else if (type == 'attachment_approval') {
+      this.fileSize = 0;
+      this.fileName = null;
+      this.trainingForm.controls['attachment_approval'].patchValue(null);
+      this.fileSizeInformationAttachmentApproval  = null
+      this.fileNameInformationAttachmentApproval  = null
+    }
+      this.fileName = null
+      this.fileSize = null
   }
 
   navigatePage(path: string) {

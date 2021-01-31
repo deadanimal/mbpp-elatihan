@@ -6,6 +6,7 @@
 # Angular
 **/node_modules/
 **/dist
+web/Archive.zip
 
 # File structure
 misc

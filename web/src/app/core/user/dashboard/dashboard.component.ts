@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Training } from 'src/app/shared/services/trainings/trainings.model';
-import { AuthService } from 'src/app/shared/services/auth/auth.service';
-import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
-import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
+import { forkJoin } from 'rxjs';
+import { Router } from '@angular/router';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 
+import { ApplicationSelfExtended } from 'src/app/shared/services/applications/applications.model';
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
+import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
+
 import * as moment from 'moment';
-import { Application } from 'src/app/shared/services/applications/applications.model';
 
 export enum SelectionType {
   single = "single",
@@ -24,9 +25,9 @@ export enum SelectionType {
 export class DashboardComponent implements OnInit {
 
   // Data
-  training: Training
-  trainings: Training[] = []
-  applications: Application[] = []
+  // training: Training
+  // trainings: Training[] = []
+  applications: ApplicationSelfExtended[] = []
   totalTrainings: number = 0
   totalExams: number = 0
   totalDays: number = 0
@@ -65,25 +66,29 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private trainingService: TrainingsService,
     private applicationService: ApplicationsService,
-    private loadingBar: LoadingBarService
-  ) { }
+    private loadingBar: LoadingBarService,
+    private router: Router
+  ) { 
+    this.getData()
+  }
 
   ngOnInit() {
   }
 
   getData() {
-    let filterField = 'applicant=' + this.authService.userID + 'is_approved=1'
     this.loadingBar.start()
-    this.applicationService.filter(filterField).subscribe(
+
+    forkJoin([
+      this.applicationService.getSelf()
+    ]).subscribe(
       () => {
         this.loadingBar.complete()
-        this.applications = this.applicationService.applicationsFiltered
+        this.applications = this.applicationService.applicationsSelf
         this.tableRows = this.applications
         this.tableRows.forEach(
           (row) => {
-            row.date = moment(row.date).format('DD/MM/YYYY')
+            row.created_at = moment(row.created_at).format('DD/MM/YYYY')
           }
         )
       },
@@ -115,7 +120,7 @@ export class DashboardComponent implements OnInit {
   filterTable($event) {
     let val = $event.target.value.toLowerCase();
     this.tableTemp = this.tableRows.filter(function(d) {
-      return d.title.toLowerCase().indexOf(val) ! == -1 || !val;
+      return d.training.title.toLowerCase().indexOf(val) !== -1 || !val;
     });
   }
 
@@ -126,6 +131,17 @@ export class DashboardComponent implements OnInit {
 
   onActivate(event) {
     this.tableActiveRow = event.row;
+  }
+
+  c(id) {
+    let path = '/trainings/information'
+    let extras = id
+    let queryParams = {
+      queryParams: {
+        id: extras
+      }
+    }
+    this.router.navigate([path], queryParams)
   }
 
 }
