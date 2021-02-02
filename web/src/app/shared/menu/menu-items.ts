@@ -78,7 +78,8 @@ export const TCROUTES: RouteInfo[] = [
   },
   { path: '/tc/need-analyses', title: 'Analisa Keperluan Latihan', type: 'link', icontype: 'fas fa-chart-pie text-primary' },
   { path: '/tc/report', title: 'Laporan', type: 'link', icontype: 'fas fa-chart-bar text-primary' },
-  { path: '/tc/configuration', title: 'Konfigurasi', type: 'link', icontype: 'fas fa-tools text-primary' }
+  { path: '/tc/configuration', title: 'Konfigurasi', type: 'link', icontype: 'fas fa-tools text-primary' },
+  { path: '/tc/users', title: 'Pengurusan Pengguna', type: 'link', icontype: 'fas fa-user-shield text-primary'}
 ];
 // Department Coordinator / Penyelaras Jabatan
 export const DCROUTES: RouteInfo[] = [ 

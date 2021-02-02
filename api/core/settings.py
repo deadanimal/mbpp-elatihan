@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'anymail',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'background_task',
     'rest_auth.registration',    
     'corsheaders',
