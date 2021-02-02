@@ -9,6 +9,7 @@ import { TrainingsComponent } from './trainings/trainings.component';
 import { TrainingAddComponent } from './training-add/training-add.component';
 import { TrainingDetailsComponent } from './training-details/training-details.component';
 import { NeedAnalysisComponent } from './need-analysis/need-analysis.component';
+import { UsersComponent } from './users/users.component';
 
 export const TrainingCoordinatorRoutes: Routes = [
     {
@@ -63,6 +64,10 @@ export const TrainingCoordinatorRoutes: Routes = [
             {
                 path: 'need-analyses',
                 component: NeedAnalysisComponent
+            },
+            {
+                path: 'users',
+                component: UsersComponent
             }
         ]
     }

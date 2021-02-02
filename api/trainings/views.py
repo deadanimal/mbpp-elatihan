@@ -442,7 +442,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     filterset_fields = [
         'training',
         'applicant',
-        'is_approved',
+        'status',
         'application_type'
     ]
 
@@ -475,6 +475,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         queryset = TrainingApplication.objects.all()
         return queryset  
     
+
     @action(methods=['GET'], detail=False)
     def get_self_latest(self, request, *args, **kwargs):
 
@@ -484,6 +485,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         
         return Response(serializer_class.data)
     
+
     @action(methods=['GET'], detail=False)
     def get_self_history(self, request, *args, **kwargs):
 
@@ -493,6 +495,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         
         return Response(serializer_class.data)
     
+
     @action(methods=['GET'], detail=False)
     def get_statistics_self(self, request, *args, **kwargs):
 
@@ -511,6 +514,48 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         }
 
         return JsonResponse(data_)
+
+    @action(methods=['GET'], detail=True)
+    def approve(self, request, *args, **kwargs):
+
+        user = request.user
+        application = self.get_object()
+        application.status = 'AP'
+        application.approved_by = user
+        application.save()
+
+        attendance = TrainingAttendee.objects.create(
+            training=application.training,
+            attendee=application.applicant,
+        )
+
+        serializer_class = TrainingApplicationSerializer(application)
+        
+        return Response(serializer_class.data)
+    
+    @action(methods=['GET'], detail=True)
+    def reject(self, request, *args, **kwargs):
+
+        user = request.user
+        application = self.get_object()
+        application.status = 'RJ'
+        application.save()
+
+        serializer_class = TrainingApplicationSerializer(application)
+        
+        return Response(serializer_class.data)
+    
+    @action(methods=['GET'], detail=True)
+    def reserve(self, request, *args, **kwargs):
+
+        user = request.user
+        application = self.get_object()
+        application.status = 'RS'
+        application.save()
+
+        serializer_class = TrainingApplicationSerializer(application)
+        
+        return Response(serializer_class.data)
 
 class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = TrainingAttendee.objects.all()

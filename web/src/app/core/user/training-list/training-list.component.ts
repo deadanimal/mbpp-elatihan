@@ -114,9 +114,15 @@ export class TrainingListComponent implements OnInit {
     this.tableActiveRow = event.row;
   }
 
-  view(path: string, selected: Training) {
-    
-    this.router.navigate([path])
+  view(id) {
+    let path = '/trainings/information'
+    let extras = id
+    let queryParams = {
+      queryParams: {
+        id: extras
+      }
+    }
+    this.router.navigate([path], queryParams)
   }
 
 }

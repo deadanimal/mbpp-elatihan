@@ -17,6 +17,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 from django.shortcuts import render
 from django.db.models import Q
+from django.http import JsonResponse
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -40,6 +41,14 @@ from .serializers import (
     UserLogSerializer,
     SecurityQuestionSerializer,
     SecurityAnswerSerializer
+)
+
+from exams.models import (
+    ExamAttendee
+)
+
+from trainings.models import (
+    TrainingAttendee
 )
 
 class CustomUserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
@@ -107,6 +116,19 @@ class CustomUserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                     break
 
         return Response('Ok')
+    
+
+    @action(methods=['GET'], detail=False)
+    def self_summary(self, request, *args, **kwargs):
+        user = request.user
+
+        data_ = {
+            'trainings': len(TrainingAttendee.objects.filter(attendee=user)),
+            'exams': len(ExamAttendee.objects.filter(staff=user)),
+            'attendances': len(TrainingAttendee.objects.filter(attendee=user))
+        }
+
+        return JsonResponse(data_)
 
 
 class UserLogViewSet(NestedViewSetMixin, viewsets.ModelViewSet):

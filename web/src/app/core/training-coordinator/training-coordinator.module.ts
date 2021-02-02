@@ -32,6 +32,7 @@ import { ReportComponent } from './report/report.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { QuillModule } from 'ngx-quill';
 import { NeedAnalysisComponent } from './need-analysis/need-analysis.component';
+import { UsersComponent } from './users/users.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -46,7 +47,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     CalendarComponent,
     ReportComponent,
     ConfigurationComponent,
-    NeedAnalysisComponent
+    NeedAnalysisComponent,
+    UsersComponent
   ],
   imports: [
     CommonModule,

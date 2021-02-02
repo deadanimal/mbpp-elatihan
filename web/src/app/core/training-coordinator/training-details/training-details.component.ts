@@ -33,6 +33,7 @@ import { NotesService } from 'src/app/shared/services/notes/notes.service';
 import { Domain } from 'src/app/shared/services/domains/domains.model';
 import { DomainsService } from 'src/app/shared/services/domains/domains.service';
 import { QuillViewHTMLComponent } from 'ngx-quill';
+import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
 
 export enum SelectionType {
   single = "single",
@@ -175,6 +176,7 @@ export class TrainingDetailsComponent implements OnInit {
   }) headerEN: QuillViewHTMLComponent
 
   constructor(
+    private applicationService: ApplicationsService,
     private coreService: CoresService,
     private domainService: DomainsService,
     private organisationService: OrganisationsService,
@@ -1774,7 +1776,7 @@ export class TrainingDetailsComponent implements OnInit {
   }
 
   verifyAbsence(row) {
-
+    
   }
 
   verifyAttendance(row) {
@@ -1782,7 +1784,78 @@ export class TrainingDetailsComponent implements OnInit {
   }
 
   approveApplication(row) {
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Permohonan sedang diterima'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
     
+    this.applicationService.approve(row['id']).subscribe(
+      () => {
+        this.loadingBar.complete()
+        let successTitle = 'Berjaya'
+        let successMessage = 'Permohonan berjaya diterima'
+        this.notifyService.openToastr(successTitle, successMessage)
+      },
+      () => {
+        this.loadingBar.complete()
+        let failedTitle = 'Tidak Berjaya'
+        let failedMessage = 'Permohonan tidak berjaya diterima. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(failedTitle, failedMessage)
+      },
+      () => {
+        this.getData()
+      }
+    )
+  }
+
+  rejectApplication(row) {
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Permohonan sedang ditolak'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+    
+    this.applicationService.reject(row['id']).subscribe(
+      () => {
+        this.loadingBar.complete()
+        let successTitle = 'Berjaya'
+        let successMessage = 'Permohonan berjaya ditolak'
+        this.notifyService.openToastr(successTitle, successMessage)
+      },
+      () => {
+        this.loadingBar.complete()
+        let failedTitle = 'Tidak Berjaya'
+        let failedMessage = 'Permohonan tidak berjaya ditolak. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(failedTitle, failedMessage)
+      },
+      () => {
+        this.getData()
+      }
+    )
+  }
+
+  reserveApplication(row) {
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Permohonan sedang disimpan'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+    
+    this.applicationService.reserve(row['id']).subscribe(
+      () => {
+        this.loadingBar.complete()
+        let successTitle = 'Berjaya'
+        let successMessage = 'Permohonan berjaya disimpan'
+        this.notifyService.openToastr(successTitle, successMessage)
+      },
+      () => {
+        this.loadingBar.complete()
+        let failedTitle = 'Tidak Berjaya'
+        let failedMessage = 'Permohonan tidak berjaya disimpan. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(failedTitle, failedMessage)
+      },
+      () => {
+        this.getData()
+      }
+    )
   }
 
   navigatePage(path: string) {

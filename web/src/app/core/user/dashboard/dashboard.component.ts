@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
 
 import * as moment from 'moment';
+import { UsersService } from 'src/app/shared/services/users/users.service';
 
 export enum SelectionType {
   single = "single",
@@ -28,6 +29,7 @@ export class DashboardComponent implements OnInit {
   // training: Training
   // trainings: Training[] = []
   applications: ApplicationSelfExtended[] = []
+  summary: any
   totalTrainings: number = 0
   totalExams: number = 0
   totalDays: number = 0
@@ -67,6 +69,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private applicationService: ApplicationsService,
+    private userService: UsersService,
     private loadingBar: LoadingBarService,
     private router: Router
   ) { 
@@ -80,11 +83,13 @@ export class DashboardComponent implements OnInit {
     this.loadingBar.start()
 
     forkJoin([
-      this.applicationService.getSelf()
+      this.applicationService.getSelf(),
+      this.userService.getSummarySelf()
     ]).subscribe(
       () => {
         this.loadingBar.complete()
         this.applications = this.applicationService.applicationsSelf
+        this.summary = this.userService.summary
         this.tableRows = this.applications
         this.tableRows.forEach(
           (row) => {
@@ -109,6 +114,10 @@ export class DashboardComponent implements OnInit {
         else {
           this.isEmpty = true
         }
+
+        this.totalTrainings = this.summary['trainings']
+        this.totalExams = this.summary['exams']
+        this.totalDays = this.summary['attendances']
       }
     )
   }
@@ -133,15 +142,23 @@ export class DashboardComponent implements OnInit {
     this.tableActiveRow = event.row;
   }
 
-  c(id) {
-    let path = '/trainings/information'
+  view(id, status) {
+    let pathApproved = '/trainings/detail'
+    let pathNotApproved = '/trainings/information'
     let extras = id
     let queryParams = {
       queryParams: {
         id: extras
       }
     }
-    this.router.navigate([path], queryParams)
+
+    if (status == 'AP') {
+      this.router.navigate([pathApproved], queryParams)
+    }
+    else {
+      this.router.navigate([pathNotApproved], queryParams)
+    }
+    
   }
 
 }

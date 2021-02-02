@@ -435,7 +435,19 @@ class TrainingApplication(models.Model):
         null=True, 
         related_name='application_attendee'
     )
-    is_approved = models.BooleanField(default=False)
+    # is_approved = models.BooleanField(default=False)
+    STATUS = [
+        ('AP', 'Diterima'),
+        ('RJ', 'Ditolak'),
+        ('RS', 'Disimpan'),
+        ('IP', 'Dalam proses')
+    ]
+    status = models.CharField(
+        max_length=2,
+        choices=STATUS,
+        default='IP'
+    )
+
     approved_by = models.ForeignKey(
         CustomUser, 
         on_delete=models.CASCADE, 

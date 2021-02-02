@@ -86,8 +86,8 @@ export class ApplicationsService {
     )
   }
 
-  activate(id: string) {
-    let urlTemp = this.urlApplications + id + '/activate/'
+  approve(id: string) {
+    let urlTemp = this.urlApplications + id + '/approve/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.application = res
@@ -96,8 +96,18 @@ export class ApplicationsService {
     )
   }
 
-  deactivate(id: string) {
-    let urlTemp = this.urlApplications + id + '/deactivate/'
+  reject(id: string) {
+    let urlTemp = this.urlApplications + id + '/reject/'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.application = res
+        console.log('Application: ', this.application)
+      })
+    )
+  }
+
+  reserve(id: string) {
+    let urlTemp = this.urlApplications + id + '/reserve/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.application = res

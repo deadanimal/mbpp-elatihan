@@ -19,6 +19,8 @@ export class UsersService {
   public users: User[] = []
   public usersFiltered: User[] = []
 
+  summary: any
+
   constructor(
     private http: HttpClient
   ) { }
@@ -56,7 +58,7 @@ export class UsersService {
     return this.http.put<User>(urlTemp, body).pipe(
       tap((res) => {
         this.user = res
-        console.log('User', this.user)
+        console.log('User: ', this.user)
       })
     )
   }
@@ -66,7 +68,17 @@ export class UsersService {
     return this.http.get<User[]>(urlTemp).pipe(
       tap((res) => {
         this.usersFiltered = res
-        console.log('Users', this.usersFiltered)
+        console.log('Users: ', this.usersFiltered)
+      })
+    )
+  }
+
+  getSummarySelf(): Observable<any> {
+    let urlTemp = this.urlUser + 'self_summary'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.summary = res
+        console.log('Summary: ', this.summary)
       })
     )
   }

@@ -139,7 +139,7 @@
 								<span>Tarikh Daftar</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
-								{{row.created_date}}
+								{{row.created_at}}
 							</ng-template>
 						</ngx-datatable-column>
 
@@ -168,18 +168,10 @@
 								<span>Status</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
-								<!-- <span
-									*ngIf="row.result == 'PA'"
-									class="badge badge-pill badge-success"
-								>
-									Lulus
-								</span>
-								<span
-									*ngIf="row.result == 'FA'"
-									class="badge badge-pill badge-danger"
-								>
-									Gagal
-								</span> -->
+								<span class="badge badge-success" *ngIf="row.status == 'AP'">Diterima</span>
+								<span class="badge badge-danger" *ngIf="row.status == 'RJ'">Ditolak</span>
+								<span class="badge badge-warning" *ngIf="row.status == 'RS'">Disimpan</span>
+								<span class="badge badge-primary" *ngIf="row.status == 'IP'">Dalam proses</span>
 							</ng-template>
 						</ngx-datatable-column>
 		
@@ -190,7 +182,7 @@
 							<ng-template let-row="row" ngx-datatable-cell-template>
 								<button 
 									class="btn btn-warm-blue"
-									(click)="viewInformation(row.training.id)"
+									(click)="view(row.training.id, row.status)"
 								>
 									Lihat
 								</button>
