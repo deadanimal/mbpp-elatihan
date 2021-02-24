@@ -1,0 +1,249 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
+<div class="header pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-6">
+                    <h6 class="h2 text-dark d-inline-block mb-0">Takwim Jabatan</h6>
+
+                    <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class=" breadcrumb-item">
+                                <a href="javascript:void(0)"> <i class="fas fa-list-alt text-dark"> </i> </a>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <div class="col-lg-6 mt-3 mt-lg-0 text-lg-right">
+                    <a 
+                        class="fullcalendar-btn-prev btn btn-sm btn-neutral" 
+                        href="javascript:void(0)"
+                        (click)="calendar.prev()"
+                    >
+                        <i class=" fas fa-angle-left"> </i>
+                    </a>
+
+                    <a 
+                        class="fullcalendar-btn-next btn btn-sm btn-neutral" 
+                        href="javascript:void(0)"
+                        (click)="calendar.next()"
+                    >
+                        <i class=" fas fa-angle-right"> </i>
+                    </a>
+
+                    <a 
+                        class="btn btn-sm btn-neutral" 
+                        data-calendar-view="month" 
+                        href="javascript:void(0)"
+                        (click)="changeView('dayGridMonth')"
+                    >
+                        Bulan
+                    </a>
+
+                    <a 
+                        class="btn btn-sm btn-neutral" 
+                        data-calendar-view="basicWeek" 
+                        href="javascript:void(0)"
+                        (click)="changeView('dayGridWeek')"
+                    >
+                        Minggu
+                    </a>
+
+                    <a 
+                        class="btn btn-sm btn-neutral" 
+                        data-calendar-view="basicDay" 
+                        href="javascript:void(0)"
+                        (click)="changeView('dayGridDay')"
+                    >
+                        Hari
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col">
+            <div class="card card-calendar">
+                <!-- <div class="card-header bg-secondary">
+                    <h5 class="h3 mb-0">Takwim</h5>
+                </div> -->
+
+                <div class=" card-body p-0">
+                    <div class=" calendar" data-toggle="calendar" id="calendar"></div>
+                </div>
+            </div>
+
+            <div 
+                aria-hidden="true" 
+                aria-labelledby="edit-event-label" 
+                class="modal fade" 
+                id="edit-event" 
+                role="dialog"
+                tabindex="-1"
+            >
+                <div class="modal-dialog modal-dialog-centered modal-secondary" role="document">
+                    <ng-template #modalView>
+                        <div class="modal-header bg-warm-blue">
+                            <h6 class="modal-title text-white my-auto" id="modal-title-default">
+                                Informasi Latihan
+
+                                <span *ngIf="selectedTraining?._def.extendedProps.status == 'DB'" class="ml-2 badge badge-pill badge-default">Dibuka</span>
+                                <span *ngIf="selectedTraining?._def.extendedProps.status == 'OT'" class="ml-2 badge badge-pill badge-primary">Lain-lain</span>
+                                <span *ngIf="selectedTraining?._def.extendedProps.status == 'PN'" class="ml-2 badge badge-pill badge-info">Penuh</span>
+                                <span *ngIf="selectedTraining?._def.extendedProps.status == 'SL'" class="ml-2 badge badge-pill badge-success">Selesai</span>
+                                <span *ngIf="selectedTraining?._def.extendedProps.status == 'DT'" class="ml-2 badge badge-pill badge-danger">Ditutup</span>
+                                <span *ngIf="selectedTraining?._def.extendedProps.status == 'TN'" class="ml-2 badge badge-pill badge-warning">Tangguh</span>
+                            </h6>
+                    
+                            <button
+                                aria-label="Close"
+                                class="close"
+                                data-dismiss="modal"
+                                type="button"
+                                (click)="closeModal()"
+                            >
+                                <span aria-hidden="true" class="text-white my-auto"> × </span>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="form-control-label">Tajuk</label>
+                                <input class="form-control" disabled value="[{{selectedTraining._def.extendedProps.course_code}}] {{selectedTraining?.title}}">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label">Deskripsi</label>
+                                <textarea class="form-control" disabled value="{{selectedTraining?._def.extendedProps.description}}"></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Tarikh Mula</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.start_date}}">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Tarikh Tamat</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.end_date}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Masa Mula</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.start_time}}">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Masa Tamat</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.end_time}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Jenis Penganjur</label>
+                                        <input *ngIf="selectedTraining?._def.extendedProps.organiser_type == 'DD'" class="form-control" disabled value="Dalaman">
+                                        <input *ngIf="selectedTraining?._def.extendedProps.organiser_type == 'LL'" class="form-control" disabled value="Luaran">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Penganjur</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.organiser.name}} ({{selectedTraining?._def.extendedProps.organiser.shortname}})">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Jenis Latihan</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.training_type.name}}">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Kaedah Latihan</label>
+                                        <input *ngIf="selectedTraining?._def.extendedProps.method == 'BS'" class="form-control" disabled value="Bersemuka (offline)">
+                                        <input *ngIf="selectedTraining?._def.extendedProps.method == 'TB'" class="form-control" disabled value="Tidak bersemuka (online)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Anjuran Latihan</label>
+                                        <input *ngIf="selectedTraining?._def.extendedProps.country == 'DN'" class="form-control" disabled value="Dalam negara">
+                                        <input *ngIf="selectedTraining?._def.extendedProps.country == 'LN'" class="form-control" disabled value="Luar negara">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Domain</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.domain.name}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Jenis Teras</label>
+                                        <input *ngIf="selectedTraining?._def.extendedProps.core.parent == 'GN'" class="form-control" disabled value="GENERIK">
+                                        <input *ngIf="selectedTraining?._def.extendedProps.core.parent == 'FN'" class="form-control" disabled value="FUNGSIONAL">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Teras</label>
+                                        <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.core.child}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-control-label">Tempat</label>
+                                <input class="form-control" disabled value="{{selectedTraining?._def.extendedProps.venue}}">
+                            </div>
+                            
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="checkTransportation" disabled [checked]="selectedTraining?._def.extendedProps.transportation">
+                                <label class="custom-control-label" for="checkTransportation">Pengangkutan</label>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-warm-blue" (click)="viewInformation(selectedTraining?.id)">
+                                Informasi
+                            </button>
+
+                            <button class="btn btn-warm-blue-link ml-auto" (click)="closeModal()">
+                                Tutup
+                            </button>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

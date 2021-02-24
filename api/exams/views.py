@@ -35,7 +35,7 @@ class ExamViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -227,6 +227,92 @@ class ExamViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         return JsonResponse(data_)
 
+    
+    @action(methods=['GET'], detail=False)
+    def get_statistics_department(self, request, *args, **kwargs):
+        user = request.user
+
+        timezone_ = pytz.timezone('Asia/Kuala_Lumpur')
+        current_year = str(datetime.datetime.now(timezone_).year)
+
+        filter_year = datetime.datetime.now(tz=timezone.utc).year
+
+        by_result = {
+            'total': len(ExamAttendee.objects.filter(staff__department_code=user.department_code)),
+            'passed': len(ExamAttendee.objects.filter(result='PA', staff__department_code=user.department_code)),
+            'failed': len(ExamAttendee.objects.filter(result='FA', staff__department_code=user.department_code))
+        }
+
+        by_month = {
+            'january': len(ExamAttendee.objects.filter(
+                date__year=filter_year,
+                date__month=1,
+                staff__department_code=user.department_code
+            )),
+            'february': len(ExamAttendee.objects.filter(
+                date__year=filter_year,
+                date__month=2,
+                staff__department_code=user.department_code
+            )),
+            'march': len(ExamAttendee.objects.filter(
+                date__year=filter_year,
+                date__month=3,
+                staff__department_code=user.department_code
+            )),
+            'april': len(ExamAttendee.objects.filter(
+                date__year=filter_year,
+                date__month=4,
+                staff__department_code=user.department_code
+            )),
+            'may': len(ExamAttendee.objects.filter(
+                date__year=filter_year,
+                date__month=5,
+                staff__department_code=user.department_code
+            )),
+            'june': len(ExamAttendee.objects.filter(
+                date__year=filter_year,
+                date__month=6,
+                staff__department_code=user.department_code
+            )),
+            'july': len(ExamAttendee.objects.filter(
+                date__year=filter_year,
+                date__month=7,
+                staff__department_code=user.department_code
+            )),
+            'august': len(ExamAttendee.objects.filter(
+                date__year=filter_year,
+                date__month=8,
+                staff__department_code=user.department_code
+            )),
+            'september': len(ExamAttendee.objects.filter(
+                date__year=filter_year,
+                date__month=9,
+                staff__department_code=user.department_code
+            )),
+            'october': len(ExamAttendee.objects.filter(
+                date__year=filter_year,
+                date__month=10,
+                staff__department_code=user.department_code
+            )),
+            'november': len(ExamAttendee.objects.filter(
+                date__year=filter_year,
+                date__month=11,
+                staff__department_code=user.department_code
+            )),
+            'december': len(ExamAttendee.objects.filter(
+                date__year=filter_year,
+                date__month=12,
+                staff__department_code=user.department_code
+            ))
+        }
+
+        data_ = {
+            'result': by_result,
+            'months': by_month
+        }
+
+        return JsonResponse(data_)
+
 
 class ExamAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = ExamAttendee.objects.all()
@@ -238,7 +324,7 @@ class ExamAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -275,3 +361,16 @@ class ExamAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         serializer = ExamAttendeeExtendedSerializer(exams, many=True)
         return Response(serializer.data)
+    
+    @action(methods=['GET'], detail=False)
+    def get_department_attendees(self, request, *args, **kwargs):
+        user = request.user
+        
+        if user.user_type == 'DC' or user.user_type == 'DH':
+            users = ExamAttendee.objects.filter(staff__department_code=user.department_code).order_by('-date')
+            serializer = ExamAttendeeExtendedSerializer(users, many=True)
+
+            return Response(serializer.data)
+        else:
+            users = ExamAttendee.objects.none()
+            serializer = ExamAttendeeExtendedSerializer(users, many=True)

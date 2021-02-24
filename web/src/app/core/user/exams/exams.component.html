@@ -76,8 +76,11 @@
                 [messages]="tableMessages"
                 (activate)="onActivate($event)"
                 *ngIf="!isEmpty"
+                [scrollbarH]="true"
             >
-                <ngx-datatable-column>
+                <ngx-datatable-column
+                    prop="date"
+                >
                     <ng-template ngx-datatable-header-template>
                         <span>Tarikh Peperiksaan</span>
                     </ng-template>
@@ -86,7 +89,9 @@
                     </ng-template>
                 </ngx-datatable-column>
     
-                <ngx-datatable-column>
+                <ngx-datatable-column
+                    prop="exam.code"
+                >
                     <ng-template ngx-datatable-header-template>
                         <span>Kod</span>
                     </ng-template>
@@ -95,7 +100,9 @@
                     </ng-template>
                 </ngx-datatable-column>
     
-                <ngx-datatable-column>
+                <ngx-datatable-column
+                    prop="exam.title"
+                >
                     <ng-template ngx-datatable-header-template>
                         <span>Tajuk Peperiksaan</span>
                     </ng-template>
@@ -104,7 +111,9 @@
                     </ng-template>
                 </ngx-datatable-column>
     
-                <ngx-datatable-column>
+                <ngx-datatable-column
+                    prop="result"
+                >
                     <ng-template ngx-datatable-header-template>
                         <span>Keputusan</span>
                     </ng-template>

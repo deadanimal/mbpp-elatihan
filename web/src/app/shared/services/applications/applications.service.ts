@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Form } from '@angular/forms';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { Application, ApplicationSelfExtended } from './applications.model';
+import { Application, ApplicationDepartmentExtended, ApplicationSelfExtended } from './applications.model';
 
 
 @Injectable({
@@ -21,6 +21,7 @@ export class ApplicationsService {
   applicationsFiltered: Application[] = []
 
   applicationsSelf: ApplicationSelfExtended[] = []
+  applicationsDepartment: ApplicationDepartmentExtended[] = []
 
   statisticSelf: any
 
@@ -32,7 +33,17 @@ export class ApplicationsService {
     return this.http.post<any>(this.urlApplications, body).pipe(
       tap((res) => {
         this.application = res
-        console.log('Application: ', this.application)
+        // console.log('Application: ', this.application)
+      })
+    )
+  }
+
+  postBatch(body: any): Observable<Application[]> {
+    let urlTemp = this.urlApplications + 'apply_batch/'
+    return this.http.post<any>(urlTemp, body).pipe(
+      tap((res) => {
+        this.application = res
+        // console.log('Application: ', this.application)
       })
     )
   }
@@ -41,7 +52,47 @@ export class ApplicationsService {
     return this.http.get<Application[]>(this.urlApplications).pipe(
       tap((res) => {
         this.applications = res
-        console.log('Applications: ', this.applications)
+        // console.log('Applications: ', this.applications)
+      })
+    )
+  }
+
+  getDepartmentCoordinatorList(): Observable<ApplicationDepartmentExtended[]> {
+    let urlTemp = this.urlApplications + 'get_department_coordinator_list'
+    return this.http.get<ApplicationDepartmentExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        this.applicationsDepartment = res
+        // console.log('Applications: ', this.applicationsDepartment)
+      })
+    )
+  }
+
+  getDepartmentHeadList(): Observable<ApplicationDepartmentExtended[]> {
+    let urlTemp = this.urlApplications + 'get_department_head_list'
+    return this.http.get<ApplicationDepartmentExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        this.applicationsDepartment = res
+        // console.log('Applications: ', this.applicationsDepartment)
+      })
+    )
+  }
+
+  getDepartmentCoordinatorHistories(): Observable<ApplicationDepartmentExtended[]> {
+    let urlTemp = this.urlApplications + 'get_department_coordinator_histories'
+    return this.http.get<ApplicationDepartmentExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        this.applicationsDepartment = res
+        // console.log('Applications: ', this.applicationsDepartment)
+      })
+    )
+  }
+
+  getDepartmentHeadHistories(): Observable<ApplicationDepartmentExtended[]> {
+    let urlTemp = this.urlApplications + 'get_department_head_histories'
+    return this.http.get<ApplicationDepartmentExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        this.applicationsDepartment = res
+        // console.log('Applications: ', this.applicationsDepartment)
       })
     )
   }
@@ -51,7 +102,7 @@ export class ApplicationsService {
     return this.http.get<ApplicationSelfExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.applicationsSelf = res
-        console.log('Applications: ', this.applicationsSelf)
+        // console.log('Applications: ', this.applicationsSelf)
       })
     )
   }
@@ -61,7 +112,7 @@ export class ApplicationsService {
     return this.http.get<Application>(urlTemp).pipe(
       tap((res) => {
         this.application = res
-        console.log('Application: ', this.application)
+        // console.log('Application: ', this.application)
       })
     )
   }
@@ -71,7 +122,7 @@ export class ApplicationsService {
     return this.http.put<Application>(urlTemp, body).pipe(
       tap((res) => {
         this.application = res
-        console.log('Application', this.application)
+        // console.log('Application', this.application)
       })
     )
   }
@@ -81,17 +132,37 @@ export class ApplicationsService {
     return this.http.get<Application[]>(urlTemp).pipe(
       tap((res) => {
         this.applicationsFiltered = res
-        console.log('Applications', this.applicationsFiltered)
+        // console.log('Applications', this.applicationsFiltered)
       })
     )
   }
 
-  approve(id: string) {
-    let urlTemp = this.urlApplications + id + '/approve/'
+  approveLevel1(id: string) {
+    let urlTemp = this.urlApplications + id + '/approve_level_1/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.application = res
-        console.log('Application: ', this.application)
+        // console.log('Application: ', this.application)
+      })
+    )
+  }
+
+  approveLevel2(id: string) {
+    let urlTemp = this.urlApplications + id + '/approve_level_2/'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.application = res
+        // console.log('Application: ', this.application)
+      })
+    )
+  }
+
+  approveLevel3(id: string) {
+    let urlTemp = this.urlApplications + id + '/approve_level_3/'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.application = res
+        // console.log('Application: ', this.application)
       })
     )
   }
@@ -101,7 +172,7 @@ export class ApplicationsService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.application = res
-        console.log('Application: ', this.application)
+        // console.log('Application: ', this.application)
       })
     )
   }
@@ -111,7 +182,7 @@ export class ApplicationsService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.application = res
-        console.log('Application: ', this.application)
+        // console.log('Application: ', this.application)
       })
     )
   }
@@ -121,7 +192,7 @@ export class ApplicationsService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.statisticSelf = res
-        console.log('Statistics: ', this.statisticSelf)
+        // console.log('Statistics: ', this.statisticSelf)
       })
     )
   }

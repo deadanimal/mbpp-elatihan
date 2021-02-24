@@ -28,6 +28,7 @@ export class HttpTokenInterceptor implements HttpInterceptor {
             reason: error && error.error.reason ? error.error.reason : '',
             status: error.status
         }
+        console.log(data)
         if (error instanceof HttpErrorResponse) {
             // Server or connection error happened
             if (!navigator.onLine) {
@@ -47,8 +48,8 @@ export class HttpTokenInterceptor implements HttpInterceptor {
         } else {
             // Handle Client Error (Angular Error, ReferenceError...)     
         }
-        // console.error('It happens: ', error);
-        // console.log('Error: ', error)
+        console.error('It happens: ', error);
+        console.log('Error: ', error)
         return throwError(error)
     }
 
@@ -57,17 +58,20 @@ export class HttpTokenInterceptor implements HttpInterceptor {
             'Accept': '*/*'
         };
         // 'Content-Type': 'application/json',
-        const token = this.jwtService.getToken('accessToken');
-        // console.log('Route: ', this.router.url)
+
+        if (req.url.includes('auth/obtain')) {
+            // console.log('Is obtain? ', req.url.includes('auth/obtain'))
+            this.jwtService.destroyToken()
+        }
+
         if (
-            token &&
-            this.router.url != '/home'
+            this.router.url != '/home' &&
+            this.router.url != '/auth/login'
         ) {
+            const token = this.jwtService.getToken('accessToken');
             headersConfig['Authorization'] = `Bearer ${token}`;
             // console.log(headersConfig)
         }
-
-        // console.log('Intercepting...')
 
         const request = req.clone({ setHeaders: headersConfig });
         return next.handle(request).pipe(

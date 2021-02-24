@@ -27,6 +27,7 @@ export class TrainingsComponent implements OnInit {
   // Data
   trainings: Training[] = []
   trainingTypes: TrainingType[] = []
+  yearSelection
 
   // Table
   tableEntries: number = 5
@@ -64,6 +65,7 @@ export class TrainingsComponent implements OnInit {
     // console.log(filterField)
     // console.log('boom')
     this.loadingBar.start()
+    let yearSelection_ = []
     forkJoin([
       this.trainingService.getAll(),
       this.trainingService.getTrainingTypes()
@@ -75,11 +77,13 @@ export class TrainingsComponent implements OnInit {
         this.tableRows = this.trainings
         this.tableRows.forEach(
           (row) => {
-            row['start_date'] = moment(row.start_date).format('DD/MM/YYYY')
-            row['end_date'] = moment(row.end_date).format('DD/MM/YYYY')
-            row['start_date_year'] = moment(row.end_date).format('YYYY')
+            row['start_date'] = moment(row.start_date, 'YYYY-MM-DD').format('DD/MM/YYYY')
+            row['end_date'] = moment(row.end_date, 'YYYY-MM-DD').format('DD/MM/YYYY')
+            row['start_date_year'] = moment(row.start_date, 'DD/MM/YYYY').format('YYYY')
+            yearSelection_.push(row['start_date_year'])
           }
         )
+        // console.log(yearSelection_)
         // console.log(this.tableRows)
       },
       () => {
@@ -99,6 +103,9 @@ export class TrainingsComponent implements OnInit {
         else {
           this.isEmpty = true
         }
+
+        this.yearSelection = new Set(yearSelection_)
+        // console.log('year:', this.yearSelection)
       }
     )
   }
@@ -114,15 +121,25 @@ export class TrainingsComponent implements OnInit {
         return d.title.toLowerCase().indexOf(val) !== -1 || !val;
       });
     }
-    else if (type == 'type') {
-      this.tableTemp = this.tableRows.filter(function(d) {
-        return d.training_type.toLowerCase().indexOf(val) !== -1 || !val;
-      });
+    else if (type == 'organiser_type') {
+      if (val == 'aa') {
+        this.tableTemp = this.tableRows
+      }
+      else {
+        this.tableTemp = this.tableRows.filter(function(d) {
+          return d.organiser_type.toLowerCase().indexOf(val) !== -1 || !val;
+        });
+      }
     }
     else if (type == 'year') {
-      this.tableTemp = this.tableRows.filter(function(d) {
-        return d.start_date_year.toLowerCase().indexOf(val) !== -1 || !val;
-      });
+      if (val == 'aa') {
+        this.tableTemp = this.tableRows
+      }
+      else {
+        this.tableTemp = this.tableRows.filter(function(d) {
+          return d.start_date_year.toLowerCase().indexOf(val) !== -1 || !val;
+        });
+      }
     }
   }
 

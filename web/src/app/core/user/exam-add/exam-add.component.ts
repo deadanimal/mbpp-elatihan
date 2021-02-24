@@ -274,8 +274,8 @@ export class ExamAddComponent implements OnInit {
       const file = event.target.files[0];
       reader.readAsDataURL(file)
       // readAsDataURL(file);
-      console.log(event.target)
-      console.log(reader)
+      // console.log(event.target)
+      // console.log(reader)
       
       
       reader.onload = () => {

@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { NgxGaugeModule } from 'ngx-gauge';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
 import { RouterModule } from '@angular/router';
 import { UserRoutes } from './user.routing';
@@ -55,8 +56,9 @@ import { NeedAnalysisComponent } from './need-analysis/need-analysis.component';
     ReactiveFormsModule,
     LoadingBarModule,
     NgxDatatableModule,
-    RouterModule.forChild(UserRoutes),
-    NgxGaugeModule
+    NgxGaugeModule,
+    ZXingScannerModule,
+    RouterModule.forChild(UserRoutes)
   ]
 })
 export class UserModule { }

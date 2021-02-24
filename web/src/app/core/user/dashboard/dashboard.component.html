@@ -3,8 +3,11 @@
 	<div class="container-fluid">
 		<div class="header-body">
 			<div class="row align-items-center py-4">
+				<div class="col-12">
+					<h2 class="text-dark">Selamat datang, {{user?.full_name}}!</h2>
+				</div>
 				<div class="col-lg-6 col-7">
-					<h6 class="h2 text-dark d-inline-block mb-0">Dashboard</h6>
+					<h6 class="h2 text-dark d-inline-block mb-0">Dashboard Kakitangan</h6>
 
 					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
 						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
@@ -15,13 +18,14 @@
 					</nav>
 				</div>
 
-				<!-- <div class="col-lg-6 col-5 text-right">
-					<a class="btn btn-sm btn-neutral" href="javascript:void(0)"> New </a>
-
-					<a class="btn btn-sm btn-neutral" href="javascript:void(0)">
-						Filters
-					</a>
-				</div> -->
+				<div class="col-lg-6 col-5 text-right">
+					<!-- <a class="btn btn-sm btn-warm-blue" (click)="openModal(achievementModal)">
+						<div>
+							<i class="fas fa-exclamation-circle text-white"></i> 
+							<span class="text-white">Pencapaian</span>
+						</div>
+					</a> -->
+				</div>
 			</div>
 		</div>
 	</div>
@@ -35,32 +39,97 @@
                     <h4 class="m-0">Ringkasan Peribadi</h4>
                 </div>
                 <div class="card-body text-center">
-                    <ngx-gauge 
-                        [type]="gaugeType" 
-                        [value]="totalTrainings" 
-						[label]="gaugeLabel"
-						[append]="gaugeTrainingsAppend"
-                        [thresholds]="gaugeConfig"
-                    >
-                    </ngx-gauge>
-                    <ngx-gauge
-                        [type]="gaugeType" 
-                        [value]="totalExams" 
-						[label]="gaugeLabel"
-						[append]="gaugeExamsAppend"
-                        [max]="gaugeMax"
-                        [thresholds]="gaugeConfig"
-                    >
-                    </ngx-gauge>
-                    <ngx-gauge
-                        [type]="gaugeType" 
-                        [value]="totalDays" 
-						[label]="gaugeLabel"
-						[append]="gaugeDaysAppend"
-                        [max]="gaugeMax"
-                        [thresholds]="gaugeConfig"
-                    >
-                    </ngx-gauge>
+                    <div class="row">
+						<div class="col-sm-12 col-lg-6 mb-2">
+							<ngx-gauge 
+								[type]="gaugeType" 
+								[value]="totalTrainings" 
+								[label]="gaugeLabelApplied"
+								[append]="gaugeTrainingsAppend"
+								[thresholds]="gaugeConfig"
+							>
+							</ngx-gauge>
+							<ngx-gauge
+								[type]="gaugeType" 
+								[value]="totalExams" 
+								[label]="gaugeLabel"
+								[append]="gaugeExamsAppend"
+								[max]="gaugeMax"
+								[thresholds]="gaugeConfig"
+							>
+							</ngx-gauge>
+							<ngx-gauge
+								[type]="gaugeType" 
+								[value]="totalDays" 
+								[label]="gaugeLabel"
+								[append]="gaugeDaysAppend"
+								[max]="gaugeMax"
+								[thresholds]="gaugeConfig"
+							>
+							</ngx-gauge>
+						</div>
+
+						<div class="col-sm-12 col-lg-6">
+							<ul class="list-group list-group-flush list my--3">
+								<li class="list-group-item px-1 card-achievement" *ngIf="totalDays >= 5">
+									<div class="row align-items-center">
+										<div class="col-auto">
+											<a class="ml-2 avatar rounded-circle bg-transparent">
+												<img
+													alt="Latihan"
+													[src]="iconTraining"
+												/>
+											</a>
+										</div>
+					
+										<div class="col">
+											<h4 class="mb-0">
+												<span> Tahniah anda telah mencapai keperluan 5 hari berkursus! </span>
+											</h4>
+										</div>
+									</div>
+								</li>
+					
+								<li class="list-group-item px-1 card-achievement" *ngIf="totalExams >= 5">
+									<div class="row align-items-center">
+										<div class="col-auto">
+											<a class="ml-2 avatar rounded-circle bg-transparent">
+												<img
+													alt="Peperiksaan"
+													[src]="iconExam"
+												/>
+											</a>
+										</div>
+					
+										<div class="col">
+											<h4 class="mb-0">
+												<span> Tahniah anda telah mencapai keperluan 5 hari peperiksaan! </span>
+											</h4>
+										</div>
+									</div>
+								</li>
+					
+								<li class="list-group-item px-1 card-achievement" *ngIf="totalDays <= 4 && totalExams <= 4">
+									<div class="row align-items-center">
+										<div class="col-auto">
+											<a class="ml-2 avatar rounded-circle bg-transparent">
+												<img
+													alt="Pencapaian"
+													[src]="iconError"
+												/>
+											</a>
+										</div>
+					
+										<div class="col">
+											<h4 class="mb-0">
+												<span> Maaf, tiada rekod pencapaian setakat ini. </span>
+											</h4>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
                 </div>
             </div>
         </div>
@@ -124,8 +193,11 @@
 						[messages]="tableMessages"
 						(activate)="onActivate($event)"
 						*ngIf="!isEmpty"
+						[scrollbarH]="true"
 					>
-						<ngx-datatable-column>
+						<ngx-datatable-column
+							prop="training.title"
+						>
 							<ng-template ngx-datatable-header-template>
 								<span>Latihan</span>
 							</ng-template>
@@ -134,16 +206,42 @@
 							</ng-template>
 						</ngx-datatable-column>
 			
-						<ngx-datatable-column>
+						<ngx-datatable-column
+							prop="created_at"
+						>
 							<ng-template ngx-datatable-header-template>
 								<span>Tarikh Daftar</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
-								{{row.created_at}}
+								{{row.created_at | date: 'd/M/y'}}
 							</ng-template>
 						</ngx-datatable-column>
 
-						<ngx-datatable-column>
+						<ngx-datatable-column
+							prop="training.start_date"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Tarikh Mula</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.training.start_date | date: 'd/M/y'}}
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column
+							prop="training.end_date"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Tarikh Tamat</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.training.end_date | date: 'd/M/y'}}
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column
+							prop="application_type"
+						>
 							<ng-template ngx-datatable-header-template>
 								<span>Jenis</span>
 							</ng-template>
@@ -163,7 +261,9 @@
 							</ng-template>
 						</ngx-datatable-column>
 			
-						<ngx-datatable-column>
+						<ngx-datatable-column
+							prop="status"
+						>
 							<ng-template ngx-datatable-header-template>
 								<span>Status</span>
 							</ng-template>
@@ -194,3 +294,93 @@
 		</div>
 	</div>
 </div>
+
+<ng-template #achievementModal>
+    <div class="modal-header bg-warm-blue">
+        <h6 class="modal-title text-white my-auto" id="modal-title-default">
+            Pencapaian
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            <span aria-hidden="true" class="text-white my-auto"> × </span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+		<ul class="list-group list-group-flush list my--3">
+            <li class="list-group-item px-1 card-achievement" *ngIf="totalDays >= 5">
+				<div class="row align-items-center">
+					<div class="col-auto">
+						<a class="avatar rounded-circle bg-transparent">
+							<img
+								alt="Latihan"
+								[src]="iconTraining"
+							/>
+						</a>
+					</div>
+
+					<div class="col">
+						<h4 class="mb-0">
+							<span> Tahniah anda telah mencapai keperluan 5 hari berkursus! </span>
+						</h4>
+					</div>
+				</div>
+            </li>
+
+			<li class="list-group-item px-1 card-achievement" *ngIf="totalExams >= 5">
+				<div class="row align-items-center">
+					<div class="col-auto">
+						<a class="avatar rounded-circle bg-transparent">
+							<img
+								alt="Peperiksaan"
+								[src]="iconExam"
+							/>
+						</a>
+					</div>
+
+					<div class="col">
+						<h4 class="mb-0">
+							<span> Tahniah anda telah mencapai keperluan 5 hari peperiksaan! </span>
+						</h4>
+					</div>
+				</div>
+            </li>
+
+			<li class="list-group-item px-1 card-achievement" *ngIf="totalDays <= 4 && totalExams <= 4">
+				<div class="row align-items-center">
+					<div class="col-auto">
+						<a class="avatar rounded-circle bg-transparent">
+							<img
+								alt="Pencapaian"
+								[src]="iconError"
+							/>
+						</a>
+					</div>
+
+					<div class="col">
+						<h4 class="mb-0">
+							<span> Maaf, tiada rekod pencapaian setakat ini. </span>
+						</h4>
+					</div>
+				</div>
+            </li>
+		</ul>
+    </div>
+
+    <div class="modal-footer">
+        <button
+            class="btn btn-outline-warm-blue ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            Tutup
+        </button>
+    </div>
+</ng-template>

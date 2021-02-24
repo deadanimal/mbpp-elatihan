@@ -15,12 +15,12 @@
                 <div class="card bg-secondary border-0 mb-0">
                     <div class="card-body px-lg-5 py-lg-5">
                         <div class="logo-box">
-							<img class="logo" [src]="imgLogo" (click)="cheat()">
+							<img class="logo" [src]="imgLogo">
                         </div>
 
                         <div class="logo-box text-center mt--4">
                             <h2 class="text-black mb-0">MAJLIS BANDARAYA PULAU PINANG</h2>
-                            <h2 class="text-black mb-0">eLatihan</h2>
+                            <h2 class="text-black mb-0" (click)="cheat()">eLatihan</h2>
                             <h2 class="text-black mb-0">Sistem Pengurusan Latihan</h2>
 						</div>
                         
@@ -107,27 +107,51 @@
                         <div *ngIf="isFirstLogin">
                             <form [formGroup]="passwordForm">
                                 <div class="form-group">
-                                    <label class="form-control-label">Kata Laluan Baru</label>
+                                    <label class="form-control-label">Kata Laluan Baru <span class="text-warning">*</span></label>
                                     <input class="form-control" formControlName="new_password1" placeholder="Kata laluan">
+
+                                    <ng-container *ngFor="let message of passwordFormMessages.new_password1">
+                                        <div *ngIf="passwordForm.get('new_password1').hasError(message.type) && (passwordForm.get('new_password1').dirty || passwordForm.get('new_password1').touched)">
+                                            <p class="error-message"><span>{{ message.message }}</span></p>
+                                        </div>
+                                    </ng-container>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-control-label">Ulang Kata Laluan Baru</label>
+                                    <label class="form-control-label">Ulang Kata Laluan Baru <span class="text-warning">*</span></label>
                                     <input class="form-control" formControlName="new_password2" placeholder="Ulang kata laluan">
+
+                                    <ng-container *ngFor="let message of passwordFormMessages.new_password2">
+                                        <div *ngIf="passwordForm.get('new_password2').hasError(message.type) && (passwordForm.get('new_password2').dirty || passwordForm.get('new_password2').touched)">
+                                            <p class="error-message"><span>{{ message.message }}</span></p>
+                                        </div>
+                                    </ng-container>
                                 </div>
                             </form>
 
                             <form [formGroup]="securityForm">
                                 <div class="form-group">
-                                    <label class="form-control-label">Soalan Sekuriti</label>
+                                    <label class="form-control-label">Soalan Sekuriti <span class="text-warning">*</span></label>
                                     <select class="form-control custom-select" formControlName="question">
                                         <option *ngFor="let question of questions" value="{{question.id}}">{{question.question}}</option>
                                     </select>
+
+                                    <ng-container *ngFor="let message of securityFormMessages.question">
+                                        <div *ngIf="securityForm.get('question').hasError(message.type) && (securityForm.get('question').dirty || securityForm.get('question').touched)">
+                                            <p class="error-message"><span>{{ message.message }}</span></p>
+                                        </div>
+                                    </ng-container>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-control-label">Jawapan Sekuriti</label>
+                                    <label class="form-control-label">Jawapan Sekuriti <span class="text-warning">*</span></label>
                                     <input class="form-control" formControlName="answer" placeholder="Jawapan Sekuriti">
+
+                                    <ng-container *ngFor="let message of securityFormMessages.answer">
+                                        <div *ngIf="securityForm.get('answer').hasError(message.type) && (securityForm.get('answer').dirty || securityForm.get('answer').touched)">
+                                            <p class="error-message"><span>{{ message.message }}</span></p>
+                                        </div>
+                                    </ng-container>
                                 </div>
                             </form>
 
@@ -148,3 +172,26 @@
         </div>
     </div>
 </div>
+
+<footer class="footer">
+    <div class="row align-items-center justify-content-xl-between">
+        <div class="col">
+            <div class="copyright text-center text-muted">
+                &copy; {{ currentDate | date: "yyyy" }}
+                Hak cipta terpelihara © 
+                <a
+                    href="https://elatihan.mbpp.gov.my"
+                    class="font-weight-bold ml-1"
+                    target="_blank"
+                >
+                    Majlis Bandaraya Pulau Pinang
+                </a>
+            </div>
+            <div class="copyright text-center text-muted">
+                Paparan terbaik menggunakan Chrome versi 69 dan ke atas, 
+                Firefox versi 61 dan ke atas, Safari versi 11 dan ke atas,
+                Opera versi 54 dan ke atas, dan Edge versi 16 dan ke atas.
+            </div>
+        </div>
+    </div>
+</footer>

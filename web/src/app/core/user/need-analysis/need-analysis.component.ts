@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 
 import { AnalysisExtended } from 'src/app/shared/services/analyses/analyses.model';
+import { Core } from 'src/app/shared/services/cores/cores.model';
+import { User } from 'src/app/shared/services/users/users.model';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { AnalysesService } from 'src/app/shared/services/analyses/analyses.service';
+import { CoresService } from 'src/app/shared/services/cores/cores.service';
 
 import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 
-import swal from 'sweetalert2';
 import * as moment from 'moment';
-import { CoresService } from 'src/app/shared/services/cores/cores.service';
-import { User } from 'src/app/shared/services/users/users.model';
-import { Core } from 'src/app/shared/services/cores/cores.model';
-import { forkJoin } from 'rxjs';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import * as xlsx from 'xlsx';
+import swal from 'sweetalert2';
 
 export enum SelectionType {
   single = "single",
@@ -52,7 +53,8 @@ export class NeedAnalysisComponent implements OnInit {
   // Checker
   isEmpty: boolean = true
   isRegister: boolean = false
-
+  isSummaryTableHidden: boolean = true
+  
   // Icon
   iconEmpty = 'assets/img/icons/box.svg'
 
@@ -205,7 +207,7 @@ export class NeedAnalysisComponent implements OnInit {
         this.getData()
       }
       else {
-        this.isRegister = false
+        // this.isRegister = false
         this.initForm()
         this.getData()
       }
@@ -213,11 +215,11 @@ export class NeedAnalysisComponent implements OnInit {
   }
 
   enableRegister() {
-    this.isRegister = true
+    // this.isRegister = true
   }
 
   disableRegister() {
-    this.isRegister = false
+    // this.isRegister = false
   }
 
   entriesChange($event) {
@@ -267,6 +269,21 @@ export class NeedAnalysisComponent implements OnInit {
         }
       )
     }
+  }
+
+  exportExcel() {
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileName = 'Senarai_Keperluan_Latihan_Yang_Telah_Dibuat_' + todayDateFormat + '.xlsx'
+    let element = document.getElementById('summaryTable'); 
+    const ws: xlsx.WorkSheet = xlsx.utils.table_to_sheet(element);
+
+    /* generate workbook and add the worksheet */
+    const wb: xlsx.WorkBook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    xlsx.writeFile(wb, fileName);
   }
 
 }

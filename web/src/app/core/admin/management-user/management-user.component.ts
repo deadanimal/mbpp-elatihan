@@ -1,16 +1,22 @@
-import { Component, OnInit, OnDestroy, NgZone, TemplateRef } from '@angular/core';
-import { User } from 'src/assets/mock/admin-user/users.model'
-import { MocksService } from 'src/app/shared/services/mocks/mocks.service';
+import { Component, OnInit, TemplateRef, OnDestroy, NgZone } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { Department, Section, ServiceStatus, UserType } from 'src/app/shared/code/user';
 
-import * as moment from 'moment';
+import { forkJoin } from 'rxjs';
+import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
+import { User } from 'src/app/shared/services/users/users.model';
+import { UsersService } from 'src/app/shared/services/users/users.service';
+
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 am4core.useTheme(am4themes_animated);
 
+import * as moment from 'moment';
+import * as xlsx from 'xlsx';
 import swal from 'sweetalert2';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 
 export enum SelectionType {
   single = 'single',
@@ -27,67 +33,59 @@ export enum SelectionType {
 })
 export class ManagementUserComponent implements OnInit, OnDestroy {
 
+  //  Data
+  users: User[] = []
+  selectedUser: User
+  departments = Department
+  sections = Section
+  serviceStatus = ServiceStatus
+  userType = UserType
+
+  // Form
+  userForm: FormGroup
+
   // Table
-  tableEntries: number = 5;
-  tableSelected: any[] = [];
-  tableTemp = [];
-  tableActiveRow: any;
-  tableRows: User[] = []
+  tableEntries: number = 5
+  tableSelected: any[] = []
+  tableTemp = []
+  tableActiveRow: any
+  tableRows: any = []
+  tableMessages = {
+    emptyMessage: 'Tiada rekod dijumpai',
+    totalMessage: 'rekod'
+  }
   SelectionType = SelectionType;
 
-  // Chart
-  chart: any
-  chartJan: number = 0
-  chartFeb: number = 0
-  chartMar: number = 0
-  chartApr: number = 0
-  chartMay: number = 0
-  chartJun: number = 0
-  chartJul: number = 0
-  chartAug: number = 0
-  chartSep: number = 0
-  chartOct: number = 0
-  chartNov: number = 0
-  chartDec: number = 0
+  // Checker
+  isEmpty: boolean = true
+  isSummaryTableHidden: boolean = true
 
   // Modal
   modal: BsModalRef;
   modalConfig = {
     keyboard: true,
-    class: "modal-dialog-centered"
+    class: 'modal-dialog-centered'
   };
 
-  // Form
-  registerForm: FormGroup
-  registerFormMessages = {
-    'name': [
-      { type: 'required', message: 'Name is required' }
-    ],
-    'email': [
-      { type: 'required', message: 'Email is required' },
-      { type: 'email', message: 'A valid email is required' }
-    ]
-  }
+  // Icon
+  iconEmpty = 'assets/img/icons/box.svg'
+
+  // Chart
+  chart: any
 
   constructor(
-    private mockService: MocksService,
+    private userService: UsersService,
+    private fb: FormBuilder,
+    private loadingBar: LoadingBarService,
     private modalService: BsModalService,
-    private formBuilder: FormBuilder,
+    private notifyService: NotifyService,
     private zone: NgZone
   ) {
     this.getData()
   }
 
   ngOnInit() {
-    this.registerForm = this.formBuilder.group({
-      name: new FormControl('', Validators.compose([
-        Validators.required
-      ])),
-      email: new FormControl('', Validators.compose([
-        Validators.required,
-        Validators.email
-      ]))
-    })
+    this.initForm()
   }
 
   ngOnDestroy() {
@@ -99,27 +97,42 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
   }
 
   getData() {
-    this.mockService.getAll('admin-user/users.data.json').subscribe(
-      (res) => {
-        // Success
-        this.tableRows = [...res]
+    this.loadingBar.start()
+    forkJoin([
+      this.userService.getAll()
+    ]).subscribe(
+      () => {
+        this.loadingBar.complete()
+        this.users = this.userService.users
+      },
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        this.tableRows = this.users
         this.tableTemp = this.tableRows.map((prop, key) => {
           return {
             ...prop,
-            id: key
+            id_index: key + 1
           };
         });
-        // console.log('Svc: ', this.tableTemp)
-        this.calculateCharts()
-      },
-      () => {
-        // Unsuccess
-      },
-      () => {
-        // After
-        this.getCharts()
+
+        if (this.tableTemp.length >= 1) {
+          this.isEmpty = false
+        }
+        else {
+          this.isEmpty = true
+        }
       }
     )
+  }
+
+  initForm() {
+    this.userForm = this.fb.group({
+      user_type: new FormControl(null, Validators.compose([
+        Validators.required
+      ]))
+    })
   }
 
   getCharts() {
@@ -132,44 +145,44 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
     let chart = am4core.create("chartdiv", am4charts.XYChart);
 
     // Add data
-    chart.data = [{
-      "month": "Jan",
-      "count": this.chartJan
-    }, {
-      "month": "Feb",
-      "count": this.chartFeb
-    }, {
-      "month": "Mar",
-      "count": this.chartMar
-    }, {
-      "month": "Apr",
-      "count": this.chartApr
-    }, {
-      "month": "May",
-      "count": this.chartMar
-    }, {
-      "month": "Jun",
-      "count": this.chartJun
-    }, {
-      "month": "Jul",
-      "count": this.chartJul
-    }, {
-      "month": "Aug",
-      "count": this.chartAug
-    }, {
-      "month": "Sep",
-      "count": this.chartSep
-    }, {
-      "month": "Oct",
-      "count": this.chartOct
-    }, {
-      "month": "Nov",
-      "count": this.chartNov
-    }, {
-      "month": "Dec",
-      "count": this.chartDec
-    }
-  ];
+  //   chart.data = [{
+  //     "month": "Jan",
+  //     "count": this.chartJan
+  //   }, {
+  //     "month": "Feb",
+  //     "count": this.chartFeb
+  //   }, {
+  //     "month": "Mar",
+  //     "count": this.chartMar
+  //   }, {
+  //     "month": "Apr",
+  //     "count": this.chartApr
+  //   }, {
+  //     "month": "May",
+  //     "count": this.chartMar
+  //   }, {
+  //     "month": "Jun",
+  //     "count": this.chartJun
+  //   }, {
+  //     "month": "Jul",
+  //     "count": this.chartJul
+  //   }, {
+  //     "month": "Aug",
+  //     "count": this.chartAug
+  //   }, {
+  //     "month": "Sep",
+  //     "count": this.chartSep
+  //   }, {
+  //     "month": "Oct",
+  //     "count": this.chartOct
+  //   }, {
+  //     "month": "Nov",
+  //     "count": this.chartNov
+  //   }, {
+  //     "month": "Dec",
+  //     "count": this.chartDec
+  //   }
+  // ];
 
     // Create axes
 
@@ -202,72 +215,157 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
     this.chart = chart
   }
 
-  calculateCharts() {
-    this.chartJan = 0
-    this.chartFeb = 0
-    this.chartMar = 0
-    this.chartApr = 0
-    this.chartMay = 0
-    this.chartJun = 0
-    this.chartJul = 0
-    this.chartAug = 0
-    this.chartSep = 0
-    this.chartOct = 0
-    this.chartNov = 0
-    this.chartDec = 0
-    this.tableRows.forEach(
-      ((row) => {
-        let checkerDate = moment(row.joined_at)
-        let checkerDateMonth = checkerDate.month()
-        if (checkerDateMonth == 0) {
-          this.chartJan += 1
-        }
-        else if (checkerDateMonth == 1) {
-          this.chartFeb += 1
-        }
-        else if (checkerDateMonth == 2) {
-          this.chartMar += 1
-        }
-        else if (checkerDateMonth == 3) {
-          this.chartApr += 1
-        }
-        else if (checkerDateMonth == 4) {
-          this.chartMay += 1
-        }
-        else if (checkerDateMonth == 5) {
-          this.chartJun += 1
-        }
-        else if (checkerDateMonth == 6) {
-          this.chartJul += 1
-        }
-        else if (checkerDateMonth == 7) {
-          this.chartAug += 1
-        }
-        else if (checkerDateMonth == 8) {
-          this.chartSep += 1
-        }
-        else if (checkerDateMonth == 9) {
-          this.chartOct += 1
-        }
-        else if (checkerDateMonth == 10) {
-          this.chartNov += 1
-        }
-        else if (checkerDateMonth == 11) {
-          this.chartDec += 1
-        }
-      })
+  // calculateCharts() {
+  //   this.chartJan = 0
+  //   this.chartFeb = 0
+  //   this.chartMar = 0
+  //   this.chartApr = 0
+  //   this.chartMay = 0
+  //   this.chartJun = 0
+  //   this.chartJul = 0
+  //   this.chartAug = 0
+  //   this.chartSep = 0
+  //   this.chartOct = 0
+  //   this.chartNov = 0
+  //   this.chartDec = 0
+  //   this.tableRows.forEach(
+  //     ((row) => {
+  //       let checkerDate = moment(row.joined_at)
+  //       let checkerDateMonth = checkerDate.month()
+  //       if (checkerDateMonth == 0) {
+  //         this.chartJan += 1
+  //       }
+  //       else if (checkerDateMonth == 1) {
+  //         this.chartFeb += 1
+  //       }
+  //       else if (checkerDateMonth == 2) {
+  //         this.chartMar += 1
+  //       }
+  //       else if (checkerDateMonth == 3) {
+  //         this.chartApr += 1
+  //       }
+  //       else if (checkerDateMonth == 4) {
+  //         this.chartMay += 1
+  //       }
+  //       else if (checkerDateMonth == 5) {
+  //         this.chartJun += 1
+  //       }
+  //       else if (checkerDateMonth == 6) {
+  //         this.chartJul += 1
+  //       }
+  //       else if (checkerDateMonth == 7) {
+  //         this.chartAug += 1
+  //       }
+  //       else if (checkerDateMonth == 8) {
+  //         this.chartSep += 1
+  //       }
+  //       else if (checkerDateMonth == 9) {
+  //         this.chartOct += 1
+  //       }
+  //       else if (checkerDateMonth == 10) {
+  //         this.chartNov += 1
+  //       }
+  //       else if (checkerDateMonth == 11) {
+  //         this.chartDec += 1
+  //       }
+  //     })
+  //   )
+  // }
+
+  patch() {
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Pengguna sedang dikemaskini'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+
+    this.userService.update(this.selectedUser['id'], this.userForm.value).subscribe(
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        this.loadingBar.complete()
+        let title = 'Tidak berjaya'
+        let message = 'Anda tidak berjaya untuk mengemaskini pengguna. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
+        this.closeModal()
+      },
+      () => {
+        let title = 'Berjaya'
+        let message = 'Pengguna berjaya dikemaskini.'
+        this.notifyService.openToastr(title, message)
+        this.success()
+        this.closeModal()
+        this.getData()
+      }
     )
+  }
+
+  openModal(modalRef: TemplateRef<any>, row) {
+    this.selectedUser = row
+    this.userForm.controls['user_type'].setValue(this.selectedUser['user_type'])
+
+    this.modal = this.modalService.show(modalRef, this.modalConfig);
+    // console.log('Wee', this.userForm.value)
+  }
+
+  closeModal() {
+    this.modal.hide()
+    this.userForm.reset()
+  }
+
+  confirm() {
+    // console.log('Wee', this.examForm.value)
+    swal.fire({
+      title: 'Pengesahan',
+      text: 'Anda pasti untuk mengemaskini pengguna ini?',
+      type: 'info',
+      buttonsStyling: false,
+      showCancelButton: true,
+      confirmButtonClass: 'btn btn-info',
+      confirmButtonText: 'Pasti',
+      cancelButtonClass: 'btn btn-outline-info',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.value) {
+        this.patch()
+      }
+    })
+  }
+
+  success() {
+    swal.fire({
+      title: 'Berjaya',
+      text: 'Pengguna berjaya dikemaskini',
+      type: 'success',
+      buttonsStyling: false,
+      showCancelButton: true,
+      showConfirmButton: false,
+      cancelButtonClass: 'btn btn-outline-success',
+      cancelButtonText: 'Tutup'
+    })
   }
 
   entriesChange($event) {
     this.tableEntries = $event.target.value;
   }
 
-  filterTable($event) {
+  filterTable($event, type) {
     let val = $event.target.value.toLowerCase();
-    this.tableTemp = this.tableRows.filter(function (d) {
-      // return d.staff_name.toLowerCase().indexOf(val)!== -1 || !val;
-    });
+    if (type == 'name') {
+      this.tableTemp = this.tableRows.filter(function (d) {
+        return d.full_name.toLowerCase().indexOf(val) !== -1 || !val;
+      });
+    }
+    else if (type == 'user_type') {
+      if (val == 'aa') {
+        this.tableTemp = this.tableRows
+      }
+      else {
+        this.tableTemp = this.tableRows.filter(function (d) {
+          return d.user_type.toLowerCase().indexOf(val) !== -1 || !val;
+        });
+      }
+    }
   }
 
   onSelect({ selected }) {
@@ -279,47 +377,20 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
     this.tableActiveRow = event.row;
   }
 
-  openModal(modalRef: TemplateRef<any>) {
-    this.modal = this.modalService.show(modalRef, this.modalConfig);
+  exportExcel() {
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileName = 'Ringkasan_Pengguna_' + todayDateFormat + '.xlsx'
+    let element = document.getElementById('summaryTable'); 
+    const ws: xlsx.WorkSheet = xlsx.utils.table_to_sheet(element);
+
+    /* generate workbook and add the worksheet */
+    const wb: xlsx.WorkBook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    xlsx.writeFile(wb, fileName);
   }
 
-  closeModal() {
-    this.modal.hide()
-    this.registerForm.reset()
-  }
-
-  confirm() {
-    swal.fire({
-      title: "Confirmation",
-      text: "Are you sure to create this new user?",
-      type: "info",
-      buttonsStyling: false,
-      confirmButtonClass: "btn btn-info",
-      confirmButtonText: "Confirm",
-      showCancelButton: true,
-      cancelButtonClass: "btn btn-danger",
-      cancelButtonText: "Cancel"
-    }).then((result) => {
-      if (result.value) {
-        this.register()
-      }
-    })
-  }
-
-  register() {
-    swal.fire({
-      title: "Success",
-      text: "A new user has been created!",
-      type: "success",
-      buttonsStyling: false,
-      confirmButtonClass: "btn btn-success",
-      confirmButtonText: "Close"
-    }).then((result) => {
-      if (result.value) {
-        this.modal.hide()
-        this.registerForm.reset()
-      }
-    })
-  }
 
 }

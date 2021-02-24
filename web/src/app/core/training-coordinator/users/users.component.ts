@@ -7,6 +7,7 @@ import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
 import { User } from 'src/app/shared/services/users/users.model';
 import { UsersService } from 'src/app/shared/services/users/users.service';
 
+import { Department, Section, ServiceStatus, UserType } from 'src/app/shared/code/user';
 import swal from 'sweetalert2';
 import * as moment from 'moment';
 import * as xlsx from 'xlsx';
@@ -29,6 +30,7 @@ export class UsersComponent implements OnInit {
   //  Data
   users: User[] = []
   selectedUser: User
+  departments = Department
 
   // Form
   userForm: FormGroup
@@ -54,6 +56,9 @@ export class UsersComponent implements OnInit {
     keyboard: true,
     class: 'modal-dialog-centered'
   };
+
+  // Icon
+  iconEmpty = 'assets/img/icons/box.svg'
 
   constructor(
     private userService: UsersService,
@@ -112,11 +117,23 @@ export class UsersComponent implements OnInit {
     this.tableEntries = $event.target.value;
   }
 
-  filterTable($event) {
+  filterTable($event, type) {
     let val = $event.target.value.toLowerCase();
-    this.tableTemp = this.tableRows.filter(function (d) {
-      return d.full_name.toLowerCase().indexOf(val) !== -1 || !val;
-    });
+    if (type == 'name') {
+      this.tableTemp = this.tableRows.filter(function (d) {
+        return d.full_name.toLowerCase().indexOf(val) !== -1 || !val;
+      });
+    }
+    else if (type == 'user_type') {
+      if (val == 'aa') {
+        this.tableTemp = this.tableRows
+      }
+      else {
+        this.tableTemp = this.tableRows.filter(function (d) {
+          return d.user_type.toLowerCase().indexOf(val) !== -1 || !val;
+        });
+      }
+    }
   }
 
   onSelect({ selected }) {
@@ -129,7 +146,31 @@ export class UsersComponent implements OnInit {
   }
 
   patch() {
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Pengguna sedang dikemaskini'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
 
+    this.userService.update(this.selectedUser['id'], this.userForm.value).subscribe(
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        this.loadingBar.complete()
+        let title = 'Tidak berjaya'
+        let message = 'Anda tidak berjaya untuk mengemaskini pengguna. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
+        this.closeModal()
+      },
+      () => {
+        let title = 'Berjaya'
+        let message = 'Pengguna berjaya dikemaskini.'
+        this.notifyService.openToastr(title, message)
+        this.success()
+        this.closeModal()
+        this.getData()
+      }
+    )
   }
 
   openModal(modalRef: TemplateRef<any>, row) {
@@ -149,7 +190,7 @@ export class UsersComponent implements OnInit {
     // console.log('Wee', this.examForm.value)
     swal.fire({
       title: 'Pengesahan',
-      text: 'Anda pasti untuk menyunting pengguna ini?',
+      text: 'Anda pasti untuk mengemaskini pengguna ini?',
       type: 'info',
       buttonsStyling: false,
       showCancelButton: true,
@@ -167,7 +208,7 @@ export class UsersComponent implements OnInit {
   success() {
     swal.fire({
       title: 'Berjaya',
-      text: 'Peperiksaan berjaya disunting',
+      text: 'Pengguna berjaya dikemaskini',
       type: 'success',
       buttonsStyling: false,
       showCancelButton: true,

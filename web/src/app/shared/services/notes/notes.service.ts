@@ -27,7 +27,7 @@ export class NotesService {
     return this.http.post<any>(this.urlNotes, body).pipe(
       tap((res) => {
         this.note = res
-        console.log('Note: ', this.note)
+        // console.log('Note: ', this.note)
       })
     )
   }
@@ -36,7 +36,7 @@ export class NotesService {
     return this.http.get<Note[]>(this.urlNotes).pipe(
       tap((res) => {
         this.notes = res
-        console.log('Notes: ', this.notes)
+        // console.log('Notes: ', this.notes)
       })
     )
   }
@@ -46,7 +46,7 @@ export class NotesService {
     return this.http.get<Note>(urlTemp).pipe(
       tap((res) => {
         this.note = res
-        console.log('Note: ', this.note)
+        // console.log('Note: ', this.note)
       })
     )
   }
@@ -56,7 +56,7 @@ export class NotesService {
     return this.http.put<Note>(urlTemp, body).pipe(
       tap((res) => {
         this.note = res
-        console.log('Note: ', this.note)
+        // console.log('Note: ', this.note)
       })
     )
   }
@@ -66,7 +66,7 @@ export class NotesService {
     return this.http.get<Note[]>(urlTemp).pipe(
       tap((res) => {
         this.notesFiltered = res
-        console.log('Notes: ', this.notesFiltered)
+        // console.log('Notes: ', this.notesFiltered)
       })
     )
   }
@@ -76,7 +76,7 @@ export class NotesService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.note = res
-        console.log('Note: ', this.note)
+        // console.log('Note: ', this.note)
       })
     )
   }
@@ -86,7 +86,7 @@ export class NotesService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.note = res
-        console.log('Note: ', this.note)
+        // console.log('Note: ', this.note)
       })
     )
   }

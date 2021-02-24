@@ -1,0 +1,9 @@
+ngx-datatable {
+    overflow: visible;
+    .datatable-header {
+      overflow: visible;
+      .datatable-header-cell {
+        overflow-x: visible;
+      }
+    }
+  }

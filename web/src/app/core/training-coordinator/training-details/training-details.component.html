@@ -18,8 +18,19 @@
                 <div class="col-lg-6 col-5 text-right">
                     <a
                         class="btn btn-sm btn-warm-blue text-white" 
+                        *ngIf="training?.status == 'DB' || training?.status == 'TN'"
+                        [hidden]="isApplying"
+                        (click)="openApplyForm()"
                     > 
-                        Tambah Penganjur 
+                        Tambah Permohonan
+                    </a>
+
+                    <a
+                        class="btn btn-sm btn-warm-blue text-white" 
+                        (click)="openModal(qrModal)"
+                        *ngIf="!isQREmpty"
+                    > 
+                        QR Kedatangan 
                     </a>
 
                     <a
@@ -40,17 +51,21 @@
         <div class="col-lg-4 col-sm-12">
             <div class="card">
                 <div class="card-header bg-secondary">
-                    <h4 class="m-0">
-                        Butiran Latihan 
-                        <span *ngIf="training?.status == 'DB'" class="ml-2 badge badge-pill badge-default">Dibuka</span>
-                        <span *ngIf="training?.status == 'OT'" class="ml-2 badge badge-pill badge-primary">Lain-lain</span>
-                        <span *ngIf="training?.status == 'PN'" class="ml-2 badge badge-pill badge-info">Penuh</span>
-                        <span *ngIf="training?.status == 'SL'" class="ml-2 badge badge-pill badge-success">Selesai</span>
-                        <span *ngIf="training?.status == 'DT'" class="ml-2 badge badge-pill badge-danger">Ditutup</span>
-                        <span *ngIf="training?.status == 'TN'" class="ml-2 badge badge-pill badge-warning">Tangguh</span>
-
-                        <span class="badge badge-pill badge-primary ml-2">{{training?.created_at | date: 'd/M/y, h:mm a'}}</span>
-                    </h4>
+                    <div class="row">
+                        <div class="col my-auto">
+                            <h4 class="m-0">
+                                Butiran Latihan 
+                                <span *ngIf="training?.status == 'DB'" class="ml-2 badge badge-pill badge-default">Dibuka</span>
+                                <span *ngIf="training?.status == 'OT'" class="ml-2 badge badge-pill badge-primary">Lain-lain</span>
+                                <span *ngIf="training?.status == 'PN'" class="ml-2 badge badge-pill badge-info">Penuh</span>
+                                <span *ngIf="training?.status == 'SL'" class="ml-2 badge badge-pill badge-success">Selesai</span>
+                                <span *ngIf="training?.status == 'DT'" class="ml-2 badge badge-pill badge-danger">Ditutup</span>
+                                <span *ngIf="training?.status == 'TN'" class="ml-2 badge badge-pill badge-warning">Tangguh</span>
+        
+                                <span class="badge badge-pill badge-primary ml-2">{{training?.created_at | date: 'd/M/y, h:mm a'}}</span>
+                            </h4>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card-body">
@@ -1099,7 +1114,187 @@
                 <tab heading="Permohonan">
                     <div class="card mt-2">
                         <div class="card-header bg-secondary">
-                            <h4 class="m-0">Permohonan</h4>
+                            <div class="row">
+                                <div class="col my-auto">
+                                    <h4 class="m-0">Permohonan</h4>
+                                </div>
+                                
+                                <div class="col text-right">
+                                    <button
+                                        class="btn btn-sm btn-warm-blue"
+                                        (click)="exportExcel('applications')"
+                                    >
+                                        Cetak
+                                    </button>
+
+                                    <button
+                                        class="btn btn-sm btn-icon btn-3 btn-outline-warm-blue"
+                                        (click)="openApplyForm()"
+                                        [hidden]="!isApplying"
+                                    >
+                                        <span class="btn-inner--icon"><i class="fas fa-chevron-left"></i></span>
+                                        <span class="btn-inner--text">Kembali</span>
+                                    </button>
+
+                                    <button
+                                        class="btn btn-sm btn-icon btn-3 btn-warm-blue"
+                                        (click)="confirmApply()"
+                                        [hidden]="!isApplying"
+                                        [disabled]="!selectedStaffs"
+                                    >
+                                        <span class="btn-inner--icon"><i class="fas fa-plus-circle"></i></span>
+                                        <span class="btn-inner--text">Hantar Pencalonan</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body" [hidden]="!isApplying">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label">NRIC <span class="text-warning">*</span></label>
+                                        <ng-select 
+                                            placeholder="Sila cari kad pengenalan kakitangan"
+                                            [(ngModel)]="selectedStaffs"
+                                            [multiple]="true"
+                                            (change)="onChangeSelect($event)"
+                                        >
+                                            <ng-container>
+                                                <ng-option *ngFor="let staff of staffs" [disabled]="staff.applied" [value]="staff">{{staff.nric}}</ng-option>
+                                            </ng-container>
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div *ngIf="selectedStaffs">
+                                <hr class="my-4" />
+                                <h6 class="heading-small text-muted mb-4">Maklumat kakitangan</h6>
+        
+                                <div class="dataTables_wrapper py-4">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6">
+                                            <div class="dataTables_length" id="datatable_length">
+                                                <label>
+                                                    Lihat
+                                                    <select 
+                                                        name="datatable_length" 
+                                                        aria-controls="datatable" 
+                                                        class="form-control form-control-sm custom-select custom-select-sm"
+                                                        (change)="entriesChange($event)">
+                                                        <option value="5" [selected]="tableStaffsEntries == 5">5</option>
+                                                        <option value="10" [selected]="tableStaffsEntries == 10">10</option>
+                                                        <option value="15" [selected]="tableStaffsEntries == 15">15</option>
+                                                        <option value="-1" [selected]="tableStaffsEntries == -1">Semua</option>
+                                                    </select>
+                                                    rekod
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6">
+                                        </div>
+                                    </div>
+                        
+                                    <div class="pt-4 text-center" *ngIf="isStaffsEmpty">
+                                        <img [src]="iconEmpty" class="error-icon">
+                                        <p>Tiada rekod dijumpai</p>
+                                    </div>
+                            
+                                    <ngx-datatable 
+                                        class="bootstrap selection-cell" 
+                                        [columnMode]="'force'" 
+                                        [headerHeight]="50" 
+                                        [footerHeight]="50"
+                                        [rowHeight]="'auto'"
+                                        [limit]="tableStaffsEntries != -1 ? tableStaffsEntries : undefined" 
+                                        [rows]="tableStaffsTemp"
+                                        [messages]="tableMessages"
+                                        (activate)="onActivate($event)"
+                                        *ngIf="!isEmpty"
+                                        [scrollbarH]="true"
+                                    >
+                                        <ngx-datatable-column
+                                            prop="full_name"
+                                        >
+                                            <ng-template ngx-datatable-header-template>
+                                                <span>Nama Kakitangan</span>
+                                            </ng-template>
+                                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                                {{row.full_name}}
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                
+                                        <ngx-datatable-column
+                                            prop="username"
+                                        >
+                                            <ng-template ngx-datatable-header-template>
+                                                <span>Kad Pengenalan</span>
+                                            </ng-template>
+                                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                                {{row.username}}
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                
+                                        <ngx-datatable-column
+                                            prop="section_code"
+                                        >
+                                            <ng-template ngx-datatable-header-template>
+                                                <span>Bahagian</span>
+                                            </ng-template>
+                                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                                <ng-container *ngFor="let section of sections">
+                                                    <span *ngIf="section.value == row.section_code">{{section.text}}</span>
+                                                </ng-container>
+                                            </ng-template>
+                                        </ngx-datatable-column>
+        
+                                        <ngx-datatable-column
+                                            prop="grade_code"
+                                        >
+                                            <ng-template ngx-datatable-header-template>
+                                                <span>Gred</span>
+                                            </ng-template>
+                                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                                {{row.grade_code}}
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                
+                                        <ngx-datatable-column
+                                            prop="salary_code"
+                                        >
+                                            <ng-template ngx-datatable-header-template>
+                                                <span>Kod Gaji</span>
+                                            </ng-template>
+                                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                                {{row.salary_code}}
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                
+                                        <ngx-datatable-column
+                                            prop="position"
+                                        >
+                                            <ng-template ngx-datatable-header-template>
+                                                <span>Jawatan</span>
+                                            </ng-template>
+                                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                                {{row.position}}
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                            
+                                        <ngx-datatable-column
+                                            prop="appointed_at"
+                                        >
+                                            <ng-template ngx-datatable-header-template>
+                                                <span>Tarikh Lantikan</span>
+                                            </ng-template>
+                                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                                {{row.appointed_at | date: 'd/M/y'}}
+                                            </ng-template>
+                                        </ngx-datatable-column>
+                                    </ngx-datatable>
+                                </div>
+                            </div>
                         </div>
         
                         <div class="dataTables_wrapper py-4">
@@ -1153,8 +1348,11 @@
                                 [messages]="tableMessages"
                                 (activate)="onActivate('applications', $event)"
                                 *ngIf="!isApplicationsEmpty"
+                                [scrollbarH]="true"
                             >
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="applicant.full_name"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Nama</span>
                                     </ng-template>
@@ -1162,8 +1360,21 @@
                                         {{row.applicant?.full_name}}
                                     </ng-template>
                                 </ngx-datatable-column>
+
+                                <ngx-datatable-column
+                                    prop="applicant.full_name"
+                                >
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Jabatan</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.applicant?.department_code}}
+                                    </ng-template>
+                                </ngx-datatable-column>
                     
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="status"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Status</span>
                                     </ng-template>
@@ -1174,13 +1385,37 @@
                                         <span class="badge badge-primary" *ngIf="row.status == 'IP'">Dalam proses</span>
                                     </ng-template>
                                 </ngx-datatable-column>
-                    
-                                <ngx-datatable-column>
+
+                                <ngx-datatable-column
+                                    prop="approved_level_3_by.full_name"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Diterima oleh</span>
                                     </ng-template>
                                     <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.approved_by?.full_name}}
+                                        {{row.approved_level_1_by?.full_name}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+
+                                <ngx-datatable-column
+                                    prop="approved_level_3_by.full_name"
+                                >
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Disahkan oleh</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.approved_level_2_by?.full_name}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+                    
+                                <ngx-datatable-column
+                                    prop="approved_level_3_by.full_name"
+                                >
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Diluluskan oleh</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.approved_level_3_by?.full_name}}
                                     </ng-template>
                                 </ngx-datatable-column>
         
@@ -1189,29 +1424,14 @@
                                         <span>Aktiviti</span>
                                     </ng-template>
                                     <ng-template let-row="row" ngx-datatable-cell-template>
-                                        <button 
-                                            class="btn btn-sm btn-warm-blue"
-                                            (click)="approveApplication(row)"
-                                            *ngIf="row.status == 'RS' || row.status == 'IP'"
-                                        >
-                                            Terima
-                                        </button>
-
-                                        <button 
-                                            class="btn btn-sm btn-outline-warm-blue"
-                                            (click)="rejectApplication(row)"
-                                            *ngIf="row.status == 'RS' || row.status == 'IP'"
-                                        >
-                                            Tolak
-                                        </button>
-
-                                        <button 
-                                            class="btn btn-sm btn-outline-warm-blue"
-                                            (click)="reserveApplication(row)"
-                                            *ngIf="row.status == 'IP'"
-                                        >
-                                            Simpan
-                                        </button>
+                                        <div class="btn-group dropdown" dropdown>
+                                            <button type="button" class="btn btn-sm btn-warm-blue dropdown-toggle" dropdownToggle>Aktiviti</button>
+                                            <div *dropdownMenu class="dropdown-menu dropdown-menu-right">
+                                                <a class="dropdown-item" (click)="approveApplication(row)" *ngIf="row.status == 'RS' || row.status == 'IP'">Terima</a>
+                                                <a class="dropdown-item" (click)="rejectApplication(row)" *ngIf="row.status == 'RS' || row.status == 'IP'">Tolak</a>
+                                                <a class="dropdown-item" (click)="reserveApplication(row)" *ngIf="row.status == 'IP'">Simpan</a>
+                                            </div>
+                                        </div>
                                     </ng-template>
                                 </ngx-datatable-column>
                             </ngx-datatable>
@@ -1222,7 +1442,20 @@
                 <tab heading="Kehadiran">
                     <div class="card mt-2">
                         <div class="card-header bg-secondary">
-                            <h4 class="m-0">Kehadiran</h4>
+                            <div class="row">
+                                <div class="col my-auto">
+                                    <h4 class="m-0">Kehadiran</h4>
+                                </div>
+                                
+                                <div class="col text-right">
+                                    <button
+                                        class="btn btn-sm btn-warm-blue"
+                                        (click)="exportExcel('attendances')"
+                                    >
+                                        Cetak
+                                    </button>
+                                </div>
+                            </div>
                         </div>
         
                         <div class="dataTables_wrapper py-4">
@@ -1276,8 +1509,11 @@
                                 [messages]="tableMessages"
                                 (activate)="onActivate('attendances', $event)"
                                 *ngIf="!isAttendancesEmpty"
+                                [scrollbarH]="true"
                             >
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="attendee.full_name"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Nama</span>
                                     </ng-template>
@@ -1285,8 +1521,21 @@
                                         {{row.attendee?.full_name}}
                                     </ng-template>
                                 </ngx-datatable-column>
+
+                                <ngx-datatable-column
+                                    prop="created_at"
+                                >
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Tarikh</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.created_at | date: 'd/M/y'}}
+                                    </ng-template>
+                                </ngx-datatable-column>
                     
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="is_attend"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Hadir</span>
                                     </ng-template>
@@ -1296,25 +1545,31 @@
                                     </ng-template>
                                 </ngx-datatable-column>
 
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="check_in"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Waktu Masuk</span>
                                     </ng-template>
                                     <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.check_in | date: 'd/M/y'}}
+                                        {{row.check_in | date: 'd/M/y h:mm a'}}
                                     </ng-template>
                                 </ngx-datatable-column>
 
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="check_out"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Waktu Keluar</span>
                                     </ng-template>
                                     <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.check_out | date: 'd/M/y'}}
+                                        {{row.check_out | date: 'd/M/y h:mm a'}}
                                     </ng-template>
                                 </ngx-datatable-column>
 
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="verified_by.full_name" 
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Disahkan oleh</span>
                                     </ng-template>
@@ -1328,13 +1583,14 @@
                                         <span>Aktiviti</span>
                                     </ng-template>
                                     <ng-template let-row="row" ngx-datatable-cell-template>
-                                        <button 
-                                            class="btn btn-sm btn-warm-blue"
-                                            *ngIf="!row.verified_by"
-                                            (click)="verifyAttendance(row)"
-                                        >
-                                            Sahkan
-                                        </button>
+                                        <div class="btn-group dropdown" dropdown [isDisabled]="row.verified_by">
+                                            <button type="button" class="btn btn-sm btn-warm-blue dropdown-toggle" dropdownToggle>Aktiviti</button>
+                                            <div *dropdownMenu class="dropdown-menu dropdown-menu-right">
+                                                <a class="dropdown-item" (click)="signinAttendance(row)" *ngIf="(row.created_at | date: 'd/M/y') == dateToday && !row.verified_by && !row.check_in">Log Kehadiran Masuk</a>
+                                                <a class="dropdown-item" (click)="signoutAttendance(row)" *ngIf="(row.created_at | date: 'd/M/y') == dateToday && !row.verified_by && !row.check_out">Log Kehadiran Keluar</a>
+                                                <a class="dropdown-item" (click)="verifyAttendance(row)" *ngIf="!row.verified_by">Sahkan</a>
+                                            </div>
+                                        </div>
                                     </ng-template>
                                 </ngx-datatable-column>
                             </ngx-datatable>
@@ -1343,7 +1599,20 @@
 
                     <div class="card mt-2">
                         <div class="card-header bg-secondary">
-                            <h4 class="m-0">Ketidakhadiran</h4>
+                            <div class="row">
+                                <div class="col my-auto">
+                                    <h4 class="m-0">Ketidakhadiran</h4>
+                                </div>
+                                
+                                <div class="col text-right">
+                                    <button
+                                        class="btn btn-sm btn-warm-blue"
+                                        (click)="exportExcel('absences')"
+                                    >
+                                        Cetak
+                                    </button>
+                                </div>
+                            </div>
                         </div>
         
                         <div class="dataTables_wrapper py-4">
@@ -1392,13 +1661,16 @@
                                 [headerHeight]="50" 
                                 [footerHeight]="50"
                                 [rowHeight]="'auto'"
-                                [limit]="tableAttendancesEntries != -1 ? tableAttendancesEntries : undefined" 
-                                [rows]="tableAttendancesTemp"
+                                [limit]="tableAbsencesEntries != -1 ? tableAbsencesEntries : undefined" 
+                                [rows]="tableAbsencesTemp"
                                 [messages]="tableMessages"
                                 (activate)="onActivate('absences', $event)"
                                 *ngIf="!isAbsencesEmpty"
+                                [scrollbarH]="true"
                             >
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="attendee.full_name"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Nama</span>
                                     </ng-template>
@@ -1407,7 +1679,9 @@
                                     </ng-template>
                                 </ngx-datatable-column>
                     
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="reason"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Sebab</span>
                                     </ng-template>
@@ -1416,7 +1690,9 @@
                                     </ng-template>
                                 </ngx-datatable-column>
                     
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="verified_by.name"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Disahkan oleh</span>
                                     </ng-template>
@@ -1513,8 +1789,11 @@
                                 [messages]="tableMessages"
                                 (activate)="onActivate('notes', $event)"
                                 *ngIf="!isNotesEmpty"
+                                [scrollbarH]="true"
                             >
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="title"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Tajuk</span>
                                     </ng-template>
@@ -1523,7 +1802,9 @@
                                     </ng-template>
                                 </ngx-datatable-column>
                     
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="note_code" 
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Kod</span>
                                     </ng-template>
@@ -1565,7 +1846,7 @@
             class="close"
             data-dismiss="modal"
             type="button"
-            (click)="closeModal()"
+            (click)="closeModal('notes')"
         >
             <span aria-hidden="true" class="text-white my-auto"> × </span>
         </button>
@@ -1579,15 +1860,6 @@
                     class="form-control" 
                     placeholder="Tajuk nota"
                     formControlName="title"
-                >
-            </div>
-
-            <div class="form-group">
-                <label class="form-control-label">Kod Nota <span class="text-warning">*akan dijana secara automatik</span></label>
-                <input 
-                    class="form-control" 
-                    placeholder="Kod nota"
-                    formControlName="note_code"
                 >
             </div>
 
@@ -1639,9 +1911,140 @@
             class="btn btn-outline-warm-blue ml-auto"
             data-dismiss="modal"
             type="button"
-            (click)="closeModal()"
+            (click)="closeModal('notes')"
         >
             Tutup
         </button>
     </div>
 </ng-template>
+
+<ng-template #qrModal>
+    <div class="modal-header bg-warm-blue">
+        <h6 class="modal-title text-white my-auto" id="modal-title-default">
+            QR kedatangan
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal('qr')"
+        >
+            <span aria-hidden="true" class="text-white my-auto"> × </span>
+        </button>
+    </div>
+
+    <div class="modal-body px-auto mx-auto">
+        <ngx-qrcode 
+            [elementType]="qrElementType" 
+            [value]="qrValue"
+            cssClass="aclass"
+            errorCorrectionLevel="L">
+        </ngx-qrcode>
+    </div>
+
+    <div class="modal-footer">
+        <button
+            class="btn btn-outline-warm-blue ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal('qr')"
+        >
+            Tutup
+        </button>
+    </div>
+</ng-template>
+
+<!-- Export applications -->
+<div class="table" id="summaryApplicationsTable" #summaryApplicationsTable [hidden]="isHidden">
+	<table class="table table-responsive table-flush">
+		<thead>
+			<tr>
+				<th>Nama Kakitangan</th>
+				<th>Status</th>
+				<th>Diterima oleh</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr *ngFor="let row of tableApplicationsTemp">
+				<td>
+					{{row.applicant?.full_name}}
+				</td>
+				<td>
+					<span class="badge badge-success" *ngIf="row.status == 'AP'">Diterima</span>
+                    <span class="badge badge-danger" *ngIf="row.status == 'RJ'">Ditolak</span>
+                    <span class="badge badge-warning" *ngIf="row.status == 'RS'">Disimpan</span>
+                    <span class="badge badge-primary" *ngIf="row.status == 'IP'">Dalam proses</span>
+				</td>
+				<td>
+					{{row.approved_by?.full_name}}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<!-- Export attendances -->
+<div class="table" id="summaryAttendancesTable" #summaryAttendancesTable [hidden]="isHidden">
+	<table class="table table-responsive table-flush">
+		<thead>
+			<tr>
+				<th>Nama Kakitangan</th>
+				<th>Hadir</th>
+                <th>Waktu Masuk</th>
+                <th>Waktu Keluar</th>
+                <th>Disahkan oleh</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr *ngFor="let row of tableAttendancesTemp">
+				<td>
+					{{row.attendee?.full_name}}
+				</td>
+				<td>
+					<span *ngIf="row.is_attend">Hadir</span>
+                    <span *ngIf="!row.is_attend">Tidak Hadir</span>
+				</td>
+				<td>
+					{{row.check_in | date: 'd/M/y'}}
+                </td>
+                <td>
+					{{row.check_out | date: 'd/M/y'}}
+                </td>
+                <td>
+					{{row.verified_by?.full_name}}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<!-- Export absences -->
+<div class="table" id="summaryAbsencesTable" #summaryAbsencesTable [hidden]="isHidden">
+	<table class="table table-responsive table-flush">
+		<thead>
+			<tr>
+				<th>Nama Kakitangan</th>
+				<th>Sebab</th>
+                <th>Disahkan oleh</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr *ngFor="let row of tableAbsencesTemp">
+				<td>
+					{{row.attendee?.full_name}}
+				</td>
+				<td>
+					{{row.reason}}
+                </td>
+                <td>
+					{{row.verified_by?.full_name}}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

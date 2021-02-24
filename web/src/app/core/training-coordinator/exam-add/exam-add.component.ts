@@ -5,6 +5,7 @@ import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
 import { NgSelectConfig } from '@ng-select/ng-select';
 import { Router } from '@angular/router';
 
+import { Exam } from 'src/app/shared/services/exams/exams.model';
 import { User } from 'src/app/shared/services/users/users.model';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { ExamsService } from 'src/app/shared/services/exams/exams.service';
@@ -12,8 +13,9 @@ import { UsersService } from 'src/app/shared/services/users/users.service';
 
 import swal from 'sweetalert2';
 import * as moment from 'moment';
-import { Exam } from 'src/app/shared/services/exams/exams.model';
+
 import { forkJoin } from 'rxjs';
+import { Department } from 'src/app/shared/code/user';
 
 @Component({
   selector: 'app-exam-add',
@@ -28,6 +30,7 @@ export class ExamAddComponent implements OnInit {
   exams: Exam[] = []
   examsTemp: Exam[] = []
   examTypeTemp = 'FKW'
+  departments = Department
 
   // Form
   examForm: FormGroup
@@ -111,7 +114,7 @@ export class ExamAddComponent implements OnInit {
           (user: User) => {
             if(user.nric) {
               this.staffs.push(user)
-              console.log(this.staffs)
+              // console.log(this.staffs)
             }
           }
         )
@@ -302,12 +305,19 @@ export class ExamAddComponent implements OnInit {
   }
 
   checkValue() {
-    console.log('> ', this.examForm.value)
+    console.log('form ', this.examForm.value)
   }
 
   onStaffChange(value) {
     // console.log(value)
     this.examForm.controls['staff'].setValue(value['id'])
+    this.departments.forEach(
+      (department) => {
+        if (department['value'] == this.selectedStaff['department_code']) {
+          this.selectedStaff['department'] = department['text']
+        }
+      }
+    )
   }
 
 }

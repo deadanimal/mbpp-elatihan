@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.db.models import Q
+from django.http import HttpResponse
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -47,6 +48,7 @@ from .serializers import (
     TrainingCoreSerializer,
     TrainingApplicationSerializer,
     TrainingApplicationExtendedSelfSerializer,
+    TrainingApplicationExtendedDepartmentSerializer,
     TrainingAttendeeSerializer,
     TrainingAbsenceMemoSerializer,
     TrainingLogSerializer,
@@ -57,6 +59,14 @@ from .serializers import (
     ConfigurationSerializer,
     TrainingNeedAnalysisSerializer,
     TrainingNeedAnalysisExtendedSerializer
+)
+
+from users.models import (
+    CustomUser
+)
+
+from users.serializers import (
+    CustomUserSerializer
 )
 
 class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
@@ -240,22 +250,21 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         'is_waa44',
         'transportation'
     ]
+
     def get_permissions(self):
         permission_classes = [AllowAny]#[IsAuthenticated]
-        """
-        if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+        
+        if self.action == 'get_latest':
+            permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
-        """
+        
         return [permission() for permission in permission_classes]    
 
-    
     def get_queryset(self):
         user = self.request.user
         queryset = Training.objects.all()
         return queryset
-
     
     @action(methods=['GET'], detail=True)
     def history(self, request, *args, **kwargs):
@@ -265,14 +274,12 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['GET'], detail=False)
     def get_latest(self, request, *args, **kwargs):
-
         trainings = Training.objects.all().order_by('-start_date')
         serializer = TrainingSerializer(trainings, many=True)
         return Response(serializer.data)
 
     @action(methods=['GET'], detail=False)
     def report_attendance(self, request, *args, **kwargs):
-
         items = {
             'item': 1
         }
@@ -294,10 +301,8 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer = 'https://pipeline-project.sgp1.digitaloceanspaces.com/'+full_url_path
         return Response(serializer)
     
-
     @action(methods=['GET'], detail=False)
     def report_obb(self, request, *args, **kwargs):
-
         items = {
             'item': 1
         }
@@ -319,10 +324,8 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer = 'https://pipeline-project.sgp1.digitaloceanspaces.com/'+full_url_path
         return Response(serializer)
     
-    
     @action(methods=['GET'], detail=False)
     def extended_all(self, request, *args, **kwargs):
-
         queryset = Training.objects.all()
         serializer_class = TrainingExtendedSerializer(queryset, many=True)
         
@@ -330,7 +333,6 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['GET'], detail=True)
     def extended(self, request, *args, **kwargs):
-
         training = self.get_object()
         serializer_class = TrainingExtendedSerializer(training, many=False)
         
@@ -338,17 +340,11 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['GET'], detail=False)
     def get_statistics(self, request, *args, **kwargs):
-
-        # training = self.get_object()
-
-        # trainings = 
-        # internal_trainings = 
-
         planned_training = len(Training.objects.all())
         internal_training = len(Training.objects.filter(organiser_type='DD'))
         external_training = len(Training.objects.filter(organiser_type='LL'))
-        attendance_internal = 0
-        attendance_external = 2
+        attendance_internal = len(TrainingAttendee.objects.filter(training__organiser_type='DD', is_attend=True))
+        attendance_external = len(TrainingAttendee.objects.filter(training__organiser_type='LL', is_attend=True))
         current_expenses = 0
 
         current_budget = Configuration.objects.filter(slug='current_budget').first()
@@ -361,6 +357,100 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             'attendance_internal': attendance_internal,
             'attendance_external': attendance_external,
             'current_expenses': current_expenses
+        }
+
+        return JsonResponse(statistic_data)
+    
+    @action(methods=['GET'], detail=False)
+    def get_statistics_department(self, request, *args, **kwargs):
+        user = request.user
+
+        timezone_ = pytz.timezone('Asia/Kuala_Lumpur')
+        current_year = str(datetime.datetime.now(timezone_).year)
+
+        filter_year = datetime.datetime.now(tz=timezone.utc).year
+
+        attendance_internal = len(TrainingAttendee.objects.filter(attendee__user_type=user.user_type, training__organiser_type='DD', is_attend=True))
+        attendance_external = len(TrainingAttendee.objects.filter(attendee__user_type=user.user_type, training__organiser_type='LL', is_attend=True))
+        attendance_by_month = {
+            'january': len(TrainingAttendee.objects.filter(
+                training__start_date__year=filter_year,
+                training__start_date__month=1,
+                attendee__user_type=user.user_type,
+                is_attend=True
+            )),
+            'february': len(TrainingAttendee.objects.filter(
+                training__start_date__year=filter_year,
+                training__start_date__month=2,
+                attendee__user_type=user.user_type,
+                is_attend=True
+            )),
+            'march': len(TrainingAttendee.objects.filter(
+                training__start_date__year=filter_year,
+                training__start_date__month=3,
+                attendee__user_type=user.user_type,
+                is_attend=True
+            )),
+            'april': len(TrainingAttendee.objects.filter(
+                training__start_date__year=filter_year,
+                training__start_date__month=4,
+                attendee__user_type=user.user_type,
+                is_attend=True
+            )),
+            'may': len(TrainingAttendee.objects.filter(
+                training__start_date__year=filter_year,
+                training__start_date__month=5,
+                attendee__user_type=user.user_type,
+                is_attend=True
+            )),
+            'june': len(TrainingAttendee.objects.filter(
+                training__start_date__year=filter_year,
+                training__start_date__month=6,
+                attendee__user_type=user.user_type,
+                is_attend=True
+            )),
+            'july': len(TrainingAttendee.objects.filter(
+                training__start_date__year=filter_year,
+                training__start_date__month=7,
+                attendee__user_type=user.user_type,
+                is_attend=True
+            )),
+            'august': len(TrainingAttendee.objects.filter(
+                training__start_date__year=filter_year,
+                training__start_date__month=8,
+                attendee__user_type=user.user_type,
+                is_attend=True
+            )),
+            'september': len(TrainingAttendee.objects.filter(
+                training__start_date__year=filter_year,
+                training__start_date__month=9,
+                attendee__user_type=user.user_type,
+                is_attend=True
+            )),
+            'october': len(TrainingAttendee.objects.filter(
+                training__start_date__year=filter_year,
+                training__start_date__month=10,
+                attendee__user_type=user.user_type,
+                is_attend=True
+            )),
+            'november': len(TrainingAttendee.objects.filter(
+                training__start_date__year=filter_year,
+                training__start_date__month=11,
+                attendee__user_type=user.user_type,
+                is_attend=True
+            )),
+            'december': len(TrainingAttendee.objects.filter(
+                training__start_date__year=filter_year,
+                training__start_date__month=12,
+                attendee__user_type=user.user_type,
+                is_attend=True
+            ))
+        }
+
+        statistic_data = {
+            'attendance_internal': attendance_internal,
+            'attendance_external': attendance_external,
+            'attendance_by_month': attendance_by_month
         }
 
         return JsonResponse(statistic_data)
@@ -385,6 +475,676 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         
         return JsonResponse(code_data)
 
+    @action(methods=['GET'], detail=False)
+    def get_department_list(self, request, *args, **kwargs):
+        user = request.user
+
+        if user.department_code == '11':
+            trainings = Training.objects.filter(is_department_11=True)
+        elif user.department_code == '15':
+            trainings = Training.objects.filter(is_department_15=True)
+        elif user.department_code == '21':
+            trainings = Training.objects.filter(is_department_21=True)
+        elif user.department_code == '31':
+            trainings = Training.objects.filter(is_department_31=True)
+        elif user.department_code == '41':
+            trainings = Training.objects.filter(is_department_41=True)
+        elif user.department_code == '45':
+            trainings = Training.objects.filter(is_department_45=True)
+        elif user.department_code == '47':
+            trainings = Training.objects.filter(is_department_47=True)
+        elif user.department_code == '51':
+            trainings = Training.objects.filter(is_department_51=True)
+        elif user.department_code == '55':
+            trainings = Training.objects.filter(is_department_55=True)
+        elif user.department_code == '61':
+            trainings = Training.objects.filter(is_department_61=True)
+        elif user.department_code == '63':
+            trainings = Training.objects.filter(is_department_63=True)
+        elif user.department_code == '71':
+            trainings = Training.objects.filter(is_department_71=True)
+        elif user.department_code == '81':
+            trainings = Training.objects.filter(is_department_81=True)
+        elif user.department_code == '86':
+            trainings = Training.objects.filter(is_department_86=True)
+        elif user.department_code == '90':
+            trainings = Training.objects.filter(is_department_90=True)
+        elif user.department_code == '91':
+            trainings = Training.objects.filter(is_department_91=True)
+        elif user.department_code == '92':
+            trainings = Training.objects.filter(is_department_92=True)
+        elif user.department_code == '93':
+            trainings = Training.objects.filter(is_department_93=True)
+        elif user.department_code == '94':
+            trainings = Training.objects.filter(is_department_94=True)
+        else:
+            trainings = Training.objects.all()
+        
+        serializer_class = TrainingExtendedSerializer(trainings, many=True)
+        
+        return Response(serializer_class.data)
+
+    @action(methods=['GET'], detail=True)
+    def get_applicable_staff_department(self, request, *args, **kwargs):
+        user = request.user
+        training = self.get_object()
+        training_positions = []
+        training_salary_codes = []
+
+        if training.is_position_01:
+            training_positions.append('AKAUNTAN')
+        if training.is_position_02:
+            training_positions.append('ARKITEK')
+        if training.is_position_03:
+            training_positions.append('ARKITEK LANDSKAP')
+        if training.is_position_04:
+            training_positions.append('DATUK BANDAR')
+        if training.is_position_05:
+            training_positions.append('JURUAUDIO VISUAL')
+        if training.is_position_06:
+            training_positions.append('JURUAUDIT')
+        if training.is_position_07:
+            training_positions.append('JURURAWT')
+        if training.is_position_08:
+            training_positions.append('JURURAWAT MASYARAKAT')
+        if training.is_position_09:
+            training_positions.append('JURUTEKNIK KOMPUTER')
+        if training.is_position_10:
+            training_positions.append('JURUTERA')
+        if training.is_position_11:
+            training_positions.append('JURUUKUR BAHAN')
+        if training.is_position_12:
+            training_positions.append('PEGAWAI KESELAMATAN')
+        if training.is_position_13:
+            training_positions.append('PEGAWAI KESIHATAN PERSEKITARAN')
+        if training.is_position_14:
+            training_positions.append('PEGAWAI KHIDMAT PELANGGAN')
+        if training.is_position_15:
+            training_positions.append('PEGAWAI PENILAIAN')
+        if training.is_position_16:
+            training_positions.append('PEGAWAI PERANCANG BANDAR DAN DESA')
+        if training.is_position_17:
+            training_positions.append('PEGAWAI PERTANIAN')
+        if training.is_position_18:
+            training_positions.append('PEGAWAI PERUBATAN')
+        if training.is_position_19:
+            training_positions.append('PEGAWAI TADBIR')
+        if training.is_position_20:
+            training_positions.append('PEGAWAI TEKNOLOGI MAKLUMAT')
+        if training.is_position_21:
+            training_positions.append('PEGAWAI UNDANG-UNDANG')
+        if training.is_position_22:
+            training_positions.append('PEGAWAI VETERINAR')
+        if training.is_position_23:
+            training_positions.append('PEGAWAI PEKERJA AWAM')
+        if training.is_position_24:
+            training_positions.append('PELUKIS PELAN ')
+        if training.is_position_25:
+            training_positions.append('PELUKIS PELAN (KEJURUTERAAN AWAM) / PENOLONG JURUTERA')
+        if training.is_position_26:
+            training_positions.append('PELUKIS PELAN (SENI BINA) / PENOLONG PEGAWAI  SENI BINA')
+        if training.is_position_27:
+            training_positions.append('PEMANDU KENDERAAN')
+        if training.is_position_28:
+            training_positions.append('PEMANDU KENDERAAN BERMOTOR')
+        if training.is_position_29:
+            training_positions.append('PEMBANTU AWAM')
+        if training.is_position_30:
+            training_positions.append('PEMBANTU KEMAHIRAN')
+        if training.is_position_31:
+            training_positions.append('PEMBANTU KESIHATAN AWAM')
+        if training.is_position_32:
+            training_positions.append('PEMBANTU OPERASI')
+        if training.is_position_33:
+            training_positions.append('PEMBANTU PENGUATKUASA')
+        if training.is_position_34:
+            training_positions.append('PEMBANTU PENGUATKUASA RENDAH')
+        if training.is_position_35:
+            training_positions.append('PEMBANTU PENILAIAN')
+        if training.is_position_36:
+            training_positions.append('PEMBANTU PERAWATAN KESIHATAN')
+        if training.is_position_37:
+            training_positions.append('PEMBANTU SETIAUSAHA PEJABAT / SETIAUSAHA PEJABAT')
+        if training.is_position_38:
+            training_positions.append('PEMBANTU TADBIR (PERKERANIAN / OPERASI)')
+        if training.is_position_39:
+            training_positions.append('PEMBANTU TADBIR KEWANGAN')
+        if training.is_position_40:
+            training_positions.append('PEMBANTU VETERINAR')
+        if training.is_position_41:
+            training_positions.append('PEMBANTU KESELAMATAN')
+        if training.is_position_42:
+            training_positions.append('PENGHANTAR NOTIS ')
+        if training.is_position_43:
+            training_positions.append('PENOLONG AKAUNTAN')
+        if training.is_position_44:
+            training_positions.append('PENOLONG ARKITEK LANDSKAP')
+        if training.is_position_45:
+            training_positions.append('PENOLONG JURUAUDIT')
+        if training.is_position_46:
+            training_positions.append('PENOLONG PEGAWAI KESIHATAN PERSEKITARAN')
+        if training.is_position_47:
+            training_positions.append('PENOLONG PEGAWAI PENGUATKUASA')
+        if training.is_position_48:
+            training_positions.append('PENOLONG PEGAWAI PENILAIAN')
+        if training.is_position_49:
+            training_positions.append('PENOLONG PEGAWAI PERANCANG BANDAR DAN DESA')
+        if training.is_position_50:
+            training_positions.append('PENOLONG PEGAWAI PERTANIAN')
+        if training.is_position_51:
+            training_positions.append('PENOLONG PEGAWAI TADBIR')
+        if training.is_position_52:
+            training_positions.append('PENOLONG PEGAWAI TEKNOLOGI MAKLUMAT')
+        if training.is_position_53:
+            training_positions.append('PENOLONG PEGAWAI UNDANG-UNDANG')
+        if training.is_position_54:
+            training_positions.append('PENOLONG PEGAWAI VETERINAR')
+        if training.is_position_55:
+            training_positions.append('PEREKA')
+        if training.is_position_60:
+            training_positions.append('SETIAUSAHA')
+
+        if training.is_ba19:
+            training_salary_codes.append('BA19')
+        if training.is_fa29:
+            training_salary_codes.append('FA29')
+        if training.is_fa32:
+            training_salary_codes.append('FA32')
+        if training.is_fa41:
+            training_salary_codes.append('FA41')
+        if training.is_fa44:
+            training_salary_codes.append('FA44')
+        if training.is_fa48:
+            training_salary_codes.append('FA48')
+        if training.is_ft19:
+            training_salary_codes.append('FT19')
+        if training.is_ga17:
+            training_salary_codes.append('GA17')
+        if training.is_ga19:
+            training_salary_codes.append('GA19')
+        if training.is_ga22:
+            training_salary_codes.append('GA22')
+        if training.is_ga26:
+            training_salary_codes.append('GA26')
+        if training.is_ga29:
+            training_salary_codes.append('GA29')
+        if training.is_ga32:
+            training_salary_codes.append('GA32')
+        if training.is_ga41:
+            training_salary_codes.append('GA41')
+        if training.is_gv41:
+            training_salary_codes.append('GV41')
+        if training.is_ha11:
+            training_salary_codes.append('HA11')
+        if training.is_ha14:
+            training_salary_codes.append('HA14')
+        if training.is_ha16:
+            training_salary_codes.append('HA16')
+        if training.is_ha19:
+            training_salary_codes.append('HA19')
+        if training.is_ha22:
+            training_salary_codes.append('HA22')
+        if training.is_ja19:
+            training_salary_codes.append('JA19')
+        if training.is_ja22:
+            training_salary_codes.append('JA22')
+        if training.is_ja29:
+            training_salary_codes.append('JA29')
+        if training.is_ja36:
+            training_salary_codes.append('JA36')
+        if training.is_ja38:
+            training_salary_codes.append('JA38')
+        if training.is_ja40:
+            training_salary_codes.append('JA40')
+        if training.is_ja41:
+            training_salary_codes.append('JA41')
+        if training.is_ja44:
+            training_salary_codes.append('JA44')
+        if training.is_ja48:
+            training_salary_codes.append('JA48')
+        if training.is_ja52:
+            training_salary_codes.append('JA52')
+        if training.is_ja54:
+            training_salary_codes.append('JA54')
+        if training.is_kp11:
+            training_salary_codes.append('KP11')
+        if training.is_kp14:
+            training_salary_codes.append('KP14')
+        if training.is_kp19:
+            training_salary_codes.append('KP19')
+        if training.is_kp22:
+            training_salary_codes.append('KP22')
+        if training.is_kp29:
+            training_salary_codes.append('KP29')
+        if training.is_kp32:
+            training_salary_codes.append('KP32')
+        if training.is_kp41:
+            training_salary_codes.append('KP41')
+        if training.is_la29:
+            training_salary_codes.append('LA29')
+        if training.is_la41:
+            training_salary_codes.append('LA41')
+        if training.is_la44:
+            training_salary_codes.append('LA44')
+        if training.is_la52:
+            training_salary_codes.append('LA52')
+        if training.is_la54:
+            training_salary_codes.append('LA54')
+        if training.is_na01:
+            training_salary_codes.append('NA01')
+        if training.is_na11:
+            training_salary_codes.append('NA11')
+        if training.is_na14:
+            training_salary_codes.append('NA14')
+        if training.is_na17:
+            training_salary_codes.append('NA17')
+        if training.is_na19:
+            training_salary_codes.append('NA19')
+        if training.is_na22:
+            training_salary_codes.append('NA22')
+        if training.is_na26:
+            training_salary_codes.append('NA26')
+        if training.is_na29:
+            training_salary_codes.append('NA29')
+        if training.is_na30:
+            training_salary_codes.append('NA30')
+        if training.is_na32:
+            training_salary_codes.append('NA32')
+        if training.is_na36:
+            training_salary_codes.append('NA36')
+        if training.is_na41:
+            training_salary_codes.append('NA41')
+        if training.is_na44:
+            training_salary_codes.append('NA44')
+        if training.is_na48:
+            training_salary_codes.append('NA48')
+        if training.is_na52:
+            training_salary_codes.append('NA52')
+        if training.is_na54:
+            training_salary_codes.append('NA54')
+        if training.is_ra01:
+            training_salary_codes.append('RA01')
+        if training.is_ra03:
+            training_salary_codes.append('RA03')
+        if training.is_ua11:
+            training_salary_codes.append('UA11')
+        if training.is_ua14:
+            training_salary_codes.append('UA14')
+        if training.is_ua17:
+            training_salary_codes.append('UA17')
+        if training.is_ua19:
+            training_salary_codes.append('UA19')
+        if training.is_ua24:
+            training_salary_codes.append('UA24')
+        if training.is_ua29:
+            training_salary_codes.append('UA29')
+        if training.is_ua32:
+            training_salary_codes.append('UA32')
+        if training.is_ua36:
+            training_salary_codes.append('UA36')
+        if training.is_ua41:
+            training_salary_codes.append('UA41')
+        if training.is_ud43:
+            training_salary_codes.append('UD43')
+        if training.is_ud48:
+            training_salary_codes.append('UD48')
+        if training.is_ud52:
+            training_salary_codes.append('UD53')
+        if training.is_vu06:
+            training_salary_codes.append('VU06')
+        if training.is_vu07:
+            training_salary_codes.append('VU07')
+        if training.is_wa17:
+            training_salary_codes.append('WA17')
+        if training.is_wa19:
+            training_salary_codes.append('WA19')
+        if training.is_wa22:
+            training_salary_codes.append('WA22')
+        if training.is_wa26:
+            training_salary_codes.append('WA26')
+        if training.is_wa28:
+            training_salary_codes.append('WA28')
+        if training.is_wa29:
+            training_salary_codes.append('WA29')
+        if training.is_wa32:
+            training_salary_codes.append('WA32')
+        if training.is_wa36:
+            training_salary_codes.append('WA36')
+        if training.is_wa41:
+            training_salary_codes.append('WA41')
+        if training.is_wa44:
+            training_salary_codes.append('WA44')
+        if training.is_wa48:
+            training_salary_codes.append('WA48')
+        if training.is_wa52:
+            training_salary_codes.append('WA52')
+        if training.is_wa54:
+            training_salary_codes.append('WA54')
+        if training.is_waa41:
+            training_salary_codes.append('WAA41')
+        if training.is_waa44:
+            training_salary_codes.append('WAA44')
+        
+        staff = CustomUser.objects.filter(
+            department_code=user.department_code,
+            position__in=training_positions,
+            salary_code__in=training_salary_codes
+        ).order_by('-nric')
+
+        serializer_class = CustomUserSerializer(staff, many=True)
+
+        return Response(serializer_class.data)
+
+    @action(methods=['GET'], detail=True)
+    def get_applicable_staff_training(self, request, *args, **kwargs):
+        user = request.user
+        training = self.get_object()
+        training_positions = []
+        training_salary_codes = []
+
+        if training.is_position_01:
+            training_positions.append('AKAUNTAN')
+        if training.is_position_02:
+            training_positions.append('ARKITEK')
+        if training.is_position_03:
+            training_positions.append('ARKITEK LANDSKAP')
+        if training.is_position_04:
+            training_positions.append('DATUK BANDAR')
+        if training.is_position_05:
+            training_positions.append('JURUAUDIO VISUAL')
+        if training.is_position_06:
+            training_positions.append('JURUAUDIT')
+        if training.is_position_07:
+            training_positions.append('JURURAWT')
+        if training.is_position_08:
+            training_positions.append('JURURAWAT MASYARAKAT')
+        if training.is_position_09:
+            training_positions.append('JURUTEKNIK KOMPUTER')
+        if training.is_position_10:
+            training_positions.append('JURUTERA')
+        if training.is_position_11:
+            training_positions.append('JURUUKUR BAHAN')
+        if training.is_position_12:
+            training_positions.append('PEGAWAI KESELAMATAN')
+        if training.is_position_13:
+            training_positions.append('PEGAWAI KESIHATAN PERSEKITARAN')
+        if training.is_position_14:
+            training_positions.append('PEGAWAI KHIDMAT PELANGGAN')
+        if training.is_position_15:
+            training_positions.append('PEGAWAI PENILAIAN')
+        if training.is_position_16:
+            training_positions.append('PEGAWAI PERANCANG BANDAR DAN DESA')
+        if training.is_position_17:
+            training_positions.append('PEGAWAI PERTANIAN')
+        if training.is_position_18:
+            training_positions.append('PEGAWAI PERUBATAN')
+        if training.is_position_19:
+            training_positions.append('PEGAWAI TADBIR')
+        if training.is_position_20:
+            training_positions.append('PEGAWAI TEKNOLOGI MAKLUMAT')
+        if training.is_position_21:
+            training_positions.append('PEGAWAI UNDANG-UNDANG')
+        if training.is_position_22:
+            training_positions.append('PEGAWAI VETERINAR')
+        if training.is_position_23:
+            training_positions.append('PEGAWAI PEKERJA AWAM')
+        if training.is_position_24:
+            training_positions.append('PELUKIS PELAN ')
+        if training.is_position_25:
+            training_positions.append('PELUKIS PELAN (KEJURUTERAAN AWAM) / PENOLONG JURUTERA')
+        if training.is_position_26:
+            training_positions.append('PELUKIS PELAN (SENI BINA) / PENOLONG PEGAWAI  SENI BINA')
+        if training.is_position_27:
+            training_positions.append('PEMANDU KENDERAAN')
+        if training.is_position_28:
+            training_positions.append('PEMANDU KENDERAAN BERMOTOR')
+        if training.is_position_29:
+            training_positions.append('PEMBANTU AWAM')
+        if training.is_position_30:
+            training_positions.append('PEMBANTU KEMAHIRAN')
+        if training.is_position_31:
+            training_positions.append('PEMBANTU KESIHATAN AWAM')
+        if training.is_position_32:
+            training_positions.append('PEMBANTU OPERASI')
+        if training.is_position_33:
+            training_positions.append('PEMBANTU PENGUATKUASA')
+        if training.is_position_34:
+            training_positions.append('PEMBANTU PENGUATKUASA RENDAH')
+        if training.is_position_35:
+            training_positions.append('PEMBANTU PENILAIAN')
+        if training.is_position_36:
+            training_positions.append('PEMBANTU PERAWATAN KESIHATAN')
+        if training.is_position_37:
+            training_positions.append('PEMBANTU SETIAUSAHA PEJABAT / SETIAUSAHA PEJABAT')
+        if training.is_position_38:
+            training_positions.append('PEMBANTU TADBIR (PERKERANIAN / OPERASI)')
+        if training.is_position_39:
+            training_positions.append('PEMBANTU TADBIR KEWANGAN')
+        if training.is_position_40:
+            training_positions.append('PEMBANTU VETERINAR')
+        if training.is_position_41:
+            training_positions.append('PEMBANTU KESELAMATAN')
+        if training.is_position_42:
+            training_positions.append('PENGHANTAR NOTIS ')
+        if training.is_position_43:
+            training_positions.append('PENOLONG AKAUNTAN')
+        if training.is_position_44:
+            training_positions.append('PENOLONG ARKITEK LANDSKAP')
+        if training.is_position_45:
+            training_positions.append('PENOLONG JURUAUDIT')
+        if training.is_position_46:
+            training_positions.append('PENOLONG PEGAWAI KESIHATAN PERSEKITARAN')
+        if training.is_position_47:
+            training_positions.append('PENOLONG PEGAWAI PENGUATKUASA')
+        if training.is_position_48:
+            training_positions.append('PENOLONG PEGAWAI PENILAIAN')
+        if training.is_position_49:
+            training_positions.append('PENOLONG PEGAWAI PERANCANG BANDAR DAN DESA')
+        if training.is_position_50:
+            training_positions.append('PENOLONG PEGAWAI PERTANIAN')
+        if training.is_position_51:
+            training_positions.append('PENOLONG PEGAWAI TADBIR')
+        if training.is_position_52:
+            training_positions.append('PENOLONG PEGAWAI TEKNOLOGI MAKLUMAT')
+        if training.is_position_53:
+            training_positions.append('PENOLONG PEGAWAI UNDANG-UNDANG')
+        if training.is_position_54:
+            training_positions.append('PENOLONG PEGAWAI VETERINAR')
+        if training.is_position_55:
+            training_positions.append('PEREKA')
+        if training.is_position_60:
+            training_positions.append('SETIAUSAHA')
+
+        if training.is_ba19:
+            training_salary_codes.append('BA19')
+        if training.is_fa29:
+            training_salary_codes.append('FA29')
+        if training.is_fa32:
+            training_salary_codes.append('FA32')
+        if training.is_fa41:
+            training_salary_codes.append('FA41')
+        if training.is_fa44:
+            training_salary_codes.append('FA44')
+        if training.is_fa48:
+            training_salary_codes.append('FA48')
+        if training.is_ft19:
+            training_salary_codes.append('FT19')
+        if training.is_ga17:
+            training_salary_codes.append('GA17')
+        if training.is_ga19:
+            training_salary_codes.append('GA19')
+        if training.is_ga22:
+            training_salary_codes.append('GA22')
+        if training.is_ga26:
+            training_salary_codes.append('GA26')
+        if training.is_ga29:
+            training_salary_codes.append('GA29')
+        if training.is_ga32:
+            training_salary_codes.append('GA32')
+        if training.is_ga41:
+            training_salary_codes.append('GA41')
+        if training.is_gv41:
+            training_salary_codes.append('GV41')
+        if training.is_ha11:
+            training_salary_codes.append('HA11')
+        if training.is_ha14:
+            training_salary_codes.append('HA14')
+        if training.is_ha16:
+            training_salary_codes.append('HA16')
+        if training.is_ha19:
+            training_salary_codes.append('HA19')
+        if training.is_ha22:
+            training_salary_codes.append('HA22')
+        if training.is_ja19:
+            training_salary_codes.append('JA19')
+        if training.is_ja22:
+            training_salary_codes.append('JA22')
+        if training.is_ja29:
+            training_salary_codes.append('JA29')
+        if training.is_ja36:
+            training_salary_codes.append('JA36')
+        if training.is_ja38:
+            training_salary_codes.append('JA38')
+        if training.is_ja40:
+            training_salary_codes.append('JA40')
+        if training.is_ja41:
+            training_salary_codes.append('JA41')
+        if training.is_ja44:
+            training_salary_codes.append('JA44')
+        if training.is_ja48:
+            training_salary_codes.append('JA48')
+        if training.is_ja52:
+            training_salary_codes.append('JA52')
+        if training.is_ja54:
+            training_salary_codes.append('JA54')
+        if training.is_kp11:
+            training_salary_codes.append('KP11')
+        if training.is_kp14:
+            training_salary_codes.append('KP14')
+        if training.is_kp19:
+            training_salary_codes.append('KP19')
+        if training.is_kp22:
+            training_salary_codes.append('KP22')
+        if training.is_kp29:
+            training_salary_codes.append('KP29')
+        if training.is_kp32:
+            training_salary_codes.append('KP32')
+        if training.is_kp41:
+            training_salary_codes.append('KP41')
+        if training.is_la29:
+            training_salary_codes.append('LA29')
+        if training.is_la41:
+            training_salary_codes.append('LA41')
+        if training.is_la44:
+            training_salary_codes.append('LA44')
+        if training.is_la52:
+            training_salary_codes.append('LA52')
+        if training.is_la54:
+            training_salary_codes.append('LA54')
+        if training.is_na01:
+            training_salary_codes.append('NA01')
+        if training.is_na11:
+            training_salary_codes.append('NA11')
+        if training.is_na14:
+            training_salary_codes.append('NA14')
+        if training.is_na17:
+            training_salary_codes.append('NA17')
+        if training.is_na19:
+            training_salary_codes.append('NA19')
+        if training.is_na22:
+            training_salary_codes.append('NA22')
+        if training.is_na26:
+            training_salary_codes.append('NA26')
+        if training.is_na29:
+            training_salary_codes.append('NA29')
+        if training.is_na30:
+            training_salary_codes.append('NA30')
+        if training.is_na32:
+            training_salary_codes.append('NA32')
+        if training.is_na36:
+            training_salary_codes.append('NA36')
+        if training.is_na41:
+            training_salary_codes.append('NA41')
+        if training.is_na44:
+            training_salary_codes.append('NA44')
+        if training.is_na48:
+            training_salary_codes.append('NA48')
+        if training.is_na52:
+            training_salary_codes.append('NA52')
+        if training.is_na54:
+            training_salary_codes.append('NA54')
+        if training.is_ra01:
+            training_salary_codes.append('RA01')
+        if training.is_ra03:
+            training_salary_codes.append('RA03')
+        if training.is_ua11:
+            training_salary_codes.append('UA11')
+        if training.is_ua14:
+            training_salary_codes.append('UA14')
+        if training.is_ua17:
+            training_salary_codes.append('UA17')
+        if training.is_ua19:
+            training_salary_codes.append('UA19')
+        if training.is_ua24:
+            training_salary_codes.append('UA24')
+        if training.is_ua29:
+            training_salary_codes.append('UA29')
+        if training.is_ua32:
+            training_salary_codes.append('UA32')
+        if training.is_ua36:
+            training_salary_codes.append('UA36')
+        if training.is_ua41:
+            training_salary_codes.append('UA41')
+        if training.is_ud43:
+            training_salary_codes.append('UD43')
+        if training.is_ud48:
+            training_salary_codes.append('UD48')
+        if training.is_ud52:
+            training_salary_codes.append('UD53')
+        if training.is_vu06:
+            training_salary_codes.append('VU06')
+        if training.is_vu07:
+            training_salary_codes.append('VU07')
+        if training.is_wa17:
+            training_salary_codes.append('WA17')
+        if training.is_wa19:
+            training_salary_codes.append('WA19')
+        if training.is_wa22:
+            training_salary_codes.append('WA22')
+        if training.is_wa26:
+            training_salary_codes.append('WA26')
+        if training.is_wa28:
+            training_salary_codes.append('WA28')
+        if training.is_wa29:
+            training_salary_codes.append('WA29')
+        if training.is_wa32:
+            training_salary_codes.append('WA32')
+        if training.is_wa36:
+            training_salary_codes.append('WA36')
+        if training.is_wa41:
+            training_salary_codes.append('WA41')
+        if training.is_wa44:
+            training_salary_codes.append('WA44')
+        if training.is_wa48:
+            training_salary_codes.append('WA48')
+        if training.is_wa52:
+            training_salary_codes.append('WA52')
+        if training.is_wa54:
+            training_salary_codes.append('WA54')
+        if training.is_waa4:
+            training_salary_codes.append('WAA41')
+        if training.is_waa4:
+            training_salary_codes.append('WAA44')
+
+        staff = CustomUser.objects.filter(
+            position__in=training_positions,
+            salary_code__in=training_salary_codes
+        ).order_by('-nric')
+
+        serializer_class = CustomUserSerializer(staff, many=True)
+
+        return Response(serializer_class.data)
+
 
 class TrainingNoteViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = TrainingNote.objects.all()
@@ -396,7 +1156,7 @@ class TrainingNoteViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -419,7 +1179,7 @@ class TrainingCoreViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['core', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -480,7 +1240,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_self_latest(self, request, *args, **kwargs):
 
         user = request.user
-        applications = TrainingApplication.objects.filter(applicant=user).order_by('-modified_at')
+        applications = TrainingApplication.objects.filter(applicant=user, training__end_date__gte=datetime.datetime.now().date()).order_by('-modified_at')
         serializer_class = TrainingApplicationExtendedSelfSerializer(applications, many=True)
         
         return Response(serializer_class.data)
@@ -514,14 +1274,90 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         }
 
         return JsonResponse(data_)
+    
+    @action(methods=['GET'], detail=False)
+    def get_department_coordinator_list(self, request, *args, **kwargs):
+
+        user = request.user
+        applications = TrainingApplication.objects.filter(
+            applicant__department_code=user.department_code,
+            status='IP',
+            approved_level_1_by=None,
+            training__start_date__gte=datetime.datetime.now().date()
+        )
+
+        serializer_class = TrainingApplicationExtendedDepartmentSerializer(applications, many=True)
+        return Response(serializer_class.data)
+    
+    @action(methods=['GET'], detail=False)
+    def get_department_head_list(self, request, *args, **kwargs):
+
+        user = request.user
+        applications = TrainingApplication.objects.filter(
+            applicant__department_code=user.department_code,
+            status='IP',
+            approved_level_2_by=None,
+            training__start_date__gte=datetime.datetime.now().date()
+        )
+
+        serializer_class = TrainingApplicationExtendedDepartmentSerializer(applications, many=True)
+        return Response(serializer_class.data)
+    
+    @action(methods=['GET'], detail=False)
+    def get_department_coordinator_histories(self, request, *args, **kwargs):
+
+        user = request.user
+        applications = TrainingApplication.objects.filter(
+            applicant__department_code=user.department_code,
+            approved_level_1_by__isnull=False
+        )
+
+        serializer_class = TrainingApplicationExtendedDepartmentSerializer(applications, many=True)
+        return Response(serializer_class.data)
+
+    @action(methods=['GET'], detail=False)
+    def get_department_head_histories(self, request, *args, **kwargs):
+
+        user = request.user
+        applications = TrainingApplication.objects.filter(
+            applicant__department_code=user.department_code,
+            approved_level_2_by__isnull=False
+        )
+
+        serializer_class = TrainingApplicationExtendedDepartmentSerializer(applications, many=True)
+        return Response(serializer_class.data)
+    
+    @action(methods=['GET'], detail=True)
+    def approve_level_1(self, request, *args, **kwargs):
+
+        user = request.user
+        application = self.get_object()
+        application.approved_level_1_by = user
+        application.save()
+
+        serializer_class = TrainingApplicationSerializer(application, many=False)
+        
+        return Response(serializer_class.data)
 
     @action(methods=['GET'], detail=True)
-    def approve(self, request, *args, **kwargs):
+    def approve_level_2(self, request, *args, **kwargs):
+
+        user = request.user
+        application = self.get_object()
+        application.approved_level_2_by = user
+        application.save()
+
+        serializer_class = TrainingApplicationSerializer(application, many=False)
+        
+        return Response(serializer_class.data)
+
+    @action(methods=['GET'], detail=True)
+    def approve_level_3(self, request, *args, **kwargs):
 
         user = request.user
         application = self.get_object()
         application.status = 'AP'
-        application.approved_by = user
+        application.approved_level_3_by = user
         application.save()
 
         attendance = TrainingAttendee.objects.create(
@@ -529,7 +1365,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             attendee=application.applicant,
         )
 
-        serializer_class = TrainingApplicationSerializer(application)
+        serializer_class = TrainingApplicationSerializer(application, many=False)
         
         return Response(serializer_class.data)
     
@@ -556,6 +1392,41 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer_class = TrainingApplicationSerializer(application)
         
         return Response(serializer_class.data)
+    
+    @action(methods=['POST'], detail=False)
+    def apply_batch(self, request, *args, **kwargs):
+        user = request.user
+        request_ = json.loads(request.body)
+        request_training_id_ = request_['training']
+        request_applicants_= request_['applicants']
+        applications = []
+        training = Training.objects.filter(id=request_training_id_).first()
+
+        for applicant_ in request_applicants_:
+            applicant = CustomUser.objects.filter(id=applicant_['id']).first()
+            
+            if user.user_type == 'DC':
+                applications.append(
+                    TrainingApplication.objects.create(
+                        training=training,
+                        applicant=applicant,
+                        approved_level_1_by=user,
+                        application_type='PP'
+                    )
+                )
+            elif user.user_type == 'DH':
+                applications.append(
+                    TrainingApplication.objects.create(
+                        training=training,
+                        applicant=applicant,
+                        approved_level_2_by=user,
+                        application_type='PP'
+                    )
+                )
+
+        serializer_class = TrainingApplicationSerializer(applications, many=True)
+        
+        return Response(serializer_class.data)
 
 class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = TrainingAttendee.objects.all()
@@ -568,7 +1439,7 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -585,13 +1456,134 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['GET'], detail=True)
     def sign(self, request, *args, **kwargs):
-        attendee = self.get_object()
-        attendee.is_attend = True
-        attendee.save()
+        attendance = self.get_object()
+        attendee = request.user
+        
+        if datetime.time(12) > datetime.datetime.now().time():
+            attendance.check_in = datetime.datetime.now()
+            attendance.checked_in_by = attendee
+        else:
+            attendance.check_out = datetime.datetime.now()
+            attendance.checked_out_by = attendee
+        
+        # if attendance.check_in and attendance.check_out:
+        #     attendance.is_attend = True
 
-        serializer = TrainingSerializer(attendee)
+        attendance.save()
+
+        serializer = TrainingAttendeeSerializer(attendance)
         return Response(serializer.data)
     
+    @action(methods=['GET'], detail=True)
+    def sign_coordinator(self, request, *args, **kwargs):
+        attendance = self.get_object()
+        coordinator = request.user
+        request_ = json.loads(request.body)
+        request_attendee_ = request_['attendee']
+        request_type_ = request_['type']
+
+        if request_type_ == 'check_in':
+            attendance.check_in = datetime.datetime.now()
+            attendance.checked_in_by = coordinator
+
+        elif request_type_ == 'check_out':
+            attendance.check_out = datetime.datetime.now()
+            attendance.checked_out_by = coordinator
+
+        attendance.is_attend = True
+
+        attendance.save()
+
+        serializer = TrainingAttendeeSerializer(attendance)
+        return Response(serializer.data)
+
+    @action(methods=['GET'], detail=True)
+    def sign_coordinator_in(self, request, *args, **kwargs):
+        attendance = self.get_object()
+        coordinator = request.user
+
+        attendance.check_in = datetime.datetime.now()
+        attendance.checked_in_by = coordinator
+
+        attendance.save()
+
+        serializer = TrainingAttendeeSerializer(attendance)
+        return Response(serializer.data)
+    
+    @action(methods=['GET'], detail=True)
+    def sign_coordinator_out(self, request, *args, **kwargs):
+        attendance = self.get_object()
+        coordinator = request.user
+
+        attendance.check_out = datetime.datetime.now()
+        attendance.checked_out_by = coordinator
+
+        attendance.save()
+
+        serializer = TrainingAttendeeSerializer(attendance)
+        return Response(serializer.data)
+    
+    @action(methods=['POST'], detail=False)
+    def check_today(self, request, *args, **kwargs):
+        attendee = request.user
+        request_ = json.loads(request.body)
+        training_id_ = request_['training']
+
+        training = Training.objects.filter(
+            id=training_id_, 
+            end_date__gte=datetime.datetime.now().date()
+        ).first()
+
+        if training:
+            attendance = TrainingAttendee.objects.filter(
+                attendee=attendee,
+                training=training,
+                created_at__date=datetime.datetime.now().date()
+            ).first()
+            
+            if attendance:
+                serializer = TrainingAttendeeSerializer(attendance)
+                return Response(serializer.data)
+            else:
+                attendance_ = TrainingAttendee.objects.create(
+                    attendee=attendee,
+                    training=training
+                )
+
+                serializer = TrainingAttendeeSerializer(attendance_)
+                return Response(serializer.data)
+        else:
+            return HttpResponse(status=204)
+    
+    @action(methods=['POST'], detail=False)
+    def get_attendances(self, request, *args, **kwargs):
+        attendee = request.user
+        request_ = json.loads(request.body)
+        training_id_ = request_['training']
+
+        training = Training.objects.filter(
+            id=training_id_
+        ).first()
+
+        attendances = TrainingAttendee.objects.filter(
+            attendee=attendee,
+            training=training
+        )
+
+        serializer = TrainingAttendeeSerializer(attendances, many=True)
+        return Response(serializer.data)
+    
+    @action(methods=['GET'], detail=True)
+    def verify(self, request, *args, **kwargs):
+        verifier = request.user
+        attendance = self.get_object()
+
+        attendance.verified_by = verifier
+        attendance.is_attend = True
+        attendance.save()
+
+        serializer = TrainingAttendeeSerializer(attendance)
+        return Response(serializer.data)
 
 class TrainingAbsenceMemoViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = TrainingAbsenceMemo.objects.all()
@@ -600,7 +1592,7 @@ class TrainingAbsenceMemoViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -615,6 +1607,27 @@ class TrainingAbsenceMemoViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         queryset = TrainingAbsenceMemo.objects.all()
         return queryset  
 
+    @action(methods=['POST'], detail=False)
+    def check_memo(self, request, *args, **kwargs):
+        attendee = request.user
+        request_ = json.loads(request.body)
+        request_training_id_ = request_['training']
+
+        training = Training.objects.filter(
+            id=request_training_id_
+        ).first()
+        memo = TrainingAbsenceMemo.objects.filter(
+            training=training,
+            attendee=attendee
+        ).first()
+
+        if memo:
+            serializer = TrainingAbsenceMemoSerializer(memo)
+            return Response(serializer.data)
+        else:
+            return HttpResponse(status=204)
+
+
 
 class TrainingLogViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Training.history.all()
@@ -623,7 +1636,7 @@ class TrainingLogViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -646,7 +1659,7 @@ class TrainerViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -669,7 +1682,7 @@ class TrainingDomainViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -692,7 +1705,7 @@ class TrainingTypeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -715,7 +1728,7 @@ class ConfigurationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -738,7 +1751,7 @@ class TrainingNeedAnalysisViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -820,12 +1833,53 @@ class TrainingNeedAnalysisViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_statistics(self, request, *args, **kwargs):
 
         cores = TrainingCore.objects.all()
-        data_to_pass_ = []
+        # data_to_pass_ = []
+        # for core in cores:
+        #     data_to_pass_.append({
+        #         'core': core.child,
+        #         'value': len(TrainingNeedAnalysis.objects.filter(core=core))
+        #     })
+        data_to_pass_fn_ = []
+        data_to_pass_gn_ = []
+
         for core in cores:
-            data_to_pass_.append({
-                'core': core.child,
-                'value': len(TrainingNeedAnalysis.objects.filter(core=core))
-            })
+            if core.parent == 'FN':
+                data_to_pass_fn_.append({
+                    'name': core.child,
+                    'value': len(TrainingNeedAnalysis.objects.filter(core=core))
+                })
+            elif core.parent == 'GN':
+                data_to_pass_gn_.append({
+                    'name': core.child,
+                    'value': len(TrainingNeedAnalysis.objects.filter(core=core))
+                })
+
+        data_to_pass_ = [
+            {
+                'type': 'FUNGSIONAL',
+                'value': len(TrainingNeedAnalysis.objects.filter(core__parent='FN')),
+                'subData': data_to_pass_fn_
+            },
+            {
+                'type': 'GENERIK',
+                'value': len(TrainingNeedAnalysis.objects.filter(core__parent='GN')),
+                'subData': data_to_pass_gn_
+            }
+        ]
+        """
+        data_to_generate = [
+            {
+                'type': 'xx',
+                'total': len(type),
+                'subData': [
+                    {
+                        'name': 'xx',
+                        'value': xx
+                    }
+                ]
+            }
+        ]
+        """
         
         # print(data_to_pass_)
         data_ = {

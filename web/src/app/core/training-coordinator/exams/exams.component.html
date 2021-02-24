@@ -28,7 +28,7 @@
                 </div>
                 <div class="card-body">
                     <div class="chart">
-                        <div class="amchart" id="chart-tc-month"></div>
+                        <div class="amchart" id="chart-tc-exam-month"></div>
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                 </div>
                 <div class="card-body">
                     <div class="chart-500">
-						<div class="amchart" id="chart-tc-department"></div>
+						<div class="amchart" id="chart-tc-exam-department"></div>
 					</div>
                 </div>
             </div>
@@ -83,7 +83,6 @@
 							</button>
 						</div>
 					</div>
-
 				</div>
 				
 				<div class="dataTables_wrapper py-4">
@@ -138,9 +137,10 @@
 						[messages]="tableMessages"
 						(activate)="onActivate($event)"
 						*ngIf="!isEmpty"
+						[scrollbarH]="true"
 					>
 						<ngx-datatable-column
-							prop="row.staff.full_name"
+							prop="staff.full_name"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Nama Kakitangan</span>
@@ -151,7 +151,7 @@
 						</ngx-datatable-column>
 	
 						<ngx-datatable-column
-							prop="row.staff.username"
+							prop="staff.username"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Kad Pengenalan</span>
@@ -162,7 +162,7 @@
 						</ngx-datatable-column>
 	
 						<ngx-datatable-column
-							prop="row.staff.position"
+							prop="staff.position"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Jawatan</span>
@@ -173,7 +173,7 @@
 						</ngx-datatable-column>
 			
 						<ngx-datatable-column
-							prop="row.staff.salary_code"
+							prop="staff.salary_code"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Gred</span>
@@ -184,18 +184,18 @@
 						</ngx-datatable-column>
 
 						<ngx-datatable-column
-							prop="row.staff.department"
+							prop="staff.department_code"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Jabatan</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
-								{{row.staff.department}}
+								{{row.staff.department_code}}
 							</ng-template>
 						</ngx-datatable-column>
 			
 						<ngx-datatable-column
-							prop="row.date"
+							prop="date"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Tarikh Peperiksaan</span>
@@ -206,7 +206,7 @@
 						</ngx-datatable-column>
 
 						<ngx-datatable-column
-							prop="row.exam.code"
+							prop="exam.code"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Kod</span>
@@ -217,7 +217,7 @@
 						</ngx-datatable-column>
 			
 						<ngx-datatable-column
-							prop="row.result"
+							prop="result"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Keputusan</span>
@@ -238,6 +238,7 @@
 							</ng-template>
 						</ngx-datatable-column>
 
+						<!-- frozenRight="true" -->
 						<ngx-datatable-column>
 							<ng-template ngx-datatable-header-template>
 								<span>Tindakan</span>

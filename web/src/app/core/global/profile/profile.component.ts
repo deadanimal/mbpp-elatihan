@@ -1,6 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import swal from 'sweetalert2';
-import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { LoadingBarService } from '@ngx-loading-bar/core';
+import { Router } from '@angular/router';
+
+import { User } from 'src/app/shared/services/users/users.model';
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
+
+import { Department, Section, ServiceStatus } from 'src/app/shared/code/user';
+
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-profile',
@@ -9,72 +16,94 @@ import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms'
 })
 export class ProfileComponent implements OnInit {
 
-  // Toggle
-  editEnabled: boolean = false
-
-  // Form
-  editForm: FormGroup
-  editFormMessages = {
-    'name': [
-      { type: 'required', message: 'Name is required' }
-    ],
-    'email': [
-      { type: 'required', message: 'Email is required' },
-      { type: 'email', message: 'A valid email is required' }
-    ]
-  }
+  // Data
+  user: any
+  departments = Department
+  sections = Section
+  serviceStatus = ServiceStatus
 
   constructor(
-    private formBuilder: FormBuilder
-  ) { }
+    private authService: AuthService,
+    private loadingBar: LoadingBarService,
+    private router: Router
+  ) { 
+    this.getData()
+  }
 
   ngOnInit() {
-    this.editForm = this.formBuilder.group({
-      name: new FormControl('', Validators.compose([
-        Validators.required
-      ])),
-      email: new FormControl('', Validators.compose([
-        Validators.required,
-        Validators.email
-      ]))
-    })
   }
 
-  toggleEdit() {
-    this.editEnabled = !this.editEnabled
-  }
+  getData() {
+    this.loadingBar.start()
+    this.authService.getDetailByToken().subscribe(
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        this.user = this.authService.userDetail
+        this.user['department'] = ''
+        this.user['section'] = ''
+        this.user['age'] = 0
+        this.user['role'] = 'KAKITANGAN'
 
-  confirm() {
-    swal.fire({
-      title: "Confirmation",
-      text: "Are you sure to save this edit?",
-      type: "info",
-      buttonsStyling: false,
-      confirmButtonClass: "btn btn-info",
-      confirmButtonText: "Confirm",
-      showCancelButton: true,
-      cancelButtonClass: "btn btn-danger",
-      cancelButtonText: "Cancel"
-    }).then((result) => {
-      if (result.value) {
-        this.edit()
+        this.departments.forEach(
+          (department) => {
+            if (this.user['department_code'] == department['value']) {
+              this.user['department'] = department['text']
+            }
+          }
+        )
+
+        this.sections.forEach(
+          (section) => {
+            if (this.user['section_code'] == section['value']) {
+              this.user['section'] = section['text']
+            }
+          }
+        )
+
+        this.serviceStatus.forEach(
+          (status) => {
+            if (this.user['service_status'] == status['value']) {
+              this.user['service_status'] = status['text']
+            }
+          }
+        )
+
+        let firstTwoNRIC = this.user['nric'].substring(0,2);
+        if (Number(firstTwoNRIC) >= 40) {
+          let genYear = 1900 + Number(firstTwoNRIC)
+          this.user['age'] = moment().year() - genYear
+        }
+        else {
+          let genYear = 2000 + Number(firstTwoNRIC)
+          this.user['age'] = moment().year() - genYear
+        }
+
+        if (this.user['user_type'] == 'DC') {
+          this.user['role'] = 'PENYELARAS JABATAN'
+        }
+        else if (this.user['user_type'] == 'TC') {
+          this.user['role'] = 'PENYELARAS LATIHAN'
+        }
+        else if (this.user['user_type'] == 'DH') {
+          this.user['role'] = 'KETUA JABATAN'
+        }
+        else if (this.user['user_type'] == 'AD') {
+          this.user['role'] = 'PENTADBIR SISTEM'
+        }
+        else {
+          this.user['role'] = 'KAKITANGAN'
+        }
       }
-    })
+    )
   }
 
-  edit() {
-    swal.fire({
-      title: "Success",
-      text: "Update has been saved",
-      type: "success",
-      buttonsStyling: false,
-      confirmButtonClass: "btn btn-success",
-      confirmButtonText: "Close"
-    }).then((result) => {
-      if (result.value) {
-        this.editForm.reset()
-      }
-    })
+  navigatePage(path: String) {
+    return this.router.navigate([path])
   }
 
 }

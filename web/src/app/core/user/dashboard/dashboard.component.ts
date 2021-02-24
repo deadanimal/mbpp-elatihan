@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { Router } from '@angular/router';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -9,6 +9,9 @@ import { ApplicationsService } from 'src/app/shared/services/applications/applic
 
 import * as moment from 'moment';
 import { UsersService } from 'src/app/shared/services/users/users.service';
+import { User } from 'src/app/shared/services/users/users.model';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { SecurityService } from 'src/app/shared/services/security/security.service';
 
 export enum SelectionType {
   single = "single",
@@ -33,12 +36,14 @@ export class DashboardComponent implements OnInit {
   totalTrainings: number = 0
   totalExams: number = 0
   totalDays: number = 0
+  user: User
 
   // Gauge
   gaugeType = 'full'
   gaugeMin = 0
   gaugeMax = 5
   gaugeLabel = 'Dihadiri'
+  gaugeLabelApplied = 'Didaftar'
   gaugeTrainingsAppend = 'kursus'
   gaugeExamsAppend = 'peperiksaan'
   gaugeDaysAppend = 'hari'
@@ -65,12 +70,24 @@ export class DashboardComponent implements OnInit {
 
   // Icon
   iconEmpty = 'assets/img/icons/box.svg'
+  iconTraining = 'assets/img/icons/training.svg'
+  iconExam = 'assets/img/icons/exam.svg'
+  iconError = 'assets/img/icons/error.svg'
+
+  // Modal
+  modal: BsModalRef;
+  modalConfig = {
+    keyboard: true,
+    class: "modal-dialog-centered"
+  };
 
   constructor(
     private authService: AuthService,
     private applicationService: ApplicationsService,
+    private securityService: SecurityService,
     private userService: UsersService,
     private loadingBar: LoadingBarService,
+    private modalService: BsModalService,
     private router: Router
   ) { 
     this.getData()
@@ -84,18 +101,19 @@ export class DashboardComponent implements OnInit {
 
     forkJoin([
       this.applicationService.getSelf(),
-      this.userService.getSummarySelf()
+      this.userService.getSummarySelf(),
+      this.securityService.checker()
     ]).subscribe(
       () => {
         this.loadingBar.complete()
         this.applications = this.applicationService.applicationsSelf
         this.summary = this.userService.summary
         this.tableRows = this.applications
-        this.tableRows.forEach(
-          (row) => {
-            row.created_at = moment(row.created_at).format('DD/MM/YYYY')
-          }
-        )
+        // this.tableRows.forEach(
+        //   (row) => {
+        //     row.created_at = moment(row.created_at).format('DD/MM/YYYY')
+        //   }
+        // )
       },
       () => {
         this.loadingBar.complete()
@@ -118,6 +136,7 @@ export class DashboardComponent implements OnInit {
         this.totalTrainings = this.summary['trainings']
         this.totalExams = this.summary['exams']
         this.totalDays = this.summary['attendances']
+        this.user = this.authService.userDetail
       }
     )
   }
@@ -158,7 +177,14 @@ export class DashboardComponent implements OnInit {
     else {
       this.router.navigate([pathNotApproved], queryParams)
     }
-    
+  }
+
+  openModal(modalRef: TemplateRef<any>) {
+    this.modal = this.modalService.show(modalRef, this.modalConfig);
+  }
+
+  closeModal() {
+    this.modal.hide()
   }
 
 }

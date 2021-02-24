@@ -1,0 +1,226 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
+<div class="header pb-6">
+	<div class="container-fluid">
+		<div class="header-body">
+			<div class="row align-items-center py-4">
+				<div class="col-lg-6 col-7">
+					<h6 class="h2 text-dark d-inline-block mb-0" (click)="checkValue()">Peperiksaan</h6>
+
+					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+							<li class=" breadcrumb-item">
+								<a href="javascript:void(0)"> <i class="fas fa-list-alt text-dark"> </i> </a>
+							</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h4 class="m-0">Tambah Peperiksaan</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-control-label">NRIC <span class="text-warning">*</span></label>
+                                <ng-select 
+                                    placeholder="Sila cari kad pengenalan kakitangan"
+                                    [(ngModel)]="selectedStaff"
+                                    (change)="onStaffChange($event)"
+                                >
+                                    <ng-option *ngFor="let staff of staffs" [value]="staff">{{staff.nric}}</ng-option>
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="selectedStaff">
+                        <hr class="my-4" />
+                        <h6 class="heading-small text-muted mb-4">Maklumat kakitangan</h6>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-control-label">NRIC</label>
+                                    <input value="{{selectedStaff.nric}}" class="form-control" disabled>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-control-label">Nama</label>
+                                    <input value="{{selectedStaff.full_name}}" class="form-control" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-control-label">Bahagian</label>
+                                    <input value="{{selectedStaff.section}}" class="form-control" disabled>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-control-label">Jawatan</label>
+                                    <input value="{{selectedStaff.position}}" class="form-control" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-control-label">Gred</label>
+                                    <input value="{{selectedStaff.grade_code}}" class="form-control" disabled>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="form-group">
+                                    <label class="form-control-label">Tarikh Lantikan</label>
+                                    <input value="{{selectedStaff.appointed_at | date: 'd/M/y'}}" class="form-control" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <hr class="my-4" />
+                        <h6 class="heading-small text-muted mb-4">Maklumat peperiksaan</h6>
+                        <form [formGroup]="examForm">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Jenis Peperiksaan <span class="text-warning">*</span></label>
+                                        <select
+                                            class="form-control custom-select"
+                                            [(ngModel)]="examTypeTemp"
+                                            [ngModelOptions]="{standalone: true}"
+                                            (change)="onClassificationChange($event.target.value)"
+                                        >
+                                            <option *ngFor="let choice of choicesType" value="{{choice.value}}">{{choice.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+    
+                                <div class="col-md-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Peperiksaan <span class="text-warning">*</span></label>
+                                        <select
+                                            class="form-control custom-select"
+                                            formControlName="exam"
+                                        >
+                                            <option *ngFor="let exam_ of examsTemp" value="{{exam_.id}}">[{{exam_.code}}] {{exam_.title}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="row">
+                                <div class="col-md-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Tarikh <span class="text-warning">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                              <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input 
+                                                type="text"
+                                                placeholder="12/12/2019"
+                                                class="form-control"
+                                                bsDatepicker
+                                                formControlName="date"
+                                                [bsValue]="dateValue"
+                                                [bsConfig]="dateConfig"
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <div class="col-md-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Keputusan <span class="text-warning">*</span></label>
+                                        <select
+                                            class="form-control custom-select"
+                                            placeholder="Keputusan"
+                                            formControlName="result"
+                                            type="text"
+                                        >
+                                            <option *ngFor="let result of choicesResult" value="{{result.value}}">{{result.text}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 col-lg-12">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Nota</label>
+                                        <input
+                                            class="form-control"
+                                            placeholder="Nota"
+                                            formControlName="note"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-md-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Dokumen <span class="text-warning">*</span></label>
+                                        <div class="custom-file">
+                                            <input 
+                                                type="file" 
+                                                class="custom-file-input" 
+                                                id="lampiran" 
+                                                lang="en"
+                                                (change)="onFileChange($event)" 
+                                                accept=".pdf, image/*"
+                                                size="5"
+                                            >
+                                            <label class="custom-file-label" for="lampiran">Sila muat naik lampiran berkenaan</label>
+                                        </div>
+    
+                                        <ng-container *ngIf="examForm.value['document_copy']">
+                                            <div>
+                                                <i 
+                                                    class="fas fa-trash-alt text-warning mr-2"
+                                                    placement="top" 
+                                                    tooltip="Remove attachment"
+                                                    (click)="removeFile()"
+                                                >
+                                                </i>
+                                                {{fileNameInformation}} [{{fileSizeInformation/1000000 | number: '1.2-2'}}MB]
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="text-right">
+                                <button
+                                    class="btn btn-warm-blue"
+                                    [disabled]="!examForm.valid"
+                                    (click)="confirm()"
+                                >
+                                    Daftar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

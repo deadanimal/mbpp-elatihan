@@ -965,14 +965,14 @@ export class TrainingAddComponent implements OnInit {
         (organisation) => {
           if (organisation['shortname'] == 'MBPP') {
             this.trainingForm.controls['organiser'].setValue(organisation['id'])
-            console.log('Type found D: ', organisation['shortname'])
+            // console.log('Type found D: ', organisation['shortname'])
           }
         }
       )
     }
     else if (value == 'LL') {
       this.trainingForm.controls['organiser'].setValue(this.organisations[0]['id'])
-      console.log('Type found L: ', this.organisations[0]['id'])
+      // console.log('Type found L: ', this.organisations[0]['id'])
     }
   }
 
@@ -1002,7 +1002,7 @@ export class TrainingAddComponent implements OnInit {
     this.trainingForm.controls['start_date'].setValue(startDate)
     this.trainingForm.controls['end_date'].setValue(endDate)
 
-    console.log(this.trainingForm.value)
+    // console.log(this.trainingForm.value)
     swal.fire({
       title: 'Pengesahan',
       text: 'Anda pasti untuk mendaftar latihan ini?',
@@ -1171,7 +1171,7 @@ export class TrainingAddComponent implements OnInit {
   }
 
   addOrganisation() {
-    console.log('masuk')
+    // console.log('masuk')
     this.loadingBar.start()
     this.organisationService.post(this.organisationForm.value).subscribe(
       () => {

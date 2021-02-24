@@ -170,6 +170,15 @@
     @include font-size($input-font-size-lg);
 }
 
+.custom-select-filter {
+    padding: 0.25rem 0.5rem !important;
+    height: calc( 0.45em + 1.25rem + 5px ) !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+    border-radius: 0.25rem !important;
+    width: 10rem !important;
+}
+
 .bg-whitish {
     background-color: #ebebeb !important;
 }

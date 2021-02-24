@@ -26,7 +26,7 @@ export class CoresService {
     return this.http.post<any>(this.urlCore, body).pipe(
       tap((res) => {
         this.core = res
-        console.log('Core: ', this.core)
+        // console.log('Core: ', this.core)
       })
     )
   }
@@ -35,7 +35,7 @@ export class CoresService {
     return this.http.get<Core[]>(this.urlCore).pipe(
       tap((res) => {
         this.cores = res
-        console.log('Cores: ', this.cores)
+        // console.log('Cores: ', this.cores)
       })
     )
   }
@@ -45,7 +45,7 @@ export class CoresService {
     return this.http.get<Core>(urlTemp).pipe(
       tap((res) => {
         this.core = res
-        console.log('Core: ', this.core)
+        // console.log('Core: ', this.core)
       })
     )
   }
@@ -55,7 +55,7 @@ export class CoresService {
     return this.http.put<Core>(urlTemp, body).pipe(
       tap((res) => {
         this.core = res
-        console.log('Core', this.core)
+        // console.log('Core', this.core)
       })
     )
   }

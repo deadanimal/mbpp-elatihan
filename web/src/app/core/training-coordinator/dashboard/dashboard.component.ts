@@ -177,9 +177,11 @@ export class DashboardComponent implements OnInit {
     categoryAxis.renderer.minGridDistance = 20;
     categoryAxis.renderer.labels.template.horizontalCenter = 'right';
     categoryAxis.renderer.labels.template.verticalCenter = 'middle';
+    categoryAxis.renderer.labels.template.disabled = true;
     categoryAxis.tooltip.label.rotation = 270;
     categoryAxis.tooltip.label.horizontalCenter = 'right';
     categoryAxis.tooltip.label.verticalCenter = 'middle';
+    categoryAxis.tooltip.disabled = true
 
     let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
     valueAxis.title.text = 'Jabatan';

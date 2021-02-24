@@ -112,7 +112,7 @@ export class ManagementAuditComponent implements OnInit, OnDestroy {
             id: key
           };
         });
-        console.log('Svc: ', this.tableTemp)
+        // console.log('Svc: ', this.tableTemp)
         this.resetCharts()
         this.calculateCharts()
       },
@@ -368,7 +368,7 @@ export class ManagementAuditComponent implements OnInit, OnDestroy {
         let checkerType = row.action
         let checkerDate = moment(row.created_at)
         let checkerDateMonth = checkerDate.month()
-        console.log(checkerDateMonth)
+        // console.log(checkerDateMonth)
         if (checkerDateMonth == 0) {
           if (checkerType == 'POST') {
             this.chartJanPost += 1

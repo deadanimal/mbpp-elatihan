@@ -7,6 +7,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { JwtService } from '../../handler/jwt/jwt.service';
+import { NotifyService } from '../../handler/notify/notify.service';
 
 @Injectable({
   providedIn: 'root'
@@ -39,13 +40,14 @@ export class AuthService {
   
   constructor(
     private jwtService: JwtService,
-    private http: HttpClient
+    private http: HttpClient,
+    private notifyService: NotifyService
   ) { }
 
   register(body: Form): Observable<any> {
     return this.http.post<any>(this.urlRegister, body).pipe(
       tap((res) => {
-        console.log('Registration: ', res)
+        // console.log('Registration: ', res)
       })
     )
   }
@@ -53,7 +55,29 @@ export class AuthService {
   changePassword(body: Form): Observable<any> {
     return this.http.post<any>(this.urlPasswordChange, body).pipe(
       tap((res) => {
-        console.log('Change password: ', res)
+        // console.log('Change password: ', res)
+      },
+      (err) => {
+        console.log(err['error'])
+        if (err['error']['new_password2']) {
+          for (let err_ of err['error']['new_password2']) {
+            if (err_ == 'This password is too common.') {
+              let title1 = 'Ralat'
+              let message1 = 'Kata laluan ini terlalu biasa. Sila cuba sekali lagi menggunakan kata laluan lain'
+              this.notifyService.openToastrError(title1, message1)
+            }
+            else if (err_ == 'This password is entirely numeric.') {
+              let title2 = 'Ralat'
+              let message2 = 'Kata laluan ini sepenuhnya angka. Sila cuba sekali lagi menggunakan kata laluan lain'
+              this.notifyService.openToastrError(title2, message2)
+            }
+            else if (err_ == 'This password is too short. It must contain at least 8 characters.') {
+              let title3 = 'Ralat'
+              let message3 = 'Kata laluan ini terlalu pendek. Ia mesti mengandungi sekurang-kurangnya 8 aksara. Sila cuba sekali lagi'
+              this.notifyService.openToastrError(title3, message3)
+            }
+          }
+        }
       })
     )
   }
@@ -61,7 +85,7 @@ export class AuthService {
   resetPassword(body: Form): Observable<any> {
     return this.http.post<any>(this.urlPasswordReset, body).pipe(
       tap((res) => {
-        console.log('Reset password: ', res)
+        // console.log('Reset password: ', res)
       })
     )
   }
@@ -97,8 +121,11 @@ export class AuthService {
         else if (this.userType == 'DC') {
           this.userRole = 3
         }
-        else if (this.userType == 'AD') {
+        else if (this.userType == 'DH') {
           this.userRole = 4
+        }
+        else if (this.userType == 'AD') {
+          this.userRole = 5
         }
         this.jwtService.saveToken('accessToken', this.tokenAccess)
         this.jwtService.saveToken('refreshToken', this.tokenRefresh)
@@ -113,7 +140,7 @@ export class AuthService {
     }
     return this.http.post<any>(this.urlTokenRefresh, body).pipe(
       tap((res) => {
-        console.log('Token refresh: ', res)
+        // console.log('Token refresh: ', res)
       })
     )
   }
@@ -121,13 +148,13 @@ export class AuthService {
   verifyToken(body: Form): Observable<any> {
     return this.http.post<any>(this.urlTokenVerify, body).pipe(
       tap((res) => {
-        console.log('Token verify: ', res)
+        // console.log('Token verify: ', res)
       })
     )
   }
 
   getUserDetail(): Observable<any> {
-    console.log('getuserdetail')
+    // console.log('getuserdetail')
     let urlTemp = this.urlUser + this.userID + '/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
@@ -165,8 +192,11 @@ export class AuthService {
         else if (this.userType == 'DC') {
           this.userRole = 3
         }
-        else if (this.userType == 'AD') {
+        else if (this.userType == 'DH') {
           this.userRole = 4
+        }
+        else if (this.userType == 'AD') {
+          this.userRole = 5
         }
         // console.log(this.userType, this.userRole)
       })

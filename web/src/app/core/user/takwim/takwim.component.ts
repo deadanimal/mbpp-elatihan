@@ -6,6 +6,8 @@ import {
   ViewChild
 } from '@angular/core';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+
+import * as moment from 'moment';
 import swal from 'sweetalert2';
 
 import { Calendar } from '@fullcalendar/core';
@@ -15,6 +17,9 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
 import { TrainingExtended } from 'src/app/shared/services/trainings/trainings.model';
 import { Router } from '@angular/router';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
+import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
 
 @Component({
   selector: 'app-takwim',
@@ -47,17 +52,30 @@ export class TakwimComponent implements OnInit {
   m = this.today.getMonth();
   d = this.today.getDate();
   events = []
+  dateToday
+
+  // Form
+  applyForm: FormGroup
+
+  // Checker
+  isApplied: boolean = false
 
   constructor(
+    private applicationService: ApplicationsService,
     private trainingService: TrainingsService,
     private modalService: BsModalService,
+    private fb: FormBuilder,
     private loadingBar: LoadingBarService,
+    private notifyService: NotifyService,
     private router: Router
   ) { }
 
   ngOnInit() {
     // this.initCalendar()
     this.getData()
+    this.initForm()
+    this.dateToday = moment().format('YYYY-MM-DD')
+    // console.log(this.dateToday)
   }
 
   getData() {
@@ -88,6 +106,20 @@ export class TakwimComponent implements OnInit {
         this.initCalendar()
       }
     )
+  }
+
+  initForm() {
+    this.applyForm = this.fb.group({
+      training: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      applicant: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      application_type: new FormControl('PS', Validators.compose([
+        Validators.required
+      ]))
+    })
   }
 
   changeView(newView) {
@@ -129,7 +161,7 @@ export class TakwimComponent implements OnInit {
         this.eventDescription = event.extendedProps.description;
         this.radios = 'bg-danger';
         this.selectedTraining = event
-        console.log('aa', this.selectedTraining)
+        // console.log('aa', this.selectedTraining)
         this.viewModal = this.modalService.show(this.modalView, this.default);
       }
     });
@@ -139,10 +171,20 @@ export class TakwimComponent implements OnInit {
   closeModal() {
     this.viewModal.hide()
     delete this.selectedTraining
+    this.isApplied = false
   }
 
   applyTraining(id) {
-    
+    let path = '/trainings/information'
+    let extras = id
+    let queryParams = {
+      queryParams: {
+        id: extras,
+        apply: true
+      }
+    }
+    this.router.navigate([path], queryParams)
+    this.closeModal()
   }
 
   viewInformation(id) {

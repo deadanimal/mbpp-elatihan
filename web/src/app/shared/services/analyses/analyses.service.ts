@@ -30,7 +30,7 @@ export class AnalysesService {
     return this.http.post<any>(this.urlAnalysis, body).pipe(
       tap((res) => {
         this.analysis = res
-        console.log('Analysis: ', this.analysis)
+        // console.log('Analysis: ', this.analysis)
       })
     )
   }
@@ -40,7 +40,7 @@ export class AnalysesService {
     return this.http.get<AnalysisExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.analysesExtended = res
-        console.log('Analyses: ', this.analysesExtended)
+        // console.log('Analyses: ', this.analysesExtended)
       })
     )
   }
@@ -50,7 +50,7 @@ export class AnalysesService {
     return this.http.post<AnalysisExtended[]>(urlTemp, body).pipe(
       tap((res) => {
         this.analysesExtended = res
-        console.log('Analyses: ', this.analysesExtended)
+        // console.log('Analyses: ', this.analysesExtended)
       })
     )
   }
@@ -60,7 +60,7 @@ export class AnalysesService {
     return this.http.get<AnalysisExtended>(urlTemp).pipe(
       tap((res) => {
         this.analysisExtended = res
-        console.log('Analysis: ', this.analysisExtended)
+        // console.log('Analysis: ', this.analysisExtended)
       })
     )
   }
@@ -70,7 +70,7 @@ export class AnalysesService {
     return this.http.get<AnalysisExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.analysesExtended = res
-        console.log('Analyses: ', this.analysesExtended)
+        // console.log('Analyses: ', this.analysesExtended)
       })
     )
   }
@@ -80,7 +80,7 @@ export class AnalysesService {
     return this.http.post<AnalysisExtended[]>(urlTemp, body).pipe(
       tap((res) => {
         this.analysesExtended = res
-        console.log('Analyses: ', this.analysesExtended)
+        // console.log('Analyses: ', this.analysesExtended)
       })
     )
   }
@@ -90,7 +90,7 @@ export class AnalysesService {
     return this.http.put<Analysis>(urlTemp, body).pipe(
       tap((res) => {
         this.analysis = res
-        console.log('Analysis', this.analysis)
+        // console.log('Analysis', this.analysis)
       })
     )
   }
@@ -100,7 +100,7 @@ export class AnalysesService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.statistics = res
-        console.log('Statistics: ', this.statistics)
+        // console.log('Statistics: ', this.statistics)
       })
     )
   }

@@ -103,12 +103,21 @@ export class SecurityService {
 
   getUserAnswer(body: any): Observable<any> {
     let urlTemp = this.urlAnswer + 'get_user_answer/'
-    console.log('url', urlTemp)
-    console.log('body', body)
+    // console.log('url', urlTemp)
+    // console.log('body', body)
     return this.http.post<any>(urlTemp, body).pipe(
       tap((res) => {
         this.answer = res
-        console.log('dd', res)
+        // console.log('dd', res)
+      })
+    )
+  }
+
+  checker(): Observable<any> {
+    let urlTemp = this.urlAnswer + 'checker'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        console.log(res)
       })
     )
   }

@@ -26,7 +26,7 @@ export class ConfigurationsService {
     return this.http.get<Configuration[]>(this.urlConfiguration).pipe(
       tap((res) => {
         this.configurations = res
-        console.log('Configurations: ', this.configurations)
+        // console.log('Configurations: ', this.configurations)
       })
     )
   }
@@ -36,7 +36,7 @@ export class ConfigurationsService {
     return this.http.get<Configuration>(urlTemp).pipe(
       tap((res) => {
         this.configuration = res
-        console.log('Configuration: ', this.configuration)
+        // console.log('Configuration: ', this.configuration)
       })
     )
   }
@@ -46,7 +46,7 @@ export class ConfigurationsService {
     return this.http.patch<Configuration>(urlTemp, body).pipe(
       tap((res) => {
         this.configuration = res
-        console.log('Configuration', this.configuration)
+        // console.log('Configuration', this.configuration)
       })
     )
   }

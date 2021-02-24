@@ -1,0 +1,282 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
+<div class="header pb-6">
+	<div class="container-fluid">
+		<div class="header-body">
+			<div class="row align-items-center py-4">
+				<div class="col-lg-6 col-7">
+					<h6 class="h2 text-dark d-inline-block mb-0">Kakitangan</h6>
+
+					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+							<li class=" breadcrumb-item">
+								<a href="javascript:void(0)"> <i class="fas fa-list-alt text-dark"> </i> </a>
+							</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid mt--6">
+	<!-- <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <h4 class="m-0">Laporan Peperiksaan Mengikut Bulan</h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <div class="amchart" id="chart-tc-month"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div> -->
+	
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <div class="row">
+						<div class="col my-auto">
+							<h4 class="m-0">Senarai Kakitangan dalam Jabatan</h4>
+						</div>
+						
+						<div class="col text-right">
+							<button
+								class="btn btn-sm btn-warm-blue"
+								(click)="exportExcel()"
+							>
+								Cetak
+							</button>
+						</div>
+					</div>
+				</div>
+				
+				<div class="dataTables_wrapper py-4">
+					<div class="row">
+						<div class="col-sm-12 col-md-6">
+							<div class="dataTables_length" id="datatable_length">
+								<label>
+									Lihat
+									<select 
+										name="datatable_length" 
+										aria-controls="datatable" 
+										class="form-control form-control-sm custom-select custom-select-sm"
+										(change)="entriesChange($event)"
+									>
+										<option value="5" [selected]="tableEntries == 5">5</option>
+										<option value="10" [selected]="tableEntries == 10">10</option>
+										<option value="15" [selected]="tableEntries == 15">15</option>
+										<option value="-1" [selected]="tableEntries == -1">Semua</option>
+									</select>
+									rekod
+								</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-6">
+							<div id="datatable_filter" class="dataTables_filter">
+								<label>
+									<input 
+										type="search"
+										class="form-control form-control-sm"
+										placeholder="Cari nama kakitangan"
+										aria-controls="datatable"
+										(keyup)="filterTable($event)"
+									/>
+								</label>
+							</div>
+						</div>
+					</div>
+		
+					<div class="pt-4 text-center" *ngIf="isEmpty">
+						<img [src]="iconEmpty" class="error-icon">
+						<p>Tiada rekod dijumpai</p>
+					</div>
+			
+					<ngx-datatable 
+						class="bootstrap selection-cell" 
+						[columnMode]="'force'" 
+						[headerHeight]="50" 
+						[footerHeight]="50"
+						[rowHeight]="'auto'"
+						[limit]="tableEntries != -1 ? tableEntries : undefined" 
+						[rows]="tableTemp"
+						[messages]="tableMessages"
+						(activate)="onActivate($event)"
+						*ngIf="!isEmpty"
+                        [scrollbarH]="true"
+					>
+						<ngx-datatable-column
+							prop="full_name"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Nama Kakitangan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.full_name}}
+							</ng-template>
+						</ngx-datatable-column>
+	
+						<ngx-datatable-column
+							prop="username"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Kad Pengenalan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.username}}
+							</ng-template>
+						</ngx-datatable-column>
+
+                        <ngx-datatable-column
+							prop="section_code"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Bahagian</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+                                <ng-container *ngFor="let section of sections">
+                                    <span *ngIf="section.value == row.section_code">{{section.text}}</span>
+                                </ng-container>
+							</ng-template>
+						</ngx-datatable-column>
+	
+						<ngx-datatable-column
+							prop="position"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Jawatan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.position}}
+							</ng-template>
+						</ngx-datatable-column>
+			
+						<ngx-datatable-column
+							prop="grade_code"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Gred</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.grade_code}}
+							</ng-template>
+						</ngx-datatable-column>
+
+                        <ngx-datatable-column
+							prop="salary_code"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Kod Gaji</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.salary_code}}
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column
+							prop="appointed_at"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Tarikh Lantikan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.appointed_at | date: 'd/M/y'}}
+							</ng-template>
+						</ngx-datatable-column>
+
+                        <ngx-datatable-column
+							prop="confirmed_at"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Tarikh Sah Perkhidmatan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.confirmed_at | date: 'd/M/y'}}
+							</ng-template>
+						</ngx-datatable-column>
+
+                        <ngx-datatable-column
+							prop="service_status"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Taraf Perkhidmatan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+                                <ng-container *ngFor="let status of serviceStatus">
+                                    <span *ngIf="status.value == row.service_status">{{status.text}}</span>
+                                </ng-container>
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column>
+							<ng-template ngx-datatable-header-template>
+								<span>Tindakan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								<button class="btn btn-warm-blue" type="button">Lihat</button>
+							</ng-template>
+						</ngx-datatable-column>
+					</ngx-datatable>
+				</div>
+			</div>
+        </div>
+    </div>
+</div>
+
+<div class="table" id="summaryTable" #summaryTable [hidden]="isSummaryTableHidden">
+	<table class="table table-responsive table-flush">
+		<thead>
+			<tr>
+				<th>Nama Kakitangan</th>
+				<th>Kad Pengenalan</th>
+				<th>Bahagian</th>
+                <th>Jawatan</th>
+				<th>Gred</th>
+                <th>Kod Gaji</th>
+				<th>Tarikh Lantikan</th>
+				<th>Tarikh Sah Perkhidmatan</th>
+				<th>Taraf Perkhidmatan</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr *ngFor="let row of tableRows">
+				<td>
+					{{row?.full_name}}
+				</td>
+				<td>
+					{{row?.username}}
+				</td>
+				<td>
+					<ng-container *ngFor="let section of sections">
+                        <span *ngIf="section.value == row?.section_code">{{section.text}}</span>
+                    </ng-container>
+				</td>
+                <td>
+					{{row?.position}}
+				</td>
+				<td>
+					{{row?.grade_code}}
+				</td>
+                <td>
+					{{row?.salary_code}}
+				</td>
+				<td>
+					{{row?.appointed_at | date: 'd/M/y'}}
+				</td>
+				<td>
+					{{row?.confirmed_at | date: 'd/M/y'}}
+				</td>
+				<td>
+					<ng-container *ngFor="let status of serviceStatus">
+                        <span *ngIf="status.value == row?.service_status">{{status.text}}</span>
+                    </ng-container>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

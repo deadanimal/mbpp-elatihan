@@ -1,9 +1,31 @@
 .auth-content {
-    background-image: url("../../../assets/img/default/home.jpg");
+    background-image: url("../../../assets/img/default/home_2.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     -webkit-background-size: cover;
     background-size: cover; 
-    height: 90vh;
-    overflow: hidden;
+    // height: 90vh;
+    // overflow: hidden;
+}
+
+.card {
+    height: 25rem;
+    max-height: 25rem;
+    .card-header {
+        height: 20rem;
+        max-height: 20rem;
+        margin-top: auto;
+        margin-bottom: auto;
+    } 
+    img {
+        height: 15rem;
+        max-height: 15vh;
+    }
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
 }

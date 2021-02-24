@@ -27,7 +27,7 @@ export class DomainsService {
     return this.http.post<any>(this.urlDomains, body).pipe(
       tap((res) => {
         this.domain = res
-        console.log('Domain: ', this.domain)
+        // console.log('Domain: ', this.domain)
       })
     )
   }
@@ -36,7 +36,7 @@ export class DomainsService {
     return this.http.get<Domain[]>(this.urlDomains).pipe(
       tap((res) => {
         this.domains = res
-        console.log('Domains: ', this.domains)
+        // console.log('Domains: ', this.domains)
       })
     )
   }
@@ -46,7 +46,7 @@ export class DomainsService {
     return this.http.get<Domain>(urlTemp).pipe(
       tap((res) => {
         this.domain = res
-        console.log('Domain: ', this.domain)
+        // console.log('Domain: ', this.domain)
       })
     )
   }
@@ -56,7 +56,7 @@ export class DomainsService {
     return this.http.put<Domain>(urlTemp, body).pipe(
       tap((res) => {
         this.domain = res
-        console.log('Domain: ', this.domain)
+        // console.log('Domain: ', this.domain)
       })
     )
   }
@@ -66,7 +66,7 @@ export class DomainsService {
     return this.http.get<Domain[]>(urlTemp).pipe(
       tap((res) => {
         this.domainFiltered = res
-        console.log('Domain', this.domainFiltered)
+        // console.log('Domain', this.domainFiltered)
       })
     )
   }

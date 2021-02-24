@@ -53,11 +53,27 @@
 									<input 
 										type="search"
 										class="form-control form-control-sm"
-										placeholder="Cari rekod"
+										placeholder="Cari nama kakitangan"
 										aria-controls="datatable"
-										(keyup)="filterTable($event)"
+										(keyup)="filterTable($event, 'name')"
 									/>
 								</label>
+							</div>
+
+							<div id="datatable_filter" class="dataTables_filter">
+								<select 
+									class="form-control form-control-sm custom-select custom-select-filter"
+									placeholder="Cari peranan"
+									aria-controls="datatable"
+									(change)="filterTable($event, 'user_type')"
+								>
+									<option value="AA">Semua peranan</option>
+									<option value="ST">Kakitangan</option>
+									<option value="DC">Penyelaras Jabatan</option>
+									<option value="DH">Ketua Jabatan</option>
+									<option value="TC">Penyelaras Latihan</option>
+									<option value="AD">Pentadbir Sistem</option>
+								</select>
 							</div>
 						</div>
 					</div>
@@ -78,9 +94,10 @@
 						[messages]="tableMessages"
 						(activate)="onActivate($event)"
 						*ngIf="!isEmpty"
+						[scrollbarH]="true"
 					>
 						<ngx-datatable-column
-							prop="row.full_name"
+							prop="full_name"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Nama</span>
@@ -91,7 +108,7 @@
 						</ngx-datatable-column>
 	
 						<ngx-datatable-column
-							prop="row.username"
+							prop="username"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Kad Pengenalan</span>
@@ -102,7 +119,7 @@
 						</ngx-datatable-column>
 	
 						<ngx-datatable-column
-							prop="row.position"
+							prop="position"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Jawatan</span>
@@ -113,7 +130,7 @@
 						</ngx-datatable-column>
 			
 						<ngx-datatable-column
-							prop="row.salary_code"
+							prop="salary_code"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Gred</span>
@@ -124,18 +141,20 @@
 						</ngx-datatable-column>
 
 						<ngx-datatable-column
-							prop="row.department"
+							prop="department_code"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Jabatan</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
-								{{row.department}}
+								<ng-container *ngFor="let department of departments">
+                                    <span *ngIf="department.value == row.department_code">{{department.text}}</span>
+                                </ng-container>
 							</ng-template>
                         </ngx-datatable-column>
                         
                         <ngx-datatable-column
-							prop="row.user_type"
+							prop="user_type"
 						>
 							<ng-template ngx-datatable-header-template>
 								<span>Peranan</span>
@@ -143,6 +162,7 @@
 							<ng-template let-row="row" ngx-datatable-cell-template>
                                 <span class="badge badge-pill badge-primary" *ngIf="row.user_type == 'ST'">Kakitangan</span>
                                 <span class="badge badge-pill badge-default" *ngIf="row.user_type == 'DC'">Penyelaras Jabatan</span>
+								<span class="badge badge-pill badge-info" *ngIf="row.user_type == 'DH'">Ketua Jabatan</span>
                                 <span class="badge badge-pill badge-warning" *ngIf="row.user_type == 'TC'">Penyelaras Latihan</span>
                                 <span class="badge badge-pill badge-danger" *ngIf="row.user_type == 'AD'">Pentadbir Sistem</span>
 							</ng-template>
@@ -189,6 +209,19 @@
 
     <div class="modal-body">
         <form [formGroup]="userForm">
+			<div class="form-group">
+				<label class="form-control-label">Peranan</label>
+				<select 
+					class="form-control custom-select"
+					formControlName="user_type"
+				>
+					<option value="ST">Kakitangan</option>
+					<option value="TC">Penyelaras Latihan</option>
+					<option value="DC">Penyelaras Jabatan</option>
+					<option value="DH">Ketua Jabatan</option>
+					<option value="AD">Pentadbir Sistem</option>
+				</select>
+			</div>
 		</form>
     </div>
 

@@ -14,21 +14,6 @@
                         </ol>
                     </nav>
                 </div>
-
-                <!-- <div class="col-lg-6 col-5 text-right">
-                    <a
-                        class="btn btn-sm btn-warm-blue text-white" 
-                    > 
-                        Tambah Penganjur 
-                    </a>
-
-                    <a
-                        class="btn btn-sm btn-warm-blue text-white"
-                        (click)="openModal(addNoteModal)"
-                    > 
-                        Tambah Nota 
-                    </a>
-				</div> -->
             </div>
         </div>
     </div>
@@ -59,6 +44,7 @@
                             <button
                                 class="btn btn-warm-blue"
                                 (click)="confirm()"
+                                [hidden]="isApplied || (training.start_date < dateToday)"
                             >
                                 Daftar
                             </button>
@@ -70,7 +56,7 @@
                     <h6 class="heading-small text-muted mb-4">Butiran</h6>
                     <div class="form-group">
                         <label class="form-control-label">Tajuk</label>
-                        <input class="form-control" value="[{{training?.course_code}}] {{training?.title}}" disabled>
+                        <textarea class="form-control" value="[{{training?.course_code}}] {{training?.title}}" disabled></textarea>
                     </div>
 
                     <div class="form-group">
@@ -194,7 +180,7 @@
                         <div class="col">
                             <div class="form-group">
                                 <label class="form-control-label">Penganjur</label>
-                                <input class="form-control" value="{{training?.organiser.name}} ({{training?.organiser.shortname}})" disabled>
+                                <input class="form-control" value="{{training?.organiser?.name}} ({{training?.organiser.shortname}})" disabled>
                             </div>
                         </div>
                     </div>
@@ -203,7 +189,7 @@
                         <div class="col">
                             <div class="form-group">
                                 <label class="form-control-label">Jenis Latihan</label>
-                                <input class="form-control" value="{{training?.training_type.name}}" disabled>
+                                <input class="form-control" value="{{training?.training_type?.name}}" disabled>
                             </div>
                         </div>
 
@@ -228,7 +214,7 @@
                         <div class="col">
                             <div class="form-group">
                                 <label class="form-control-label">Domain</label>
-                                <input class="form-control" value="{{training?.domain.name}}" disabled>
+                                <input class="form-control" value="{{training?.domain?.name}}" disabled>
                             </div>
                         </div>
                     </div>
@@ -1031,7 +1017,7 @@
                         </div>
                     </div>
 
-                    <div>
+                    <div [innerHTML]="training?.schedule_notes">
                         <p>{{training?.schedule_notes}}</p>
                     </div>
                 </div>

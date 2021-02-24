@@ -1,14 +1,9 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-
-import { ExamsService } from 'src/app/shared/services/exams/exams.service';
-import { OrganisationsService } from 'src/app/shared/services/organisations/organisations.service';
 import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
-import { UsersService } from 'src/app/shared/services/users/users.service';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Training } from 'src/app/shared/services/trainings/trainings.model';
 
@@ -19,28 +14,29 @@ import { Training } from 'src/app/shared/services/trainings/trainings.model';
 })
 export class HomeComponent implements OnInit {
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
-
-  test: Date = new Date()
-  isCollapsed = true
-  
+  // Data
   trainings: Training[] = []
   trainingSelected: Training
+  currentDate: Date = new Date();
   
+  // Checker
+  isCollapsed = true
+  
+  // Modal
   defaultModal: BsModalRef;
   default = {
     keyboard: true,
     class: "modal-dialog-centered modal-lg"
   }
+
+  // Subscriber
+  subscription: Subscription
   
   constructor(
     private modalService: BsModalService,
-    private examService: ExamsService,
-    private organisationService: OrganisationsService,
     private trainingService: TrainingsService,
-    private userService: UsersService,
-    private loadingBar: LoadingBarService
+    private loadingBar: LoadingBarService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -48,9 +44,13 @@ export class HomeComponent implements OnInit {
     // this.initServices()
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe()
+  }
+
   getData() {
     this.loadingBar.start()
-    this.trainingService.getLatest().subscribe(
+    this.subscription = this.trainingService.getLatest().subscribe(
       () => {
         this.loadingBar.complete()
       },
@@ -65,18 +65,26 @@ export class HomeComponent implements OnInit {
 
   // Susun latihan ikut teras, functional pelanc
 
-  openDefaultModal(modalDefault: TemplateRef<any>, selectedTraining) {
+  openModal(modalDefault: TemplateRef<any>, selectedTraining) {
     this.trainingSelected = selectedTraining
     this.defaultModal = this.modalService.show(modalDefault, this.default)
   }
 
-  closeDefaultModal() {
+  closeModal() {
     this.trainingSelected = null
     this.defaultModal.hide()
   }
 
-  initTable() {
-    //this.jaduals = 
+  navigatePage(id: string) {
+    let path = '/auth/login'
+    let queryParams = {
+      queryParams: {
+        redirect: true,
+        id: id
+      }
+    }
+    this.router.navigate([path], queryParams)
+    this.closeModal()
   }
 
 }

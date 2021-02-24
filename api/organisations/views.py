@@ -30,7 +30,7 @@ class OrganisationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]

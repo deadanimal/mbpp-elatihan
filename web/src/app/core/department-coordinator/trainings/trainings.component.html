@@ -1,0 +1,237 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
+<div class="header pb-6">
+	<div class="container-fluid">
+		<div class="header-body">
+			<div class="row align-items-center py-4">
+				<div class="col-lg-6 col-7">
+					<h6 class="h2 text-dark d-inline-block mb-0">Latihan</h6>
+
+					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+							<li class=" breadcrumb-item">
+								<a href="javascript:void(0)"> <i class="fas fa-chalkboard-teacher text-dark"> </i> </a>
+							</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header bg-secondary">
+                    <div class="row">
+						<div class="col my-auto">
+							<h4 class="m-0">Senarai Latihan Jabatan</h4>
+						</div>
+
+						<div class="col text-right">
+							<button
+								class="btn btn-sm btn-warm-blue"
+								(click)="exportExcel()"
+							>
+								Cetak
+							</button>
+						</div>
+					</div>
+                </div>
+                <div class="dataTables_wrapper py-4">
+					<div class="row">
+						<div class="col-sm-12 col-md-6">
+							<div class="dataTables_length" id="datatable_length">
+								<label>
+									Lihat
+									<select 
+										name="datatable_length" 
+										aria-controls="datatable" 
+										class="form-control form-control-sm custom-select custom-select-sm"
+										(change)="entriesChange($event)">
+										<option value="5" [selected]="tableEntries == 5">5</option>
+										<option value="10" [selected]="tableEntries == 10">10</option>
+										<option value="15" [selected]="tableEntries == 15">15</option>
+										<option value="-1" [selected]="tableEntries == -1">Semua</option>
+									</select>
+									rekod
+								</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-6">
+							<div id="datatable_filter" class="dataTables_filter">
+								<select 
+									class="form-control form-control-sm custom-select custom-select-filter"
+									placeholder="Cari jenis latihan"
+									aria-controls="datatable"
+									(change)="filterTable($event, 'year')"
+								>
+									<option value="AA">Semua tahun</option>
+									<option *ngFor="let year_ of yearSelection" value="{{year_}}">{{year_}}</option>
+								</select>
+							</div>
+
+							<div id="datatable_filter" class="dataTables_filter">
+								<select 
+									class="form-control form-control-sm custom-select custom-select-filter"
+									placeholder="Cari jenis latihan"
+									aria-controls="datatable"
+									(change)="filterTable($event, 'organiser_type')"
+								>
+									<option value="AA">Semua penganjur</option>
+									<option value="DD">Dalaman</option>
+									<option value="LL">Luaran</option>
+								</select>
+							</div>
+
+							<div id="datatable_filter" class="dataTables_filter">
+								<label>
+									<input 
+										type="search"
+										class="form-control form-control-sm"
+										placeholder="Cari tajuk latihan"
+										aria-controls="datatable"
+										(keyup)="filterTable($event, 'title')"
+									/>
+								</label>
+							</div>
+						</div>
+					</div>
+		
+					<div class="pt-4 text-center" *ngIf="isEmpty">
+						<img [src]="iconEmpty" class="error-icon">
+						<p>Tiada rekod dijumpai</p>
+					</div>
+			
+					<ngx-datatable 
+						class="bootstrap selection-cell" 
+						[columnMode]="'force'" 
+						[headerHeight]="50" 
+						[footerHeight]="50"
+						[rowHeight]="'auto'"
+						[limit]="tableEntries != -1 ? tableEntries : undefined" 
+						[rows]="tableTemp"
+						[messages]="tableMessages"
+						(activate)="onActivate($event)"
+						*ngIf="!isEmpty"
+                        [scrollbarH]="true"
+					>
+						<ngx-datatable-column
+							prop="title"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Tajuk</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.title}}
+							</ng-template>
+						</ngx-datatable-column>
+			
+						<ngx-datatable-column
+							prop="course_code"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Kod</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.course_code}}
+							</ng-template>
+						</ngx-datatable-column>
+			
+						<ngx-datatable-column
+							prop="start_date"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Tarikh Mula</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.start_date}}
+							</ng-template>
+						</ngx-datatable-column>
+			
+						<ngx-datatable-column
+							prop="end_date"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Tarikh Tamat</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.end_date}}
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column
+							prop="status"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Status</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								<span *ngIf="row.status == 'DB'" class="badge badge-pill badge-default">Dibuka</span>
+								<span *ngIf="row.status == 'OT'" class="badge badge-pill badge-primary">Lain-lain</span>
+								<span *ngIf="row.status == 'PN'" class="badge badge-pill badge-info">Penuh</span>
+								<span *ngIf="row.status == 'SL'" class="badge badge-pill badge-success">Selesai</span>
+								<span *ngIf="row.status == 'DT'" class="badge badge-pill badge-danger">Ditutup</span>
+								<span *ngIf="row.status == 'TN'" class="badge badge-pill badge-warning">Tangguh</span>
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column>
+							<ng-template ngx-datatable-header-template>
+								<span>Aktiviti</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								<button 
+									class="btn btn-warm-blue"
+									(click)="view(row)"
+								>
+									Lihat
+								</button>
+							</ng-template>
+						</ngx-datatable-column>
+					</ngx-datatable>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table" id="summaryTable" #summaryTable [hidden]="isSummaryTableHidden">
+	<table class="table table-responsive table-flush">
+		<thead>
+			<tr>
+				<th>Tajuk</th>
+				<th>Kod</th>
+				<th>Tarikh Mula</th>
+				<th>Tarikh Tamat</th>
+				<th>Status</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr *ngFor="let row of tableRows">
+				<td>
+					{{row.title}}  
+				</td>
+				<td>
+					{{row.course_code}}  
+				</td>
+				<td>
+					{{row.start_date}}
+				</td>
+				<td>
+					{{row.end_date}}
+				</td>
+				<td>
+					<span *ngIf="row.status == 'DB'">DIBUKA</span>
+					<span *ngIf="row.status == 'OT'">LAIN-LAIN</span>
+					<span *ngIf="row.status == 'PN'">PENUH</span>
+					<span *ngIf="row.status == 'SL'">SELESAI</span>
+					<span *ngIf="row.status == 'DT'">DITUTUP</span>
+					<span *ngIf="row.status == 'TN'">TANGGUH</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

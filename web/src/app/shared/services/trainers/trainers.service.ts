@@ -27,7 +27,7 @@ export class TrainersService {
     return this.http.post<any>(this.urlTrainers, body).pipe(
       tap((res) => {
         this.trainer = res
-        console.log('Trainer: ', this.trainer)
+        // console.log('Trainer: ', this.trainer)
       })
     )
   }
@@ -36,7 +36,7 @@ export class TrainersService {
     return this.http.get<Trainer[]>(this.urlTrainers).pipe(
       tap((res) => {
         this.trainers = res
-        console.log('Trainers: ', this.trainers)
+        // console.log('Trainers: ', this.trainers)
       })
     )
   }
@@ -46,7 +46,7 @@ export class TrainersService {
     return this.http.get<Trainer>(urlTemp).pipe(
       tap((res) => {
         this.trainer = res
-        console.log('Trainer: ', this.trainer)
+        // console.log('Trainer: ', this.trainer)
       })
     )
   }
@@ -56,7 +56,7 @@ export class TrainersService {
     return this.http.put<Trainer>(urlTemp, body).pipe(
       tap((res) => {
         this.trainer = res
-        console.log('Trainer: ', this.trainer)
+        // console.log('Trainer: ', this.trainer)
       })
     )
   }
@@ -66,7 +66,7 @@ export class TrainersService {
     return this.http.get<Trainer[]>(urlTemp).pipe(
       tap((res) => {
         this.trainerFiltered = res
-        console.log('Trainer', this.trainerFiltered)
+        // console.log('Trainer', this.trainerFiltered)
       })
     )
   }

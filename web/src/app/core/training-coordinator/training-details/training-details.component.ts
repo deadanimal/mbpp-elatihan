@@ -5,35 +5,38 @@ import {
   FormGroup, 
   Validators 
 } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { QuillViewHTMLComponent } from 'ngx-quill';
 
-
+import { AbsenceMemoExtended } from 'src/app/shared/services/absence-memos/absence-memos.model';
+import { ApplicationExtended } from 'src/app/shared/services/applications/applications.model';
+import { AttendanceExtended } from 'src/app/shared/services/attendances/attendances.model';
 import { Core } from 'src/app/shared/services/cores/cores.model';
+import { Domain } from 'src/app/shared/services/domains/domains.model';
 import { Organisation } from 'src/app/shared/services/organisations/organisations.model';
+import { Note } from 'src/app/shared/services/notes/notes.model';
 import { TrainingExtended, TrainingType } from 'src/app/shared/services/trainings/trainings.model';
 import { User } from 'src/app/shared/services/users/users.model';
+
+import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
+import { AttendancesService } from 'src/app/shared/services/attendances/attendances.service';
 import { CoresService } from 'src/app/shared/services/cores/cores.service';
+import { DomainsService } from 'src/app/shared/services/domains/domains.service';
+import { NotesService } from 'src/app/shared/services/notes/notes.service';
 import { OrganisationsService } from 'src/app/shared/services/organisations/organisations.service';
 import { TrainersService } from 'src/app/shared/services/trainers/trainers.service';
 import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
 import { UsersService } from 'src/app/shared/services/users/users.service';
 
 import * as moment from 'moment';
+import * as xlsx from 'xlsx';
 import swal from 'sweetalert2';
-import { forkJoin } from 'rxjs';
-import { AttendanceExtended } from 'src/app/shared/services/attendances/attendances.model';
-import { AbsenceMemoExtended } from 'src/app/shared/services/absence-memos/absence-memos.model';
-import { Note } from 'src/app/shared/services/notes/notes.model';
-import { ApplicationExtended } from 'src/app/shared/services/applications/applications.model';
-import { NotesService } from 'src/app/shared/services/notes/notes.service';
-import { Domain } from 'src/app/shared/services/domains/domains.model';
-import { DomainsService } from 'src/app/shared/services/domains/domains.service';
-import { QuillViewHTMLComponent } from 'ngx-quill';
-import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
+import { Section } from 'src/app/shared/code/user';
 
 export enum SelectionType {
   single = "single",
@@ -65,6 +68,12 @@ export class TrainingDetailsComponent implements OnInit {
   notes: Note[] = []
   domains: Domain[] = []
   trainingTypes: TrainingType[] = []
+  qrID
+  qrElementType = 'url'
+  qrValue: string
+  staffs: User[] = []
+  selectedStaffs: User[]
+  sections = Section
 
   // Form
   trainingForm: FormGroup
@@ -101,7 +110,7 @@ export class TrainingDetailsComponent implements OnInit {
     { value: 'OT', text: 'Lain-lain'},
     { value: 'PN', text: 'Penuh'},
     { value: 'SL', text: 'Selesai'},
-    { value: 'DT', text: 'Ditangguh'},
+    { value: 'DT', text: 'Ditutup'},
     { value: 'TN', text: 'Tangguh'}
   ]
 
@@ -135,18 +144,29 @@ export class TrainingDetailsComponent implements OnInit {
   tableNotesTemp = []
   tableNotesActiveRow: any
   tableNotesRows: any = []
+  // Staffs
+  tableStaffsEntries: number = 5
+  tableStaffsSelected: any[] = []
+  tableStaffsTemp = []
+  tableStaffsActiveRow: any
+  tableStaffsRows: any = []
   
   // Checker
   isApplicationsEmpty: boolean = true
   isAttendancesEmpty: boolean = true
   isAbsencesEmpty: boolean = true
   isNotesEmpty: boolean = true
+  isStaffsEmpty: boolean = true
+  isQREmpty: boolean = true
+  isSameBefore: boolean = false
+  isHidden: boolean = true
+  isApplying: boolean = false
 
   // Icon
   iconEmpty = 'assets/img/icons/box.svg'
 
   // Datepicker
-  dateToday: Date
+  dateToday
   dateMinStart: Date
   dateMinEnd: Date
   dateStart: Date
@@ -177,6 +197,7 @@ export class TrainingDetailsComponent implements OnInit {
 
   constructor(
     private applicationService: ApplicationsService,
+    private attendanceService: AttendancesService,
     private coreService: CoresService,
     private domainService: DomainsService,
     private organisationService: OrganisationsService,
@@ -213,6 +234,8 @@ export class TrainingDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.dateToday = moment().format('D/M/YYYY')
+    // console.log(this.dateToday)
   }
 
   getData() {
@@ -239,7 +262,7 @@ export class TrainingDetailsComponent implements OnInit {
         this.loadingBar.complete() 
       },
       () => {
-        console.log('Training> ', this.training)
+        // console.log('Training> ', this.training)
         this.trainingForm.controls['title'].setValue(this.training['title'])
         this.trainingForm.controls['description'].setValue(this.training['description'])
         this.trainingForm.controls['method'].setValue(this.training['method'])
@@ -427,22 +450,23 @@ export class TrainingDetailsComponent implements OnInit {
         this.trainingForm.controls['address'].setValue(this.training['address'])
 
         // console.log('Before ', moment(this.training['start_date']))
-        this.trainingForm.controls['start_date'].setValue(moment(this.training['start_date']).format('DD-MM-YYYY'))
+        this.trainingForm.controls['start_date'].setValue(moment(this.training['start_date'], 'YYYY-MM-DD').format('DD-MM-YYYY'))
         // console.log('After ', this.trainingForm.controls['start_date'])
 
         this.trainingForm.controls['start_time'].setValue(this.training['start_time'])
-        this.trainingForm.controls['end_date'].setValue(moment(this.training['end_date']).format('DD-MM-YYYY'))
+        this.trainingForm.controls['end_date'].setValue(moment(this.training['end_date'], 'YYYY-MM-DD').format('DD-MM-YYYY'))
         this.trainingForm.controls['end_time'].setValue(this.training['end_time'])
         this.trainingForm.controls['schedule_notes'].setValue(this.training['schedule_notes'])
         this.trainingForm.controls['cost'].setValue(this.training['cost'])
         this.trainingForm.controls['status'].setValue(this.training['status'])
-        this.trainingForm.controls['attachment'].setValue(this.training['attachment'])
-        this.trainingForm.controls['attachment_approval'].setValue(this.training['attachment_approval'])
+        // this.trainingForm.controls['attachment'].setValue(this.training['attachment'])
+        // this.trainingForm.controls['attachment_approval'].setValue(this.training['attachment_approval'])
 
         this.noteForm.controls['training'].setValue(this.training['id'])
 
         this.organisations = this.organisationService.organisations
         this.users = this.userService.users
+        this.staffs = this.users
         this.cores = this.coreService.cores
         this.domains = this.domainService.domains
 
@@ -513,6 +537,54 @@ export class TrainingDetailsComponent implements OnInit {
         }
         else {
           this.isNotesEmpty = true
+        }
+
+        this.staffs.forEach(
+          (staff) => {
+            staff['applied'] = false
+            
+            this.training.training_application.forEach(
+              (application) => {
+                // console.log(application)
+                if (application['applicant']['id'] == staff['id']) {
+                  staff['applied'] = true
+                }
+              }
+            )
+          }
+        )
+
+        // this.getQRID()
+
+        // Get live / before
+        let today = moment().toDate()
+        let end_date = moment(this.training['end_date'], 'YYYY-MM-DD').toDate()
+        
+        // Same day
+        if (moment(today).isSameOrBefore(end_date)) {
+          this.isSameBefore = true
+          this.isQREmpty = false
+          this.qrValue = this.training['id']
+        }
+        else {
+          this.isSameBefore = false
+        }
+      }
+    )
+  }
+
+  getQRID() {
+    let body = {
+      'training': this.training['id']
+    }
+    this.attendanceService.getTodayQR(body).subscribe(
+      () => {},
+      () => {},
+      () => {
+        this.qrID =this.attendanceService.attendanceQRID
+        if (this.qrID) {
+          this.isQREmpty = false
+          this.qrElementType = this.qrID
         }
       }
     )
@@ -1086,12 +1158,13 @@ export class TrainingDetailsComponent implements OnInit {
       cost: new FormControl(0, Validators.compose([
         Validators.required
       ])),
-      attachment: new FormControl(null),
-      attachment_approval: new FormControl(null),
       transportation: new FormControl(false, Validators.compose([
         Validators.required
       ]))
     })
+
+    // attachment: new FormControl(null),
+    // attachment_approval: new FormControl(null),
 
     this.noteForm = this.formBuilder.group({
       training: new FormControl(null, Validators.compose([
@@ -1100,28 +1173,27 @@ export class TrainingDetailsComponent implements OnInit {
       title: new FormControl(null, Validators.compose([
         Validators.required
       ])),
-      note_code: new FormControl(null, Validators.compose([
-        Validators.required
-      ])),
       note_file: new FormControl(null, Validators.compose([
         Validators.required
       ]))
     })
+  }
 
-    // while (!this.isLogged) {
-    //   this.currentUser = this.authService.userDetail
-    //   if (this.currentUser) {
-    //     this.trainingForm.controls['created_by'].setValue(this.currentUser['id'])
-    //     this.isLogged = true
-    //   }
-    //   console.log('asfqw ', this.currentUser)
-    // }
-    
-    // let todayDate = new Date()
-    // let startDate = moment(new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() + 1)).format('DD-MM-YYYY')
-    // let endDate = moment(new Date(todayDate.getFullYear(), todayDate.getMonth(), todayDate.getDate() + 2)).format('DD-MM-YYYY')
-    // this.trainingForm.controls['start_date'].setValue(startDate)
-    // this.trainingForm.controls['end_date'].setValue(endDate)
+  onChangeSelect($event) {
+    this.tableStaffsRows = this.selectedStaffs
+    this.tableStaffsTemp = this.tableStaffsRows.map((prop, key) => {
+      return {
+        ...prop,
+        id_index: key+1
+      };
+    });
+
+    if (this.tableStaffsTemp.length >= 1) {
+      this.isStaffsEmpty = false
+    }
+    else {
+      this.isStaffsEmpty = true
+    }
   }
 
   onChangeCoreParent(value) {
@@ -1186,8 +1258,8 @@ export class TrainingDetailsComponent implements OnInit {
     // Time hh:mm[:ss[.uuuuuu]]
 
     // console.log('Before ', this.trainingForm.value)
-    let startDate = moment(this.trainingForm.value.start_date, 'DD-MM-YYY').format('YYYY-MM-DD')
-    let endDate = moment(this.trainingForm.value.end_date, 'DD-MM-YYY').format('YYYY-MM-DD')
+    let startDate = moment(this.trainingForm.value.start_date, 'DD-MM-YYYY').format('YYYY-MM-DD')
+    let endDate = moment(this.trainingForm.value.end_date, 'DD-MM-YYYY').format('YYYY-MM-DD')
     this.trainingForm.controls['start_date'].setValue(startDate)
     this.trainingForm.controls['end_date'].setValue(endDate)
     // console.log('After ', this.trainingForm.value)
@@ -1214,12 +1286,6 @@ export class TrainingDetailsComponent implements OnInit {
     let infoTitle = 'Sedang proses'
     let infoMessage = 'Latihan sedang ditambah'
     this.notifyService.openToastrInfo(infoTitle, infoMessage)
-    // console.log('add training')
-    // console.log('Trainining: ', this.trainingForm.value)
-    // console.log('Speaker ', this.trainerSpeakerForm.value)
-    // console.log('Faci ', this.trainerFacilitatorForm.value)
-    // console.log('Speaker Ar ', this.trainerSpeakerFormArray)
-    // console.log('Faci Ar ', this.trainerFacilitatorFormArray)
 
     this.loadingBar.complete()
 
@@ -1780,7 +1846,78 @@ export class TrainingDetailsComponent implements OnInit {
   }
 
   verifyAttendance(row) {
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Kehadiran sedang disahkan'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+    
+    this.attendanceService.verify(row['id']).subscribe(
+      () => {
+        this.loadingBar.complete()
+        let successTitle = 'Berjaya'
+        let successMessage = 'Kehadiran berjaya disahkan'
+        this.notifyService.openToastr(successTitle, successMessage)
+      },
+      () => {
+        this.loadingBar.complete()
+        let failedTitle = 'Tidak Berjaya'
+        let failedMessage = 'Kehadiran tidak berjaya disahkan. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(failedTitle, failedMessage)
+      },
+      () => {
+        this.getData()
+      }
+    )
+  }
 
+  signinAttendance(row) {
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Kehadiran waktu masuk sedang dilog'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+    
+    this.attendanceService.signInCoordinator(row['id']).subscribe(
+      () => {
+        this.loadingBar.complete()
+        let successTitle = 'Berjaya'
+        let successMessage = 'Kehadiran waktu masuk berjaya dilog'
+        this.notifyService.openToastr(successTitle, successMessage)
+      },
+      () => {
+        this.loadingBar.complete()
+        let failedTitle = 'Tidak Berjaya'
+        let failedMessage = 'Kehadiran waktu masuk tidak berjaya dilog. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(failedTitle, failedMessage)
+      },
+      () => {
+        this.getData()
+      }
+    )
+  }
+
+  signoutAttendance(row) {
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Kehadiran waktu keluar sedang dilog'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+    
+    this.attendanceService.signOutCoordinator(row['id']).subscribe(
+      () => {
+        this.loadingBar.complete()
+        let successTitle = 'Berjaya'
+        let successMessage = 'Kehadiran waktu keluar berjaya dilog'
+        this.notifyService.openToastr(successTitle, successMessage)
+      },
+      () => {
+        this.loadingBar.complete()
+        let failedTitle = 'Tidak Berjaya'
+        let failedMessage = 'Kehadiran waktu keluar tidak berjaya dilog. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(failedTitle, failedMessage)
+      },
+      () => {
+        this.getData()
+      }
+    )
   }
 
   approveApplication(row) {
@@ -1789,7 +1926,7 @@ export class TrainingDetailsComponent implements OnInit {
     let infoMessage = 'Permohonan sedang diterima'
     this.notifyService.openToastrInfo(infoTitle, infoMessage)
     
-    this.applicationService.approve(row['id']).subscribe(
+    this.applicationService.approveLevel3(row['id']).subscribe(
       () => {
         this.loadingBar.complete()
         let successTitle = 'Berjaya'
@@ -1858,6 +1995,56 @@ export class TrainingDetailsComponent implements OnInit {
     )
   }
 
+  confirmApply() {
+    swal.fire({
+      title: 'Pengesahan',
+      text: 'Anda pasti untuk mencalonkan kakitangan berikut ke dalam latihan ini?',
+      type: 'info',
+      buttonsStyling: false,
+      showCancelButton: true,
+      confirmButtonClass: 'btn btn-info',
+      confirmButtonText: 'Pasti',
+      cancelButtonClass: 'btn btn-outline-info',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.value) {
+        this.apply()
+      }
+    })
+  }
+
+  apply() {
+    this.loadingBar.start()
+    let body = {
+      'training': this.training['id'],
+      'applicants': this.selectedStaffs
+    }
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Pencalonan sedang diproses'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+
+    this.applicationService.postBatch(body).subscribe(
+      () => {
+        this.loadingBar.complete()
+        let title = 'Berjaya'
+        let message = 'Anda berjaya mencalonkan kakitangan berikut ke dalam latihan ini'
+        this.notifyService.openToastr(title, message)
+      },
+      () => {
+        this.loadingBar.complete()
+        let title = 'Tidak berjaya'
+        let message = 'Anda tidak berjaya untuk mencalonkan kakitangan berikut ke dalam latihan. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        // this.navigatePage('/dc/dashboard')
+        this.selectedStaffs = []
+        this.getData()
+      }
+    )
+  }
+
   navigatePage(path: string) {
     // console.log(path)
     this.router.navigate([path])
@@ -1865,6 +2052,41 @@ export class TrainingDetailsComponent implements OnInit {
 
   viewForm() {
     console.log('form: ', this.trainingForm.value)
+  }
+
+  exportExcel(type) {
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileName = ''
+    let element
+
+    if (type == 'applications') {
+      element = document.getElementById('summaryApplicationsTable'); 
+      fileName = 'Ringkasan_Permohonan_' + todayDateFormat + '.xlsx'
+    }
+    else if (type == 'attendances') {
+      element = document.getElementById('summaryAttendancesTable'); 
+      fileName = 'Ringkasan_Kehadiran_' + todayDateFormat + '.xlsx'
+    }
+    else if (type == 'absences') {
+      element = document.getElementById('summaryAbsencesTable'); 
+      fileName = 'Ringkasan_Ketidakhadiran_' + todayDateFormat + '.xlsx'
+    }
+    else {
+      element = document.getElementById('summaryApplicationsTable'); 
+      fileName = 'Ringkasan_' + todayDateFormat + '.xlsx'
+    }
+    const ws: xlsx.WorkSheet = xlsx.utils.table_to_sheet(element);
+
+    const wb: xlsx.WorkBook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    xlsx.writeFile(wb, fileName);
+  }
+
+  openApplyForm() {
+    this.isApplying = !this.isApplying
   }
   
 

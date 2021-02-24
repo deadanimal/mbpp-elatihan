@@ -93,7 +93,9 @@ class TrainingApplicationSerializer(serializers.ModelSerializer):
 class TrainingApplicationExtendedSerializer(serializers.ModelSerializer):
 
     applicant = CustomUserSerializer(read_only=True)
-    approved_by = CustomUserSerializer(read_only=True)
+    approved_level_1_by = CustomUserSerializer(read_only=True)
+    approved_level_2_by = CustomUserSerializer(read_only=True)
+    approved_level_3_by = CustomUserSerializer(read_only=True)
 
     class Meta:
         model = TrainingApplication
@@ -103,7 +105,21 @@ class TrainingApplicationExtendedSerializer(serializers.ModelSerializer):
 class TrainingApplicationExtendedSelfSerializer(serializers.ModelSerializer):
 
     training = TrainingSerializer(read_only=True)
-    approved_by = CustomUserSerializer(read_only=True)
+    approved_level_1_by = CustomUserSerializer(read_only=True)
+    approved_level_2_by = CustomUserSerializer(read_only=True)
+    approved_level_3_by = CustomUserSerializer(read_only=True)
+
+    class Meta:
+        model = TrainingApplication
+        fields = '__all__'
+
+class TrainingApplicationExtendedDepartmentSerializer(serializers.ModelSerializer):
+
+    training = TrainingSerializer(read_only=True)
+    applicant = CustomUserSerializer(read_only=True)
+    approved_level_1_by = CustomUserSerializer(read_only=True)
+    approved_level_2_by = CustomUserSerializer(read_only=True)
+    approved_level_3_by = CustomUserSerializer(read_only=True)
 
     class Meta:
         model = TrainingApplication
@@ -118,6 +134,8 @@ class TrainingAttendeeSerializer(serializers.ModelSerializer):
 class TrainingAttendeeExtendedSerializer(serializers.ModelSerializer):
 
     attendee = CustomUserSerializer(read_only=True)
+    checked_in_by = CustomUserSerializer(read_only=True)
+    checked_out_by = CustomUserSerializer(read_only=True)
     verified_by = CustomUserSerializer(read_only=True)
     class Meta:
         model = TrainingAttendee

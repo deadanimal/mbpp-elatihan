@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { TrainingExtended } from 'src/app/shared/services/trainings/trainings.model';
 import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
 
+import * as moment from 'moment';
 import swal from 'sweetalert2';
 
 @Component({
@@ -25,6 +26,13 @@ export class TrainingInformationComponent implements OnInit {
   // Form
   applyForm: FormGroup
 
+  // Checker
+  isApplied: boolean = false
+  isApplying: boolean = false
+
+  // Date
+  dateToday
+
   constructor(
     private authService: AuthService,
     private applicationService: ApplicationsService,
@@ -36,7 +44,10 @@ export class TrainingInformationComponent implements OnInit {
     private router: Router
   ) { 
     this.trainingID = this.route.snapshot.queryParamMap.get('id')
-
+    if (this.route.snapshot.queryParamMap.get('apply')) {
+      this.isApplying = true
+    }
+  
     if (!this.trainingID) {
       this.navigatePage('/takwim')
     }
@@ -57,6 +68,7 @@ export class TrainingInformationComponent implements OnInit {
 
   ngOnInit() {
     this.initForm()
+    this.dateToday = moment().format('YYYY-MM-DD')
   }
 
   getData() {
@@ -73,10 +85,41 @@ export class TrainingInformationComponent implements OnInit {
       },
       () => {
         this.training = this.trainingService.trainingExtended
-        console.log('training: ', this.training)
+        // console.log('training: ', this.training)
 
         this.applyForm.controls['training'].setValue(this.training['id'])
         this.applyForm.controls['applicant'].setValue(this.authService.userDetail['id'])
+
+        // Applied?
+        this.training.training_application.forEach(
+          (application) => {
+            if (application['applicant']['id'] == this.authService.userDetail['id']) {
+              this.isApplied = true
+            }
+          }
+        )
+
+        // Applying
+        if (
+          this.isApplying &&
+          !this.isApplied
+        ) {
+          this.confirm()
+        }
+        else if (
+          this.isApplying &&
+          this.isApplied
+        ) {
+          swal.fire({
+            title: 'Informasi',
+            text: 'Anda telah mendaftar ke dalam latihan ini',
+            type: 'warning',
+            buttonsStyling: false,
+            confirmButtonClass: 'btn btn-warning',
+            confirmButtonText: 'Tutup',
+          }).then((result) => {
+          })
+        }
       }
     )
   }

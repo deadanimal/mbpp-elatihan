@@ -49,7 +49,7 @@ class CustomUser(AbstractUser):
         ('DC', 'Department Coordinator'),
         ('TC', 'Training Coordinator'),
         ('AD', 'Administrator'),
-        ('TR', 'Trainer')
+        ('DH', 'Department Head')
     ]
     user_type = models.CharField(
         max_length=2,
@@ -113,14 +113,15 @@ class CustomUser(AbstractUser):
     history = HistoricalRecords()
 
     class Meta:
-        ordering = ['-full_name']
+        ordering = ['full_name']
 
     def __str__(self):
         return self.full_name
 
+
 class SecurityQuestion(models.Model):
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     question = models.CharField(max_length=255, null=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -135,7 +136,7 @@ class SecurityQuestion(models.Model):
 
 class SecurityAnswer(models.Model):
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,)
     question = models.ForeignKey(SecurityQuestion, on_delete=models.CASCADE,)
     answer = models.CharField(max_length=255, null=False)

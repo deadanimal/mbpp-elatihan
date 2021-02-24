@@ -1,37 +1,26 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
 <div class="header pb-6">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-dark d-inline-block mb-0">User</h6>
+	<div class="container-fluid">
+		<div class="header-body">
+			<div class="row align-items-center py-4">
+				<div class="col-lg-6 col-7">
+					<h6 class="h2 text-dark d-inline-block mb-0">Pengurusan Pengguna</h6>
 
-                    <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
-                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                            <li class=" breadcrumb-item">
-                                <a href="javascript:void(0)"> <i class="fas fa-file-invoice text-dark"> </i> </a>
-                            </li>
-                            <li class="breadcrumb-item">
-                                <a href="javascript:void(0)" class="text-dark"> Management </a>
-                            </li>
-                            <li aria-current="page" class="breadcrumb-item active">
-                                User
-                            </li>
-                        </ol>
-                    </nav>
-                </div>
-
-                <div class="col-lg-6 col-5 text-right">
-					<a class="btn btn-sm btn-neutral" (click)="openModal(createUser)">
-						Create
-					</a>
+					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+							<li class=" breadcrumb-item">
+								<a href="javascript:void(0)"> <i class="fas fa-user-shield text-dark"> </i> </a>
+							</li>
+						</ol>
+					</nav>
 				</div>
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="container-fluid mt--6">
-    <div class="row">
+    <!-- <div class="row">
         <div class="col">
             <div class="card">
                 <div class="card-header bg-secondary">
@@ -44,107 +33,231 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <div class="row">
         <div class="col">
             <div class="card">
                 <div class="card-header bg-secondary">
-                    <h3 class="m-0">User List</h3>
+                    <div class="row">
+						<div class="col my-auto">
+							<h4 class="m-0">Senarai Pengguna</h4>
+						</div>
+						
+						<div class="col text-right">
+							<button
+								class="btn btn-sm btn-warm-blue"
+								(click)="exportExcel()"
+							>
+								Cetak
+							</button>
+						</div>
+					</div>
                 </div>
                 <div class="dataTables_wrapper py-4">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <div class="dataTables_length" id="datatable_length">
-                                <label>
-                                    Show
-                                    <select 
-                                        name="datatable_length"
-                                        aria-controls="datatable"
-                                        class="form-control form-control-sm custom-select custom-select-sm"
-                                        (change)="entriesChange($event)"
-                                    >
-                                        <option value="10" [selected]="tableEntries==5">5</option>
-                                        <option value="25" [selected]="tableEntries==10">10</option>
-                                        <option value="50" [selected]="tableEntries==15">15</option>
-                                        <option value="-1" [selected]="tableEntries==-1">All</option>
-                                    </select>
-                                    records
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div id="datatable_filter" class="dataTables_filter">
-                                <label>
-                                    <input 
-                                        type="search"
-                                        class="form-control form-control-sm"
-                                        placeholder="Search records"
-                                        aria-controls="datatable"
-                                        (keyup)="filterTable($event)" 
-                                    />
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+					<div class="row">
+						<div class="col-sm-12 col-md-6">
+							<div class="dataTables_length" id="datatable_length">
+								<label>
+									Lihat
+									<select 
+										name="datatable_length" 
+										aria-controls="datatable" 
+										class="form-control form-control-sm custom-select custom-select-sm"
+										(change)="entriesChange($event)"
+									>
+										<option value="5" [selected]="tableEntries == 5">5</option>
+										<option value="10" [selected]="tableEntries == 10">10</option>
+										<option value="15" [selected]="tableEntries == 15">15</option>
+										<option value="-1" [selected]="tableEntries == -1">Semua</option>
+									</select>
+									rekod
+								</label>
+							</div>
+						</div>
+						<div class="col-sm-12 col-md-6">
+							<div id="datatable_filter" class="dataTables_filter">
+								<label>
+									<input 
+										type="search"
+										class="form-control form-control-sm"
+										placeholder="Cari nama kakitangan"
+										aria-controls="datatable"
+										(keyup)="filterTable($event, 'name')"
+									/>
+								</label>
+							</div>
 
-                    <ngx-datatable 
-                        class="bootstrap selection-cell"
-                        [columnMode]="'force'"
-                        [headerHeight]="50"
-                        [footerHeight]="50" 
-                        [rowHeight]="'auto'"
-                        [limit]="tableEntries != -1 ? tableEntries:undefined"
-                        [rows]="tableTemp" 
-                        (activate)="onActivate($event)"
-                    >
+							<div id="datatable_filter" class="dataTables_filter">
+								<select 
+									class="form-control form-control-sm custom-select custom-select-filter"
+									placeholder="Cari peranan"
+									aria-controls="datatable"
+									(change)="filterTable($event, 'user_type')"
+								>
+									<option value="AA">Semua peranan</option>
+									<option value="ST">Kakitangan</option>
+									<option value="DC">Penyelaras Jabatan</option>
+									<option value="DH">Ketua Jabatan</option>
+									<option value="TC">Penyelaras Latihan</option>
+									<option value="AD">Pentadbir Sistem</option>
+								</select>
+							</div>
+						</div>
+					</div>
+		
+					<div class="pt-4 text-center" *ngIf="isEmpty">
+						<img [src]="iconEmpty" class="error-icon">
+						<p>Tiada rekod dijumpai</p>
+					</div>
+			
+					<ngx-datatable 
+						class="bootstrap selection-cell" 
+						[columnMode]="'force'" 
+						[headerHeight]="50" 
+						[footerHeight]="50"
+						[rowHeight]="'auto'"
+						[limit]="tableEntries != -1 ? tableEntries : undefined" 
+						[rows]="tableTemp"
+						[messages]="tableMessages"
+						(activate)="onActivate($event)"
+						*ngIf="!isEmpty"
+						[scrollbarH]="true"
+					>
+						<ngx-datatable-column
+							prop="full_name"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Nama</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.full_name}}
+							</ng-template>
+						</ngx-datatable-column>
+	
+						<ngx-datatable-column
+							prop="username"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Kad Pengenalan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.username}}
+							</ng-template>
+						</ngx-datatable-column>
+	
+						<ngx-datatable-column
+							prop="position"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Jawatan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.position}}
+							</ng-template>
+						</ngx-datatable-column>
 
-                        <ngx-datatable-column>
-                            <ng-template ngx-datatable-header-template>
-                                <span>User ID</span>
-                            </ng-template>
-                            <ng-template let-row="row" ngx-datatable-cell-template>
-                                {{row.user_id}}
-                            </ng-template>
+                        <ngx-datatable-column
+							prop="grade_code"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Gred</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.grade_code}}
+							</ng-template>
+						</ngx-datatable-column>
+			
+						<ngx-datatable-column
+							prop="salary_code"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Kod Gaji</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.salary_code}}
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column
+							prop="department_code"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Jabatan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								<ng-container *ngFor="let department of departments">
+                                    <span *ngIf="department.value == row.department_code">{{department.text}}</span>
+                                </ng-container>
+							</ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column name="Name"></ngx-datatable-column>
-                        <ngx-datatable-column name="Email"></ngx-datatable-column>
-                        <ngx-datatable-column>
-                            <ng-template ngx-datatable-header-template>
-                                <span>Joined At</span>
-                            </ng-template>
-                            <ng-template let-row="row" ngx-datatable-cell-template>
-                                {{row.joined_at}}
-                            </ng-template>
+
+                        <ngx-datatable-column
+							prop="section_code"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Bahagian</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								<ng-container *ngFor="let section of sections">
+                                    <span *ngIf="section.value == row.section_code">{{section.text}}</span>
+                                </ng-container>
+							</ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column>
-                            <ng-template ngx-datatable-header-template>
-                                <span>User Type</span>
-                            </ng-template>
-                            <ng-template let-row="row" ngx-datatable-cell-template>
-                                {{row.user_type}}
-                            </ng-template>
+
+                        <ngx-datatable-column
+							prop="service_status"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Taraf Perkhidmatan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								<ng-container *ngFor="let service of serviceStatus">
+                                    <span *ngIf="service.value == row.service_status">{{service.text}}</span>
+                                </ng-container>
+							</ng-template>
                         </ngx-datatable-column>
-                        <ngx-datatable-column>
-                            <ng-template ngx-datatable-header-template>
-                                <span>Status</span>
-                            </ng-template>
-                            <ng-template let-row="row" ngx-datatable-cell-template>
-                                <span *ngIf="row.is_active == 'Active'" class="badge badge-pill badge-success">Active</span>
-                                <span *ngIf="row.is_active == 'Inactive'" class="badge badge-pill badge-warning">Inactive</span>
-                            </ng-template>
-                        </ngx-datatable-column>
-                    </ngx-datatable>
-                </div>
+                        
+                        <ngx-datatable-column
+							prop="user_type"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Peranan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+                                <span class="badge badge-pill badge-primary" *ngIf="row.user_type == 'ST'">KAKITANGAN</span>
+                                <span class="badge badge-pill badge-default" *ngIf="row.user_type == 'DC'">PENYELARAS JABATAN</span>
+								<span class="badge badge-pill badge-info" *ngIf="row.user_type == 'DH'">KETUA JABATAN</span>
+                                <span class="badge badge-pill badge-warning" *ngIf="row.user_type == 'TC'">PENYELARAS LATIHAN</span>
+                                <span class="badge badge-pill badge-danger" *ngIf="row.user_type == 'AD'">PENTADBIR SISTEM</span>
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column>
+							<ng-template ngx-datatable-header-template>
+								<span>Tindakan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+                                <button 
+                                    class="btn btn-warm-blue" 
+                                    type="button" 
+                                    (click)="openModal(editUser, row)"
+                                >
+                                    Kemaskini
+                                </button>
+							</ng-template>
+						</ngx-datatable-column>
+					</ngx-datatable>
+				</div>
             </div>
         </div>
     </div>
 </div>
 
-<ng-template #createUser>
-    <div class="modal-header bg-default">
+<ng-template #editUser>
+    <div class="modal-header bg-warm-blue">
         <h6 class="modal-title text-white my-auto" id="modal-title-default">
-            Create New User
+            Kemaskini Pengguna
         </h6>
 
         <button
@@ -159,55 +272,100 @@
     </div>
 
     <div class="modal-body">
-        <form [formGroup]="registerForm">
-            <div class="form-group">
-                <label class="form-control-label">Name</label>
-                <input 
-                  class="form-control"
-                  placeholder="Enter name"
-                  formControlName="name"
-                  type="text"
-                >
-                <ng-container *ngFor="let message of registerFormMessages.name">
-                    <div *ngIf="registerForm.get('name').hasError(message.type) && (registerForm.get('name').dirty || registerForm.get('name').touched)">
-                        <p class="error-message"><span>{{ message.message }}</span></p>
-                    </div>
-                </ng-container>
-            </div>
-            <div class="form-group">
-                <label class="form-control-label">Email</label>
-                <input 
-                  class="form-control"
-                  placeholder="Enter email"
-                  formControlName="email"
-                  type="text"
-                >
-                <ng-container *ngFor="let message of registerFormMessages.email">
-                    <div *ngIf="registerForm.get('email').hasError(message.type) && (registerForm.get('email').dirty || registerForm.get('email').touched)">
-                        <p class="error-message"><span>{{ message.message }}</span></p>
-                    </div>
-                </ng-container>
-            </div>
-        </form>
+        <form [formGroup]="userForm">
+			<div class="form-group">
+				<label class="form-control-label">Peranan</label>
+				<select 
+					class="form-control custom-select"
+					formControlName="user_type"
+				>
+					<option value="ST">Kakitangan</option>
+					<option value="TC">Penyelaras Latihan</option>
+					<option value="DC">Penyelaras Jabatan</option>
+					<option value="DH">Ketua Jabatan</option>
+					<option value="AD">Pentadbir Sistem</option>
+				</select>
+			</div>
+		</form>
     </div>
 
     <div class="modal-footer">
         <button 
-            class="btn btn-success"
+            class="btn btn-warm-blue"
             type="button"
             (click)="confirm()"
-            [disabled]="!registerForm.valid"
+            [disabled]="!userForm.valid"
         >
-            Create
+            Kemaskini
         </button>
 
         <button
-            class="btn btn-outline-danger ml-auto"
+            class="btn btn-outline-warm-blue ml-auto"
             data-dismiss="modal"
             type="button"
             (click)="closeModal()"
         >
-            Close
+            Tutup
         </button>
     </div>
 </ng-template>
+
+<!-- <div class="table" id="summaryTable" #summaryTable [hidden]="isSummaryTableHidden">
+	<table class="table table-responsive table-flush">
+		<thead>
+			<tr>
+				<th>Kakitangan</th>
+				<th>Kad Pengenalan</th>
+				<th>Jawatan</th>
+				<th>Gred</th>
+                <th>Kod Gaji</th>
+				<th>Jabatan</th>
+				<th>Bahagian</th>
+				<th>Taraf Perkhidmatan</th>
+				<th>Peranan</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr *ngFor="let row of tableRows">
+				<td>
+					{{row?.full_name}}
+				</td>
+				<td>
+					{{row?.username}}
+				</td>
+				<td>
+					{{row?.position}}
+				</td>
+				<td>
+					{{row?.grade_code}}
+				</td>
+                <td>
+					{{row?.salary_code}}
+				</td>
+				<td>
+					<ng-container *ngFor="let department of departments">
+                        <span *ngIf="department.value == row?.department_code">{{department.text}}</span>
+                    </ng-container>
+				</td>
+				<td>
+					<ng-container *ngFor="let section of sections">
+                        <span *ngIf="section.value == row?.section_code">{{section.text}}</span>
+                    </ng-container>
+				</td>
+				<td>
+					<ng-container *ngFor="let service of serviceStatus">
+                        <span *ngIf="service.value == row?.service_status">{{service.text}}</span>
+                    </ng-container>
+				</td>
+				<td>
+					<span *ngIf="row?.user_type == 'ST'">KAKITANGAN</span>
+                    <span *ngIf="row?.user_type == 'DC'">PENYELARAS JABATAN</span>
+                    <span *ngIf="row?.user_type == 'DH'">KETUA JABATAN</span>
+                    <span *ngIf="row?.user_type == 'TC'">PENYELARAS LATIHAN</span>
+                    <span *ngIf="row?.user_type == 'AD'">PENTADBIR SISTEM</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div> -->

@@ -112,7 +112,20 @@
 
     <div class="card">
         <div class="card-header bg-secondary">
-            <h4 class="m-0">Senarai Keperluan Latihan Yang Telah Dibuat</h4>
+            <div class="row">
+                <div class="col my-auto">
+                    <h4 class="m-0">Senarai Keperluan Latihan Yang Telah Dibuat</h4>
+                </div>
+                
+                <div class="col text-right">
+                    <button
+                        class="btn btn-sm btn-warm-blue"
+                        (click)="exportExcel()"
+                    >
+                        Cetak
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="dataTables_wrapper py-4">
@@ -167,8 +180,11 @@
                 [messages]="tableMessages"
                 (activate)="onActivate($event)"
                 *ngIf="!isEmpty"
+                [scrollbarH]="true"
             >
-                <ngx-datatable-column>
+                <ngx-datatable-column
+                    prop="suggested_title"
+                >
                     <ng-template ngx-datatable-header-template>
                         <span>Tajuk Latihan Cadangan</span>
                     </ng-template>
@@ -177,7 +193,9 @@
                     </ng-template>
                 </ngx-datatable-column>
     
-                <ngx-datatable-column>
+                <ngx-datatable-column
+                    prop="suggested_facilitator"
+                >
                     <ng-template ngx-datatable-header-template>
                         <span>Nama / Agensi Pemudahcara Cadangan</span>
                     </ng-template>
@@ -186,7 +204,9 @@
                     </ng-template>
                 </ngx-datatable-column>
     
-                <ngx-datatable-column>
+                <ngx-datatable-column
+                    prop="core.parent"
+                >
                     <ng-template ngx-datatable-header-template>
                         <span>Teras</span>
                     </ng-template>
@@ -199,4 +219,32 @@
             </ngx-datatable>
         </div>
     </div>
+</div>
+
+<div class="table" id="summaryTable" #summaryTable [hidden]="isSummaryTableHidden">
+	<table class="table table-responsive table-flush">
+		<thead>
+			<tr>
+				<th>Tajuk Latihan Cadangan</th>
+				<th>Nama / Agensi Pemudahcara Cadangan</th>
+				<th>Teras</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr *ngFor="let row of tableTemp">
+				<td>
+					{{row.suggested_title}}
+				</td>
+				<td>
+					{{row.suggested_facilitator}}
+				</td>
+				<td>
+					<span *ngIf="row.core.parent == 'GN'">GENERAL</span>
+                    <span *ngIf="row.core.parent == 'FN'">FUNGSIONAL</span>
+                    - {{row.core.child}}
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>

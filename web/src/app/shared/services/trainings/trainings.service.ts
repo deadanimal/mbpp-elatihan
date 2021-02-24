@@ -5,6 +5,7 @@ import { Form } from '@angular/forms';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Training, TrainingExtended, TrainingType } from './trainings.model';
+import { User } from '../users/users.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,16 +27,18 @@ export class TrainingsService {
   trainingType: TrainingType
   trainingTypes: TrainingType[] = []
 
+  applicableStaffs: User[] = []
+
   constructor(
     private http: HttpClient
   ) { }
 
   post(body: any): Observable<Training> {
-    console.log('hello')
+    // console.log('hello')
     return this.http.post<any>(this.urlTraining, body).pipe(
       tap((res) => {
         this.training = res
-        console.log('Training: ', this.training)
+        // console.log('Training: ', this.training)
       })
     )
   }
@@ -44,7 +47,7 @@ export class TrainingsService {
     return this.http.get<Training[]>(this.urlTraining).pipe(
       tap((res) => {
         this.trainings = res
-        console.log('Trainings: ', this.trainings)
+        // console.log('Trainings: ', this.trainings)
       })
     )
   }
@@ -54,7 +57,7 @@ export class TrainingsService {
     return this.http.get<Training[]>(urlTemp).pipe(
       tap((res) => {
         this.trainings = res
-        console.log('Trainings: ', this.trainings)
+        // console.log('Trainings: ', this.trainings)
       })
     )
   }
@@ -64,7 +67,17 @@ export class TrainingsService {
     return this.http.get<TrainingExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.trainingsExtended = res
-        console.log('Trainings: ', this.trainingsExtended)
+        // console.log('Trainings: ', this.trainingsExtended)
+      })
+    )
+  }
+
+  getDepartmentList(): Observable<TrainingExtended[]> {
+    let urlTemp = this.urlTraining + 'get_department_list'
+    return this.http.get<TrainingExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        this.trainingsExtended = res
+        // console.log('Trainings: ', this.trainingsExtended)
       })
     )
   }
@@ -75,7 +88,7 @@ export class TrainingsService {
     return this.http.get<TrainingExtended>(urlTemp).pipe(
       tap((res) => {
         this.trainingExtended = res
-        console.log('Training: ', this.trainingExtended)
+        // console.log('Training: ', this.trainingExtended)
       })
     )
   }
@@ -85,7 +98,7 @@ export class TrainingsService {
     return this.http.put<Training>(urlTemp, body).pipe(
       tap((res) => {
         this.training = res
-        console.log('Training', this.training)
+        // console.log('Training', this.training)
       })
     )
   }
@@ -95,7 +108,7 @@ export class TrainingsService {
     return this.http.get<Training[]>(urlTemp).pipe(
       tap((res) => {
         this.trainingsFiltered = res
-        console.log('Trainings', this.trainingsFiltered)
+        // console.log('Trainings', this.trainingsFiltered)
       })
     )
   }
@@ -105,7 +118,7 @@ export class TrainingsService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.training = res
-        console.log('Training: ', this.training)
+        // console.log('Training: ', this.training)
       })
     )
   }
@@ -115,7 +128,7 @@ export class TrainingsService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.training = res
-        console.log('Training: ', this.training)
+        // console.log('Training: ', this.training)
       })
     )
   }
@@ -125,7 +138,17 @@ export class TrainingsService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.trainingStatistics = res
-        console.log('Statistics: ', this.trainingStatistics)
+        // console.log('Statistics: ', this.trainingStatistics)
+      })
+    )
+  }
+
+  getStatisticsDepartment() {
+    let urlTemp = this.urlTraining + 'get_statistics_department'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.trainingStatistics = res
+        // console.log('Statistics: ', this.trainingStatistics)
       })
     )
   }
@@ -135,17 +158,16 @@ export class TrainingsService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.trainingNextCode = res['code']
-        console.log(res)
+        // console.log(res)
       })
     )
   }
 
   createTrainingType(body: Form): Observable<TrainingType> {
-    // console.log('hello')
     return this.http.post<any>(this.urlTrainingType, body).pipe(
       tap((res) => {
         this.trainingType = res
-        console.log('Training type: ', this.trainingType)
+        // console.log('Training type: ', this.trainingType)
       })
     )
   }
@@ -154,18 +176,17 @@ export class TrainingsService {
     return this.http.get<TrainingType[]>(this.urlTrainingType).pipe(
       tap((res) => {
         this.trainingTypes = res
-        console.log('Training types: ', this.trainingTypes)
+        // console.log('Training types: ', this.trainingTypes)
       })
     )
   }
 
   getTrainingType(id: String): Observable<TrainingType> {
     let urlTemp = this.urlTrainingType + id
-    // console.log('URL ', urlTemp)
     return this.http.get<TrainingType>(urlTemp).pipe(
       tap((res) => {
         this.trainingType = res
-        console.log('Training type: ', this.trainingType)
+        // console.log('Training type: ', this.trainingType)
       })
     )
   }
@@ -175,7 +196,27 @@ export class TrainingsService {
     return this.http.put<TrainingType>(urlTemp, body).pipe(
       tap((res) => {
         this.trainingType = res
-        console.log('Training type', this.trainingType)
+        // console.log('Training type', this.trainingType)
+      })
+    )
+  }
+  
+  getApplicableDepartment(id: string): Observable<User[]> {
+    let urlTemp = this.urlTraining + id + '/get_applicable_staff_department'
+    return this.http.get<User[]>(urlTemp).pipe(
+      tap((res) => {
+        this.applicableStaffs = res
+        // console.log('Applicable staff in department', this.applicableStaffs)
+      })
+    )
+  }
+
+  getApplicableTraining(id: string): Observable<User[]> {
+    let urlTemp = this.urlTraining + id + '/get_applicable_staff_training'
+    return this.http.get<User[]>(urlTemp).pipe(
+      tap((res) => {
+        this.applicableStaffs = res
+        // console.log('Applicable staff for training coordinator', this.applicableStaffs)
       })
     )
   }

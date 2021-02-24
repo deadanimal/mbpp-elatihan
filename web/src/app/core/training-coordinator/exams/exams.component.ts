@@ -9,14 +9,17 @@ import * as moment from 'moment';
 import * as xlsx from 'xlsx';
 import swal from 'sweetalert2';
 
-import { ExamExtended, ExamAttendeeExtended, ExamAttendee, Exam } from 'src/app/shared/services/exams/exams.model';
+import { ExamExtended, 
+  ExamAttendeeExtended, 
+  ExamAttendee, 
+  Exam 
+} from 'src/app/shared/services/exams/exams.model';
 import { ExamsService } from 'src/app/shared/services/exams/exams.service';
 
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 am4core.useTheme(am4themes_animated);
-
 
 export enum SelectionType {
   single = 'single',
@@ -183,7 +186,6 @@ export class ExamsComponent implements OnInit {
             }
           }
         )
-
         this.getCharts()
       }
     );
@@ -231,7 +233,7 @@ export class ExamsComponent implements OnInit {
   }
 
   initChartMonth() {
-    let chart = am4core.create('chart-tc-month', am4charts.XYChart);
+    let chart = am4core.create('chart-tc-exam-month', am4charts.XYChart);
     // chart.scrollbarX = new am4core.Scrollbar();
 
     // Add data
@@ -339,7 +341,7 @@ export class ExamsComponent implements OnInit {
   }
 
   initChartDepartment() {
-    let container = am4core.create('chart-tc-department', am4core.Container);
+    let container = am4core.create('chart-tc-exam-department', am4core.Container);
     container.width = am4core.percent(100);
     container.height = am4core.percent(100);
     container.layout = 'horizontal';
@@ -630,7 +632,7 @@ export class ExamsComponent implements OnInit {
   }
 
   // initChartResult() {
-  //   let chart = am4core.create('chart-tc-result', am4charts.PieChart3D);
+  //   let chart = am4core.create('chart-tc-exam-result', am4charts.PieChart3D);
   //   chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
 
   //   chart.legend = new am4charts.Legend();
@@ -716,7 +718,7 @@ export class ExamsComponent implements OnInit {
     // console.log('Wee', this.examForm.value)
     swal.fire({
       title: 'Pengesahan',
-      text: 'Anda pasti untuk menyunting peperiksaan ini?',
+      text: 'Anda pasti untuk mengemaskini peperiksaan ini?',
       type: 'info',
       buttonsStyling: false,
       showCancelButton: true,
@@ -734,7 +736,7 @@ export class ExamsComponent implements OnInit {
   update() {
     this.loadingBar.start()
     let infoTitle = 'Sedang proses'
-    let infoMessage = 'Peperiksaan sedang ditambah'
+    let infoMessage = 'Peperiksaan sedang dikemaskini'
     this.notifyService.openToastrInfo(infoTitle, infoMessage)
 
     this.examService.updateAttendee(this.selectedAttendee.id, this.examForm.value).subscribe(
@@ -743,13 +745,13 @@ export class ExamsComponent implements OnInit {
       },
       () => {
         let title = 'Tidak berjaya'
-        let message = 'Anda tidak berjaya untuk menambah peperiksaan. Sila cuba sekali lagi'
+        let message = 'Anda tidak berjaya untuk mengemaskini peperiksaan. Sila cuba sekali lagi'
         this.notifyService.openToastrError(title, message)
         this.loadingBar.complete()
       },
       () => {
         let title = 'Berjaya'
-        let message = 'Peperiksaan berjaya ditambah.'
+        let message = 'Peperiksaan berjaya dikemaskini.'
         this.notifyService.openToastr(title, message)
         this.success()
         this.getData()
@@ -763,7 +765,7 @@ export class ExamsComponent implements OnInit {
   success() {
     swal.fire({
       title: 'Berjaya',
-      text: 'Peperiksaan berjaya disunting',
+      text: 'Peperiksaan berjaya dikemaskini',
       type: 'success',
       buttonsStyling: false,
       showCancelButton: true,

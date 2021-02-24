@@ -27,7 +27,7 @@ export class OrganisationsService {
     return this.http.post<any>(this.urlOrganisations, body).pipe(
       tap((res) => {
         this.organisation = res
-        console.log('Organisation: ', this.organisation)
+        // console.log('Organisation: ', this.organisation)
       })
     )
   }
@@ -36,7 +36,7 @@ export class OrganisationsService {
     return this.http.get<Organisation[]>(this.urlOrganisations).pipe(
       tap((res) => {
         this.organisations = res
-        console.log('Organisations: ', this.organisations)
+        // console.log('Organisations: ', this.organisations)
       })
     )
   }
@@ -46,7 +46,7 @@ export class OrganisationsService {
     return this.http.get<Organisation>(urlTemp).pipe(
       tap((res) => {
         this.organisation = res
-        console.log('Organisation: ', this.organisation)
+        // console.log('Organisation: ', this.organisation)
       })
     )
   }
@@ -56,7 +56,7 @@ export class OrganisationsService {
     return this.http.put<Organisation>(urlTemp, body).pipe(
       tap((res) => {
         this.organisation = res
-        console.log('Organisation', this.organisation)
+        // console.log('Organisation', this.organisation)
       })
     )
   }
@@ -66,7 +66,7 @@ export class OrganisationsService {
     return this.http.get<Organisation[]>(urlTemp).pipe(
       tap((res) => {
         this.organisationsFiltered = res
-        console.log('Organisations', this.organisationsFiltered)
+        // console.log('Organisations', this.organisationsFiltered)
       })
     )
   }
@@ -76,7 +76,7 @@ export class OrganisationsService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.organisation = res
-        console.log('Organisation: ', this.organisation)
+        // console.log('Organisation: ', this.organisation)
       })
     )
   }
@@ -86,7 +86,7 @@ export class OrganisationsService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.organisation = res
-        console.log('Organisation: ', this.organisation)
+        // console.log('Organisation: ', this.organisation)
       })
     )
   }

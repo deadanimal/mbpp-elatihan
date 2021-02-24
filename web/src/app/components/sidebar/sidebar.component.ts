@@ -4,6 +4,7 @@ import {
   STROUTES,
   TCROUTES,
   DCROUTES,
+  DHROUTES,
   ADROUTES
 } from '../../shared/menu/menu-items';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
@@ -56,7 +57,10 @@ export class SidebarComponent implements OnInit {
         else if (this.authService.userRole == 3) { // Department coordinator
           this.menu = DCROUTES
         }
-        else if (this.authService.userRole == 4) { // Admin
+        else if (this.authService.userRole == 4) { // Department head
+          this.menu = DHROUTES
+        }
+        else if (this.authService.userRole == 5) { // Admin
           this.menu = ADROUTES
         }
         this.menuItems = this.menu.filter(menuItem => menuItem);

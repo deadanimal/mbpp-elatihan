@@ -36,7 +36,7 @@ class TrainingCore(models.Model):
     def __str__(self):
         return ('%s %s'%(self.parent, self.child))
 
-
+ 
 class TrainingDomain(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -51,6 +51,7 @@ class TrainingDomain(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class TrainingType(models.Model):
 
@@ -381,7 +382,6 @@ class Training(models.Model):
 
     def __str__(self):
         return self.title
-    
 
 
 class TrainingNote(models.Model):
@@ -394,7 +394,7 @@ class TrainingNote(models.Model):
         related_name='training_training_notes'
     )
     title = models.CharField(max_length=50, default='NA')
-    note_code = models.CharField(max_length=10, default='NA')
+    note_code = models.CharField(max_length=100, null=True)
     note_file = models.FileField(null=True, upload_to=PathAndRename('notes'))
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -406,7 +406,7 @@ class TrainingNote(models.Model):
             prefix = 'NOTA{}'.format(datetime.datetime.now(timezone_).strftime('%y%m'))
             prev_instances = self.__class__.objects.filter(note_code__contains=prefix)
             if prev_instances.exists():
-                last_instance_id = prev_instances.last().note_code[-4:]
+                last_instance_id = prev_instances.first().note_code[-4:]
                 self.note_code = prefix+'{0:04d}'.format(int(last_instance_id)+1)
             else:
                 self.note_code = prefix+'{0:04d}'.format(1)
@@ -435,7 +435,7 @@ class TrainingApplication(models.Model):
         null=True, 
         related_name='application_attendee'
     )
-    # is_approved = models.BooleanField(default=False)
+    # is_accepted = models.BooleanField(default=True)
     STATUS = [
         ('AP', 'Diterima'),
         ('RJ', 'Ditolak'),
@@ -447,12 +447,23 @@ class TrainingApplication(models.Model):
         choices=STATUS,
         default='IP'
     )
-
-    approved_by = models.ForeignKey(
+    approved_level_1_by = models.ForeignKey( # Department coordinator / penyelaras jabatan
         CustomUser, 
         on_delete=models.CASCADE, 
         null=True, 
-        related_name='application_verified_by'
+        related_name='application_approved_level_1_by'
+    )
+    approved_level_2_by = models.ForeignKey( # Department Head / ketua jabatan
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='application_approved_level_2_by'
+    )
+    approved_level_3_by = models.ForeignKey( # Training coordinator / penyelaras latihan
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='application_approved_level_3_by'
     )
 
     APPLICATION_TYPE = [
@@ -489,6 +500,18 @@ class TrainingAttendee(models.Model):
     is_attend = models.BooleanField(default=False)
     check_in = models.DateTimeField(null=True)
     check_out = models.DateTimeField(null=True)
+    checked_in_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='attendee_checked_in_by'
+    )
+    checked_out_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='attendee_checked_out_by'
+    )
     verified_by = models.ForeignKey(
         CustomUser, 
         on_delete=models.CASCADE, 
@@ -528,6 +551,7 @@ class TrainingAbsenceMemo(models.Model):
         null=True, 
         related_name='absence_verified_by'
     )
+    attachment = models.FileField(null=True, upload_to=PathAndRename('attachments'))
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -606,5 +630,5 @@ class Configuration(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return self.question
+        return self.slug
 

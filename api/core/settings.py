@@ -115,7 +115,7 @@ DATABASES = {
 }
 
 import dj_database_url
-db_from_env = dj_database_url.config(default=config('DATABASE_URL'), conn_max_age=500)
+db_from_env = dj_database_url.config(default=config('DATABASE_URL'), conn_max_age=0)
 DATABASES['default'].update(db_from_env)
 
 if any(db_from_env):
@@ -199,15 +199,31 @@ SITE_ID = 1
 
 REST_USE_JWT = True
 
+DEFAULT_RENDERER_CLASSES = (
+    'rest_framework.renderers.JSONRenderer',
+)
+
+DEFAULT_PERMISSION_CLASSES = [
+   'rest_framework.permissions.IsAuthenticated',
+]
+
+if DEBUG:
+    DEFAULT_RENDERER_CLASSES = DEFAULT_RENDERER_CLASSES + (
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    )
+    DEFAULT_PERMISSION_CLASSES = [
+        'rest_framework.permissions.AllowAny',
+    ]
+
 REST_FRAMEWORK = {
-    
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
+    'DEFAULT_PERMISSION_CLASSES': DEFAULT_PERMISSION_CLASSES
     # 'PASSWORD_RESET_SERIALIZER': (
     #     'users.serializers.PasswordResetSerializer'
     # )
-    
 }
 
 REST_AUTH_SERIALIZERS = {

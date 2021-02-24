@@ -37,9 +37,14 @@ const routes: Routes = [
         loadChildren: './core/global/global.module#GlobalModule'
       },
       {
-        // Training coordinator apges
+        // Training coordinator pages
         path: 'tc',
         loadChildren: './core/training-coordinator/training-coordinator.module#TrainingCoordinatorModule'
+      },
+      {
+        // Department coordinator pages
+        path: 'dc',
+        loadChildren: './core/department-coordinator/department-coordinator.module#DepartmentCoordinatorModule'
       },
     ]
   },

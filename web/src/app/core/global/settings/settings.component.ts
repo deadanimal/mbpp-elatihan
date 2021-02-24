@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { forkJoin } from 'rxjs';
@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { SecurityAnswer, SecurityQuestion } from 'src/app/shared/services/security/security.model';
 import { SecurityService } from 'src/app/shared/services/security/security.service';
 import { User } from 'src/app/shared/services/users/users.model';
+import { CustomValidators } from 'src/app/shared/validators/custom/custom-validators';
 
 @Component({
   selector: 'app-settings',
@@ -18,7 +19,28 @@ export class SettingsComponent implements OnInit {
 
   // Form
   passwordForm: FormGroup
+  passwordFormMessages = {
+    'new_password1': [
+      { type: 'required', message: 'Kata laluan diperlukan' },
+      { type: 'minlength', message: 'Kata laluan mesti mengandungi sekurang-kurangnya 8 aksara' },
+      { type: 'hasNumber', message: 'Kata laluan mesti mengandungi sekurang-kurangnya 1 digit' },
+      // { type: 'hasCapitalCase', message: 'Kata laluan mesti mengandungi sekurang-kurangnya 1 huruf besar' },
+      // { type: 'hasSmallCase', message: 'Kata laluan mesti mengandungi sekurang-kurangnya 1 huruf kecil' }
+    ],
+    'new_password2': [
+      { type: 'required', message: 'Ulang kata laluan diperlukan' },
+      { type: 'NoPassswordMatch', message: 'Kata laluan tidak sepadan' }
+    ]
+  }
   securityForm: FormGroup
+  securityFormMessages = {
+    'question': [
+      { type: 'required', message: 'Soalan sekuriti diperlukan' },
+    ],
+    'answer': [
+      { type: 'required', message: 'Jawapan soalan sekuriti diperlukan' }
+    ]
+  }
 
   // Data
   user: User
@@ -51,12 +73,23 @@ export class SettingsComponent implements OnInit {
   initForm() {
     this.passwordForm = this.fb.group({
       new_password1: new FormControl(null, Validators.compose([
-        Validators.required
+        Validators.required,
+        Validators.minLength(8),
+        CustomValidators.patternValidator(/\d/, {
+          hasNumber: true
+        }),
+        // CustomValidators.patternValidator(/[A-Z]/, {
+        //   hasCapitalCase: true
+        // }),
+        // // check whether the entered password has a lower case letter
+        // CustomValidators.patternValidator(/[a-z]/, {
+        //   hasSmallCase: true
+        // })
       ])),
       new_password2: new FormControl(null, Validators.compose([
         Validators.required
       ]))
-    })
+    }, { validator: CustomValidators.passwordMatchValidator })
 
     this.securityForm = this.fb.group({
       question: new FormControl(null, Validators.compose([

@@ -94,6 +94,7 @@
                                 [messages]="tableMessages"
                                 (activate)="onActivate($event, 'type')"
                                 *ngIf="!isTypeEmpty"
+                                [scrollbarH]="true"
                             >
                                 <ngx-datatable-column
                                     prop="name"
@@ -206,6 +207,7 @@
                                 [messages]="tableMessages"
                                 (activate)="onActivate($event, 'domains')"
                                 *ngIf="!isDomainEmpty"
+                                [scrollbarH]="true"
                             >
                                 <ngx-datatable-column
                                     prop="name"
@@ -318,6 +320,7 @@
                                 [messages]="tableMessages"
                                 (activate)="onActivate($event, 'trainers')"
                                 *ngIf="!isTrainerEmpty"
+                                [scrollbarH]="true"
                             >
                                 <ngx-datatable-column
                                     prop="name"
@@ -425,6 +428,7 @@
                                 [messages]="tableMessages"
                                 (activate)="onActivate($event, 'organisations')"
                                 *ngIf="!isOrganisationEmpty"
+                                [scrollbarH]="true"
                             >
                                 <ngx-datatable-column
                                     prop="name"
@@ -548,8 +552,11 @@
                                 [messages]="tableMessages"
                                 (activate)="onActivate($event, 'cores')"
                                 *ngIf="!isCoreEmpty"
+                                [scrollbarH]="true"
                             >
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="parent"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Jenis Teras</span>
                                     </ng-template>
@@ -559,7 +566,9 @@
                                     </ng-template>
                                 </ngx-datatable-column>
                     
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="child"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Teras</span>
                                     </ng-template>
@@ -568,7 +577,9 @@
                                     </ng-template>
                                 </ngx-datatable-column>
 
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="active"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Aktif / Tidak Aktif</span>
                                     </ng-template>
@@ -666,8 +677,11 @@
                                 [messages]="tableMessages"
                                 (activate)="onActivate($event, 'exams')"
                                 *ngIf="!isExamEmpty"
+                                [scrollbarH]="true"
                             >
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="classification"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Jenis Peperiksaan</span>
                                     </ng-template>
@@ -678,7 +692,9 @@
                                     </ng-template>
                                 </ngx-datatable-column>
                     
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="organiser"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Anjuran</span>
                                     </ng-template>
@@ -687,7 +703,9 @@
                                     </ng-template>
                                 </ngx-datatable-column>
 
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="code"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Kod</span>
                                     </ng-template>
@@ -696,7 +714,9 @@
                                     </ng-template>
                                 </ngx-datatable-column>
 
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="title"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Nama Peperiksaan</span>
                                     </ng-template>
@@ -705,7 +725,9 @@
                                     </ng-template>
                                 </ngx-datatable-column>
 
-                                <ngx-datatable-column>
+                                <ngx-datatable-column
+                                    prop="active"
+                                >
                                     <ng-template ngx-datatable-header-template>
                                         <span>Aktif / Tidak Aktif</span>
                                     </ng-template>

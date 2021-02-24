@@ -125,10 +125,23 @@ class CustomUserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         data_ = {
             'trainings': len(TrainingAttendee.objects.filter(attendee=user)),
             'exams': len(ExamAttendee.objects.filter(staff=user)),
-            'attendances': len(TrainingAttendee.objects.filter(attendee=user))
+            'attendances': len(TrainingAttendee.objects.filter(attendee=user, is_attend=True))
         }
 
         return JsonResponse(data_)
+
+    @action(methods=['GET'], detail=False)
+    def get_department_staffs(self, request, *args, **kwargs):
+        user = request.user
+        
+        if user.user_type == 'DC' or user.user_type == 'DH':
+            users = CustomUser.objects.filter(department_code=user.department_code).order_by('full_name')
+            serializer = CustomUserSerializer(users, many=True)
+
+            return Response(serializer.data)
+        else:
+            users = CustomUser.objects.none()
+            serializer = CustomUserSerializer(users, many=True)
 
 
 class UserLogViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
@@ -138,7 +151,7 @@ class UserLogViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated] #[AllowAny]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -162,12 +175,12 @@ class SecurityQuestionViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     def get_permissions(self):
         permission_classes = [AllowAny]#[IsAuthenticated]
-        """
+        
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
-        """
+        
         return [permission() for permission in permission_classes]    
 
     
@@ -208,3 +221,24 @@ class SecurityAnswerViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         serializer = SecurityAnswerSerializer(answer_)
         return Response(serializer.data)
+    
+    @action(methods=['GET'], detail=False)
+    def checker(self, request, *args, **kwargs):
+        user = request.user
+
+        answer = SecurityAnswer.objects.filter(user=user)
+
+        if answer.exists():
+            # do somthing
+            data_ = { 'exist': True }
+            
+            if user.is_first_login:
+                user.is_first_login = False
+                user.save()
+            else:
+                pass
+        else:
+            # do something
+            data_ = { 'exist': False }
+        
+        return JsonResponse(data_)

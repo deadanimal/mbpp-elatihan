@@ -12,7 +12,7 @@ import { AbsenceMemo } from './absence-memos.model';
 export class AbsenceMemosService {
 
   // URL
-  public urlAbsenceMemos: string = environment.baseUrl + 'v1/training-absence-memos/'
+  public urlAbsenceMemos: string = environment.baseUrl + 'v1/training-absences/'
 
   // Data
   absenceMemo: AbsenceMemo
@@ -23,11 +23,11 @@ export class AbsenceMemosService {
     private http: HttpClient
   ) { }
 
-  post(body: Form): Observable<AbsenceMemo> {
+  post(body: any): Observable<AbsenceMemo> {
     return this.http.post<any>(this.urlAbsenceMemos, body).pipe(
       tap((res) => {
         this.absenceMemo = res
-        console.log('Absence memo: ', this.absenceMemo)
+        // console.log('Absence memo: ', this.absenceMemo)
       })
     )
   }
@@ -36,7 +36,7 @@ export class AbsenceMemosService {
     return this.http.get<AbsenceMemo[]>(this.urlAbsenceMemos).pipe(
       tap((res) => {
         this.absenceMemos = res
-        console.log('Absence memos: ', this.absenceMemos)
+        // console.log('Absence memos: ', this.absenceMemos)
       })
     )
   }
@@ -46,7 +46,7 @@ export class AbsenceMemosService {
     return this.http.get<AbsenceMemo>(urlTemp).pipe(
       tap((res) => {
         this.absenceMemo = res
-        console.log('Absence memo: ', this.absenceMemo)
+        // console.log('Absence memo: ', this.absenceMemo)
       })
     )
   }
@@ -56,7 +56,7 @@ export class AbsenceMemosService {
     return this.http.put<AbsenceMemo>(urlTemp, body).pipe(
       tap((res) => {
         this.absenceMemo = res
-        console.log('Absence memo', this.absenceMemo)
+        // console.log('Absence memo', this.absenceMemo)
       })
     )
   }
@@ -66,7 +66,7 @@ export class AbsenceMemosService {
     return this.http.get<AbsenceMemo[]>(urlTemp).pipe(
       tap((res) => {
         this.absenceMemosFiltered = res
-        console.log('Absence memos', this.absenceMemosFiltered)
+        // console.log('Absence memos', this.absenceMemosFiltered)
       })
     )
   }
@@ -76,7 +76,7 @@ export class AbsenceMemosService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.absenceMemo = res
-        console.log('Absence memo: ', this.absenceMemo)
+        // console.log('Absence memo: ', this.absenceMemo)
       })
     )
   }
@@ -86,7 +86,17 @@ export class AbsenceMemosService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.absenceMemo = res
-        console.log('Absence memo: ', this.absenceMemo)
+        // console.log('Absence memo: ', this.absenceMemo)
+      })
+    )
+  }
+
+  checkMemo(body: any): Observable<AbsenceMemo> {
+    let urlTemp = this.urlAbsenceMemos + 'check_memo/'
+    return this.http.post<any>(urlTemp, body).pipe(
+      tap((res) => {
+        this.absenceMemo = res
+        // console.log('Absence memo: ', this.absenceMemo)
       })
     )
   }

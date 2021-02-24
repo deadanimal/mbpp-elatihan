@@ -38,7 +38,7 @@ export class ExamsService {
     return this.http.post<any>(this.urlExams, body).pipe(
       tap((res) => {
         this.exam = res
-        console.log('Exam: ', this.exam)
+        // console.log('Exam: ', this.exam)
       })
     )
   }
@@ -47,7 +47,7 @@ export class ExamsService {
     return this.http.get<Exam[]>(this.urlExams).pipe(
       tap((res) => {
         this.exams = res
-        console.log('Exams: ', this.exams)
+        // console.log('Exams: ', this.exams)
       })
     )
   }
@@ -57,7 +57,7 @@ export class ExamsService {
     return this.http.get<ExamExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.examsExtended = res
-        console.log('Exams: ', this.examsExtended)
+        // console.log('Exams: ', this.examsExtended)
       })
     )
   }
@@ -67,7 +67,7 @@ export class ExamsService {
     return this.http.get<ExamExtended>(urlTemp).pipe(
       tap((res) => {
         this.examExtended = res
-        console.log('Exam: ', this.examExtended)
+        // console.log('Exam: ', this.examExtended)
       })
     )
   }
@@ -77,7 +77,7 @@ export class ExamsService {
     return this.http.patch<Exam>(urlTemp, body).pipe(
       tap((res) => {
         this.exam = res
-        console.log('Exam', this.exam)
+        // console.log('Exam', this.exam)
       })
     )
   }
@@ -87,7 +87,7 @@ export class ExamsService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.exam = res
-        console.log('Exam: ', this.exam)
+        // console.log('Exam: ', this.exam)
       })
     )
   }
@@ -97,7 +97,7 @@ export class ExamsService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.exam = res
-        console.log('Exam: ', this.exam)
+        // console.log('Exam: ', this.exam)
       })
     )
   }
@@ -106,7 +106,7 @@ export class ExamsService {
     return this.http.post<any>(this.urlAttendees, body).pipe(
       tap((res) => {
         this.attendee = res
-        console.log('Attendee: ', this.attendee)
+        // console.log('Attendee: ', this.attendee)
       })
     )
   }
@@ -116,7 +116,17 @@ export class ExamsService {
     return this.http.get<ExamAttendeeExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.attendees = res
-        console.log('Attendees: ', this.attendees)
+        // console.log('Attendees: ', this.attendees)
+      })
+    )
+  }
+
+  getAttendeesDepartment(): Observable<ExamAttendeeExtended[]> {
+    let urlTemp = this.urlAttendees + 'get_department_attendees'
+    return this.http.get<ExamAttendeeExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        this.attendees = res
+        // console.log('Attendees: ', this.attendees)
       })
     )
   }
@@ -126,7 +136,7 @@ export class ExamsService {
     return this.http.get<ExamAttendeeExtended>(urlTemp).pipe(
       tap((res) => {
         this.attendeeExtended = res
-        console.log('Attendee: ', this.attendeeExtended)
+        // console.log('Attendee: ', this.attendeeExtended)
       })
     )
   }
@@ -136,7 +146,7 @@ export class ExamsService {
     return this.http.get<ExamAttendeeExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.attendees = res
-        console.log('Attendees: ', this.attendees)
+        // console.log('Attendees: ', this.attendees)
       })
     )
   }
@@ -146,7 +156,7 @@ export class ExamsService {
     return this.http.patch<Exam>(urlTemp, body).pipe(
       tap((res) => {
         this.exam = res
-        console.log('Attendee', this.exam)
+        // console.log('Attendee', this.exam)
       })
     )
   }
@@ -156,11 +166,19 @@ export class ExamsService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.statistic = res
-        console.log('Statistics', this.statistic)
+        // console.log('Statistics', this.statistic)
       })
     )
   }
 
-
+  getStatisticsDepartment(): Observable<any> {
+    let urlTemp = this.urlExams + 'get_statistics_department'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.statistic = res
+        // console.log('Statistics', this.statistic)
+      })
+    )
+  }
 
 }

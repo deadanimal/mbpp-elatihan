@@ -11,6 +11,8 @@ import { TagInputModule } from 'ngx-chips';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxGaugeModule } from 'ngx-gauge';
 import { QuillModule } from 'ngx-quill';
+import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
+// import { NgQRCodeReaderModule } from 'ng2-qrcode-reader';
 
 import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
@@ -54,7 +56,9 @@ import { ComponentsModule } from './components/components.module';
         ],
       },
       theme: 'snow'
-    })
+    }),
+    NgxQRCodeModule,
+    // NgQRCodeReaderModule
   ],
   declarations: [
     AppComponent, 

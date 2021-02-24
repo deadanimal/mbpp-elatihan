@@ -29,7 +29,7 @@ export class UsersService {
     return this.http.post<any>(this.urlUser, body).pipe(
       tap((res) => {
         this.user = res
-        console.log('User: ', this.user)
+        // console.log('User: ', this.user)
       })
     )
   }
@@ -38,7 +38,7 @@ export class UsersService {
     return this.http.get<User[]>(this.urlUser).pipe(
       tap((res) => {
         this.users = res
-        console.log('Users: ', this.users)
+        // console.log('Users: ', this.users)
       })
     )
   }
@@ -48,17 +48,17 @@ export class UsersService {
     return this.http.get<User>(urlTemp).pipe(
       tap((res) => {
         this.user = res
-        console.log('User: ', this.user)
+        // console.log('User: ', this.user)
       })
     )
   }
 
   update(id: String, body: Form): Observable<User> {
     let urlTemp = this.urlUser + id + '/'
-    return this.http.put<User>(urlTemp, body).pipe(
+    return this.http.patch<User>(urlTemp, body).pipe(
       tap((res) => {
         this.user = res
-        console.log('User: ', this.user)
+        // console.log('User: ', this.user)
       })
     )
   }
@@ -68,7 +68,7 @@ export class UsersService {
     return this.http.get<User[]>(urlTemp).pipe(
       tap((res) => {
         this.usersFiltered = res
-        console.log('Users: ', this.usersFiltered)
+        // console.log('Users: ', this.usersFiltered)
       })
     )
   }
@@ -78,7 +78,17 @@ export class UsersService {
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.summary = res
-        console.log('Summary: ', this.summary)
+        // console.log('Summary: ', this.summary)
+      })
+    )
+  }
+
+  getDepartmentStaffs(): Observable<User[]> {
+    let urlTemp = this.urlUser + 'get_department_staffs'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.users = res
+        // console.log('Staff: ', this.users)
       })
     )
   }

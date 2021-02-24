@@ -1,3 +1,4 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
 <div class="header pb-6">
     <div class="container-fluid">
         <div class="header-body">
@@ -17,30 +18,7 @@
                     </nav>
                 </div>
                 <div class="col-lg-6 col-5 text-right">
-                    <!-- <a 
-                        *ngIf="!editEnabled"
-                        class="btn btn-default btn-sm text-white btn-icon btn-3" 
-                        (click)="toggleEdit()"
-                    > 
-                        <span class="btn-inner--icon"><i class="fas fa-user-edit"></i></span>
-                        <span class="btn-inner--text">Kemaskini Profil</span>
-                    </a>
-                    <a
-                        *ngIf="editEnabled"
-                        class="btn btn-danger btn-sm text-white btn-icon btn-3" 
-                        (click)="toggleEdit()"
-                    > 
-                        <span class="btn-inner--icon"><i class="fas fa-arrow-left"></i></span>
-                        <span class="btn-inner--text">Kembali</span>
-                    </a>
-                    <a 
-                        *ngIf="editEnabled"
-                        class="btn btn-success btn-sm text-white btn-icon btn-3" 
-                        (click)="confirm()"
-                    > 
-                        <span class="btn-inner--icon"><i class="fas fa-save"></i></span>
-                        <span class="btn-inner--text">Simpan</span>
-                    </a> -->
+                    
 				</div>
             </div>
         </div>
@@ -102,15 +80,15 @@
 
                     <div class="text-center">
                         <h5 class="h3">
-                            Ali Imran<span class=" font-weight-light"> , 27 </span>
+                            {{user?.full_name}}<span class="font-weight-light"> , {{user?.age}} </span>
                         </h5>
 
                         <div class="h5 font-weight-300">
-                            <i class="fas fa-location-arrow mr-2"> </i> Ampang, Kuala Lumpur
+                            <i class="fas fa-building mr-2"> </i> {{user?.department}}
                         </div>
 
                         <div class="h5 mt-4">
-                            <i class="fas fa-briefcase mr-2"> </i> IT Manager
+                            <i class="fas fa-briefcase mr-2"> </i> {{user?.position}}
                         </div>
                     </div>
                 </div>
@@ -119,39 +97,40 @@
 
         <div class="col-xl-8 order-xl-1">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header bg-secondary">
                     <div class="row align-items-center">
-                        <div class="col-8">
-                            <h3 *ngIf="!editEnabled" class="mb-0">Profil</h3>
-                            <h3 *ngIf="editEnabled" class="mb-0"> Kemaskini Profil</h3>
+                        <div class="col">
+                            <h3 class="mb-0">Profil</h3>
                         </div>
-
-                        <div class="col-4 text-right">
-                            <!-- <a  *ngIf="!editEnabled"  class="btn btn-sm btn-primary" href="javascript:void(0)">
-                                Tetapan
-                            </a> -->
+                        <div class="col-auto text-right">
+                            <button
+                                class="btn btn-warm-blue btn-sm btn-icon btn-3" 
+                                (click)="navigatePage('/global/settings')"
+                            > 
+                                <span class="btn-inner--icon"><i class="fas fa-user-edit"></i></span>
+                                <span class="btn-inner--text">Kemaskini Profil</span>
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="card-body">
-                    <form  *ngIf="!editEnabled">
+                    <form>
                         <h6 class="heading-small text-muted mb-4">Informasi diri</h6>
 
                         <div class="pl-lg-4">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label class="form-control-label" for="input-username">
+                                        <label class="form-control-label">
                                             Nama
                                         </label>
 
                                         <input 
                                             class="form-control"
-                                            id="input-username" 
                                             placeholder="Name"
                                             type="text" 
-                                            value="Ali Imran"
+                                            [value]="user?.full_name"
                                             disabled 
                                         />
                                     </div>
@@ -159,16 +138,14 @@
 
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label class="form-control-label" for="input-email">
-                                            Emel
+                                        <label class="form-control-label">
+                                            NRIC
                                         </label>
 
                                         <input 
                                             class="form-control"
-                                            id="input-email" 
-                                            placeholder="Emel"
-                                            type="email"
-                                            value="imran@prototype.com.my"
+                                            placeholder="NRIC"
+                                            [value]="user?.nric"
                                             disabled
                                         />
                                     </div>
@@ -178,195 +155,172 @@
 
                         <hr class="my-4" />
 
-                        <h6 class="heading-small text-muted mb-4">Informasi perhubungan</h6>
+                        <h6 class="heading-small text-muted mb-4">Informasi Penjawatan</h6>
 
                         <div class="pl-lg-4">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-sm-12 col-lg-6">
                                     <div class="form-group">
-                                        <label class="form-control-label" for="input-address">
-                                            Alamat
+                                        <label class="form-control-label">
+                                            No. Kakitangan
                                         </label>
 
                                         <input 
                                             class="form-control"
-                                            id="input-address"
-                                            placeholder="Alamat"
+                                            placeholder="No. kakitangan"
                                             type="text" 
-                                            value="No. 199, Lorong Esplanade 91/8A"
+                                            [value]="user?.staff_id"
                                             disabled
                                         />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-lg-4">
+                                <div class="col-sm-12 col-lg-6">
                                     <div class="form-group">
-                                        <label class="form-control-label" for="input-city">
-                                            Bandar
+                                        <label class="form-control-label">
+                                            Taraf Perkhidmatan
                                         </label>
 
                                         <input 
                                             class="form-control"
-                                            id="input-city" 
-                                            placeholder="Bandar" 
-                                            type="text"
-                                            value="Petaling Jaya" 
-                                            disabled
-                                        />
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-country">
-                                            Negara
-                                        </label>
-
-                                        <input 
-                                            class="form-control"
-                                            id="input-country"
-                                            placeholder="Negara"
-                                            type="text"
-                                            value="Malaysia" 
-                                            disabled
-                                        />
-                                    </div>
-                                </div>
-
-                                <div class=" col-lg-4">
-                                    <div class=" form-group">
-                                        <label class=" form-control-label" for="input-country">
-                                            Poskod
-                                        </label>
-
-                                        <input 
-                                            class=" form-control"
-                                            id="input-postal-code"
-                                            placeholder="Poskod"
-                                            type="number"
-                                            value="41240"
-                                            disabled
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                    <form [formGroup]="editForm" *ngIf="editEnabled">
-                        <h6 class="heading-small text-muted mb-4">Informasi diri</h6>
-
-                        <div class="pl-lg-4">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-username">
-                                            Nama
-                                        </label>
-
-                                        <input 
-                                            class="form-control"
-                                            id="input-username" 
-                                            placeholder="Name"
+                                            placeholder="Taraf perkhidmatan"
                                             type="text" 
-                                            value="Ali Imran"
-                                            formControlName="name" 
-                                        />
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="input-email">
-                                            Emel
-                                        </label>
-
-                                        <input 
-                                            class="form-control"
-                                            id="input-email" 
-                                            placeholder="Emel"
-                                            type="email"
-                                            value="imran@prototype.com.my"
-                                            formControlName="email"
+                                            [value]="user?.service_status"
+                                            disabled
                                         />
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <hr class="my-4" />
-
-                        <h6 class="heading-small text-muted mb-4">Informasi perhubungan</h6>
-
-                        <div class="pl-lg-4">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-sm-12 col-lg-6">
                                     <div class="form-group">
-                                        <label class="form-control-label" for="input-address">
-                                            Alamat
+                                        <label class="form-control-label">
+                                            Tarikh Lantikan
                                         </label>
 
                                         <input 
                                             class="form-control"
-                                            id="input-address"
-                                            placeholder="Alamat"
+                                            placeholder="Tarikh lantikan"
                                             type="text" 
-                                            value="No. 199, Lorong Esplanade 91/8A"
-                                            formControlName="address"
+                                            [value]="user?.appointed_at | date: 'd/M/y'"
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">
+                                            Taraf Sah Perkhidmatan
+                                        </label>
+
+                                        <input 
+                                            class="form-control"
+                                            placeholder="Taraf sah perkhidmatan"
+                                            type="text" 
+                                            [value]="user?.confirmed_at | date: 'd/M/y'"
+                                            disabled
                                         />
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-lg-4">
+                                <div class="col-sm-12 col-lg-6">
                                     <div class="form-group">
-                                        <label class="form-control-label" for="input-city">
-                                            Bandar
+                                        <label class="form-control-label">
+                                            Jawatan
                                         </label>
 
                                         <input 
                                             class="form-control"
-                                            id="input-city" 
-                                            placeholder="Bandar" 
-                                            type="text"
-                                            value="Petaling Jaya" 
-                                            formControlName="city"
+                                            placeholder="Jawatan"
+                                            type="text" 
+                                            [value]="user?.position"
+                                            disabled
                                         />
                                     </div>
                                 </div>
 
-                                <div class="col-lg-4">
+                                <div class="col-sm-12 col-lg-6">
                                     <div class="form-group">
-                                        <label class="form-control-label" for="input-country">
-                                            Negara
+                                        <label class="form-control-label">
+                                            Jabatan
                                         </label>
 
                                         <input 
                                             class="form-control"
-                                            id="input-country"
-                                            placeholder="Negara"
-                                            type="text"
-                                            value="Malaysia" 
-                                            formControlName="country"
+                                            placeholder="Jabatan"
+                                            type="text" 
+                                            [value]="user?.department"
+                                            disabled
                                         />
                                     </div>
                                 </div>
 
-                                <div class=" col-lg-4">
-                                    <div class=" form-group">
-                                        <label class=" form-control-label" for="input-country">
-                                            Poskod
+                                <div class="col-sm-12 col-lg-12">
+                                    <div class="form-group">
+                                        <label class="form-control-label">
+                                            Bahagian
                                         </label>
 
                                         <input 
-                                            class=" form-control"
-                                            id="input-postal-code"
-                                            placeholder="Poskod"
-                                            type="number"
-                                            value="41240"
-                                            formControlName="postcode"
+                                            class="form-control"
+                                            placeholder="Bahagian"
+                                            type="text" 
+                                            [value]="user?.section"
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">
+                                            Gred
+                                        </label>
+
+                                        <input 
+                                            class="form-control"
+                                            placeholder="Gred"
+                                            type="text" 
+                                            [value]="user?.grade_code"
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">
+                                            Kod Gaji
+                                        </label>
+
+                                        <input 
+                                            class="form-control"
+                                            placeholder="Kod gaji"
+                                            type="text" 
+                                            [value]="user?.salary_code"
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label">
+                                            Peranan
+                                        </label>
+
+                                        <input 
+                                            class="form-control"
+                                            placeholder="Peranan"
+                                            type="text" 
+                                            [value]="user?.role"
+                                            disabled
                                         />
                                     </div>
                                 </div>

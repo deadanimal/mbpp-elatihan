@@ -5,6 +5,7 @@ ngx-datatable {
     .datatable-body-cell {
     margin: auto;
     padding: 1rem;
+    overflow: visible !important;  
   }
   &.ngx-datatable.bootstrap .datatable-footer {
     background: $white;
