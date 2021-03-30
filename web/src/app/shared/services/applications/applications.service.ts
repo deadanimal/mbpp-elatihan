@@ -21,6 +21,7 @@ export class ApplicationsService {
   applicationsFiltered: Application[] = []
 
   applicationsSelf: ApplicationSelfExtended[] = []
+  applicationsHistory: ApplicationSelfExtended[] = []
   applicationsDepartment: ApplicationDepartmentExtended[] = []
 
   statisticSelf: any
@@ -102,6 +103,16 @@ export class ApplicationsService {
     return this.http.get<ApplicationSelfExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.applicationsSelf = res
+        // console.log('Applications: ', this.applicationsSelf)
+      })
+    )
+  }
+  
+  getSelfHistory(): Observable<ApplicationSelfExtended[]> {
+    let urlTemp = this.urlApplications + 'get_self_history'
+    return this.http.get<ApplicationSelfExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        this.applicationsHistory = res
         // console.log('Applications: ', this.applicationsSelf)
       })
     )

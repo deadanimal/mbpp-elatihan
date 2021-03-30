@@ -2,14 +2,17 @@ import { Routes } from '@angular/router';
 import { CalendarComponent } from './calendar/calendar.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { EvaluationsComponent } from './evaluations/evaluations.component';
 import { ExamsComponent } from './exams/exams.component';
 import { ExamAddComponent } from './exam-add/exam-add.component';
+import { NeedAnalysisComponent } from './need-analysis/need-analysis.component';
 import { ReportComponent } from './report/report.component';
+import { ReportConfigurationComponent } from './report-configuration/report-configuration.component';
 import { TrainingsComponent } from './trainings/trainings.component';
 import { TrainingAddComponent } from './training-add/training-add.component';
 import { TrainingDetailsComponent } from './training-details/training-details.component';
-import { NeedAnalysisComponent } from './need-analysis/need-analysis.component';
 import { UsersComponent } from './users/users.component';
+import { EvaluationDetailsComponent } from './evaluation-details/evaluation-details.component';
 
 export const TrainingCoordinatorRoutes: Routes = [
     {
@@ -26,6 +29,19 @@ export const TrainingCoordinatorRoutes: Routes = [
             {
                 path: 'dashboard',
                 component: DashboardComponent
+            },
+            {
+                path: 'evaluations',
+                children: [
+                    {
+                        path: '',
+                        component: EvaluationsComponent
+                    },
+                    {
+                        path: 'details',
+                        component: EvaluationDetailsComponent
+                    }
+                ]
             },
             {
                 path: 'exams',
@@ -59,7 +75,16 @@ export const TrainingCoordinatorRoutes: Routes = [
             },
             {
                 path: 'report',
-                component: ReportComponent
+                children: [
+                    {
+                        path: 'generate',
+                        component: ReportComponent
+                    },
+                    {
+                        path: 'configuration',
+                        component: ReportConfigurationComponent
+                    }
+                ]
             },
             {
                 path: 'need-analyses',

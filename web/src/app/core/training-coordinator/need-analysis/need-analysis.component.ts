@@ -18,6 +18,7 @@ import * as xlsx from 'xlsx';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
+import { Department } from 'src/app/shared/code/user';
 am4core.useTheme(am4themes_animated);
 
 export enum SelectionType {
@@ -42,6 +43,7 @@ export class NeedAnalysisComponent implements OnInit {
   coresTemp: Core[] = []
   coresParentTemp = 'GN'
   statistics
+  departments = Department
 
   // Table
   tableEntries: number = 5

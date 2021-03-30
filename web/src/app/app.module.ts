@@ -17,7 +17,6 @@ import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 import { AppComponent } from './app.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
-import { PresentationModule } from './examples/presentation/presentation.module';
 
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
@@ -41,7 +40,6 @@ import { ComponentsModule } from './components/components.module';
       positionClass: 'toast-top-right'
     }),
     LeafletModule,
-    PresentationModule,
     NgxGaugeModule,
     QuillModule.forRoot({
       modules: {

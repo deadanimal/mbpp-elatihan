@@ -1,0 +1,37 @@
+export const Department = [
+    { value: 'ALL', text: 'KESELURUHAN' },
+    { value: '11', text: 'JABATAN KHIDMAT PENGURUSAN' },
+    { value: '15', text: 'JABATAN PENGUATKUASAAN' },
+    { value: '21', text: 'JABATAN PERBENDAHARAAN' },
+    { value: '31', text: 'JABATAN KEJURUTERAAN' },
+    { value: '41', text: 'JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN' },
+    { value: '45', text: 'JABATAN PERKHIDMATAN DAN PERBANDARAAN' },
+    { value: '47', text: 'JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN - PELESENAN' },
+    { value: '51', text: 'JABATAN KAWALAN BANGUNAN' },
+    { value: '55', text: 'JABATAN KONSERVASI WARISAN' },
+    { value: '61', text: 'JABATAN PENILAIAN DAN PENGURUSAN HARTA' },
+    { value: '63', text: 'JABATAN PESURUHJAYA BANGUNAN' },
+    { value: '71', text: 'JABATAN PERANCANGAN PEMBANGUNAN' },
+    { value: '81', text: 'JABATAN KHIDMAT KEMASYARAKATAN' },
+    { value: '86', text: 'JABATAN LANDSKAP' },
+    { value: '90', text: 'PEJABAT DATUK BANDAR' },
+    { value: '91', text: 'PEJABAT DATUK BANDAR - UNDANG - UNDANG' },
+    { value: '92', text: 'PEJABAT DATUK BANDAR - PENYELARASAN PEMBANGUNAN' },
+    { value: '93', text: 'PEJABAT DATUK BANDAR - AUDIT DALAM' },
+    { value: '94', text: 'PEJABAT DATUK BANDAR - OSC' }
+]
+
+export const Month = [
+    { value: 1, text: 'JANUARI' },
+    { value: 2, text: 'FEBRUARI' },
+    { value: 3, text: 'MAC' },
+    { value: 4, text: 'APRIL' },
+    { value: 5, text: 'MEI' },
+    { value: 6, text: 'JUN' },
+    { value: 7, text: 'JULAI' },
+    { value: 8, text: 'OGOS' },
+    { value: 9, text: 'SEPTEMBER' },
+    { value: 10, text: 'OKTOBER' },
+    { value: 11, text: 'NOVEMBER' },
+    { value: 12, text: 'DISEMBER' },
+]

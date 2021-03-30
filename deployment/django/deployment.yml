@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: mbpp-elatihan-api
-        image: syafiqpipe/mbpp-elatihan-api:1.0.28 #boleh tambah version
+        image: syafiqpipe/mbpp-elatihan-api:1.0.33 #boleh tambah version
         imagePullPolicy: Always
         ports:
         - containerPort: 5000

@@ -29,6 +29,9 @@ export class TrainingsService {
 
   applicableStaffs: User[] = []
 
+  reportUrl: any
+  evaluationRes: any
+
   constructor(
     private http: HttpClient
   ) { }
@@ -163,6 +166,16 @@ export class TrainingsService {
     )
   }
 
+  checkEvaluation(id: string) {
+    let urlTemp = this.urlTraining + id + '/check_evaluation'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.evaluationRes = res
+        // console.log(res)
+      })
+    )
+  }
+
   createTrainingType(body: Form): Observable<TrainingType> {
     return this.http.post<any>(this.urlTrainingType, body).pipe(
       tap((res) => {
@@ -217,6 +230,24 @@ export class TrainingsService {
       tap((res) => {
         this.applicableStaffs = res
         // console.log('Applicable staff for training coordinator', this.applicableStaffs)
+      })
+    )
+  }
+
+  getReportAttendance(body: any) {
+    let urlTemp = this.urlTraining + 'report_attendance/'
+    return this.http.post<any>(urlTemp, body).pipe(
+      tap((res) => {
+        this.reportUrl = res
+      })
+    )
+  }
+
+  getReportOBB(body: any) {
+    let urlTemp = this.urlTraining + 'report_obb/'
+    return this.http.post<any>(urlTemp, body).pipe(
+      tap((res) => {
+        this.reportUrl = res
       })
     )
   }

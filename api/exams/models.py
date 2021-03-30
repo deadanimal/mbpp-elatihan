@@ -55,7 +55,7 @@ class ExamAttendee(models.Model):
         related_name='exam_staff'
     )
     date = models.DateTimeField(null=True)
-    document_copy = models.FileField(null=True, upload_to=PathAndRename('document'))
+    document_copy = models.FileField(null=True, upload_to=PathAndRename('mbpp-elatihan/documents'))
 
     RESULT = [
         ('PA', 'Pass'),

@@ -62,8 +62,7 @@ export const TCROUTES: RouteInfo[] = [
   },
   { path: '/need-analysis', title: 'Keperluan Latihan', type: 'link', icontype: 'fas fa-chart-pie text-primary'},
   { path: '/takwim',  title: 'Takwim', type: 'link', icontype: 'far fa-calendar-alt text-primary' },
-  { path: '/tc/dashboard', title: 'Dashboard Latihan', type: 'link', icontype: 'fas fa-home text-primary'
-  },
+  { path: '/tc/dashboard', title: 'Dashboard Latihan', type: 'link', icontype: 'fas fa-home text-primary' },
   { path: '/tc/trainings',  title: 'Pengurusan Latihan', type: 'sub', icontype: 'fas fa-chalkboard-teacher text-primary',
     collapse: 'trainings', isCollapsed: true, children: [
       { path: 'summary', title: 'Ringkasan', type: 'link' },
@@ -78,7 +77,12 @@ export const TCROUTES: RouteInfo[] = [
     ]
   },
   { path: '/tc/need-analyses', title: 'Analisa Keperluan Latihan', type: 'link', icontype: 'fas fa-chart-pie text-primary' },
-  { path: '/tc/report', title: 'Laporan', type: 'link', icontype: 'fas fa-chart-bar text-primary' },
+  { path: '/tc/evaluations', title: 'Penilaian', type: 'link', icontype: 'fas fa-file-alt text-primary' },
+  { path: '/tc/report', title: 'Laporan', type: 'sub', icontype: 'fas fa-chart-bar text-primary',
+    collapse: 'report', isCollapsed: true, children: [
+      { path: 'generate', title: 'Jana', type: 'link' },
+      { path: 'configuration', title: 'Konfigurasi', type: 'link' },
+    ] },
   { path: '/tc/configuration', title: 'Konfigurasi', type: 'link', icontype: 'fas fa-tools text-primary' },
   { path: '/tc/users', title: 'Pengurusan Pengguna', type: 'link', icontype: 'fas fa-user-shield text-primary'}
 ];

@@ -39,9 +39,9 @@
             <h4 class="text-center mb-0">LAPORAN KEHADIRAN PEGAWAI MENGHADIRI LATIHAN</h4>
             <h4 class="text-center mt-0 mb-2">MAJLIS BANDARAYA PULAU PINANG</h4>
 
-            <h5 class="mt-5 mb-0">JABATAN: JABATAN KEJURUTERAAN</h5>
-            <h5 class="m-0">BULAN: OGOS <span style="color: black !important;">2020</span></h5>
-            <h5 class="mt-0 mb-5">JUMLAH PEGAWAI: 241 ORANG</h5>
+            <h5 class="mt-5 mb-0">JABATAN: {{data.misc.department}}</h5>
+            <h5 class="m-0">BULAN: {{data.misc.month}}</h5>
+            <h5 class="mt-0 mb-5">JUMLAH PEGAWAI: {{data.total.total_staff}}</h5>
 
             <table class="table mt-2">
                 <thead>
@@ -58,70 +58,80 @@
 
                 <tbody>
                     <tr>
-                        <th scope="row">PENGURUSAN & PENGURUSAN (48 ke atas)</th>
-                        <td>
-                            <p>0</p>
-                        </td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
+                        <th scope="row">PENGURUSAN DAN PROFESSIONAL (GRED 48 KE ATAS)</th>
+                        <td>{{data.group_a_a.group_a_a_5}}</td>
+                        <td>{{data.group_a_a.group_a_a_4}}</td>
+                        <td>{{data.group_a_a.group_a_a_3}}</td>
+                        <td>{{data.group_a_a.group_a_a_2}}</td>
+                        <td>{{data.group_a_a.group_a_a_1}}</td>
+                        <td>{{data.group_a_a.group_a_a_0}}</td>
                     </tr>
                     <tr>
-                        <th scope="row">PENGURUSAN & PENGURUSAN (44)</th>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
+                        <th scope="row">PENGURUSAN DAN PROFESSIONAL (GRED 44)</th>
+                        <td>{{data.group_a_b.group_a_b_5}}</td>
+                        <td>{{data.group_a_b.group_a_b_4}}</td>
+                        <td>{{data.group_a_b.group_a_b_3}}</td>
+                        <td>{{data.group_a_b.group_a_b_2}}</td>
+                        <td>{{data.group_a_b.group_a_b_1}}</td>
+                        <td>{{data.group_a_b.group_a_b_0}}</td>
                     </tr>
                     <tr>
-                        <th scope="row">PENGURUSAN & PENGURUSAN (41)</th>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
+                        <th scope="row">PENGURUSAN DAN PROFESSIONAL (GRED 41)</th>
+                        <td>{{data.group_a_c.group_a_c_5}}</td>
+                        <td>{{data.group_a_c.group_a_c_4}}</td>
+                        <td>{{data.group_a_c.group_a_c_3}}</td>
+                        <td>{{data.group_a_c.group_a_c_2}}</td>
+                        <td>{{data.group_a_c.group_a_c_1}}</td>
+                        <td>{{data.group_a_c.group_a_c_0}}</td>
                     </tr>
                     <tr>
-                        <th scope="row">KUMPULAN PELAKSANA (19-40)</th>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
+                        <th scope="row">KUMPULAN PELAKSANA (GRED 19 - 40)</th>
+                        <td>{{data.group_b.group_b_5}}</td>
+                        <td>{{data.group_b.group_b_4}}</td>
+                        <td>{{data.group_b.group_b_3}}</td>
+                        <td>{{data.group_b.group_b_2}}</td>
+                        <td>{{data.group_b.group_b_1}}</td>
+                        <td>{{data.group_b.group_b_0}}</td>
                     </tr>
                     <tr>
-                        <th scope="row">KUMPULAN PELAKSANA (11-18)</th>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
+                        <th scope="row">KUMPULAN PELAKSANA (GRED 11 - 18)</th>
+                        <td>{{data.group_c.group_c_5}}</td>
+                        <td>{{data.group_c.group_c_4}}</td>
+                        <td>{{data.group_c.group_c_3}}</td>
+                        <td>{{data.group_c.group_c_2}}</td>
+                        <td>{{data.group_c.group_c_1}}</td>
+                        <td>{{data.group_c.group_c_0}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">KUMPULAN PELAKSANA (GRED 1 - 10)</th>
+                        <td>{{data.group_d.group_d_5}}</td>
+                        <td>{{data.group_d.group_d_4}}</td>
+                        <td>{{data.group_d.group_d_3}}</td>
+                        <td>{{data.group_d.group_d_2}}</td>
+                        <td>{{data.group_d.group_d_1}}</td>
+                        <td>{{data.group_d.group_d_0}}</td>
                     </tr>
                     <tr>
                         <th scope="row">JUMLAH</th>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
+                        <td>{{data.total.total_5}}</td>
+                        <td>{{data.total.total_4}}</td>
+                        <td>{{data.total.total_3}}</td>
+                        <td>{{data.total.total_2}}</td>
+                        <td>{{data.total.total_1}}</td>
+                        <td>{{data.total.total_0}}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </body>
 
-    <footer id="footer">
-        <p>
+    <footer id="footer" class="default-template row">
+        <p class="col text-left">
             <img src="https://pipeline-project.sgp1.digitaloceanspaces.com/images/mbpp-logo.png" style="max-width: 2rem">
             <span>MBPP | eLatihan</span>
+        </p>
+        <p class="col text-right">
+            Dijana pada: {{data.misc.generated_at}}
         </p>
     </footer> 
 

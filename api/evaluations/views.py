@@ -20,23 +20,37 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import (
     ContentEvaluation,
     ExternalEvaluation,
-    InternalEvaluation
+    InternalEvaluation,
+    Certificate
 )
 
 from .serializers import (
     ContentEvaluationSerializer,
     ExternalEvaluationSerializer,
-    InternalEvaluationSerializer
+    InternalEvaluationSerializer,
+    CertificateSerializer,
+    ContentEvaluationExtendedSerializer,
+    ExternalEvaluationExtendedSerializer,
+    InternalEvaluationExtendedSerializer,
+    CertificateExtendedSerializer
+)
+
+from trainings.models import (
+    Training
+)
+
+from users.models import (
+    CustomUser
 )
 
 class ContentEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = ContentEvaluation.objects.all()
     serializer_class = ContentEvaluationSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    # filterset_fields = [
-    #     'staff',
-    #     'date'
-    # ]
+    filterset_fields = [
+        'evaluation',
+        'created_at'
+    ]
 
     def get_permissions(self):
         permission_classes = [IsAuthenticated]#[IsAuthenticated]
@@ -54,50 +68,53 @@ class ContentEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         queryset = ContentEvaluation.objects.all()
         return queryset  
     
-    # @action(methods=['GET'], detail=False)
-    # def get_self(self, request, *args, **kwargs):
-    #     user = self.request.user
-    #     exams = ExamAttendee.objects.filter(
-    #         staff=user
-    #     )
+    @action(methods=['POST'], detail=False)
+    def get_self(self, request, *args, **kwargs):
 
-    #     serializer = ExamAttendeeExtendedSerializer(exams, many=True)
-    #     return Response(serializer.data)
-    
-    # @action(methods=['GET'], detail=True)
-    # def extended(self, request, *args, **kwargs):
-    #     exam = self.get_object()
-    #     serializer = ExamAttendeeExtendedSerializer(exam, many=False)
-    #     return Response(serializer.data)
+        user = self.request.user
+        evaluations = ContentEvaluation.objects.filter(
+            evaluation__attendee=user
+        )
 
-    # @action(methods=['GET'], detail=False)
-    # def extended_all(self, request, *args, **kwargs):
-    #     exams = ExamAttendee.objects.all()
+        serializer = ContentEvaluationExtendedSerializer(evaluations, many=True)
+        return Response(serializer.data)
 
-    #     serializer = ExamAttendeeExtendedSerializer(exams, many=True)
-    #     return Response(serializer.data)
-    
-    # @action(methods=['GET'], detail=False)
-    # def get_department_attendees(self, request, *args, **kwargs):
-    #     user = request.user
-        
-    #     if user.user_type == 'DC' or user.user_type == 'DH':
-    #         users = ExamAttendee.objects.filter(staff__department_code=user.department_code).order_by('-date')
-    #         serializer = ExamAttendeeExtendedSerializer(users, many=True)
+    @action(methods=['POST'], detail=False)
+    def get_training(self, request, *args, **kwargs):
 
-    #         return Response(serializer.data)
-    #     else:
-    #         users = ExamAttendee.objects.none()
-    #         serializer = ExamAttendeeExtendedSerializer(users, many=True)
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+        evaluations = ContentEvaluation.objects.filter(
+            training__id=request_training_
+        )
 
-    class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+        serializer = ContentEvaluationExtendedSerializer(evaluations, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['POST'], detail=False)
+    def get_training_self(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+        evaluation = ContentEvaluation.objects.get(
+            training__id=request_training_,
+            evaluation__training__attendee=user
+        )
+
+        serializer = ContentEvaluationExtendedSerializer(evaluation, many=False)
+        return Response(serializer.data)
+
+
+class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = ExternalEvaluation.objects.all()
     serializer_class = ExternalEvaluationSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    # filterset_fields = [
-    #     'staff',
-    #     'date'
-    # ]
+    filterset_fields = [
+        'training',
+        'attendee'
+    ]
 
     def get_permissions(self):
         permission_classes = [IsAuthenticated]#[IsAuthenticated]
@@ -113,7 +130,87 @@ class ContentEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         queryset = ExternalEvaluation.objects.all()
-        return queryset  
+        return queryset
+    
+    @action(methods=['GET'], detail=True)
+    def extended(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluation = self.get_object()
+
+        serializer = ExternalEvaluationExtendedSerializer(evaluation, many=False)
+        return Response(serializer.data)
+
+    
+    @action(methods=['GET'], detail=False)
+    def extended_all(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluations = ExternalEvaluation.objects.all()
+
+        serializer = ExternalEvaluationExtendedSerializer(evaluations, many=True)
+        return Response(serializer.data)
+    
+
+    @action(methods=['POST'], detail=False)
+    def get_self(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluations = ExternalEvaluation.objects.filter(
+            attendee=user
+        )
+
+        serializer = ExternalEvaluationExtendedSerializer(evaluations, many=True)
+        return Response(serializer.data)
+    
+    @action(methods=['POST'], detail=False)
+    def get_training(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+        evaluations = ExternalEvaluation.objects.filter(
+            training__id=request_training_
+        )
+
+        serializer = ExternalEvaluationExtendedSerializer(evaluations, many=True)
+        return Response(serializer.data)
+    
+    @action(methods=['POST'], detail=False)
+    def get_training_self(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+        evaluation = ExternalEvaluation.objects.get(
+            training__id=request_training_,
+            attendee=user
+        )
+
+        serializer = ExternalEvaluationExtendedSerializer(evaluation, many=False)
+        return Response(serializer.data)
+
+    @action(methods=['GET'], detail=True)
+    def approve(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluation = self.get_object()
+        evaluation.approved_by = user
+        evaluation.save()
+
+        serializer = ExternalEvaluationExtendedSerializer(evaluation, many=False)
+        return Response(serializer.data)
+
+    @action(methods=['GET'], detail=True)
+    def verify(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluation = self.get_object()
+        evaluation.verified_by = user
+        evaluation.save()
+
+        serializer = ExternalEvaluationExtendedSerializer(evaluation, many=False)
+        return Response(serializer.data)
 
 
 class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
@@ -140,3 +237,195 @@ class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         user = self.request.user
         queryset = InternalEvaluation.objects.all()
         return queryset  
+    
+
+    @action(methods=['GET'], detail=True)
+    def extended(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluation = self.get_object()
+
+        serializer = InternalEvaluationExtendedSerializer(evaluation, many=False)
+        return Response(serializer.data)
+
+    
+    @action(methods=['GET'], detail=False)
+    def extended_all(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluations = InternalEvaluation.objects.all()
+
+        serializer = InternalEvaluationExtendedSerializer(evaluations, many=True)
+        return Response(serializer.data)
+    
+    @action(methods=['GET'], detail=False)
+    def get_self(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluations = InternalEvaluation.objects.filter(
+            attendee=user
+        )
+
+        serializer = InternalEvaluationExtendedSerializer(evaluations, many=True)
+        return Response(serializer.data)
+    
+    @action(methods=['POST'], detail=False)
+    def get_training(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+        evaluations = InternalEvaluation.objects.filter(
+            training__id=request_training_
+        )
+
+        serializer = InternalEvaluationExtendedSerializer(evaluations, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['POST'], detail=False)
+    def get_training_self(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+        evaluation = InternalEvaluation.objects.get(
+            training__id=request_training_,
+            attendee=user
+        )
+
+        serializer = InternalEvaluationExtendedSerializer(evaluation, many=False)
+        return Response(serializer.data)
+
+    @action(methods=['GET'], detail=True)
+    def approve(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluation = self.get_object()
+        evaluation.approved_by = user
+        evaluation.save()
+
+        serializer = InternalEvaluationExtendedSerializer(evaluation, many=False)
+        return Response(serializer.data)
+
+    @action(methods=['GET'], detail=True)
+    def verify(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluation = self.get_object()
+        evaluation.verified_by = user
+        evaluation.save()
+
+        serializer = InternalEvaluationExtendedSerializer(evaluation, many=False)
+        return Response(serializer.data)
+
+
+class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = Certificate.objects.all()
+    serializer_class = CertificateSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    filterset_fields = [
+        'evaluation',
+        'created_at'
+    ]
+
+    def get_permissions(self):
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        """
+        if self.action == 'list':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsAuthenticated]
+        """
+        return [permission() for permission in permission_classes]    
+
+    
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Certificate.objects.all()
+        return queryset  
+    
+    @action(methods=['GET'], detail=False)
+    def get_self(self, request, *args, **kwargs):
+
+        user = self.request.user
+        certicates = Certificate.objects.filter(
+            certicate__attendee=user
+        )
+
+        serializer = CertificateExtendedSerializer(certicates, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['POST'], detail=False)
+    def get_training(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+        certificates = Certificate.objects.filter(
+            training__id=request_training_
+        )
+
+        serializer = CertificateExtendedSerializer(certificates, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['POST'], detail=False)
+    def get_training_self(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+        certificate = Certificate.objects.get(
+            training__id=request_training_,
+            certificate__training__attendee=user
+        )
+
+        serializer = CertificateExtendedSerializer(certificate, many=False)
+        return Response(serializer.data)
+
+    @action(methods=['POST'], detail=False)
+    def generate_bulk(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+        request_attendees_ = request_['attendees']
+
+        training = Training.objects.get(id=request_training_)
+
+        for request_attendee_ in request_attendees_:
+            attendee = CustomUser.objects.get(id=request_attendee_)
+
+            # Start certificate generation
+            css_file = 'https://pipeline-project.sgp1.digitaloceanspaces.com/mbpp-elatihan/css/template.css'
+            data_ = {
+                'name': 'name',
+                'training_name': 'name',
+                'start_date': 'start_date',
+                'end_date': 'end_date'
+            }
+
+            html_string = render_to_string(
+                'cert/cert.html', 
+                { 'data': data_ }
+            )
+            html = HTML(string=html_string)
+            pdf_file = html.write_pdf(stylesheets=[CSS(css_file)])
+            file_path = 'mbpp-elatihan/certificates/Sijil' + '-' + training.course_code + '-' \
+                + attendee.nric + '.pdf'
+            saved_file = default_storage.save(
+                file_path,
+                ContentFile(pdf_file)
+            )
+            full_url_path = settings.MEDIA_ROOT + saved_file
+
+            certificate = Certificate.objects.create(
+                training=training,
+                attendee=attendee,
+                generated_by=user,
+                cert=full_url_path
+            )
+        
+        certificates = Certificate.objects.filter(training=training)
+
+        serializer = CertificateExtendedSerializer(certificates, many=True)
+        return Response(serializer.data)

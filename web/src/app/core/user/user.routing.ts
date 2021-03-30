@@ -10,6 +10,7 @@ import { TrainingHistoryComponent } from './training-history/training-history.co
 import { TrainingListComponent } from './training-list/training-list.component';
 import { TrainingInformationComponent } from './training-information/training-information.component';
 import { NeedAnalysisComponent } from './need-analysis/need-analysis.component';
+import { TrainingEvaluateComponent } from './training-evaluate/training-evaluate.component';
 
 export const UserRoutes: Routes = [
     {
@@ -62,6 +63,10 @@ export const UserRoutes: Routes = [
                     {
                         path: 'information',
                         component: TrainingInformationComponent
+                    },
+                    {
+                        path: 'evaluate',
+                        component: TrainingEvaluateComponent
                     }
                 ]
             },

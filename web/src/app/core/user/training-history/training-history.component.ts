@@ -8,6 +8,8 @@ import { Training } from 'src/app/shared/services/trainings/trainings.model';
 import { Attendance } from 'src/app/shared/services/attendances/attendances.model';
 
 import * as moment from 'moment';
+import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
+import { Application, ApplicationExtended, ApplicationSelfExtended } from 'src/app/shared/services/applications/applications.model';
 
 export enum SelectionType {
   single = "single",
@@ -25,7 +27,7 @@ export enum SelectionType {
 export class TrainingHistoryComponent implements OnInit {
 
   // Data
-  trainings: Training[] = []
+  applications: ApplicationSelfExtended[] = []
   attendance: Attendance[] = []
 
   // Table
@@ -48,24 +50,24 @@ export class TrainingHistoryComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private trainingService: TrainingsService,
+    private applicationService: ApplicationsService,
     private attendanceService: AttendancesService,
     private loadingBar: LoadingBarService,
     private router: Router
-  ) { }
+  ) { 
+    this.getData()
+  }
 
   ngOnInit() {
   }
+
   getData() {
-    let filterField = 'staff=' + this.authService.userID
-    // console.log(filterField)
-    // console.log('boom')
     this.loadingBar.start()
-    this.trainingService.filter(filterField).subscribe(
+    this.applicationService.getSelfHistory().subscribe(
       () => {
         this.loadingBar.complete()
-        this.trainings = this.trainingService.trainingsFiltered
-        this.tableRows = this.trainings
+        this.applications = this.applicationService.applicationsHistory
+        this.tableRows = this.applications
         this.tableRows.forEach(
           (row) => {
             row.start_date = moment(row.start_date).format('DD/MM/YYYY')
@@ -115,9 +117,24 @@ export class TrainingHistoryComponent implements OnInit {
     this.tableActiveRow = event.row;
   }
 
-  view(path: string, selected: Training) {
-    
-    this.router.navigate([path])
+  view(training) {
+    let path = '/trainings/evaluate'
+    let extras = training['id']
+    let organiser_type = 'DD'
+
+    if (training['organiser_type'] == 'DD') {
+      organiser_type = 'DD'
+    }
+    else {
+      organiser_type = 'LL'
+    }
+    let queryParams = {
+      queryParams: {
+        id: extras,
+        type: organiser_type
+      }
+    }
+    this.router.navigate([path], queryParams)
   }
 
   navigatePage(path: string) {

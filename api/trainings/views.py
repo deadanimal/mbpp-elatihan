@@ -3,6 +3,8 @@ import time
 import uuid
 import datetime
 import pytz
+import dateutil.parser
+
 from django.utils import timezone
 
 from django.http import JsonResponse
@@ -39,7 +41,9 @@ from .models import (
     TrainingDomain,
     TrainingType,
     Configuration,
-    TrainingNeedAnalysis
+    TrainingNeedAnalysis,
+    MonitoringPlan,
+    BasicLevel
 )
 
 from .serializers import (
@@ -58,7 +62,14 @@ from .serializers import (
     TrainingTypeSerializer,
     ConfigurationSerializer,
     TrainingNeedAnalysisSerializer,
-    TrainingNeedAnalysisExtendedSerializer
+    TrainingNeedAnalysisExtendedSerializer,
+    MonitoringPlanSerializer,
+    BasicLevelSerializer
+)
+
+from evaluations.models import (
+    ExternalEvaluation,
+    InternalEvaluation
 )
 
 from users.models import (
@@ -252,7 +263,7 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        # permission_classes = [IsAuthenticated]#[IsAuthenticated]
         
         if self.action == 'get_latest':
             permission_classes = [AllowAny]
@@ -278,13 +289,441 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer = TrainingSerializer(trainings, many=True)
         return Response(serializer.data)
 
-    @action(methods=['GET'], detail=False)
+    @action(methods=['POST'], detail=False)
     def report_attendance(self, request, *args, **kwargs):
+
+        request_ = json.loads(request.body)
+        request_department_ = request_['department']
+        request_month_type_ = request_['month_type']
+        
+        # Timezone set
+        timezone_ = pytz.timezone('Asia/Kuala_Lumpur')
+        filter_year = datetime.datetime.now(tz=timezone_).year
+        today = datetime.datetime.now(tz=timezone_)
+
+        # staffs = CustomUser.objects.filter(
+        #     Q(service_status='K') |
+        #     Q(service_status='T')
+        # )
+        # attendances = TrainingAttendee.objects.all()
+
+        # Filter department
+        if request_department_ == 'ALL':
+            staffs = CustomUser.objects.filter(
+                Q(service_status='K') |
+                Q(service_status='T')
+            )
+            department = 'KESELURUHAN'
+        else:
+            staffs = CustomUser.objects.filter(
+                Q(service_status='K') |
+                Q(service_status='T')
+            ).filter(
+                department_code=request_department_
+            )
+
+            if request_department_ == '11':
+                department = 'JABATAN KHIDMAT PENGURUSAN'
+            elif request_department_ == '15':
+                department = 'JABATAN PENGUATKUASAAN'
+            elif request_department_ == '21':
+                department = 'JABATAN PERBENDAHARAAN'
+            elif request_department_ == '31':
+                department = 'JABATAN KEJURUTERAAN'
+            elif request_department_ == '41':
+                department = 'JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN'
+            elif request_department_ == '45':
+                department = 'JABATAN PERKHIDMATAN DAN PERBANDARAAN'
+            elif request_department_ == '47':
+                department = 'JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN - PELESENAN'
+            elif request_department_ == '51':
+                department = 'JABATAN KAWALAN BANGUNAN'
+            elif request_department_ == '55':
+                department = 'JABATAN KONSERVASI WARISAN'
+            elif request_department_ == '61':
+                department = 'JABATAN PENILAIAN DAN PENGURUSAN HARTA'
+            elif request_department_ == '63':
+                department = 'JABATAN PESURUHJAYA BANGUNAN'
+            elif request_department_ == '71':
+                department = 'JABATAN PERANCANGAN PEMBANGUNAN'
+            elif request_department_ == '81':
+                department = 'JABATAN KHIDMAT KEMASYARAKATAN'
+            elif request_department_ == '86':
+                department = 'JABATAN LANDSKAP'
+            elif request_department_ == '90':
+                department = 'PEJABAT DATUK BANDAR'
+            elif request_department_ == '91':
+                department = 'PEJABAT DATUK BANDAR - UNDANG - UNDANG'
+            elif request_department_ == '92':
+                department = 'PEJABAT DATUK BANDAR - PENYELARASAN PEMBANGUNAN'
+            elif request_department_ == '93':
+                department = 'PEJABAT DATUK BANDAR - AUDIT DALAM'
+            elif request_department_ == '94':
+                department = 'PEJABAT DATUK BANDAR - OSC'
+        
+        # Filter month
+        if request_month_type_ == 'ALL':
+            attendances = TrainingAttendee.objects.filter(
+                created_at__year=filter_year
+            )
+
+            month = 'KESELURUHAN'
+        elif request_month_type_ == 'RANGE':
+            request_month_from_ = dateutil.parser.parse(request_['month_from'] + 'T00:00:00.0000000+08:00')
+            request_month_to_ = dateutil.parser.parse(request_['month_to'] + 'T00:00:00.00000000+08:00')
+
+            attendances = TrainingAttendee.objects.filter(
+                created_at__range=[request_month_from_, request_month_to_]
+            )
+
+            month_from = request_month_from_.strftime('%d/%m/%Y')
+            month_to = request_month_to_.strftime('%d/%m/%Y')
+
+            # if str(request_month_from_) == '1':
+            #     month_from = 'JANUARI'
+            # elif str(request_month_from_) == '2':
+            #     month_from = 'FEBRUARI'
+            # elif str(request_month_from_) == '3':
+            #     month_from = 'MAC'
+            # elif str(request_month_from_) == '4':
+            #     month_from = 'APRIL'
+            # elif str(request_month_from_) == '5':
+            #     month_from = 'MEI'
+            # elif str(request_month_from_) == '6':
+            #     month_from = 'JUN'
+            # elif str(request_month_from_) == '7':
+            #     month_from = 'JULAI'
+            # elif str(request_month_from_) == '8':
+            #     month_from = 'OGOS'
+            # elif str(request_month_from_) == '9':
+            #     month_from = 'SEPTEMBER'
+            # elif str(request_month_from_) == '10':
+            #     month_from = 'OKTOBER'
+            # elif str(request_month_from_) == '11':
+            #     month_from = 'NOVEMBER'
+            # elif str(request_month_from_) == '12':
+            #     month_from = 'DISEMBER'
+            
+            # if str(request_month_to_) == '1':
+            #     month_to = 'JANUARI'
+            # elif str(request_month_to_) == '2':
+            #     month_to = 'FEBRUARI'
+            # elif str(request_month_to_) == '3':
+            #     month_to = 'MAC'
+            # elif str(request_month_to_) == '4':
+            #     month_to = 'APRIL'
+            # elif str(request_month_to_) == '5':
+            #     month_to = 'MEI'
+            # elif str(request_month_to_) == '6':
+            #     month_to = 'JUN'
+            # elif str(request_month_to_) == '7':
+            #     month_to = 'JULAI'
+            # elif str(request_month_to_) == '8':
+            #     month_to = 'OGOS'
+            # elif str(request_month_to_) == '9':
+            #     month_to = 'SEPTEMBER'
+            # elif str(request_month_to_) == '10':
+            #     month_to = 'OKTOBER'
+            # elif str(request_month_to_) == '11':
+            #     month_to = 'NOVEMBER'
+            # elif str(request_month_to_) == '12':
+            #     month_to = 'DISEMBER'
+            
+            month = month_from + ' - ' + month_to
+        elif request_month_type_ == 'SINGLE':
+            request_month_ = request_['month']
+            attendances = TrainingAttendee.objects.filter(
+                created_at__year=filter_year,
+                created_at__month=request_month_
+            )
+            # print(request_month_)
+            if str(request_month_) == '1':
+                month = 'JANUARI'
+            elif str(request_month_) == '2':
+                month = 'FEBRUARI'
+            elif str(request_month_) == '3':
+                month = 'MAC'
+            elif str(request_month_) == '4':
+                month = 'APRIL'
+            elif str(request_month_) == '5':
+                month = 'MEI'
+            elif str(request_month_) == '6':
+                month = 'JUN'
+            elif str(request_month_) == '7':
+                month = 'JULAI'
+            elif str(request_month_) == '8':
+                month = 'OGOS'
+            elif str(request_month_) == '9':
+                month = 'SEPTEMBER'
+            elif str(request_month_) == '10':
+                month = 'OKTOBER'
+            elif str(request_month_) == '11':
+                month = 'NOVEMBER'
+            elif str(request_month_) == '12':
+                month = 'DISEMBER'
+            
+            # print(month)
+        else:
+            attendances = TrainingAttendee.objects.none()
+            month = 'TIADA'
+        
+        # print('cendol')
+        
+        # Group A
+        group_a_a_0 = 0
+        group_a_a_1 = 0
+        group_a_a_2 = 0
+        group_a_a_3 = 0
+        group_a_a_4 = 0
+        group_a_a_5 = 0
+
+        group_a_b_0 = 0
+        group_a_b_1 = 0
+        group_a_b_2 = 0
+        group_a_b_3 = 0
+        group_a_b_4 = 0
+        group_a_b_5 = 0
+
+        group_a_c_0 = 0
+        group_a_c_1 = 0
+        group_a_c_2 = 0
+        group_a_c_3 = 0
+        group_a_c_4 = 0
+        group_a_c_5 = 0
+
+        # Group B
+        group_b_0 = 0
+        group_b_1 = 0
+        group_b_2 = 0
+        group_b_3 = 0
+        group_b_4 = 0
+        group_b_5 = 0
+
+        # Group C
+        group_c_0 = 0
+        group_c_1 = 0
+        group_c_2 = 0
+        group_c_3 = 0
+        group_c_4 = 0
+        group_c_5 = 0
+
+        # Group D
+        group_d_0 = 0
+        group_d_1 = 0
+        group_d_2 = 0
+        group_d_3 = 0
+        group_d_4 = 0
+        group_d_5 = 0
+
+        group_a_a = staffs.filter(
+            grade_code__gte=48
+        )
+        group_a_b = staffs.filter(
+            grade_code=44
+        )
+        group_a_c = staffs.filter(
+            grade_code=41
+        )
+        group_b = staffs.filter(
+            grade_code__range=[19, 40]
+        )
+        group_c = staffs.filter(
+            grade_code__range=[11, 18]
+        )
+        group_d = staffs.filter(
+            grade_code__in=[
+                '01', '02', '03', '04', '05',
+                '06', '07', '08', '09', '10'
+            ]
+        )
+
+        for staff in group_a_a:
+            staff_count = attendances.filter(
+                attendee=staff,
+                is_attend=True,
+                verified_by__isnull=False
+            ).count()
+
+            if staff_count == 0:
+                group_a_a_0 += 1
+            elif staff_count == 1:
+                group_a_a_1 += 1
+            elif staff_count == 2:
+                group_a_a_2 += 1
+            elif staff_count == 3:
+                group_a_a_3 += 1
+            elif staff_count == 4:
+                group_a_a_4 += 1
+            elif staff_count >= 5:
+                group_a_a_5 += 1
+
+        for staff in group_a_b:
+            staff_count = attendances.filter(
+                attendee=staff,
+                is_attend=True,
+                verified_by__isnull=False
+            ).count()
+
+            if staff_count == 0:
+                group_a_b_0 += 1
+            elif staff_count == 1:
+                group_a_b_1 += 1
+            elif staff_count == 2:
+                group_a_b_2 += 1
+            elif staff_count == 3:
+                group_a_b_3 += 1
+            elif staff_count == 4:
+                group_a_b_4 += 1
+            elif staff_count >= 5:
+                group_a_b_5 += 1
+
+        for staff in group_a_c:
+            staff_count = attendances.filter(
+                attendee=staff,
+                is_attend=True,
+                verified_by__isnull=False
+            ).count()
+
+            if staff_count == 0:
+                group_a_c_0 += 1
+            elif staff_count == 1:
+                group_a_c_1 += 1
+            elif staff_count == 2:
+                group_a_c_2 += 1
+            elif staff_count == 3:
+                group_a_c_3 += 1
+            elif staff_count == 4:
+                group_a_c_4 += 1
+            elif staff_count >= 5:
+                group_a_c_5 += 1
+
+        for staff in group_b:
+            staff_count = attendances.filter(
+                attendee=staff,
+                is_attend=True,
+                verified_by__isnull=False
+            ).count()
+
+            if staff_count == 0:
+                group_b_0 += 1
+            elif staff_count == 1:
+                group_b_1 += 1
+            elif staff_count == 2:
+                group_b_2 += 1
+            elif staff_count == 3:
+                group_b_3 += 1
+            elif staff_count == 4:
+                group_b_4 += 1
+            elif staff_count >= 5:
+                group_b_5 += 1
+
+        for staff in group_c:
+            staff_count = attendances.filter(
+                attendee=staff,
+                is_attend=True,
+                verified_by__isnull=False
+            ).count()
+
+            if staff_count == 0:
+                group_c_0 += 1
+            elif staff_count == 1:
+                group_c_1 += 1
+            elif staff_count == 2:
+                group_c_2 += 1
+            elif staff_count == 3:
+                group_c_3 += 1
+            elif staff_count == 4:
+                group_c_4 += 1
+            elif staff_count >= 5:
+                group_c_5 += 1
+        
+        for staff in group_d:
+            staff_count = attendances.filter(
+                attendee=staff,
+                is_attend=True,
+                verified_by__isnull=False
+            ).count()
+
+            if staff_count == 0:
+                group_d_0 += 1
+            elif staff_count == 1:
+                group_d_1 += 1
+            elif staff_count == 2:
+                group_d_2 += 1
+            elif staff_count == 3:
+                group_d_3 += 1
+            elif staff_count == 4:
+                group_d_4 += 1
+            elif staff_count >= 5:
+                group_d_5 += 1
+        
         items = {
-            'item': 1
+            'group_a_a': {
+                'group_a_a_0': group_a_a_0,
+                'group_a_a_1': group_a_a_1,
+                'group_a_a_2': group_a_a_2,
+                'group_a_a_3': group_a_a_3,
+                'group_a_a_4': group_a_a_4,
+                'group_a_a_5': group_a_a_5
+            },
+            'group_a_b': {
+                'group_a_b_0': group_a_b_0,
+                'group_a_b_1': group_a_b_1,
+                'group_a_b_2': group_a_b_2,
+                'group_a_b_3': group_a_b_3,
+                'group_a_b_4': group_a_b_4,
+                'group_a_b_5': group_a_b_5
+            },
+            'group_a_c': {
+                'group_a_c_0': group_a_c_0,
+                'group_a_c_1': group_a_c_1,
+                'group_a_c_2': group_a_c_2,
+                'group_a_c_3': group_a_c_3,
+                'group_a_c_4': group_a_c_4,
+                'group_a_c_5': group_a_c_5
+            },
+            'group_b': {
+                'group_b_0': group_b_0,
+                'group_b_1': group_b_1,
+                'group_b_2': group_b_2,
+                'group_b_3': group_b_3,
+                'group_b_4': group_b_4,
+                'group_b_5': group_b_5
+            },
+            'group_c': {
+                'group_c_0': group_c_0,
+                'group_c_1': group_c_1,
+                'group_c_2': group_c_2,
+                'group_c_3': group_c_3,
+                'group_c_4': group_c_4,
+                'group_c_5': group_c_5
+            },
+            'group_d': {
+                'group_d_0': group_d_0,
+                'group_d_1': group_d_1,
+                'group_d_2': group_d_2,
+                'group_d_3': group_d_3,
+                'group_d_4': group_d_4,
+                'group_d_5': group_d_5
+            },
+            'total': {
+                'total_0': group_a_a_0 + group_a_b_0 + group_a_c_0 + group_b_0 + group_c_0 + group_d_0,
+                'total_1': group_a_a_1 + group_a_b_1 + group_a_c_1 + group_b_1 + group_c_1 + group_d_1,
+                'total_2': group_a_a_2 + group_a_b_2 + group_a_c_2 + group_b_2 + group_c_2 + group_d_2,
+                'total_3': group_a_a_3 + group_a_b_3 + group_a_c_3 + group_b_3 + group_c_3 + group_d_3,
+                'total_4': group_a_a_4 + group_a_b_4 + group_a_c_4 + group_b_4 + group_c_4 + group_d_4,
+                'total_5': group_a_a_5 + group_a_b_5 + group_a_c_5 + group_b_5 + group_c_5 + group_d_5,
+                'total_staff': group_a_a.count() + group_a_b.count() + group_a_c.count() + group_b.count() + group_c.count() + group_d.count()
+            },
+            'misc': {
+                'department': department,
+                'month': month,
+                'year': filter_year,
+                'generated_at': today.strftime('%d/%m/%Y %H:%M %p')
+            }
         }
 
-        html_string = render_to_string('report/attendance.html', {'items': items})
+        html_string = render_to_string('report/attendance.html', {'data': items})
         html = HTML(string=html_string)
         pdf_file = html.write_pdf(stylesheets=[CSS('https://pipeline-project.sgp1.digitaloceanspaces.com/mbpp-elatihan/css/template.css')])
         
@@ -301,13 +740,82 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer = 'https://pipeline-project.sgp1.digitaloceanspaces.com/'+full_url_path
         return Response(serializer)
     
-    @action(methods=['GET'], detail=False)
+    @action(methods=['POST'], detail=False)
     def report_obb(self, request, *args, **kwargs):
+
+        # request_ = json.loads(request.body)
+        # request_department_ = request_['department']
+        # request_month_type_ = request_['month_type']
+
+        # Timezone set
+        timezone_ = pytz.timezone('Asia/Kuala_Lumpur')
+        filter_year = datetime.datetime.now(tz=timezone_).year # Tahun sebenar
+        today = datetime.datetime.now(tz=timezone_)
+        # print('Date: ', today.strftime('%d/%m/%Y %H:%M %p'))
+
+        # Var
+        basic_ = BasicLevel.objects.get(year=(filter_year-5)) # Get basic level
+        basic_level_year = basic_.year # Tahun aras asas
+        basic_level = basic_.level # Aras asas
+        varian = 5 * 2 # Varian - fixed
+        tolerance_limit = basic_level - varian # Had toleransi
+
+        # Current year - 0
+        target_1 = BasicLevel.objects.get(year=filter_year)
+        # Current year - 1
+        target_2 = BasicLevel.objects.get(year=(filter_year-1))
+        # Current year - 2
+        target_3 = BasicLevel.objects.get(year=(filter_year-2))
+        # Current year - 3
+        target_4 = BasicLevel.objects.get(year=(filter_year-3))
+        # Current year - 4
+        target_5 = BasicLevel.objects.get(year=(filter_year-4))
+
+        # Monitoring plan target
+        plan_target = MonitoringPlan.objects.get(year=filter_year)
+        plan_actual = Training.objects.filter(start_date__year=filter_year)
+
         items = {
-            'item': 1
+            'level': {
+                'year': basic_level_year,
+                'level': basic_level,
+                'varian': varian,
+                'tolerance_limit': tolerance_limit
+            },
+            'target': {
+                'target_1_year': target_1.year,
+                'target_1': target_1.level,
+                'target_2_year': target_2.year,
+                'target_2': target_2.level,
+                'target_3_year': target_3.year,
+                'target_3': target_3.level,
+                'target_4_year': target_4.year,
+                'target_4': target_4.level,
+                'target_5_year': target_5.year,
+                'target_5': target_5.level,
+            },
+            'plan': {
+                'target': {
+                    'year': plan_target.year,
+                    'q1': plan_target.q1,
+                    'q2': plan_target.q2,
+                    'q3': plan_target.q3,
+                    'q4': plan_target.q4
+                },
+                'actual': {
+                    'year': filter_year,
+                    'q1': len(plan_actual.filter(start_date__month__range=[1, 3])),
+                    'q2': len(plan_actual.filter(start_date__month__range=[4, 6])),
+                    'q3': len(plan_actual.filter(start_date__month__range=[7, 9])),
+                    'q4': len(plan_actual.filter(start_date__month__range=[10, 12]))
+                }
+            },
+            'misc': {
+                'generated_at': today.strftime('%d/%m/%Y %H:%M %p')
+            }
         }
 
-        html_string = render_to_string('report/obb.html', {'items': items})
+        html_string = render_to_string('report/obb.html', {'data': items})
         html = HTML(string=html_string)
         pdf_file = html.write_pdf(stylesheets=[CSS('https://pipeline-project.sgp1.digitaloceanspaces.com/mbpp-elatihan/css/template.css')])
         
@@ -340,12 +848,18 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['GET'], detail=False)
     def get_statistics(self, request, *args, **kwargs):
-        planned_training = len(Training.objects.all())
-        internal_training = len(Training.objects.filter(organiser_type='DD'))
-        external_training = len(Training.objects.filter(organiser_type='LL'))
-        attendance_internal = len(TrainingAttendee.objects.filter(training__organiser_type='DD', is_attend=True))
-        attendance_external = len(TrainingAttendee.objects.filter(training__organiser_type='LL', is_attend=True))
+        trainings = Training.objects.all()
+        attendances = TrainingAttendee.objects.all()
+        planned_training = len(trainings)
+        internal_training = len(trainings.filter(organiser_type='DD'))
+        external_training = len(trainings.filter(organiser_type='LL'))
+        attendance_internal = len(attendances.filter(training__organiser_type='DD', is_attend=True))
+        attendance_external = len(attendances.filter(training__organiser_type='LL', is_attend=True))
         current_expenses = 0
+
+        
+        for training in trainings:
+            current_expenses += (training.cost*1000)
 
         current_budget = Configuration.objects.filter(slug='current_budget').first()
 
@@ -369,77 +883,78 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         current_year = str(datetime.datetime.now(timezone_).year)
 
         filter_year = datetime.datetime.now(tz=timezone.utc).year
-
-        attendance_internal = len(TrainingAttendee.objects.filter(attendee__user_type=user.user_type, training__organiser_type='DD', is_attend=True))
-        attendance_external = len(TrainingAttendee.objects.filter(attendee__user_type=user.user_type, training__organiser_type='LL', is_attend=True))
+        
+        attendances = TrainingAttendee.objects.all()
+        attendance_internal = len(attendances.filter(attendee__user_type=user.user_type, training__organiser_type='DD', is_attend=True))
+        attendance_external = len(attendances.filter(attendee__user_type=user.user_type, training__organiser_type='LL', is_attend=True))
         attendance_by_month = {
-            'january': len(TrainingAttendee.objects.filter(
+            'january': len(attendances.filter(
                 training__start_date__year=filter_year,
                 training__start_date__month=1,
                 attendee__user_type=user.user_type,
                 is_attend=True
             )),
-            'february': len(TrainingAttendee.objects.filter(
+            'february': len(attendances.filter(
                 training__start_date__year=filter_year,
                 training__start_date__month=2,
                 attendee__user_type=user.user_type,
                 is_attend=True
             )),
-            'march': len(TrainingAttendee.objects.filter(
+            'march': len(attendances.filter(
                 training__start_date__year=filter_year,
                 training__start_date__month=3,
                 attendee__user_type=user.user_type,
                 is_attend=True
             )),
-            'april': len(TrainingAttendee.objects.filter(
+            'april': len(attendances.filter(
                 training__start_date__year=filter_year,
                 training__start_date__month=4,
                 attendee__user_type=user.user_type,
                 is_attend=True
             )),
-            'may': len(TrainingAttendee.objects.filter(
+            'may': len(attendances.filter(
                 training__start_date__year=filter_year,
                 training__start_date__month=5,
                 attendee__user_type=user.user_type,
                 is_attend=True
             )),
-            'june': len(TrainingAttendee.objects.filter(
+            'june': len(attendances.filter(
                 training__start_date__year=filter_year,
                 training__start_date__month=6,
                 attendee__user_type=user.user_type,
                 is_attend=True
             )),
-            'july': len(TrainingAttendee.objects.filter(
+            'july': len(attendances.filter(
                 training__start_date__year=filter_year,
                 training__start_date__month=7,
                 attendee__user_type=user.user_type,
                 is_attend=True
             )),
-            'august': len(TrainingAttendee.objects.filter(
+            'august': len(attendances.filter(
                 training__start_date__year=filter_year,
                 training__start_date__month=8,
                 attendee__user_type=user.user_type,
                 is_attend=True
             )),
-            'september': len(TrainingAttendee.objects.filter(
+            'september': len(attendances.filter(
                 training__start_date__year=filter_year,
                 training__start_date__month=9,
                 attendee__user_type=user.user_type,
                 is_attend=True
             )),
-            'october': len(TrainingAttendee.objects.filter(
+            'october': len(attendances.filter(
                 training__start_date__year=filter_year,
                 training__start_date__month=10,
                 attendee__user_type=user.user_type,
                 is_attend=True
             )),
-            'november': len(TrainingAttendee.objects.filter(
+            'november': len(attendances.filter(
                 training__start_date__year=filter_year,
                 training__start_date__month=11,
                 attendee__user_type=user.user_type,
                 is_attend=True
             )),
-            'december': len(TrainingAttendee.objects.filter(
+            'december': len(attendances.filter(
                 training__start_date__year=filter_year,
                 training__start_date__month=12,
                 attendee__user_type=user.user_type,
@@ -479,46 +994,47 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_department_list(self, request, *args, **kwargs):
         user = request.user
 
+        trainings_all = Training.objects.all()
         if user.department_code == '11':
-            trainings = Training.objects.filter(is_department_11=True)
+            trainings = trainings_all.filter(is_department_11=True)
         elif user.department_code == '15':
-            trainings = Training.objects.filter(is_department_15=True)
+            trainings = trainings_all.filter(is_department_15=True)
         elif user.department_code == '21':
-            trainings = Training.objects.filter(is_department_21=True)
+            trainings = trainings_all.filter(is_department_21=True)
         elif user.department_code == '31':
-            trainings = Training.objects.filter(is_department_31=True)
+            trainings = trainings_all.filter(is_department_31=True)
         elif user.department_code == '41':
-            trainings = Training.objects.filter(is_department_41=True)
+            trainings = trainings_all.filter(is_department_41=True)
         elif user.department_code == '45':
-            trainings = Training.objects.filter(is_department_45=True)
+            trainings = trainings_all.filter(is_department_45=True)
         elif user.department_code == '47':
-            trainings = Training.objects.filter(is_department_47=True)
+            trainings = trainings_all.filter(is_department_47=True)
         elif user.department_code == '51':
-            trainings = Training.objects.filter(is_department_51=True)
+            trainings = trainings_all.filter(is_department_51=True)
         elif user.department_code == '55':
-            trainings = Training.objects.filter(is_department_55=True)
+            trainings = trainings_all.filter(is_department_55=True)
         elif user.department_code == '61':
-            trainings = Training.objects.filter(is_department_61=True)
+            trainings = trainings_all.filter(is_department_61=True)
         elif user.department_code == '63':
-            trainings = Training.objects.filter(is_department_63=True)
+            trainings = trainings_all.filter(is_department_63=True)
         elif user.department_code == '71':
-            trainings = Training.objects.filter(is_department_71=True)
+            trainings = trainings_all.filter(is_department_71=True)
         elif user.department_code == '81':
-            trainings = Training.objects.filter(is_department_81=True)
+            trainings = trainings_all.filter(is_department_81=True)
         elif user.department_code == '86':
-            trainings = Training.objects.filter(is_department_86=True)
+            trainings = trainings_all.filter(is_department_86=True)
         elif user.department_code == '90':
-            trainings = Training.objects.filter(is_department_90=True)
+            trainings = trainings_all.filter(is_department_90=True)
         elif user.department_code == '91':
-            trainings = Training.objects.filter(is_department_91=True)
+            trainings = trainings_all.filter(is_department_91=True)
         elif user.department_code == '92':
-            trainings = Training.objects.filter(is_department_92=True)
+            trainings = trainings_all.filter(is_department_92=True)
         elif user.department_code == '93':
-            trainings = Training.objects.filter(is_department_93=True)
+            trainings = trainings_all.filter(is_department_93=True)
         elif user.department_code == '94':
-            trainings = Training.objects.filter(is_department_94=True)
+            trainings = trainings_all.filter(is_department_94=True)
         else:
-            trainings = Training.objects.all()
+            trainings = trainings_all
         
         serializer_class = TrainingExtendedSerializer(trainings, many=True)
         
@@ -1146,6 +1662,33 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         return Response(serializer_class.data)
 
 
+    @action(methods=['GET'], detail=True)
+    def check_evaluation(self, request, *args, **kwargs):
+        training = self.get_object()
+        user = request.user
+        is_evaluated = False
+        evaluation = None
+
+        if training.organiser_type == 'DD':
+            evaluation = InternalEvaluation.objects.get(training=training, attendee=user)
+        elif training.organiser_type == 'LL':
+            evaluation = ExternalEvaluation.objects.get(training=training, attendee=user)
+        else:
+            evaluation = None
+        
+        if evaluation:
+            is_evaluated = True
+        else:
+            is_evaluated = False
+        
+        data_ = {
+            'is_evaluated': is_evaluated,
+            'evaluation': evaluation
+        }
+        
+        return JsonResponse(data_)
+
+
 class TrainingNoteViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = TrainingNote.objects.all()
     serializer_class = TrainingNoteSerializer
@@ -1250,7 +1793,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_self_history(self, request, *args, **kwargs):
 
         user = request.user
-        applications = TrainingApplication.objects.filter(applicant=user).order_by('-modified_at')
+        applications = TrainingApplication.objects.filter(applicant=user, training__end_date__lt=datetime.datetime.now().date()).order_by('-modified_at')
         serializer_class = TrainingApplicationExtendedSelfSerializer(applications, many=True)
         
         return Response(serializer_class.data)
@@ -1395,6 +1938,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['POST'], detail=False)
     def apply_batch(self, request, *args, **kwargs):
+        
         user = request.user
         request_ = json.loads(request.body)
         request_training_id_ = request_['training']
@@ -1456,6 +2000,7 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['GET'], detail=True)
     def sign(self, request, *args, **kwargs):
+
         attendance = self.get_object()
         attendee = request.user
         
@@ -1476,6 +2021,7 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['GET'], detail=True)
     def sign_coordinator(self, request, *args, **kwargs):
+
         attendance = self.get_object()
         coordinator = request.user
         request_ = json.loads(request.body)
@@ -1499,6 +2045,7 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     @action(methods=['GET'], detail=True)
     def sign_coordinator_in(self, request, *args, **kwargs):
+        
         attendance = self.get_object()
         coordinator = request.user
 
@@ -1512,6 +2059,7 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['GET'], detail=True)
     def sign_coordinator_out(self, request, *args, **kwargs):
+
         attendance = self.get_object()
         coordinator = request.user
 
@@ -1525,6 +2073,7 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['POST'], detail=False)
     def check_today(self, request, *args, **kwargs):
+
         attendee = request.user
         request_ = json.loads(request.body)
         training_id_ = request_['training']
@@ -1557,6 +2106,7 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['POST'], detail=False)
     def get_attendances(self, request, *args, **kwargs):
+
         attendee = request.user
         request_ = json.loads(request.body)
         training_id_ = request_['training']
@@ -1575,6 +2125,7 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['GET'], detail=True)
     def verify(self, request, *args, **kwargs):
+
         verifier = request.user
         attendance = self.get_object()
 
@@ -1609,6 +2160,7 @@ class TrainingAbsenceMemoViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def check_memo(self, request, *args, **kwargs):
+
         attendee = request.user
         request_ = json.loads(request.body)
         request_training_id_ = request_['training']
@@ -1887,4 +2439,54 @@ class TrainingNeedAnalysisViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         }
 
         return JsonResponse(data_)
+
+
+class MonitoringPlanViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = MonitoringPlan.objects.all()
+    serializer_class = MonitoringPlanSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    filterset_fields = [
+    ]
+
+    def get_permissions(self):
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        """
+        if self.action == 'list':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsAuthenticated]
+        """
+        return [permission() for permission in permission_classes]    
+
     
+    def get_queryset(self):
+        user = self.request.user
+        queryset = MonitoringPlan.objects.all()
+        return queryset  
+
+
+class BasicLevelViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = BasicLevel.objects.all()
+    serializer_class = BasicLevelSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    filterset_fields = [
+    ]
+
+    def get_permissions(self):
+        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        """
+        if self.action == 'list':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsAuthenticated]
+        """
+        return [permission() for permission in permission_classes]    
+
+    
+    def get_queryset(self):
+        user = self.request.user
+        queryset = BasicLevel.objects.all()
+        return queryset  
+    
+    # Tolerasi = level - (5*2)
+    # 5 tahun sebeleum

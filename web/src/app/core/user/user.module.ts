@@ -28,6 +28,8 @@ import { TrainingHistoryComponent } from './training-history/training-history.co
 import { TrainingDetailComponent } from './training-detail/training-detail.component';
 import { TrainingInformationComponent } from './training-information/training-information.component';
 import { NeedAnalysisComponent } from './need-analysis/need-analysis.component';
+import { EvaluationsComponent } from './evaluations/evaluations.component';
+import { TrainingEvaluateComponent } from './training-evaluate/training-evaluate.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { NeedAnalysisComponent } from './need-analysis/need-analysis.component';
     TrainingHistoryComponent,
     TrainingDetailComponent,
     TrainingInformationComponent,
-    NeedAnalysisComponent
+    NeedAnalysisComponent,
+    EvaluationsComponent,
+    TrainingEvaluateComponent
   ],
   imports: [
     CommonModule,

@@ -18,3 +18,6 @@ class PathAndRename(object):
         filename = '{}.{}'.format(filename_, ext)
         # return the whole path to the file
         return os.path.join(self.path, filename)
+
+def send_invitation_email():
+    print('Nothing here')

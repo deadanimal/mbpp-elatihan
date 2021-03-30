@@ -13,19 +13,24 @@
             }
             html {
                 font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+                font-size: 0.85rem !important;
             }
             .default-template {
                 color: #333;
                 font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+                font-size: 0.85rem !important;
             }
             table tr.top table td.title {
                 color: #333;
+                font-size: 0.85rem !important;
             }
             table tr.heading td {
                 color: #333;
                 font-weight: bold;
+                font-size: 0.85rem !important;
             }
             #footer {
+                font-size: 0.85rem !important;
                 position: absolute;
                 bottom: 0;
                 width: 100%;
@@ -39,110 +44,110 @@
             <h4 class="text-center mb-0">LAPORAN OUTCOME BASED BUDGETING (OBB)</h4>
             <h4 class="text-center mt-0 mb-2">MAJLIS BANDARAYA PULAU PINANG</h4>
 
-            <h5 class="mt-5 mb-0">JABATAN: JABATAN KEJURUTERAAN</h5>
-            <h5 class="mt-0 mb-5">OUTPUT: PENGURUSAN PROGRAM LATIHAN</h5>
-
             <table class="table mt-2">
                 <tbody>
                     <tr>
-                        <th scope="row">Keterangan Output</th>
-                        <td>Pengurusan Program Latihan</td>
+                        <th scope="row" colspan="2">Keterangan Output</th>
+                        <td colspan="3">Pengurusan Program Latihan</td>
                     </tr>
                     <tr>
-                        <th scope="row">Sumbangan Kepada Outcome</th>
+                        <th scope="row" colspan="2">Sumbangan Kepada Outcome</th>
                         <td>Penyampaian Perkhidmatan Terbaik</td>
                         <th scope="row">Wajaran</th>
                         <td>50 %</td>
                     </tr>
                     <tr>
-                        <th scope="row">PI Output 1</th>
-                        <td>Pentadbir Urus Yang Kompeten</td>
+                        <th scope="row" colspan="2"></th>
+                        <td>Tadbir Urus Yang Kompeten</td>
                         <th scope="row">Wajaran</th>
                         <td>50%</td>
                     </tr>
                     <tr>
-                        <th scope="row">PI Output 1</th>
-                        <td>Bilangan Program Latihan</td>
+                        <th scope="row" colspan="2">Pi Output 1</th>
+                        <td colspan="3">Bilangan Program Latihan</td>
                     </tr>
                     <tr>
-                        <th scope="row">Wajaran</th>
+                        <th scope="row" colspan="2">Wajaran</th>
                         <th scope="row">Ukuran</th>
                         <th scope="row">Jenis Sasaran</th>
                         <th scope="row">Kekerapan</th>
                     </tr>
                     <tr>
-                        <td>100%</td>
+                        <td colspan="2">100%</td>
                         <td>Bilangan</td>
                         <td>Max PI</td>
                         <td>Suku Tahun</td>
                     </tr>
                     <tr>
-                        <th scope="row">Tahun Aras Asas</th>
+                        <th scope="row" colspan="2">Tahun Aras Asas</th>
                         <th scope="row">Aras Asas</th>
                         <th scope="row">Varian</th>
                         <th scope="row">Had Toleransi</th>
                     </tr>
                     <tr>
-                        <td>2019</td>
-                        <td>80</td>
+                        <td colspan="2">{{data.level.year}}</td>
+                        <td>{{data.level.level}}</td>
                         <td>5</td>
-                        <td>70</td>
+                        <td>{{data.level.tolerance_limit}}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Jumlah Kursus Sasaran</th>
+                        <th scope="row" colspan="5">Jumlah Kursus Sasaran</th>
                     </tr>
                     <tr>
-                        <th scope="row">2016</th>
-                        <th scope="row">2017</th>
-                        <th scope="row">2018</th>
-                        <th scope="row">2019</th>
-                        <th scope="row">2020</th>
+                        <th scope="row">{{data.target.target_5_year}}</th>
+                        <th scope="row">{{data.target.target_4_year}}</th>
+                        <th scope="row">{{data.target.target_3_year}}</th>
+                        <th scope="row">{{data.target.target_2_year}}</th>
+                        <th scope="row">{{data.target.target_1_year}}</th>
                     </tr>
                     <tr>
-                        <td>87</td>
-                        <td>90</td>
-                        <td>92</td>
-                        <td>94</td>
-                        <td>100</td>
+                        <td>{{data.target.target_5}}</td>
+                        <td>{{data.target.target_4}}</td>
+                        <td>{{data.target.target_3}}</td>
+                        <td>{{data.target.target_2}}</td>
+                        <td>{{data.target.target_1}}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Pelan Pemantauan</th>
-                        <th scope="row">Sasaran (2020)</th>
-                        <th scope="row">Sebenar (2020)</th>
+                        <th scope="row" colspan="3">Pelan Pemantauan</th>
+                        <th scope="row">Sasaran ({{data.plan.target.year}})</th>
+                        <th scope="row">Sebenar ({{data.plan.actual.year}})</th>
                     </tr>
                     <tr>
-                        <th scope="row">Jan - Mac</th>
-                        <td>25</td>
-                        <td>34</td>
+                        <th scope="row" colspan="3">Jan - Mac</th>
+                        <td>{{data.plan.target.q1}}</td>
+                        <td>{{data.plan.actual.q1}}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Apr - Jun</th>
-                        <td>25</td>
-                        <td>34</td>
+                        <th scope="row" colspan="3">Apr - Jun</th>
+                        <td>{{data.plan.target.q2}}</td>
+                        <td>{{data.plan.actual.q2}}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Jul - Sep</th>
-                        <td>25</td>
-                        <td>47</td>
+                        <th scope="row" colspan="3">Jul - Sep</th>
+                        <td>{{data.plan.target.q3}}</td>
+                        <td>{{data.plan.actual.q3}}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Okt - Dis</th>
-                        <td>85</td>
-                        <td>0</td>
+                        <th scope="row" colspan="3">Okt - Dis</th>
+                        <td>{{data.plan.target.q4}}</td>
+                        <td>{{data.plan.actual.q4}}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Sumber Data</th>
-                        <td>Unit Latihan & Kerjaya, Jabatan Khidmat Pengurusan</td>
+                        <th scope="row" colspan="2">Sumber Data</th>
+                        <td colspan="3" class="text-right">Unit Latihan & Kerjaya, Jabatan Khidmat Pengurusan</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </body>
 
-    <footer id="footer">
-        <p>
+    <footer id="footer" class="default-template row">
+        <p class="col text-left">
             <img src="https://pipeline-project.sgp1.digitaloceanspaces.com/images/mbpp-logo.png" style="max-width: 2rem">
             <span>MBPP | eLatihan</span>
+        </p>
+        <p class="col text-right">
+            Dijana pada: {{data.misc.generated_at}}
         </p>
     </footer> 
 

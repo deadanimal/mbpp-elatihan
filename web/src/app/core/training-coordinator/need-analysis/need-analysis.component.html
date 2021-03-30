@@ -216,6 +216,41 @@
                         - {{row.core.child}}
                     </ng-template>
                 </ngx-datatable-column>
+
+                <ngx-datatable-column
+                    prop="staff.full_name"
+                >
+                    <ng-template ngx-datatable-header-template>
+                        <span>Nama Kakitangan</span>
+                    </ng-template>
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{row.staff.full_name}}
+                    </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column
+                    prop="staff.department_code"
+                >
+                    <ng-template ngx-datatable-header-template>
+                        <span>Jabatan</span>
+                    </ng-template>
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <ng-container *ngFor="let department of departments">
+                            <span *ngIf="department.value == row.staff.department_code">{{department.text}}</span>
+                        </ng-container>
+                    </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column
+                    prop="created_at"
+                >
+                    <ng-template ngx-datatable-header-template>
+                        <span>Tarikh</span>
+                    </ng-template>
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{row.created_at | date: 'd/M/y'}}
+                    </ng-template>
+                </ngx-datatable-column>
             </ngx-datatable>
         </div>
     </div>
@@ -228,6 +263,9 @@
 				<th>Tajuk Latihan Cadangan</th>
 				<th>Nama / Agensi Pemudahcara Cadangan</th>
 				<th>Teras</th>
+                <th>Nama Kakitangan</th>
+                <th>Jabatan</th>
+                <th>Tarikh</th>
 			</tr>
 		</thead>
 
@@ -243,6 +281,17 @@
 					<span *ngIf="row.core.parent == 'GN'">GENERAL</span>
                     <span *ngIf="row.core.parent == 'FN'">FUNGSIONAL</span>
                     - {{row.core.child}}
+				</td>
+                <td>
+					{{row.staff.full_name}}
+				</td>
+                <td>
+					<ng-container *ngFor="let department of departments">
+                        <span *ngIf="department.value == row.staff.department_code">{{department.text}}</span>
+                    </ng-container>
+				</td>
+                <td>
+					{{row.created_at | date: 'd/M/y'}}
 				</td>
 			</tr>
 		</tbody>

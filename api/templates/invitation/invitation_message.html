@@ -1,0 +1,53 @@
+<p>MAJLIS BANDARAYA PULAU PINANG</p>
+<br>
+<p>EMEL JEMPUTAN MENGHADIRI LATIHAN/KURSUS</p>
+<br>
+<p>
+    JEMPUTAN BAGI MENGIKUTI PROGRAM
+
+    {% if data.type == 'internal' %}
+        DALAMAN
+    {% elif data.type == 'external' %}
+        LUARAN
+    {% endif %}
+
+    TAJUK: {{data.title}}
+</p>
+<br>
+<p>
+    Dengan hormatnya saya diarah merujuk perkara di atas.
+</p>
+<br>
+<p>
+    2.      Sukacita dimaklumkan bahawa Majlis Bandaraya Pulau Pinang 
+    telah meluluskan penyertaan kursus bagi kakitangan/pegawai 
+    dibawah jabatan/unit tuan/puan seperti ketetapan berikut :-   
+</p>
+<p style="margin-left: 3rem !important">
+            Tarikh: {{data.date}}
+            Masa: {{data.time}}
+            Tempat: {{data.venue}}
+</p>
+<p>
+    3.       Sehubungan itu, kerjasama tuan/puan adalah dimohon untuk memaklumkan 
+    kepada kakitangan/pegawai yang disenaraikan untuk melayari portal 
+    https://elatihan.mbpp.gov.my/ bagi maklumat lanjut. Kehadiran kursus 
+    adalah menggunakan QR code di dalam portal tersebut.
+</p>
+<p>
+    4.	Kerjasama dan perhatian tuan/puan mengenai perkara ini amatlah dihargai.
+</p>
+
+<p>
+    Sekian, terima kasih,
+</p>
+
+<p>
+    Unit Latihan & Kerjaya <br>
+    Majlis Bandaraya Pulau Pinang <br>
+    04-2592280/04-2693008  <br>
+</p>
+
+<p>
+    Dokumen ini adalah cetakan komputer dan tidak memerlukan tandatangan
+</p>

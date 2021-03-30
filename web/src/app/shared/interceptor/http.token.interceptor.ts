@@ -66,11 +66,12 @@ export class HttpTokenInterceptor implements HttpInterceptor {
 
         if (
             this.router.url != '/home' &&
-            this.router.url != '/auth/login'
+            req.url.split('v1')[1] != '/security-questions/'
         ) {
             const token = this.jwtService.getToken('accessToken');
             headersConfig['Authorization'] = `Bearer ${token}`;
             // console.log(headersConfig)
+            // console.log(req.url.split('v1'))
         }
 
         const request = req.clone({ setHeaders: headersConfig });

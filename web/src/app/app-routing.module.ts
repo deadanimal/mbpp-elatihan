@@ -5,17 +5,12 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
-import { PresentationComponent } from './examples/presentation/presentation.component';
 
 const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
-  },
-  {
-    path: 'presentation',
-    component: PresentationComponent
   },
   {
     path: '',
@@ -42,7 +37,7 @@ const routes: Routes = [
         loadChildren: './core/training-coordinator/training-coordinator.module#TrainingCoordinatorModule'
       },
       {
-        // Department coordinator pages
+        // Department head / coordinator pages
         path: 'dc',
         loadChildren: './core/department-coordinator/department-coordinator.module#DepartmentCoordinatorModule'
       },
@@ -55,10 +50,6 @@ const routes: Routes = [
       {
         path: 'auth',
         loadChildren: './auth/auth.module#AuthModule'
-      },
-      {
-        path: 'examples',
-        loadChildren: './layouts/auth-layout/auth-layout.module#AuthLayoutModule'
       },
       {
         path: '',

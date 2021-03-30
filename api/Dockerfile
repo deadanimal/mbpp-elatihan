@@ -1,4 +1,4 @@
-FROM osgeo/gdal:ubuntu-full-latest
+FROM osgeo/gdal:ubuntu-full-3.2.1
 
 ENV APP_ROOT /src
 ENV CONFIG_ROOT /config

@@ -1,0 +1,593 @@
+<ngx-loading-bar height="4px"></ngx-loading-bar>
+<div class="header pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-7">
+                    <h6 class="h2 text-dark d-inline-block mb-0">Laporan</h6>
+
+                    <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class=" breadcrumb-item">
+                                <a href="javascript:void(0)"> <i class="fas fa-chart-bar text-dark"> </i> </a>
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <div class="row">
+        <div class="col">
+            <tabset type="pills" class="nav-fill no-tab-content">
+                <tab heading="Aras Asas">
+                    <div class="card mt-2">
+                        <div class="card-header bg-secondary">
+                            <div class="row">
+                                <div class="col my-auto">
+                                    <h4 class="m-0">Aras Asas</h4>
+                                </div>
+
+                                <div class="col text-right">
+                                    <a
+                                        class="btn btn-sm btn-warm-blue text-white" 
+                                        (click)="openModalAdd(addLevelModal)"
+                                    > 
+                                        Tambah Aras
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="dataTables_wrapper py-4">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_length" id="datatable_length">
+                                        <label>
+                                            Lihat
+                                            <select 
+                                                name="datatable_length" 
+                                                aria-controls="datatable" 
+                                                class="form-control form-control-sm custom-select custom-select-sm"
+                                                (change)="entriesChange($event, 'level')">
+                                                <option value="5" [selected]="tableLevelEntries == 5">5</option>
+                                                <option value="10" [selected]="tableLevelEntries == 10">10</option>
+                                                <option value="15" [selected]="tableLevelEntries == 15">15</option>
+                                                <option value="-1" [selected]="tableLevelEntries == -1">Semua</option>
+                                            </select>
+                                            rekod
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div id="datatable_filter" class="dataTables_filter">
+                                        <label>
+                                            <input 
+                                                type="search"
+                                                class="form-control form-control-sm"
+                                                placeholder="Cari"
+                                                aria-controls="datatable"
+                                                (keyup)="filterTable($event, 'level')"
+                                            />
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="pt-4 text-center" *ngIf="isLevelEmpty">
+                                <img [src]="iconEmpty" class="error-icon">
+                                <p>Tiada rekod dijumpai</p>
+                            </div>
+                    
+                            <ngx-datatable 
+                                class="bootstrap selection-cell" 
+                                [columnMode]="'force'" 
+                                [headerHeight]="50" 
+                                [footerHeight]="50"
+                                [rowHeight]="'auto'"
+                                [limit]="tableLevelEntries != -1 ? tableLevelEntries : undefined" 
+                                [rows]="tableLevelTemp"
+                                [messages]="tableMessages"
+                                (activate)="onActivate($event, 'level')"
+                                *ngIf="!isLevelEmpty"
+                                [scrollbarH]="true"
+                            >
+                                <ngx-datatable-column
+                                    prop="name"
+                                >
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Tahun</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.year}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+
+                                <ngx-datatable-column
+                                    prop="level"
+                                >
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Aras</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.level}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+        
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Aktiviti</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        <button 
+                                            class="btn btn-warm-blue"
+                                            (click)="openModalPatch(patchLevelModal, row, 'level')"
+                                        >
+                                            Lihat
+                                        </button>
+                                    </ng-template>
+                                </ngx-datatable-column>
+                            </ngx-datatable>
+                        </div>
+                    </div>
+                </tab>
+
+                <tab heading="Pelan Pemantauan">
+                    <div class="card mt-2">
+                        <div class="card-header bg-secondary">
+                            <div class="row">
+                                <div class="col my-auto">
+                                    <h4 class="m-0">Pelan Pemantauan</h4>
+                                </div>
+
+                                <div class="col text-right">
+                                    <a
+                                        class="btn btn-sm btn-warm-blue text-white" 
+                                        (click)="openModalAdd(addPlanModal)"
+                                    > 
+                                        Tambah Pelan
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <div class="dataTables_wrapper py-4">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_length" id="datatable_length">
+                                        <label>
+                                            Lihat
+                                            <select 
+                                                name="datatable_length" 
+                                                aria-controls="datatable" 
+                                                class="form-control form-control-sm custom-select custom-select-sm"
+                                                (change)="entriesChange($event, 'plan')">
+                                                <option value="5" [selected]="tablePlanEntries == 5">5</option>
+                                                <option value="10" [selected]="tablePlanEntries == 10">10</option>
+                                                <option value="15" [selected]="tablePlanEntries == 15">15</option>
+                                                <option value="-1" [selected]="tablePlanEntries == -1">Semua</option>
+                                            </select>
+                                            rekod
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div id="datatable_filter" class="dataTables_filter">
+                                        <label>
+                                            <input 
+                                                type="search"
+                                                class="form-control form-control-sm"
+                                                placeholder="Cari"
+                                                aria-controls="datatable"
+                                                (keyup)="filterTable($event, 'plan')"
+                                            />
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                
+                            <div class="pt-4 text-center" *ngIf="isPlanEmpty">
+                                <img [src]="iconEmpty" class="error-icon">
+                                <p>Tiada rekod dijumpai</p>
+                            </div>
+                    
+                            <ngx-datatable 
+                                class="bootstrap selection-cell" 
+                                [columnMode]="'force'" 
+                                [headerHeight]="50" 
+                                [footerHeight]="50"
+                                [rowHeight]="'auto'"
+                                [limit]="tablePlanEntries != -1 ? tablePlanEntries : undefined" 
+                                [rows]="tablePlanTemp"
+                                [messages]="tableMessages"
+                                (activate)="onActivate($event, 'plan')"
+                                *ngIf="!isPlanEmpty"
+                                [scrollbarH]="true"
+                            >
+                                <ngx-datatable-column
+                                    prop="name"
+                                >
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Tahun</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.year}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+
+                                <ngx-datatable-column
+                                    prop="q1"
+                                >
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Q1</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.q1}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+
+                                <ngx-datatable-column
+                                    prop="q2"
+                                >
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Q2</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.q2}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+
+                                <ngx-datatable-column
+                                    prop="q3"
+                                >
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Q3</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.q3}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+
+                                <ngx-datatable-column
+                                    prop="q4"
+                                >
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Q4</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        {{row.q4}}
+                                    </ng-template>
+                                </ngx-datatable-column>
+        
+                                <ngx-datatable-column>
+                                    <ng-template ngx-datatable-header-template>
+                                        <span>Aktiviti</span>
+                                    </ng-template>
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                        <button 
+                                            class="btn btn-warm-blue"
+                                            (click)="openModalPatch(patchPlanModal, row, 'plan')"
+                                        >
+                                            Lihat
+                                        </button>
+                                    </ng-template>
+                                </ngx-datatable-column>
+                            </ngx-datatable>
+                        </div>
+                    </div>
+                </tab>
+            </tabset>
+        </div>
+    </div>
+</div>
+
+<ng-template #addPlanModal>
+    <div class="modal-header bg-warm-blue">
+        <h6 class="modal-title text-white my-auto" id="modal-title-default">
+            Tambah pelan pemantauan
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal('plan')"
+        >
+            <span aria-hidden="true" class="text-white my-auto"> × </span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="planForm">
+            <div class="form-group">
+                <label class="form-control-label">Tahun <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="year"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">Q1 <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="q1"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">Q2 <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="q2"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">Q3 <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="q3"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">Q4 <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="q4"
+                >
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button 
+            class="btn btn-warm-blue"
+            type="button"
+            (click)="addPlan()"
+            [disabled]="!planForm.valid"
+        >
+            Simpan
+        </button>
+
+        <button
+            class="btn btn-outline-warm-blue ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal('plan')"
+        >
+            Tutup
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #addLevelModal>
+    <div class="modal-header bg-warm-blue">
+        <h6 class="modal-title text-white my-auto" id="modal-title-default">
+            Tambah aras asas
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal('level')"
+        >
+            <span aria-hidden="true" class="text-white my-auto"> × </span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="levelForm">
+            <div class="form-group">
+                <label class="form-control-label">Tahun <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="year"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">Aras Asas <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="level"
+                >
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button 
+            class="btn btn-warm-blue"
+            type="button"
+            (click)="addLevel()"
+            [disabled]="!levelForm.valid"
+        >
+            Simpan
+        </button>
+
+        <button
+            class="btn btn-outline-warm-blue ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal('level')"
+        >
+            Tutup
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #patchPlanModal>
+    <div class="modal-header bg-warm-blue">
+        <h6 class="modal-title text-white my-auto" id="modal-title-default">
+            Kemaskini pelan pemantauan
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal('plan')"
+        >
+            <span aria-hidden="true" class="text-white my-auto"> × </span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="planForm">
+            <div class="form-group">
+                <label class="form-control-label">Tahun <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="year"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">Q1 <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="q1"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">Q2 <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="q2"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">Q3 <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="q3"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">Q4 <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="q4"
+                >
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button 
+            class="btn btn-warm-blue"
+            type="button"
+            (click)="patchPlan()"
+            [disabled]="!planForm.valid"
+        >
+            Kemaskini
+        </button>
+
+        <button
+            class="btn btn-outline-warm-blue ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal('plan')"
+        >
+            Tutup
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #patchLevelModal>
+    <div class="modal-header bg-warm-blue">
+        <h6 class="modal-title text-white my-auto" id="modal-title-default">
+            Kemaskini aras asas
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal('level')"
+        >
+            <span aria-hidden="true" class="text-white my-auto"> × </span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="levelForm">
+            <div class="form-group">
+                <label class="form-control-label">Tahun <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="year"
+                >
+            </div>
+
+            <div class="form-group">
+                <label class="form-control-label">Aras Asas <span class="text-warning">*</span></label>
+                <input 
+                    class="form-control" 
+                    placeholder="0"
+                    type="number"
+                    formControlName="level"
+                >
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button 
+            class="btn btn-warm-blue"
+            type="button"
+            (click)="patchLevel()"
+            [disabled]="!levelForm.valid"
+        >
+            Kemaskini
+        </button>
+
+        <button
+            class="btn btn-outline-warm-blue ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal('level')"
+        >
+            Tutup
+        </button>
+    </div>
+</ng-template>

@@ -342,8 +342,8 @@ class Training(models.Model):
     ]
 
     status = models.CharField(max_length=2, choices=STATUS_TYPE, default='DB') # Done
-    attachment = models.FileField(null=True, upload_to=PathAndRename('attachments')) # Done
-    attachment_approval = models.FileField(null=True, upload_to=PathAndRename('attachments')) # Done
+    attachment = models.FileField(null=True, upload_to=PathAndRename('mbpp-elatihan/attachments')) # Done
+    attachment_approval = models.FileField(null=True, upload_to=PathAndRename('mbpp-elatihan/attachments')) # Done
 
     history = HistoricalRecords()
     created_by = models.ForeignKey(
@@ -395,7 +395,7 @@ class TrainingNote(models.Model):
     )
     title = models.CharField(max_length=50, default='NA')
     note_code = models.CharField(max_length=100, null=True)
-    note_file = models.FileField(null=True, upload_to=PathAndRename('notes'))
+    note_file = models.FileField(null=True, upload_to=PathAndRename('mbpp-elatihan/notes'))
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -551,7 +551,7 @@ class TrainingAbsenceMemo(models.Model):
         null=True, 
         related_name='absence_verified_by'
     )
-    attachment = models.FileField(null=True, upload_to=PathAndRename('attachments'))
+    attachment = models.FileField(null=True, upload_to=PathAndRename('mbpp-elatihan/attachments'))
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -632,3 +632,35 @@ class Configuration(models.Model):
     def __str__(self):
         return self.slug
 
+class MonitoringPlan(models.Model):
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    q1 = models.IntegerField(default=0)
+    q2 = models.IntegerField(default=0)
+    q3 = models.IntegerField(default=0)
+    q4 = models.IntegerField(default=0)
+    year = models.CharField(default=datetime.datetime.now().year, max_length=4)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-year']
+
+    def __str__(self):
+        return self.year
+
+class BasicLevel(models.Model):
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    year = models.CharField(default=datetime.datetime.now().year, max_length=4)
+    level = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-year']
+
+    def __str__(self):
+        return ('%s - %s'%(self.year, self.level))

@@ -1,0 +1,116 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <style>
+            @charset "UTF-8";
+            @page {
+                /* padding: 2cm; */
+                /* size: A4; Change from the default size of A4 */
+                /* padding: 2.0cm; Set margin on each page */
+                size: A4 portait;
+                /* margin: 4.01cm 2.48cm 3.34cm 2.48cm; */
+            }
+            
+            body {
+                background-image:url('https://pipeline-project.sgp1.digitaloceanspaces.com/ssm/resources/cert-frame-en.png');
+                background-repeat:repeat-y;
+                background-position: right top;
+                background-attachment:fixed;
+                background-size: 100% 100%;
+                margin: 4.01cm -1.0cm 3.34cm -1.0cm;        
+            }
+            
+            header#header {
+                position: fixed;
+                top: 0;
+                left: 0;
+
+                height: 14.5rem;
+                width: 100%;
+            }
+            img.logo {
+                height: 20rem !important;
+            }
+            img.signature {
+                height: 18rem !important;
+            }
+            html {
+                font-family: "Times New Roman",Arial, sans-serif;
+                font-size: 11px;
+            }
+            .default-template {
+                color: rgb(15, 15, 15);
+                font-family: "Times New Roman",Arial, sans-serif;
+            }
+            .default-template p#secondary {
+                word-spacing: 7pt;
+                font-size: 21px;
+                text-align: justify;
+            }
+            .default-template p#primary {
+                word-spacing: 4pt;
+                font-size: 26px;
+                text-align: justify;
+                line-height: 2;
+            }
+            table tr.top table td.title {
+                color: #333;
+            }
+            table tr.heading td {
+                color: #333;
+            }
+            .pg-break {
+                page-break-before: always; 
+                margin-top: 10rem;
+            }
+            .pg-start {
+                margin-top: 15rem;
+            }
+            ol#bol {
+                list-style-type: decimal;
+            }
+            ol {
+                margin-bottom: 1rem;
+                margin-top: 1rem;
+                word-spacing: 7pt;
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+            ol li {
+                /* margin-top: 0.2rem; */
+                margin-top: 0;
+                margin-bottom: 0;
+                padding-left: 4rem;
+                padding-right: 4rem;
+                word-spacing: 5pt;
+                font-size: 16pt;
+                text-align: justify;
+            }
+            footer#footer {
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                font-size: 11px;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+
+                height: 2.5rem;
+                width: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <header id="header" style="padding-top: 50px;">
+            <div class="mt-200 mb-200 text-center">
+                <!-- <img class="logo" src="https://pipeline-project.sgp1.digitaloceanspaces.com/ssm/resources/SSM-Logo.png"> -->
+            </div>
+        </header>
+        
+        </div>
+    </body>
+</html>

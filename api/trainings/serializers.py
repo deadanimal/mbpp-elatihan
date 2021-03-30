@@ -21,7 +21,9 @@ from .models import (
     TrainingDomain,
     TrainingType,
     Configuration,
-    TrainingNeedAnalysis
+    TrainingNeedAnalysis,
+    MonitoringPlan,
+    BasicLevel
 )
 
 from organisations.serializers import(
@@ -220,4 +222,16 @@ class ConfigurationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Configuration
+        fields = '__all__'
+
+class MonitoringPlanSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MonitoringPlan
+        fields = '__all__'
+
+class BasicLevelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BasicLevel
         fields = '__all__'

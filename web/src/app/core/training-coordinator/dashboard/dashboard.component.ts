@@ -5,7 +5,7 @@ import { AttendancesService } from 'src/app/shared/services/attendances/attendan
 import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
 import { UsersService } from 'src/app/shared/services/users/users.service';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { Training } from 'src/app/shared/services/trainings/trainings.model';
 
 import * as am4core from '@amcharts/amcharts4/core';
@@ -36,6 +36,9 @@ export class DashboardComponent implements OnInit {
   chart3: any // Jabatan Belum Mencapai 5 Hari Berkursus
   chart4: any // Prestasi Latihan Semasa
 
+  // Subscriber
+  subscription: Subscription
+
   constructor(
     private authService: AuthService,
     private examService: ExamsService,
@@ -52,6 +55,10 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe()
+    }
+    
     this.zone.runOutsideAngular(
       () => {
         if (this.chart1) {
@@ -71,7 +78,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getData() {
-    forkJoin([
+    this.subscription = forkJoin([
       this.attendanceService.getAll(),
       this.examService.getExams(),
       this.trainingService.getAll(),

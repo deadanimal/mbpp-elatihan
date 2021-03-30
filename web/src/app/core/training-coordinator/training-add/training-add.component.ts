@@ -47,6 +47,189 @@ export class TrainingAddComponent implements OnInit {
   domains: Domain[] = []
   nextCode: string = ''
   trainingTypes: TrainingType[] = []
+  selectedGrp = []
+  selectedDep = []
+  selectedPos = []
+  selectedSch = []
+
+  // Predefined
+  targetGrpOpts = [
+    { 'form': 'is_group_KP_A', 'name': 'Kumpulan A (Gred 41 dan ke atas)' },
+    { 'form': 'is_group_KP_B', 'name': 'Kumpulan B (Gred 27 - 40)' },
+    { 'form': 'is_group_KP_C', 'name': 'Kumpulan C (Gred 17 - 26)' },
+    { 'form': 'is_group_KP_D', 'name': 'Kumpulan D (Gred 1 - 16)' }
+  ]
+  targetDepOpts = [
+    { 'form': 'is_department_11', 'name': 'Jabatan Khidmat Pengurusan' },
+    { 'form': 'is_department_15', 'name': 'Jabatan Penguatkuasaan' },
+    { 'form': 'is_department_21', 'name': 'Jabatan Perbendaharaan' },
+    { 'form': 'is_department_31', 'name': 'Jabatan Kejuruteraan' },
+    { 'form': 'is_department_41', 'name': 'Jabatan Kesihatan Persekitaran dan Pelesenan' },
+    { 'form': 'is_department_45', 'name': 'Jabatan Perkhidmatan dan Perbandaraan' },
+    { 'form': 'is_department_47', 'name': 'Jabatan Kesihatan Persekitaran dan Pelesenan - Pelesenan' },
+    { 'form': 'is_department_51', 'name': 'Jabatan Kawalan Bangunan' },
+    { 'form': 'is_department_55', 'name': 'Jabatan Konservasi Warisan' },
+    { 'form': 'is_department_61', 'name': 'Jabatan Penilaian dan Pengurusan Harta' },
+    { 'form': 'is_department_63', 'name': 'Jabatan Pesuruhjaya Bangunan' },
+    { 'form': 'is_department_71', 'name': 'Jabatan Perancangan Pembangunan' },
+    { 'form': 'is_department_81', 'name': 'Jabatan Khidmat Kemasyarakatan' },
+    { 'form': 'is_department_86', 'name': 'Jabatan Landskap' },
+    { 'form': 'is_department_90', 'name': 'Pejabat Datuk Bandar' },
+    { 'form': 'is_department_91', 'name': 'Pejabat Datuk Bandar - Undang-undang' },
+    { 'form': 'is_department_92', 'name': 'Pejabat Datuk Bandar - Penyelarasan Pembangunan' },
+    { 'form': 'is_department_93', 'name': 'Pejabat Datuk Bandar - Audit Dalam' },
+    { 'form': 'is_department_94', 'name': 'Pejabat Datuk Bandar - OSC' }
+  ]
+  targetPosOpts = [
+    { 'form': 'is_position_01', 'name': 'Akauntan' },
+    { 'form': 'is_position_02', 'name': 'Arkitek' },
+    { 'form': 'is_position_03', 'name': 'Arkitek Landskap' },
+    { 'form': 'is_position_04', 'name': 'Datuk Bandar' },
+    { 'form': 'is_position_05', 'name': 'Juruaudio Visual' },
+    { 'form': 'is_position_06', 'name': 'Juruaudit' },
+    { 'form': 'is_position_07', 'name': 'Jururawat' },
+    { 'form': 'is_position_08', 'name': 'Jururawat Masyarakat' },
+    { 'form': 'is_position_09', 'name': 'Juruteknik Komputer' },
+    { 'form': 'is_position_10', 'name': 'Jurutera' },
+    { 'form': 'is_position_11', 'name': 'Juruukur Bahan' },
+    { 'form': 'is_position_12', 'name': 'Pegawai Keselamatan' },
+    { 'form': 'is_position_13', 'name': 'Pegawai Kesihatan Persekitaran' },
+    { 'form': 'is_position_14', 'name': 'Pegawai Khidmat Pelanggan' },
+    { 'form': 'is_position_15', 'name': 'Pegawai Penilaian' },
+    { 'form': 'is_position_16', 'name': 'Pegawai Perancang Bandar dan Desa' },
+    { 'form': 'is_position_17', 'name': 'Pegawai Pertanian' },
+    { 'form': 'is_position_18', 'name': 'Pegawai Perubatan' },
+    { 'form': 'is_position_19', 'name': 'Pegawai Tadbir' },
+    { 'form': 'is_position_20', 'name': 'Pegawai Teknologi Maklumat' },
+    { 'form': 'is_position_21', 'name': 'Pegawai Undang-undang' },
+    { 'form': 'is_position_22', 'name': 'Pegawai Veterinar' },
+    { 'form': 'is_position_23', 'name': 'Pegawai Pekerja Awam' },
+    { 'form': 'is_position_24', 'name': 'Pelukis Pelan' },
+    { 'form': 'is_position_25', 'name': 'Pelukis Pelan (Kejuruteraan Awam) / Penolong Jurutera' },
+    { 'form': 'is_position_26', 'name': 'Pelukis Pelan (Seni Bina) / Penolong Pegawai Seni Bina' },
+    { 'form': 'is_position_27', 'name': 'Pemandu Kenderaan' },
+    { 'form': 'is_position_28', 'name': 'Pemandu Kenderaan Bermotor' },
+    { 'form': 'is_position_29', 'name': 'Pembantu Awam' },
+    { 'form': 'is_position_30', 'name': 'Pembantu Kemahiran' },
+    { 'form': 'is_position_31', 'name': 'Pembantu Kesihatan Awam' },
+    { 'form': 'is_position_32', 'name': 'Pembantu Operasi' },
+    { 'form': 'is_position_33', 'name': 'Pembantu Penguatkuasa' },
+    { 'form': 'is_position_34', 'name': 'Pembantu Penguatkuasa Rendah' },
+    { 'form': 'is_position_35', 'name': 'Pembantu Penilaian' },
+    { 'form': 'is_position_36', 'name': 'Pembantu Perawatan Kesihatan' },
+    { 'form': 'is_position_37', 'name': 'Pembantu Setiausaha Pejabat / Setiausaha Pejabat' },
+    { 'form': 'is_position_38', 'name': 'Pembantu Tadbir (Perkeranian / Operasi' },
+    { 'form': 'is_position_39', 'name': 'Pembantu Tadbir Kewangan' },
+    { 'form': 'is_position_40', 'name': 'Pembantu Veterinar' },
+    { 'form': 'is_position_41', 'name': 'Pembantu Keselamatan' },
+    { 'form': 'is_position_42', 'name': 'Penghantar Notis' },
+    { 'form': 'is_position_43', 'name': 'Penolong Akauntan' },
+    { 'form': 'is_position_44', 'name': 'Penolong Arkitek Landskap' },
+    { 'form': 'is_position_45', 'name': 'Penolong Pegawai Juruaudit' },
+    { 'form': 'is_position_46', 'name': 'Penolong Pegawai Kesihatan Persekitaran' },
+    { 'form': 'is_position_47', 'name': 'Penolong Pegawai Penguatkuasa' },
+    { 'form': 'is_position_48', 'name': 'Penolong Penolong Penilaian' },
+    { 'form': 'is_position_49', 'name': 'Penolong Pegawai Perancang Bandar dan Desa' },
+    { 'form': 'is_position_50', 'name': 'Penolong Pegawai Pertanian' },
+    { 'form': 'is_position_51', 'name': 'Penolong Pegawai Tadbir' },
+    { 'form': 'is_position_52', 'name': 'Penolong Pegawai Teknologi Maklumat' },
+    { 'form': 'is_position_53', 'name': 'Penolong Pegawai Undang-undang' },
+    { 'form': 'is_position_54', 'name': 'Penolong Pegawai Veterinar' },
+    { 'form': 'is_position_55', 'name': 'Pereka' },
+    { 'form': 'is_position_60', 'name': 'Setiausaha' }
+  ]
+  targetSchOpts = [
+    { 'form': 'is_ba19', 'name': 'BA19' },
+    { 'form': 'is_fa29', 'name': 'FA29' },
+    { 'form': 'is_fa32', 'name': 'FA32' },
+    { 'form': 'is_fa41', 'name': 'FA41' },
+    { 'form': 'is_fa44', 'name': 'FA44' },
+    { 'form': 'is_fa48', 'name': 'FA48' },
+    { 'form': 'is_ft19', 'name': 'FT19' },
+    { 'form': 'is_ga17', 'name': 'GA17' },
+    { 'form': 'is_ga19', 'name': 'GA19' },
+    { 'form': 'is_ga22', 'name': 'GA22' },
+    { 'form': 'is_ga26', 'name': 'GA26' },
+    { 'form': 'is_ga29', 'name': 'GA29' },
+    { 'form': 'is_ga32', 'name': 'GA32' },
+    { 'form': 'is_ga41', 'name': 'GA41' },
+    { 'form': 'is_gv41', 'name': 'GV41' },
+    { 'form': 'is_ha11', 'name': 'HA11' },
+    { 'form': 'is_ha14', 'name': 'HA14' },
+    { 'form': 'is_ha16', 'name': 'HA16' },
+    { 'form': 'is_ha19', 'name': 'HA19' },
+    { 'form': 'is_ha22', 'name': 'HA22' },
+    { 'form': 'is_ja19', 'name': 'JA19' },
+    { 'form': 'is_ja22', 'name': 'JA22' },
+    { 'form': 'is_ja29', 'name': 'JA29' },
+    { 'form': 'is_ja36', 'name': 'JA36' },
+    { 'form': 'is_ja38', 'name': 'JA38' },
+    { 'form': 'is_ja40', 'name': 'JA40' },
+    { 'form': 'is_ja41', 'name': 'JA41' },
+    { 'form': 'is_ja44', 'name': 'JA44' },
+    { 'form': 'is_ja48', 'name': 'JA48' },
+    { 'form': 'is_ja52', 'name': 'JA52' },
+    { 'form': 'is_ja54', 'name': 'JA54' },
+    { 'form': 'is_kp11', 'name': 'KP11' },
+    { 'form': 'is_kp14', 'name': 'KP14' },
+    { 'form': 'is_kp19', 'name': 'KP19' },
+    { 'form': 'is_kp22', 'name': 'KP22' },
+    { 'form': 'is_kp29', 'name': 'KP29' },
+    { 'form': 'is_kp32', 'name': 'KP32' },
+    { 'form': 'is_kp41', 'name': 'KP41' },
+    { 'form': 'is_la29', 'name': 'LA29' },
+    { 'form': 'is_la41', 'name': 'LA41' },
+    { 'form': 'is_la44', 'name': 'LA44' },
+    { 'form': 'is_la52', 'name': 'LA52' },
+    { 'form': 'is_la54', 'name': 'LA54' },
+    { 'form': 'is_na01', 'name': 'NA01' },
+    { 'form': 'is_na11', 'name': 'NA11' },
+    { 'form': 'is_na14', 'name': 'NA14' },
+    { 'form': 'is_na17', 'name': 'NA17' },
+    { 'form': 'is_na19', 'name': 'NA19' },
+    { 'form': 'is_na22', 'name': 'NA22' },
+    { 'form': 'is_na26', 'name': 'NA26' },
+    { 'form': 'is_na29', 'name': 'NA29' },
+    { 'form': 'is_na30', 'name': 'NA30' },
+    { 'form': 'is_na32', 'name': 'NA32' },
+    { 'form': 'is_na36', 'name': 'NA36' },
+    { 'form': 'is_na41', 'name': 'NA41' },
+    { 'form': 'is_na44', 'name': 'NA44' },
+    { 'form': 'is_na48', 'name': 'NA48' },
+    { 'form': 'is_na52', 'name': 'NA52' },
+    { 'form': 'is_na54', 'name': 'NA54' },
+    { 'form': 'is_ra01', 'name': 'RA01' },
+    { 'form': 'is_ra03', 'name': 'RA03' },
+    { 'form': 'is_ua11', 'name': 'UA11' },
+    { 'form': 'is_ua14', 'name': 'UA14' },
+    { 'form': 'is_ua17', 'name': 'UA17' },
+    { 'form': 'is_ua19', 'name': 'UA19' },
+    { 'form': 'is_ua24', 'name': 'UA24' },
+    { 'form': 'is_ua29', 'name': 'UA29' },
+    { 'form': 'is_ua32', 'name': 'UA32' },
+    { 'form': 'is_ua36', 'name': 'UA36' },
+    { 'form': 'is_ua41', 'name': 'UA41' },
+    { 'form': 'is_ud43', 'name': 'UD43' },
+    { 'form': 'is_ud48', 'name': 'UD48' },
+    { 'form': 'is_ud52', 'name': 'UD52' },
+    { 'form': 'is_vu06', 'name': 'VU06' },
+    { 'form': 'is_vu07', 'name': 'VU07' },
+    { 'form': 'is_wa17', 'name': 'WA17' },
+    { 'form': 'is_wa19', 'name': 'WA19' },
+    { 'form': 'is_wa22', 'name': 'WA22' },
+    { 'form': 'is_wa26', 'name': 'WA26' },
+    { 'form': 'is_wa28', 'name': 'WA28' },
+    { 'form': 'is_wa29', 'name': 'WA29' },
+    { 'form': 'is_wa32', 'name': 'WA32' },
+    { 'form': 'is_wa36', 'name': 'WA36' },
+    { 'form': 'is_wa41', 'name': 'WA41' },
+    { 'form': 'is_wa44', 'name': 'WA44' },
+    { 'form': 'is_wa48', 'name': 'WA48' },
+    { 'form': 'is_wa52', 'name': 'WA52' },
+    { 'form': 'is_wa54', 'name': 'WA54' },
+    { 'form': 'is_waa41', 'name': 'WAA41' },
+    { 'form': 'is_waa44', 'name': 'WAA44' }
+  ]
 
   // Form
   trainingForm: FormGroup
@@ -142,12 +325,6 @@ export class TrainingAddComponent implements OnInit {
     { value: 'DN', text: 'Dalam Negara'},
     { value: 'LN', text: 'Luar Negara'}
   ]
-  // statusTypeChoices = [
-  //   { value: 'DB', text: 'Dibuka' },
-  //   { value: 'DT', text: 'Ditutup' },
-  //   { value: 'PN', text: 'Penuh' },
-  //   { value: 'TN', text: 'Tangguh' }
-  // ]
 
   // Datepicker
   dateToday: Date
@@ -170,6 +347,7 @@ export class TrainingAddComponent implements OnInit {
 
   // Checker
   isLogged: boolean = false
+  isTargetLocked: boolean = true
 
   // File
   fileSize: any
@@ -229,6 +407,7 @@ export class TrainingAddComponent implements OnInit {
         this.loadingBar.complete()
       },
       () => {
+        // From API
         this.organisations = this.organisationService.organisations
         this.users = this.userService.users
         this.cores = this.coreService.cores
@@ -330,229 +509,229 @@ export class TrainingAddComponent implements OnInit {
       is_group_KP_D: new FormControl(true, Validators.compose([
         Validators.required
       ])),
-      is_department_11: new FormControl(true, Validators.compose([
+      is_department_11: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_15: new FormControl(true, Validators.compose([
+      is_department_15: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_21: new FormControl(true, Validators.compose([
+      is_department_21: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_31: new FormControl(true, Validators.compose([
+      is_department_31: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_41: new FormControl(true, Validators.compose([
+      is_department_41: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_45: new FormControl(true, Validators.compose([
+      is_department_45: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_47: new FormControl(true, Validators.compose([
+      is_department_47: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_51: new FormControl(true, Validators.compose([
+      is_department_51: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_55: new FormControl(true, Validators.compose([
+      is_department_55: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_61: new FormControl(true, Validators.compose([
+      is_department_61: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_63: new FormControl(true, Validators.compose([
+      is_department_63: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_71: new FormControl(true, Validators.compose([
+      is_department_71: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_81: new FormControl(true, Validators.compose([
+      is_department_81: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_86: new FormControl(true, Validators.compose([
+      is_department_86: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_90: new FormControl(true, Validators.compose([
+      is_department_90: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_91: new FormControl(true, Validators.compose([
+      is_department_91: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_92: new FormControl(true, Validators.compose([
+      is_department_92: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_93: new FormControl(true, Validators.compose([
+      is_department_93: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_department_94: new FormControl(true, Validators.compose([
+      is_department_94: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_01: new FormControl(true, Validators.compose([
+      is_position_01: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_02: new FormControl(true, Validators.compose([
+      is_position_02: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_03: new FormControl(true, Validators.compose([
+      is_position_03: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_04: new FormControl(true, Validators.compose([
+      is_position_04: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_05: new FormControl(true, Validators.compose([
+      is_position_05: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_06: new FormControl(true, Validators.compose([
+      is_position_06: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_07: new FormControl(true, Validators.compose([
+      is_position_07: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_08: new FormControl(true, Validators.compose([
+      is_position_08: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_09: new FormControl(true, Validators.compose([
+      is_position_09: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_10: new FormControl(true, Validators.compose([
+      is_position_10: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_11: new FormControl(true, Validators.compose([
+      is_position_11: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_12: new FormControl(true, Validators.compose([
+      is_position_12: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_13: new FormControl(true, Validators.compose([
+      is_position_13: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_14: new FormControl(true, Validators.compose([
+      is_position_14: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_15: new FormControl(true, Validators.compose([
+      is_position_15: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_16: new FormControl(true, Validators.compose([
+      is_position_16: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_17: new FormControl(true, Validators.compose([
+      is_position_17: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_18: new FormControl(true, Validators.compose([
+      is_position_18: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_19: new FormControl(true, Validators.compose([
+      is_position_19: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_20: new FormControl(true, Validators.compose([
+      is_position_20: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_21: new FormControl(true, Validators.compose([
+      is_position_21: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_22: new FormControl(true, Validators.compose([
+      is_position_22: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_23: new FormControl(true, Validators.compose([
+      is_position_23: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_24: new FormControl(true, Validators.compose([
+      is_position_24: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_25: new FormControl(true, Validators.compose([
+      is_position_25: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_26: new FormControl(true, Validators.compose([
+      is_position_26: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_27: new FormControl(true, Validators.compose([
+      is_position_27: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_28: new FormControl(true, Validators.compose([
+      is_position_28: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_29: new FormControl(true, Validators.compose([
+      is_position_29: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_30: new FormControl(true, Validators.compose([
+      is_position_30: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_31: new FormControl(true, Validators.compose([
+      is_position_31: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_32: new FormControl(true, Validators.compose([
+      is_position_32: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_33: new FormControl(true, Validators.compose([
+      is_position_33: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_34: new FormControl(true, Validators.compose([
+      is_position_34: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_35: new FormControl(true, Validators.compose([
+      is_position_35: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_36: new FormControl(true, Validators.compose([
+      is_position_36: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_37: new FormControl(true, Validators.compose([
+      is_position_37: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_38: new FormControl(true, Validators.compose([
+      is_position_38: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_39: new FormControl(true, Validators.compose([
+      is_position_39: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_40: new FormControl(true, Validators.compose([
+      is_position_40: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_41: new FormControl(true, Validators.compose([
+      is_position_41: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_42: new FormControl(true, Validators.compose([
+      is_position_42: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_43: new FormControl(true, Validators.compose([
+      is_position_43: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_44: new FormControl(true, Validators.compose([
+      is_position_44: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_45: new FormControl(true, Validators.compose([
+      is_position_45: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_46: new FormControl(true, Validators.compose([
+      is_position_46: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_47: new FormControl(true, Validators.compose([
+      is_position_47: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_48: new FormControl(true, Validators.compose([
+      is_position_48: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_49: new FormControl(true, Validators.compose([
+      is_position_49: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_50: new FormControl(true, Validators.compose([
+      is_position_50: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_51: new FormControl(true, Validators.compose([
+      is_position_51: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_52: new FormControl(true, Validators.compose([
+      is_position_52: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_53: new FormControl(true, Validators.compose([
+      is_position_53: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_54: new FormControl(true, Validators.compose([
+      is_position_54: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_55: new FormControl(true, Validators.compose([
+      is_position_55: new FormControl(false, Validators.compose([
         Validators.required
       ])),
-      is_position_60: new FormControl(true, Validators.compose([
+      is_position_60: new FormControl(false, Validators.compose([
         Validators.required
       ])),
       is_ba19: new FormControl(true, Validators.compose([
@@ -884,6 +1063,31 @@ export class TrainingAddComponent implements OnInit {
     this.trainerFacilitatorForm = this.formBuilder.group({
       trainerFacilitatorFormArray: this.formBuilder.array([this.initFacilitatorForm()])
     })
+
+    // Predefined
+    this.targetGrpOpts.forEach(
+      (target) => {
+        this.selectedGrp.push(target['form'])
+      }
+    )
+
+    // this.targetDepOpts.forEach(
+    //   (target) => {
+    //     this.selectedDep.push(target['form'])
+    //   }
+    // )
+
+    // this.targetPosOpts.forEach(
+    //   (target) => {
+    //     this.selectedPos.push(target['form'])
+    //   }
+    // )
+
+    this.targetSchOpts.forEach(
+      (target) => {
+        this.selectedSch.push(target['form'])
+      }
+    )
   }
 
   initSpeakerForm() {
@@ -1233,6 +1437,7 @@ export class TrainingAddComponent implements OnInit {
 
   onChangeTargetType(event) {
     if (event == 'TB') {
+      this.isTargetLocked = true
       this.trainingForm.controls['is_group_KP_A'].patchValue(true)
       this.trainingForm.controls['is_group_KP_B'].patchValue(true)
       this.trainingForm.controls['is_group_KP_C'].patchValue(true)
@@ -1404,10 +1609,11 @@ export class TrainingAddComponent implements OnInit {
       this.trainingForm.controls['is_waa44'].patchValue(true)
     }
     else {
-      this.trainingForm.controls['is_group_KP_A'].patchValue(false)
-      this.trainingForm.controls['is_group_KP_B'].patchValue(false)
-      this.trainingForm.controls['is_group_KP_C'].patchValue(false)
-      this.trainingForm.controls['is_group_KP_D'].patchValue(false)
+      this.isTargetLocked = false
+      this.trainingForm.controls['is_group_KP_A'].patchValue(true)
+      this.trainingForm.controls['is_group_KP_B'].patchValue(true)
+      this.trainingForm.controls['is_group_KP_C'].patchValue(true)
+      this.trainingForm.controls['is_group_KP_D'].patchValue(true)
       this.trainingForm.controls['is_department_11'].patchValue(false)
       this.trainingForm.controls['is_department_15'].patchValue(false)
       this.trainingForm.controls['is_department_21'].patchValue(false)
@@ -1483,96 +1689,96 @@ export class TrainingAddComponent implements OnInit {
       this.trainingForm.controls['is_position_54'].patchValue(false)
       this.trainingForm.controls['is_position_55'].patchValue(false)
       this.trainingForm.controls['is_position_60'].patchValue(false)
-      this.trainingForm.controls['is_ba19'].patchValue(false)
-      this.trainingForm.controls['is_fa29'].patchValue(false)
-      this.trainingForm.controls['is_fa32'].patchValue(false)
-      this.trainingForm.controls['is_fa41'].patchValue(false)
-      this.trainingForm.controls['is_fa44'].patchValue(false)
-      this.trainingForm.controls['is_fa48'].patchValue(false)
-      this.trainingForm.controls['is_ft19'].patchValue(false)
-      this.trainingForm.controls['is_ga17'].patchValue(false)
-      this.trainingForm.controls['is_ga19'].patchValue(false)
-      this.trainingForm.controls['is_ga22'].patchValue(false)
-      this.trainingForm.controls['is_ga26'].patchValue(false)
-      this.trainingForm.controls['is_ga29'].patchValue(false)
-      this.trainingForm.controls['is_ga32'].patchValue(false)
-      this.trainingForm.controls['is_ga41'].patchValue(false)
-      this.trainingForm.controls['is_gv41'].patchValue(false)
-      this.trainingForm.controls['is_ha11'].patchValue(false)
-      this.trainingForm.controls['is_ha14'].patchValue(false)
-      this.trainingForm.controls['is_ha16'].patchValue(false)
-      this.trainingForm.controls['is_ha19'].patchValue(false)
-      this.trainingForm.controls['is_ha22'].patchValue(false)
-      this.trainingForm.controls['is_ja19'].patchValue(false)
-      this.trainingForm.controls['is_ja22'].patchValue(false)
-      this.trainingForm.controls['is_ja29'].patchValue(false)
-      this.trainingForm.controls['is_ja36'].patchValue(false)
-      this.trainingForm.controls['is_ja38'].patchValue(false)
-      this.trainingForm.controls['is_ja40'].patchValue(false)
-      this.trainingForm.controls['is_ja41'].patchValue(false)
-      this.trainingForm.controls['is_ja44'].patchValue(false)
-      this.trainingForm.controls['is_ja48'].patchValue(false)
-      this.trainingForm.controls['is_ja52'].patchValue(false)
-      this.trainingForm.controls['is_ja54'].patchValue(false)
-      this.trainingForm.controls['is_kp11'].patchValue(false)
-      this.trainingForm.controls['is_kp14'].patchValue(false)
-      this.trainingForm.controls['is_kp19'].patchValue(false)
-      this.trainingForm.controls['is_kp22'].patchValue(false)
-      this.trainingForm.controls['is_kp29'].patchValue(false)
-      this.trainingForm.controls['is_kp32'].patchValue(false)
-      this.trainingForm.controls['is_kp41'].patchValue(false)
-      this.trainingForm.controls['is_la29'].patchValue(false)
-      this.trainingForm.controls['is_la41'].patchValue(false)
-      this.trainingForm.controls['is_la44'].patchValue(false)
-      this.trainingForm.controls['is_la52'].patchValue(false)
-      this.trainingForm.controls['is_la54'].patchValue(false)
-      this.trainingForm.controls['is_na01'].patchValue(false)
-      this.trainingForm.controls['is_na11'].patchValue(false)
-      this.trainingForm.controls['is_na14'].patchValue(false)
-      this.trainingForm.controls['is_na17'].patchValue(false)
-      this.trainingForm.controls['is_na19'].patchValue(false)
-      this.trainingForm.controls['is_na22'].patchValue(false)
-      this.trainingForm.controls['is_na26'].patchValue(false)
-      this.trainingForm.controls['is_na29'].patchValue(false)
-      this.trainingForm.controls['is_na30'].patchValue(false)
-      this.trainingForm.controls['is_na32'].patchValue(false)
-      this.trainingForm.controls['is_na36'].patchValue(false)
-      this.trainingForm.controls['is_na41'].patchValue(false)
-      this.trainingForm.controls['is_na44'].patchValue(false)
-      this.trainingForm.controls['is_na48'].patchValue(false)
-      this.trainingForm.controls['is_na52'].patchValue(false)
-      this.trainingForm.controls['is_na54'].patchValue(false)
-      this.trainingForm.controls['is_ra01'].patchValue(false)
-      this.trainingForm.controls['is_ra03'].patchValue(false)
-      this.trainingForm.controls['is_ua11'].patchValue(false)
-      this.trainingForm.controls['is_ua14'].patchValue(false)
-      this.trainingForm.controls['is_ua17'].patchValue(false)
-      this.trainingForm.controls['is_ua19'].patchValue(false)
-      this.trainingForm.controls['is_ua24'].patchValue(false)
-      this.trainingForm.controls['is_ua29'].patchValue(false)
-      this.trainingForm.controls['is_ua32'].patchValue(false)
-      this.trainingForm.controls['is_ua36'].patchValue(false)
-      this.trainingForm.controls['is_ua41'].patchValue(false)
-      this.trainingForm.controls['is_ud43'].patchValue(false)
-      this.trainingForm.controls['is_ud48'].patchValue(false)
-      this.trainingForm.controls['is_ud52'].patchValue(false)
-      this.trainingForm.controls['is_vu06'].patchValue(false)
-      this.trainingForm.controls['is_vu07'].patchValue(false)
-      this.trainingForm.controls['is_wa17'].patchValue(false)
-      this.trainingForm.controls['is_wa19'].patchValue(false)
-      this.trainingForm.controls['is_wa22'].patchValue(false)
-      this.trainingForm.controls['is_wa26'].patchValue(false)
-      this.trainingForm.controls['is_wa28'].patchValue(false)
-      this.trainingForm.controls['is_wa29'].patchValue(false)
-      this.trainingForm.controls['is_wa32'].patchValue(false)
-      this.trainingForm.controls['is_wa36'].patchValue(false)
-      this.trainingForm.controls['is_wa41'].patchValue(false)
-      this.trainingForm.controls['is_wa44'].patchValue(false)
-      this.trainingForm.controls['is_wa48'].patchValue(false)
-      this.trainingForm.controls['is_wa52'].patchValue(false)
-      this.trainingForm.controls['is_wa54'].patchValue(false)
-      this.trainingForm.controls['is_waa41'].patchValue(false)
-      this.trainingForm.controls['is_waa44'].patchValue(false)
+      this.trainingForm.controls['is_ba19'].patchValue(true)
+      this.trainingForm.controls['is_fa29'].patchValue(true)
+      this.trainingForm.controls['is_fa32'].patchValue(true)
+      this.trainingForm.controls['is_fa41'].patchValue(true)
+      this.trainingForm.controls['is_fa44'].patchValue(true)
+      this.trainingForm.controls['is_fa48'].patchValue(true)
+      this.trainingForm.controls['is_ft19'].patchValue(true)
+      this.trainingForm.controls['is_ga17'].patchValue(true)
+      this.trainingForm.controls['is_ga19'].patchValue(true)
+      this.trainingForm.controls['is_ga22'].patchValue(true)
+      this.trainingForm.controls['is_ga26'].patchValue(true)
+      this.trainingForm.controls['is_ga29'].patchValue(true)
+      this.trainingForm.controls['is_ga32'].patchValue(true)
+      this.trainingForm.controls['is_ga41'].patchValue(true)
+      this.trainingForm.controls['is_gv41'].patchValue(true)
+      this.trainingForm.controls['is_ha11'].patchValue(true)
+      this.trainingForm.controls['is_ha14'].patchValue(true)
+      this.trainingForm.controls['is_ha16'].patchValue(true)
+      this.trainingForm.controls['is_ha19'].patchValue(true)
+      this.trainingForm.controls['is_ha22'].patchValue(true)
+      this.trainingForm.controls['is_ja19'].patchValue(true)
+      this.trainingForm.controls['is_ja22'].patchValue(true)
+      this.trainingForm.controls['is_ja29'].patchValue(true)
+      this.trainingForm.controls['is_ja36'].patchValue(true)
+      this.trainingForm.controls['is_ja38'].patchValue(true)
+      this.trainingForm.controls['is_ja40'].patchValue(true)
+      this.trainingForm.controls['is_ja41'].patchValue(true)
+      this.trainingForm.controls['is_ja44'].patchValue(true)
+      this.trainingForm.controls['is_ja48'].patchValue(true)
+      this.trainingForm.controls['is_ja52'].patchValue(true)
+      this.trainingForm.controls['is_ja54'].patchValue(true)
+      this.trainingForm.controls['is_kp11'].patchValue(true)
+      this.trainingForm.controls['is_kp14'].patchValue(true)
+      this.trainingForm.controls['is_kp19'].patchValue(true)
+      this.trainingForm.controls['is_kp22'].patchValue(true)
+      this.trainingForm.controls['is_kp29'].patchValue(true)
+      this.trainingForm.controls['is_kp32'].patchValue(true)
+      this.trainingForm.controls['is_kp41'].patchValue(true)
+      this.trainingForm.controls['is_la29'].patchValue(true)
+      this.trainingForm.controls['is_la41'].patchValue(true)
+      this.trainingForm.controls['is_la44'].patchValue(true)
+      this.trainingForm.controls['is_la52'].patchValue(true)
+      this.trainingForm.controls['is_la54'].patchValue(true)
+      this.trainingForm.controls['is_na01'].patchValue(true)
+      this.trainingForm.controls['is_na11'].patchValue(true)
+      this.trainingForm.controls['is_na14'].patchValue(true)
+      this.trainingForm.controls['is_na17'].patchValue(true)
+      this.trainingForm.controls['is_na19'].patchValue(true)
+      this.trainingForm.controls['is_na22'].patchValue(true)
+      this.trainingForm.controls['is_na26'].patchValue(true)
+      this.trainingForm.controls['is_na29'].patchValue(true)
+      this.trainingForm.controls['is_na30'].patchValue(true)
+      this.trainingForm.controls['is_na32'].patchValue(true)
+      this.trainingForm.controls['is_na36'].patchValue(true)
+      this.trainingForm.controls['is_na41'].patchValue(true)
+      this.trainingForm.controls['is_na44'].patchValue(true)
+      this.trainingForm.controls['is_na48'].patchValue(true)
+      this.trainingForm.controls['is_na52'].patchValue(true)
+      this.trainingForm.controls['is_na54'].patchValue(true)
+      this.trainingForm.controls['is_ra01'].patchValue(true)
+      this.trainingForm.controls['is_ra03'].patchValue(true)
+      this.trainingForm.controls['is_ua11'].patchValue(true)
+      this.trainingForm.controls['is_ua14'].patchValue(true)
+      this.trainingForm.controls['is_ua17'].patchValue(true)
+      this.trainingForm.controls['is_ua19'].patchValue(true)
+      this.trainingForm.controls['is_ua24'].patchValue(true)
+      this.trainingForm.controls['is_ua29'].patchValue(true)
+      this.trainingForm.controls['is_ua32'].patchValue(true)
+      this.trainingForm.controls['is_ua36'].patchValue(true)
+      this.trainingForm.controls['is_ua41'].patchValue(true)
+      this.trainingForm.controls['is_ud43'].patchValue(true)
+      this.trainingForm.controls['is_ud48'].patchValue(true)
+      this.trainingForm.controls['is_ud52'].patchValue(true)
+      this.trainingForm.controls['is_vu06'].patchValue(true)
+      this.trainingForm.controls['is_vu07'].patchValue(true)
+      this.trainingForm.controls['is_wa17'].patchValue(true)
+      this.trainingForm.controls['is_wa19'].patchValue(true)
+      this.trainingForm.controls['is_wa22'].patchValue(true)
+      this.trainingForm.controls['is_wa26'].patchValue(true)
+      this.trainingForm.controls['is_wa28'].patchValue(true)
+      this.trainingForm.controls['is_wa29'].patchValue(true)
+      this.trainingForm.controls['is_wa32'].patchValue(true)
+      this.trainingForm.controls['is_wa36'].patchValue(true)
+      this.trainingForm.controls['is_wa41'].patchValue(true)
+      this.trainingForm.controls['is_wa44'].patchValue(true)
+      this.trainingForm.controls['is_wa48'].patchValue(true)
+      this.trainingForm.controls['is_wa52'].patchValue(true)
+      this.trainingForm.controls['is_wa54'].patchValue(true)
+      this.trainingForm.controls['is_waa41'].patchValue(true)
+      this.trainingForm.controls['is_waa44'].patchValue(true)
     }
   }
 
@@ -1645,6 +1851,804 @@ export class TrainingAddComponent implements OnInit {
 
   checkForm() {
     console.log('form: ', this.trainingForm.value)
+  }
+
+  // Kumpulan sasaran
+  onAddTargetGrp($event) {
+    let add = $event['form']
+    // console.log('add ', add)
+    this.trainingForm.controls[add].patchValue(true)
+    let groupD = [
+      'is_ha11',
+      'is_ha14',
+      'is_ha16',
+      'is_kp11',
+      'is_kp14',
+      'is_na01',
+      'is_na11',
+      'is_na14',
+      'is_ra01',
+      'is_ra03',
+      'is_ua11',
+      'is_ua14',
+      'is_vu06',
+      'is_vu07',
+    ]
+    let groupC = [
+      'is_ba19',
+      'is_ga29',
+      'is_ft19',
+      'is_fa29',
+      'is_ga17',
+      'is_ga19',
+      'is_ga22',
+      'is_ga26',
+      'is_ha19',
+      'is_ha22',
+      'is_ja19',
+      'is_ja22',
+      'is_kp19',
+      'is_kp22',
+      'is_na17',
+      'is_na19',
+      'is_na22',
+      'is_na26',
+      'is_ua17',
+      'is_ua19',
+      'is_ua24',
+      'is_wa17',
+      'is_wa19',
+      'is_wa22',
+      'is_wa26',
+    ]
+    let groupB = [
+      'is_fa32',
+      'is_ga29',
+      'is_ga32',
+      'is_ja29',
+      'is_ja36',
+      'is_ja38',
+      'is_ja40',
+      'is_kp29',
+      'is_kp32',
+      'is_la29',
+      'is_na26',
+      'is_na29',
+      'is_na30',
+      'is_na32',
+      'is_na36',
+      'is_ua29',
+      'is_ua32',
+      'is_ua36',
+      'is_wa28',
+      'is_wa29',
+      'is_wa32',
+      'is_wa36'
+    ]
+    let groupA = [
+      'is_fa41',
+      'is_fa44',
+      'is_fa48',
+      'is_ga41',
+      'is_gv41',
+      'is_ja41',
+      'is_ja44',
+      'is_ja48',
+      'is_ja52',
+      'is_ja54',
+      'is_kp41',
+      'is_la41',
+      'is_la44',
+      'is_la52',
+      'is_la54',
+      'is_na41',
+      'is_na44',
+      'is_na48',
+      'is_na52',
+      'is_na54',
+      'is_ua41',
+      'is_ud43',
+      'is_ud48',
+      'is_ud52',
+      'is_wa41',
+      'is_wa44',
+      'is_wa48',
+      'is_wa52',
+      'is_wa54',
+      'is_waa41',
+      'is_waa44'
+    ]
+
+    if (add == 'is_group_KP_D') {
+      this.trainingForm.controls['is_ha11'].patchValue(true)
+      this.trainingForm.controls['is_ha14'].patchValue(true)
+      this.trainingForm.controls['is_ha16'].patchValue(true)
+      this.trainingForm.controls['is_kp11'].patchValue(true)
+      this.trainingForm.controls['is_kp14'].patchValue(true)
+      this.trainingForm.controls['is_na01'].patchValue(true)
+      this.trainingForm.controls['is_na11'].patchValue(true)
+      this.trainingForm.controls['is_na14'].patchValue(true)
+      this.trainingForm.controls['is_ra01'].patchValue(true)
+      this.trainingForm.controls['is_ra03'].patchValue(true)
+      this.trainingForm.controls['is_ua11'].patchValue(true)
+      this.trainingForm.controls['is_ua14'].patchValue(true)
+      this.trainingForm.controls['is_vu06'].patchValue(true)
+      this.trainingForm.controls['is_vu07'].patchValue(true)
+      
+      groupD.forEach(
+        (grp_sch) => {
+          // console.log('gr: ', grp_sch)
+          // console.log('sch: ', sch)
+          // console.log(this.selectedSch.find(sch => sch === grp_sch))
+          if (this.selectedSch.find(sch => sch === grp_sch) == undefined) {
+            this.selectedSch.push(grp_sch)
+            // console.log('masuke ke')
+          }
+        }
+      )
+    }
+    else if (add == 'is_group_KP_C') {
+      this.trainingForm.controls['is_ba19'].patchValue(true)
+      this.trainingForm.controls['is_ga29'].patchValue(true)
+      this.trainingForm.controls['is_ft19'].patchValue(true)
+      this.trainingForm.controls['is_fa29'].patchValue(true)
+      this.trainingForm.controls['is_ga17'].patchValue(true)
+      this.trainingForm.controls['is_ga19'].patchValue(true)
+      this.trainingForm.controls['is_ga22'].patchValue(true)
+      this.trainingForm.controls['is_ga26'].patchValue(true)
+      this.trainingForm.controls['is_ha19'].patchValue(true)
+      this.trainingForm.controls['is_ha22'].patchValue(true)
+      this.trainingForm.controls['is_ja19'].patchValue(true)
+      this.trainingForm.controls['is_ja22'].patchValue(true)
+      this.trainingForm.controls['is_kp19'].patchValue(true)
+      this.trainingForm.controls['is_kp22'].patchValue(true)
+      this.trainingForm.controls['is_na17'].patchValue(true)
+      this.trainingForm.controls['is_na19'].patchValue(true)
+      this.trainingForm.controls['is_na22'].patchValue(true)
+      this.trainingForm.controls['is_na26'].patchValue(true)
+      this.trainingForm.controls['is_ua17'].patchValue(true)
+      this.trainingForm.controls['is_ua19'].patchValue(true)
+      this.trainingForm.controls['is_ua24'].patchValue(true)
+      this.trainingForm.controls['is_wa17'].patchValue(true)
+      this.trainingForm.controls['is_wa19'].patchValue(true)
+      this.trainingForm.controls['is_wa22'].patchValue(true)
+      this.trainingForm.controls['is_wa26'].patchValue(true)
+
+      groupC.forEach(
+        (grp_sch) => {
+          // console.log('gr: ', grp_sch)
+          // console.log('sch: ', sch)
+          // console.log(this.selectedSch.find(sch => sch === grp_sch))
+          if (this.selectedSch.find(sch => sch === grp_sch) == undefined) {
+            this.selectedSch.push(grp_sch)
+            // console.log('masuke ke')
+          }
+        }
+      )
+    }
+    else if (add == 'is_group_KP_B') {
+      this.trainingForm.controls['is_fa32'].patchValue(true)
+      this.trainingForm.controls['is_ga29'].patchValue(true)
+      this.trainingForm.controls['is_ga32'].patchValue(true)
+      this.trainingForm.controls['is_ja29'].patchValue(true)
+      this.trainingForm.controls['is_ja36'].patchValue(true)
+      this.trainingForm.controls['is_ja38'].patchValue(true)
+      this.trainingForm.controls['is_ja40'].patchValue(true)
+      this.trainingForm.controls['is_kp29'].patchValue(true)
+      this.trainingForm.controls['is_kp32'].patchValue(true)
+      this.trainingForm.controls['is_la29'].patchValue(true)
+      this.trainingForm.controls['is_na26'].patchValue(true)
+      this.trainingForm.controls['is_na29'].patchValue(true)
+      this.trainingForm.controls['is_na30'].patchValue(true)
+      this.trainingForm.controls['is_na32'].patchValue(true)
+      this.trainingForm.controls['is_na36'].patchValue(true)
+      this.trainingForm.controls['is_ua29'].patchValue(true)
+      this.trainingForm.controls['is_ua32'].patchValue(true)
+      this.trainingForm.controls['is_ua36'].patchValue(true)
+      this.trainingForm.controls['is_wa28'].patchValue(true)
+      this.trainingForm.controls['is_wa29'].patchValue(true)
+      this.trainingForm.controls['is_wa32'].patchValue(true)
+      this.trainingForm.controls['is_wa36'].patchValue(true)
+
+      groupB.forEach(
+        (grp_sch) => {
+          // console.log('gr: ', grp_sch)
+          // console.log('sch: ', sch)
+          // console.log(this.selectedSch.find(sch => sch === grp_sch))
+          if (this.selectedSch.find(sch => sch === grp_sch) == undefined) {
+            this.selectedSch.push(grp_sch)
+            // console.log('masuke ke')
+          }
+        }
+      )
+    }
+    else if (add == 'is_group_KP_A') {
+      this.trainingForm.controls['is_fa41'].patchValue(true)
+      this.trainingForm.controls['is_fa44'].patchValue(true)
+      this.trainingForm.controls['is_fa48'].patchValue(true)
+      this.trainingForm.controls['is_ga41'].patchValue(true)
+      this.trainingForm.controls['is_gv41'].patchValue(true)
+      this.trainingForm.controls['is_ja41'].patchValue(true)
+      this.trainingForm.controls['is_ja44'].patchValue(true)
+      this.trainingForm.controls['is_ja48'].patchValue(true)
+      this.trainingForm.controls['is_ja52'].patchValue(true)
+      this.trainingForm.controls['is_ja54'].patchValue(true)
+      this.trainingForm.controls['is_kp41'].patchValue(true)
+      this.trainingForm.controls['is_la41'].patchValue(true)
+      this.trainingForm.controls['is_la44'].patchValue(true)
+      this.trainingForm.controls['is_la52'].patchValue(true)
+      this.trainingForm.controls['is_la54'].patchValue(true)
+      this.trainingForm.controls['is_na41'].patchValue(true)
+      this.trainingForm.controls['is_na44'].patchValue(true)
+      this.trainingForm.controls['is_na48'].patchValue(true)
+      this.trainingForm.controls['is_na52'].patchValue(true)
+      this.trainingForm.controls['is_na54'].patchValue(true)
+      this.trainingForm.controls['is_ua41'].patchValue(true)
+      this.trainingForm.controls['is_ud43'].patchValue(true)
+      this.trainingForm.controls['is_ud48'].patchValue(true)
+      this.trainingForm.controls['is_ud52'].patchValue(true)
+      this.trainingForm.controls['is_wa41'].patchValue(true)
+      this.trainingForm.controls['is_wa44'].patchValue(true)
+      this.trainingForm.controls['is_wa48'].patchValue(true)
+      this.trainingForm.controls['is_wa52'].patchValue(true)
+      this.trainingForm.controls['is_wa54'].patchValue(true)
+      this.trainingForm.controls['is_waa41'].patchValue(true)
+      this.trainingForm.controls['is_waa44'].patchValue(true)
+
+      groupA.forEach(
+        (grp_sch) => {
+          // console.log('gr: ', grp_sch)
+          // console.log('sch: ', sch)
+          // console.log(this.selectedSch.find(sch => sch === grp_sch))
+          if (this.selectedSch.find(sch => sch === grp_sch) == undefined) {
+            this.selectedSch.push(grp_sch)
+            // console.log('masuke ke')
+          }
+        }
+      )
+    }
+  }
+
+  onClearTargetGrp($event) {
+    let clear = $event
+    this.targetGrpOpts.forEach(
+      (target) => {
+        this.trainingForm.controls[target['form']].patchValue(false)
+      }
+    )
+
+    this.trainingForm.controls['is_ha11'].patchValue(false)
+    this.trainingForm.controls['is_ha14'].patchValue(false)
+    this.trainingForm.controls['is_ha16'].patchValue(false)
+    this.trainingForm.controls['is_kp11'].patchValue(false)
+    this.trainingForm.controls['is_kp14'].patchValue(false)
+    this.trainingForm.controls['is_na01'].patchValue(false)
+    this.trainingForm.controls['is_na11'].patchValue(false)
+    this.trainingForm.controls['is_na14'].patchValue(false)
+    this.trainingForm.controls['is_ra01'].patchValue(false)
+    this.trainingForm.controls['is_ra03'].patchValue(false)
+    this.trainingForm.controls['is_ua11'].patchValue(false)
+    this.trainingForm.controls['is_ua14'].patchValue(false)
+    this.trainingForm.controls['is_vu06'].patchValue(false)
+    this.trainingForm.controls['is_vu07'].patchValue(false) 
+    this.trainingForm.controls['is_ba19'].patchValue(false)
+    this.trainingForm.controls['is_ga29'].patchValue(false)
+    this.trainingForm.controls['is_ft19'].patchValue(false)
+    this.trainingForm.controls['is_ga17'].patchValue(false)
+    this.trainingForm.controls['is_ga19'].patchValue(false)
+    this.trainingForm.controls['is_ga22'].patchValue(false)
+    this.trainingForm.controls['is_ga26'].patchValue(false)
+    this.trainingForm.controls['is_ha19'].patchValue(false)
+    this.trainingForm.controls['is_ha22'].patchValue(false)
+    this.trainingForm.controls['is_ja19'].patchValue(false)
+    this.trainingForm.controls['is_ja22'].patchValue(false)
+    this.trainingForm.controls['is_kp19'].patchValue(false)
+    this.trainingForm.controls['is_kp22'].patchValue(false)
+    this.trainingForm.controls['is_na17'].patchValue(false)
+    this.trainingForm.controls['is_na19'].patchValue(false)
+    this.trainingForm.controls['is_na22'].patchValue(false)
+    this.trainingForm.controls['is_na26'].patchValue(false)
+    this.trainingForm.controls['is_ua17'].patchValue(false)
+    this.trainingForm.controls['is_ua19'].patchValue(false)
+    this.trainingForm.controls['is_ua24'].patchValue(false)
+    this.trainingForm.controls['is_wa17'].patchValue(false)
+    this.trainingForm.controls['is_wa19'].patchValue(false)
+    this.trainingForm.controls['is_wa22'].patchValue(false)
+    this.trainingForm.controls['is_wa26'].patchValue(false)
+    this.trainingForm.controls['is_fa32'].patchValue(false)
+    this.trainingForm.controls['is_ga29'].patchValue(false)
+    this.trainingForm.controls['is_ga32'].patchValue(false)
+    this.trainingForm.controls['is_ja29'].patchValue(false)
+    this.trainingForm.controls['is_ja36'].patchValue(false)
+    this.trainingForm.controls['is_ja38'].patchValue(false)
+    this.trainingForm.controls['is_ja40'].patchValue(false)
+    this.trainingForm.controls['is_kp29'].patchValue(false)
+    this.trainingForm.controls['is_kp32'].patchValue(false)
+    this.trainingForm.controls['is_la29'].patchValue(false)
+    this.trainingForm.controls['is_na26'].patchValue(false)
+    this.trainingForm.controls['is_na29'].patchValue(false)
+    this.trainingForm.controls['is_na30'].patchValue(false)
+    this.trainingForm.controls['is_na32'].patchValue(false)
+    this.trainingForm.controls['is_na36'].patchValue(false)
+    this.trainingForm.controls['is_ua29'].patchValue(false)
+    this.trainingForm.controls['is_ua32'].patchValue(false)
+    this.trainingForm.controls['is_ua36'].patchValue(false)
+    this.trainingForm.controls['is_wa28'].patchValue(false)
+    this.trainingForm.controls['is_wa29'].patchValue(false)
+    this.trainingForm.controls['is_wa32'].patchValue(false)
+    this.trainingForm.controls['is_wa36'].patchValue(false)
+    this.trainingForm.controls['is_fa41'].patchValue(false)
+    this.trainingForm.controls['is_fa44'].patchValue(false)
+    this.trainingForm.controls['is_fa48'].patchValue(false)
+    this.trainingForm.controls['is_ga41'].patchValue(false)
+    this.trainingForm.controls['is_gv41'].patchValue(false)
+    this.trainingForm.controls['is_ja41'].patchValue(false)
+    this.trainingForm.controls['is_ja44'].patchValue(false)
+    this.trainingForm.controls['is_ja48'].patchValue(false)
+    this.trainingForm.controls['is_ja52'].patchValue(false)
+    this.trainingForm.controls['is_ja54'].patchValue(false)
+    this.trainingForm.controls['is_kp41'].patchValue(false)
+    this.trainingForm.controls['is_la41'].patchValue(false)
+    this.trainingForm.controls['is_la44'].patchValue(false)
+    this.trainingForm.controls['is_la52'].patchValue(false)
+    this.trainingForm.controls['is_la54'].patchValue(false)
+    this.trainingForm.controls['is_na41'].patchValue(false)
+    this.trainingForm.controls['is_na44'].patchValue(false)
+    this.trainingForm.controls['is_na48'].patchValue(false)
+    this.trainingForm.controls['is_na52'].patchValue(false)
+    this.trainingForm.controls['is_na54'].patchValue(false)
+    this.trainingForm.controls['is_ua41'].patchValue(false)
+    this.trainingForm.controls['is_ud43'].patchValue(false)
+    this.trainingForm.controls['is_ud48'].patchValue(false)
+    this.trainingForm.controls['is_ud52'].patchValue(false)
+    this.trainingForm.controls['is_wa41'].patchValue(false)
+    this.trainingForm.controls['is_wa44'].patchValue(false)
+    this.trainingForm.controls['is_wa48'].patchValue(false)
+    this.trainingForm.controls['is_wa52'].patchValue(false)
+    this.trainingForm.controls['is_wa54'].patchValue(false)
+    this.trainingForm.controls['is_waa41'].patchValue(false)
+    this.trainingForm.controls['is_waa44'].patchValue(false)
+
+    this.selectedSch = []
+  }
+
+  onRemoveTargetGrp($event) {
+    let remove = $event['value']['form']
+    // console.log('remove ', remove)
+    this.trainingForm.controls[remove].patchValue(false)
+    let groupD = [
+      'is_ha11',
+      'is_ha14',
+      'is_ha16',
+      'is_kp11',
+      'is_kp14',
+      'is_na01',
+      'is_na11',
+      'is_na14',
+      'is_ra01',
+      'is_ra03',
+      'is_ua11',
+      'is_ua14',
+      'is_vu06',
+      'is_vu07',
+    ]
+    let groupC = [
+      'is_ba19',
+      'is_ga29',
+      'is_ft19',
+      'is_fa29',
+      'is_ga17',
+      'is_ga19',
+      'is_ga22',
+      'is_ga26',
+      'is_ha19',
+      'is_ha22',
+      'is_ja19',
+      'is_ja22',
+      'is_kp19',
+      'is_kp22',
+      'is_na17',
+      'is_na19',
+      'is_na22',
+      'is_na26',
+      'is_ua17',
+      'is_ua19',
+      'is_ua24',
+      'is_wa17',
+      'is_wa19',
+      'is_wa22',
+      'is_wa26',
+    ]
+    let groupB = [
+      'is_fa32',
+      'is_ga29',
+      'is_ga32',
+      'is_ja29',
+      'is_ja36',
+      'is_ja38',
+      'is_ja40',
+      'is_kp29',
+      'is_kp32',
+      'is_la29',
+      'is_na26',
+      'is_na29',
+      'is_na30',
+      'is_na32',
+      'is_na36',
+      'is_ua29',
+      'is_ua32',
+      'is_ua36',
+      'is_wa28',
+      'is_wa29',
+      'is_wa32',
+      'is_wa36'
+    ]
+    let groupA = [
+      'is_fa41',
+      'is_fa44',
+      'is_fa48',
+      'is_ga41',
+      'is_gv41',
+      'is_ja41',
+      'is_ja44',
+      'is_ja48',
+      'is_ja52',
+      'is_ja54',
+      'is_kp41',
+      'is_la41',
+      'is_la44',
+      'is_la52',
+      'is_la54',
+      'is_na41',
+      'is_na44',
+      'is_na48',
+      'is_na52',
+      'is_na54',
+      'is_ua41',
+      'is_ud43',
+      'is_ud48',
+      'is_ud52',
+      'is_wa41',
+      'is_wa44',
+      'is_wa48',
+      'is_wa52',
+      'is_wa54',
+      'is_waa41',
+      'is_waa44'
+    ]
+
+    if (remove == 'is_group_KP_D') {
+      this.trainingForm.controls['is_ha11'].patchValue(false)
+      this.trainingForm.controls['is_ha14'].patchValue(false)
+      this.trainingForm.controls['is_ha16'].patchValue(false)
+      this.trainingForm.controls['is_kp11'].patchValue(false)
+      this.trainingForm.controls['is_kp14'].patchValue(false)
+      this.trainingForm.controls['is_na01'].patchValue(false)
+      this.trainingForm.controls['is_na11'].patchValue(false)
+      this.trainingForm.controls['is_na14'].patchValue(false)
+      this.trainingForm.controls['is_ra01'].patchValue(false)
+      this.trainingForm.controls['is_ra03'].patchValue(false)
+      this.trainingForm.controls['is_ua11'].patchValue(false)
+      this.trainingForm.controls['is_ua14'].patchValue(false)
+      this.trainingForm.controls['is_vu06'].patchValue(false)
+      this.trainingForm.controls['is_vu07'].patchValue(false)
+
+      groupD.forEach(
+        (grp_sch) => {
+          this.selectedSch = this.selectedSch.filter(sch => sch !== grp_sch )
+        }
+      )
+    }
+    else if (remove == 'is_group_KP_C') {
+      this.trainingForm.controls['is_ba19'].patchValue(false)
+      this.trainingForm.controls['is_ga29'].patchValue(false)
+      this.trainingForm.controls['is_ft19'].patchValue(false)
+      this.trainingForm.controls['is_fa29'].patchValue(false)
+      this.trainingForm.controls['is_ga17'].patchValue(false)
+      this.trainingForm.controls['is_ga19'].patchValue(false)
+      this.trainingForm.controls['is_ga22'].patchValue(false)
+      this.trainingForm.controls['is_ga26'].patchValue(false)
+      this.trainingForm.controls['is_ha19'].patchValue(false)
+      this.trainingForm.controls['is_ha22'].patchValue(false)
+      this.trainingForm.controls['is_ja19'].patchValue(false)
+      this.trainingForm.controls['is_ja22'].patchValue(false)
+      this.trainingForm.controls['is_kp19'].patchValue(false)
+      this.trainingForm.controls['is_kp22'].patchValue(false)
+      this.trainingForm.controls['is_na17'].patchValue(false)
+      this.trainingForm.controls['is_na19'].patchValue(false)
+      this.trainingForm.controls['is_na22'].patchValue(false)
+      this.trainingForm.controls['is_na26'].patchValue(false)
+      this.trainingForm.controls['is_ua17'].patchValue(false)
+      this.trainingForm.controls['is_ua19'].patchValue(false)
+      this.trainingForm.controls['is_ua24'].patchValue(false)
+      this.trainingForm.controls['is_wa17'].patchValue(false)
+      this.trainingForm.controls['is_wa19'].patchValue(false)
+      this.trainingForm.controls['is_wa22'].patchValue(false)
+      this.trainingForm.controls['is_wa26'].patchValue(false)
+
+      groupC.forEach(
+        (grp_sch) => {
+          this.selectedSch = this.selectedSch.filter(sch => sch !== grp_sch )
+        }
+      )
+    }
+    else if (remove == 'is_group_KP_B') {
+      this.trainingForm.controls['is_fa32'].patchValue(false)
+      this.trainingForm.controls['is_ga29'].patchValue(false)
+      this.trainingForm.controls['is_ga32'].patchValue(false)
+      this.trainingForm.controls['is_ja29'].patchValue(false)
+      this.trainingForm.controls['is_ja36'].patchValue(false)
+      this.trainingForm.controls['is_ja38'].patchValue(false)
+      this.trainingForm.controls['is_ja40'].patchValue(false)
+      this.trainingForm.controls['is_kp29'].patchValue(false)
+      this.trainingForm.controls['is_kp32'].patchValue(false)
+      this.trainingForm.controls['is_la29'].patchValue(false)
+      this.trainingForm.controls['is_na26'].patchValue(false)
+      this.trainingForm.controls['is_na29'].patchValue(false)
+      this.trainingForm.controls['is_na30'].patchValue(false)
+      this.trainingForm.controls['is_na32'].patchValue(false)
+      this.trainingForm.controls['is_na36'].patchValue(false)
+      this.trainingForm.controls['is_ua29'].patchValue(false)
+      this.trainingForm.controls['is_ua32'].patchValue(false)
+      this.trainingForm.controls['is_ua36'].patchValue(false)
+      this.trainingForm.controls['is_wa28'].patchValue(false)
+      this.trainingForm.controls['is_wa29'].patchValue(false)
+      this.trainingForm.controls['is_wa32'].patchValue(false)
+      this.trainingForm.controls['is_wa36'].patchValue(false)
+
+      groupB.forEach(
+        (grp_sch) => {
+          this.selectedSch = this.selectedSch.filter(sch => sch !== grp_sch )
+        }
+      )
+    }
+    else if (remove == 'is_group_KP_A') {
+      this.trainingForm.controls['is_fa41'].patchValue(false)
+      this.trainingForm.controls['is_fa44'].patchValue(false)
+      this.trainingForm.controls['is_fa48'].patchValue(false)
+      this.trainingForm.controls['is_ga41'].patchValue(false)
+      this.trainingForm.controls['is_gv41'].patchValue(false)
+      this.trainingForm.controls['is_ja41'].patchValue(false)
+      this.trainingForm.controls['is_ja44'].patchValue(false)
+      this.trainingForm.controls['is_ja48'].patchValue(false)
+      this.trainingForm.controls['is_ja52'].patchValue(false)
+      this.trainingForm.controls['is_ja54'].patchValue(false)
+      this.trainingForm.controls['is_kp41'].patchValue(false)
+      this.trainingForm.controls['is_la41'].patchValue(false)
+      this.trainingForm.controls['is_la44'].patchValue(false)
+      this.trainingForm.controls['is_la52'].patchValue(false)
+      this.trainingForm.controls['is_la54'].patchValue(false)
+      this.trainingForm.controls['is_na41'].patchValue(false)
+      this.trainingForm.controls['is_na44'].patchValue(false)
+      this.trainingForm.controls['is_na48'].patchValue(false)
+      this.trainingForm.controls['is_na52'].patchValue(false)
+      this.trainingForm.controls['is_na54'].patchValue(false)
+      this.trainingForm.controls['is_ua41'].patchValue(false)
+      this.trainingForm.controls['is_ud43'].patchValue(false)
+      this.trainingForm.controls['is_ud48'].patchValue(false)
+      this.trainingForm.controls['is_ud52'].patchValue(false)
+      this.trainingForm.controls['is_wa41'].patchValue(false)
+      this.trainingForm.controls['is_wa44'].patchValue(false)
+      this.trainingForm.controls['is_wa48'].patchValue(false)
+      this.trainingForm.controls['is_wa52'].patchValue(false)
+      this.trainingForm.controls['is_wa54'].patchValue(false)
+      this.trainingForm.controls['is_waa41'].patchValue(false)
+      this.trainingForm.controls['is_waa44'].patchValue(false)
+
+      groupA.forEach(
+        (grp_sch) => {
+          this.selectedSch = this.selectedSch.filter(sch => sch !== grp_sch )
+        }
+      )
+    }
+  }
+
+  // Jabatan sasaram
+  onAddTargetDep($event) {
+    let add = $event['form']
+    // console.log('add ', add)
+    this.trainingForm.controls[add].patchValue(true)
+  }
+
+  onClearTargetDep($event) {
+    let clear = $event
+    this.targetDepOpts.forEach(
+      (target) => {
+        this.trainingForm.controls[target['form']].patchValue(false)
+      }
+    )
+  }
+
+  onRemoveTargetDep($event) {
+    let remove = $event['value']['form']
+    // console.log('remove ', remove)
+    this.trainingForm.controls[remove].patchValue(false)
+  }
+
+  // Jawatan sasaran
+  onAddTargetPos($event) {
+    let add = $event['form']
+    // console.log('add ', add)
+    this.trainingForm.controls[add].patchValue(true)
+  }
+
+  onClearTargetPos($event) {
+    let clear = $event
+    this.targetPosOpts.forEach(
+      (target) => {
+        this.trainingForm.controls[target['form']].patchValue(false)
+      }
+    )
+  }
+
+  onRemoveTargetPos($event) {
+    let remove = $event['value']['form']
+    // console.log('remove ', remove)
+    this.trainingForm.controls[remove].patchValue(false)
+  }
+
+  // Skema sasaran
+  onAddTargetSch($event) {
+    let add = $event['form']
+    let grade = add.slice(-2)
+    // console.log('add ', add)
+    this.trainingForm.controls[add].patchValue(true)
+    if (Number(grade) >= 1 && Number(grade) <= 16) {
+      if (
+        this.trainingForm.value['is_ha11'] == true &&
+        this.trainingForm.value['is_ha14'] == true &&
+        this.trainingForm.value['is_ha16'] == true &&
+        this.trainingForm.value['is_kp11'] == true &&
+        this.trainingForm.value['is_kp14'] == true &&
+        this.trainingForm.value['is_na01'] == true &&
+        this.trainingForm.value['is_na11'] == true &&
+        this.trainingForm.value['is_na14'] == true &&
+        this.trainingForm.value['is_ra01'] == true &&
+        this.trainingForm.value['is_ra03'] == true &&
+        this.trainingForm.value['is_ua11'] == true &&
+        this.trainingForm.value['is_ua14'] == true &&
+        this.trainingForm.value['is_vu06'] == true &&
+        this.trainingForm.value['is_vu07'] == true 
+      ) {
+        this.trainingForm.controls['is_group_KP_D'].patchValue(true)
+        this.selectedGrp.push('is_group_KP_D')
+      }
+    }
+    else if (Number(grade) >= 17 && Number(grade) <= 26) {
+      if (
+        this.trainingForm.value['is_ba19'] == true &&
+        this.trainingForm.value['is_ga29'] == true &&
+        this.trainingForm.value['is_ft19'] == true &&
+        this.trainingForm.value['is_ga17'] == true &&
+        this.trainingForm.value['is_ga19'] == true &&
+        this.trainingForm.value['is_ga22'] == true &&
+        this.trainingForm.value['is_ga26'] == true &&
+        this.trainingForm.value['is_ha19'] == true &&
+        this.trainingForm.value['is_ha22'] == true &&
+        this.trainingForm.value['is_ja19'] == true &&
+        this.trainingForm.value['is_ja22'] == true &&
+        this.trainingForm.value['is_kp19'] == true &&
+        this.trainingForm.value['is_kp22'] == true &&
+        this.trainingForm.value['is_na17'] == true &&
+        this.trainingForm.value['is_na19'] == true &&
+        this.trainingForm.value['is_na22'] == true &&
+        this.trainingForm.value['is_na26'] == true &&
+        this.trainingForm.value['is_ua17'] == true &&
+        this.trainingForm.value['is_ua19'] == true &&
+        this.trainingForm.value['is_ua24'] == true &&
+        this.trainingForm.value['is_wa17'] == true &&
+        this.trainingForm.value['is_wa19'] == true &&
+        this.trainingForm.value['is_wa22'] == true &&
+        this.trainingForm.value['is_wa26'] == true
+      ) {
+        this.trainingForm.controls['is_group_KP_C'].patchValue(true)
+        this.selectedGrp.push('is_group_KP_C')
+      }
+    }
+    else if (Number(grade) >= 27 && Number(grade) <= 40) {
+      if (
+        this.trainingForm.value['is_fa32'] == true &&
+        this.trainingForm.value['is_ga29'] == true &&
+        this.trainingForm.value['is_ga32'] == true &&
+        this.trainingForm.value['is_ja29'] == true &&
+        this.trainingForm.value['is_ja36'] == true &&
+        this.trainingForm.value['is_ja38'] == true &&
+        this.trainingForm.value['is_ja40'] == true &&
+        this.trainingForm.value['is_kp29'] == true &&
+        this.trainingForm.value['is_kp32'] == true &&
+        this.trainingForm.value['is_la29'] == true &&
+        this.trainingForm.value['is_na26'] == true &&
+        this.trainingForm.value['is_na29'] == true &&
+        this.trainingForm.value['is_na30'] == true &&
+        this.trainingForm.value['is_na32'] == true &&
+        this.trainingForm.value['is_na36'] == true &&
+        this.trainingForm.value['is_ua29'] == true &&
+        this.trainingForm.value['is_ua32'] == true &&
+        this.trainingForm.value['is_ua36'] == true &&
+        this.trainingForm.value['is_wa28'] == true &&
+        this.trainingForm.value['is_wa29'] == true &&
+        this.trainingForm.value['is_wa32'] == true &&
+        this.trainingForm.value['is_wa36'] == true
+      ) {
+        this.trainingForm.controls['is_group_KP_B'].patchValue(true)
+        this.selectedGrp.push('is_group_KP_B')
+      }
+    }
+    else if (Number(grade) >= 41) {
+      if (        
+        this.trainingForm.value['is_fa41'] == true &&
+        this.trainingForm.value['is_fa44'] == true &&
+        this.trainingForm.value['is_fa48'] == true &&
+        this.trainingForm.value['is_ga41'] == true &&
+        this.trainingForm.value['is_gv41'] == true &&
+        this.trainingForm.value['is_ja41'] == true &&
+        this.trainingForm.value['is_ja44'] == true &&
+        this.trainingForm.value['is_ja48'] == true &&
+        this.trainingForm.value['is_ja52'] == true &&
+        this.trainingForm.value['is_ja54'] == true &&
+        this.trainingForm.value['is_kp41'] == true &&
+        this.trainingForm.value['is_la41'] == true &&
+        this.trainingForm.value['is_la44'] == true &&
+        this.trainingForm.value['is_la52'] == true &&
+        this.trainingForm.value['is_la54'] == true &&
+        this.trainingForm.value['is_na41'] == true &&
+        this.trainingForm.value['is_na44'] == true &&
+        this.trainingForm.value['is_na48'] == true &&
+        this.trainingForm.value['is_na52'] == true &&
+        this.trainingForm.value['is_na54'] == true &&
+        this.trainingForm.value['is_ua41'] == true &&
+        this.trainingForm.value['is_ud43'] == true &&
+        this.trainingForm.value['is_ud48'] == true &&
+        this.trainingForm.value['is_ud52'] == true &&
+        this.trainingForm.value['is_wa41'] == true &&
+        this.trainingForm.value['is_wa44'] == true &&
+        this.trainingForm.value['is_wa48'] == true &&
+        this.trainingForm.value['is_wa52'] == true &&
+        this.trainingForm.value['is_wa54'] == true &&
+        this.trainingForm.value['is_waa41'] == true &&
+        this.trainingForm.value['is_waa44'] == true
+      ) {
+        this.trainingForm.controls['is_group_KP_A'].patchValue(true)
+        this.selectedGrp.push('is_group_KP_A')
+      }
+    }
+  }
+
+  onClearTargetSch($event) {
+    let clear = $event
+    this.targetSchOpts.forEach(
+      (target) => {
+        this.trainingForm.controls[target['form']].patchValue(false)
+      }
+    )
+    this.trainingForm.controls['is_group_KP_D'].patchValue(false)
+    this.trainingForm.controls['is_group_KP_C'].patchValue(false)
+    this.trainingForm.controls['is_group_KP_B'].patchValue(false)
+    this.trainingForm.controls['is_group_KP_A'].patchValue(false)
+    this.selectedGrp = []
+  }
+
+  onRemoveTargetSch($event) {
+    let remove = $event['value']['form']
+    let grade = remove.slice(-2)
+    // console.log('remove ', remove)
+    this.trainingForm.controls[remove].patchValue(false)
+    if (Number(grade) >= 1 && Number(grade) <= 16) {
+      this.trainingForm.controls['is_group_KP_D'].patchValue(false)
+      this.selectedGrp = this.selectedGrp.filter(grp => grp !== 'is_group_KP_D' )
+    }
+    else if (Number(grade) >= 17 && Number(grade) <= 26) {
+      this.trainingForm.controls['is_group_KP_C'].patchValue(false)
+      this.selectedGrp = this.selectedGrp.filter(grp => grp !== 'is_group_KP_C' )
+    }
+    else if (Number(grade) >= 27 && Number(grade) <= 40) {
+      this.trainingForm.controls['is_group_KP_B'].patchValue(false)
+      this.selectedGrp = this.selectedGrp.filter(grp => grp !== 'is_group_KP_B' )
+    }
+    else if (Number(grade) >= 41) {
+      this.trainingForm.controls['is_group_KP_A'].patchValue(false)
+      this.selectedGrp = this.selectedGrp.filter(grp => grp !== 'is_group_KP_A' )
+    }
   }
 
 }
