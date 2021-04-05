@@ -19,6 +19,7 @@ import { ExamsService } from 'src/app/shared/services/exams/exams.service';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
+import { Department } from 'src/app/shared/code/user';
 am4core.useTheme(am4themes_animated);
 
 export enum SelectionType {
@@ -45,6 +46,9 @@ export class ExamsComponent implements OnInit {
   examsOption: Exam[] = []
   examsTemp: Exam[] = []
   examTypeTemp = 'FKW'
+
+  // Predefined
+  departments = Department
 
   // Table
   tableEntries: number = 5

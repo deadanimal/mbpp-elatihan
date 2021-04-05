@@ -190,7 +190,11 @@
 								<span>Jabatan</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
-								{{row.staff.department_code}}
+								<ng-container *ngFor="let department of departments">
+									<span *ngIf="row.staff.department_code === department.value">
+										{{department.text}}
+									</span>
+								</ng-container>
 							</ng-template>
 						</ngx-datatable-column>
 			
@@ -412,6 +416,10 @@
 	<table class="table table-responsive table-flush">
 		<thead>
 			<tr>
+				<th colspan="3">Majlis Bandaraya Pulau Pinang - eLatihan</th>
+				<th colspan="6">Ringkasan Peperiksaan</th>
+			</tr>
+			<tr>
 				<th>Kakitangan</th>
 				<th>Kad Pengenalan</th>
 				<th>Jawatan</th>
@@ -439,7 +447,11 @@
 					{{row?.staff.salary_code}}
 				</td>
 				<td>
-					{{row?.staff.department}}
+					<ng-container *ngFor="let department of departments">
+						<span *ngIf="row.staff.department_code === department.value">
+							{{department.text}}
+						</span>
+					</ng-container>
 				</td>
 				<td>
 					[{{row?.exam.code}}] {{row?.exam.title}}

@@ -78,7 +78,7 @@
                     <div *ngIf="training.status != 'SL' && i<4">
                         <div class="card bg-secondary">
                             <div class="card-header bg-white text-center p-3">
-                                <h4 class="m-0 font-weight-bolder" style="overflow: hidden; text-overflow: ellipsis; width: 100%">{{training.title}}</h4>
+                                <h4 class="m-0 font-weight-bolder text-truncate" style="overflow: hidden; text-overflow: ellipsis; width: 100%">{{training.title}}</h4>
                                 <h5 class="m-0">{{training.start_date | date: 'd/M/y'}} - {{training.end_date | date: 'd/M/y'}}</h5>
                             </div>
                             <img src="assets/img/default/default_1.jpeg" *ngIf="i == 0">
@@ -86,7 +86,7 @@
                             <img src="assets/img/default/default_3.jpeg" *ngIf="i == 2">
                             <img src="assets/img/default/default_4.jpeg" *ngIf="i == 3">
                             <div class="card-body text-center">
-                                <p style="overflow: hidden; text-overflow: ellipsis; width: 100%">{{training.description}}</p>
+                                <p style="overflow: hidden; text-overflow: ellipsis; width: 100%" class="text-truncate">{{training.description}}</p>
                                 <button type="button" class="btn btn-block btn-warm-blue" (click)="openModal(modalView, training)">Lihat</button>
                             </div>
                         </div>

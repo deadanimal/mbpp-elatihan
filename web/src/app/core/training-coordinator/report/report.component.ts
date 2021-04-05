@@ -1,10 +1,14 @@
 import { Component, NgZone, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Department, Month } from 'src/app/shared/code/report';
 import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
+import { LevelsService } from 'src/app/shared/services/levels/levels.service';
 import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
 
 import * as moment from 'moment';
+import swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-report',
@@ -43,18 +47,60 @@ export class ReportComponent implements OnInit {
     containerClass: 'theme-dark-blue' 
   }
 
+  // Subscriber
+  subscription: Subscription
+
   constructor(
+    private levelService: LevelsService,
     private trainingService: TrainingsService,
     private loadingBar: LoadingBarService,
     private notifyService: NotifyService,
+    private router: Router,
     private zone: NgZone
-  ) { }
+  ) { 
+    this.getData()
+  }
 
   ngOnInit() {
   }
 
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe()
+    }
+  }
+
   getData() {
-    
+    this.loadingBar.start()
+
+    this.subscription = this.levelService.checkReportConfig().subscribe(
+      (res) => {
+        this.loadingBar.complete()
+
+        let plan = res['plan']
+        let level = res['level']
+
+        if (!plan && !level) {
+          swal.fire({
+            title: 'Notis',
+            text: 'Anda perlu menambah konfigurasi Aras Asas dan Pelan Pemantauan bagi tahun ini',
+            type: 'warning',
+            buttonsStyling: false,
+            confirmButtonClass: 'btn btn-warning',
+            confirmButtonText: 'Tambah konfigurasi',
+            allowOutsideClick: false
+          }).then((result) => {
+            if (result.value) {
+              this.navigatePage('/tc/report/configuration')
+            }
+          })
+        }
+      },
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {}
+    )
   }
 
   generateReport() {
@@ -172,6 +218,10 @@ export class ReportComponent implements OnInit {
       }
     )
     // console.log(body)
+  }
+
+  navigatePage(path: string) {
+    return this.router.navigate([path])
   }
 
 }

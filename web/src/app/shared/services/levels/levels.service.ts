@@ -91,4 +91,13 @@ export class LevelsService {
     )
   }
 
+  checkReportConfig() {
+    let urlTemp = this.urlLevels + 'check_report_config'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        // console.log(res)
+      })
+    )
+  }
+
 }

@@ -24,7 +24,7 @@
         <div class="col">
             <div class="card" [hidden]="isEvaluated">
                 <div class="card-header bg-secondary">
-                    <h4 class="m-0">Penilaian Dalaman</h4>
+                    <h4 class="m-0">Penilaian Dalaman [MBPP: PK-PS-PKP-34-B02]</h4>
                 </div>
     
                 <div class="card-body">
@@ -32,170 +32,99 @@
                         <div class="form-group">
                             <label class="form-control-label" style="word-wrap: break-word">
                                 1. Sejauh manakah anda fikir objektif kursus/latihan 
-                                ini telah dicapai
+                                ini telah dicapai 
+                                <span class="text-warning">*</span>
                             </label>
         
-                            <div class="pl-3">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ1A1" name="internalQ1" class="custom-control-input">
-                                    <label class="custom-control-label" for="internalQ1A1">Lemah</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ1A2" name="internalQ1" class="custom-control-input">
-                                    <label class="custom-control-label" for="internalQ1A2">Sederhana</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ1A3" name="internalQ1" class="custom-control-input">
-                                    <label class="custom-control-label" for="internalQ1A3">Memuaskan</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ1A4" name="internalQ1" class="custom-control-input">
-                                    <label class="custom-control-label" for="internalQ1A4">Bagus</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ1A5" name="internalQ1" class="custom-control-input">
-                                    <label class="custom-control-label" for="internalQ1A5">Cemerlang</label>
-                                </div>
-                            </div>
+                            <select class="form-control custom-select" formControlName="answer_1">
+                                <option value="1">1 - Lemah</option>
+                                <option value="2">2 - Sederhana</option>
+                                <option value="3">3 - Memuaskan</option>
+                                <option value="4">4 - Bagus</option>
+                                <option value="5">5 - Cemerlang</option>
+                            </select>
                         </div>
         
                         <div class="form-group">
                             <label class="form-control-label" style="word-wrap: break-word">
                                 2. Adakah kursus ini berkaitan untuk anda 
-                                menjalankan tugas-tugas seharian
+                                menjalankan tugas-tugas seharian 
+                                <span class="text-warning">*</span>
                             </label>
-        
-                            <div class="pl-3">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ2A1" name="internalQ2" class="custom-control-input">
-                                    <label class="custom-control-label" for="internalQ2A1">Kurang berkaitan</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ2A2" name="internalQ2" class="custom-control-input">
-                                    <label class="custom-control-label" for="internalQ2A2">Berkaitan</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ2A3" name="internalQ2" class="custom-control-input">
-                                    <label class="custom-control-label" for="internalQ2A3">Sangat berkaitan</label>
-                                </div>
-                            </div>
+
+                            <select class="form-control custom-select" formControlName="answer_2">
+                                <option value="1">1 - Kurang berkaitan</option>
+                                <option value="2">2 - Berkaitan</option>
+                                <option value="3">3 - Sangat berkaitan</option>
+                            </select>
                         </div>
         
                         <div class="form-group">
                             <label class="form-control-label">
                                 3. Apakah nilai-nilai positif yang anda perolehi 
                                 dari kursus/latihan ini dapat membantu anda ketika 
-                                balik bertugas
+                                balik bertugas 
+                                <span class="text-warning">*</span>
                             </label>
-        
-                            <div class="pl-3">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ3A1" name="internalQ3" class="custom-control-input">
-                                    <label class="custom-control-label" for="internalQ3A1">Tidak membantu</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ3A2" name="internalQ3" class="custom-control-input">
-                                    <label class="custom-control-label" for="internalQ3A2">Kurang membantu</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ3A3" name="internalQ3" class="custom-control-input">
-                                    <label class="custom-control-label" for="internalQ3A3">Membantu</label>
-                                </div>
-                            </div>
+
+                            <select class="form-control custom-select" formControlName="answer_3">
+                                <option value="1">1 - Tidak membantu</option>
+                                <option value="2">2 - Kurang membantu</option>
+                                <option value="3">3 - Membantu</option>
+                            </select>
                         </div>
         
                         <div class="form-group">
                             <label class="form-control-label" style="word-wrap: break-word">
                                 4. Adakah kemudahan kursus/latihan yang disediakan 
-                                sesuai dan selesa
+                                sesuai dan selesa 
+                                <span class="text-warning">*</span>
                             </label>
         
                             <div class="pl-3">
                                 <div class="form-group">
                                     <label class="form-control-label" style="word-wrap: break-word">
-                                        i. Penginapan
+                                        i. Penginapan 
+                                        <span class="text-warning">*</span>
                                     </label>
             
-                                    <div class="pl-3">
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ4A1" name="internalQ4" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ4A1">Lemah</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ4A2" name="internalQ4" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ4A2">Sederhana</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ4A3" name="internalQ4" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ4A3">Memuaskan</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ4A4" name="internalQ4" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ4A4">Bagus</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ4A5" name="internalQ4" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ4A5">Cemerlang</label>
-                                        </div>
-                                    </div>
+                                    <select class="form-control custom-select" formControlName="answer_4">
+                                        <option value="1">1 - Lemah</option>
+                                        <option value="2">2 - Sederhana</option>
+                                        <option value="3">3 - Memuaskan</option>
+                                        <option value="4">4 - Bagus</option>
+                                        <option value="5">5 - Cemerlang</option>
+                                    </select>
                                 </div>
         
                                 <div class="form-group">
                                     <label class="form-control-label" style="word-wrap: break-word">
-                                        ii. Bilik kuliah
+                                        ii. Bilik kuliah 
+                                        <span class="text-warning">*</span>
                                     </label>
             
-                                    <div class="pl-3">
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ5A1" name="internalQ5" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ5A1">Lemah</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ5A2" name="internalQ5" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ5A2">Sederhana</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ5A3" name="internalQ5" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ5A3">Memuaskan</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ5A4" name="internalQ5" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ5A4">Bagus</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ5A5" name="internalQ5" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ5A5">Cemerlang</label>
-                                        </div>
-                                    </div>
+                                    <select class="form-control custom-select" formControlName="answer_5">
+                                        <option value="1">1 - Lemah</option>
+                                        <option value="2">2 - Sederhana</option>
+                                        <option value="3">3 - Memuaskan</option>
+                                        <option value="4">4 - Bagus</option>
+                                        <option value="5">5 - Cemerlang</option>
+                                    </select>
                                 </div>
         
                                 <div class="form-group">
                                     <label class="form-control-label" style="word-wrap: break-word">
-                                        iii. Jamuan makan minum
+                                        iii. Jamuan makan minum 
+                                        <span class="text-warning">*</span>
                                     </label>
             
-                                    <div class="pl-3">
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ6A1" name="internalQ6" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ6A1">Lemah</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ6A2" name="internalQ6" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ6A2">Sederhana</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ6A3" name="internalQ6" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ6A3">Memuaskan</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ6A4" name="internalQ6" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ6A4">Bagus</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ6A5" name="internalQ6" class="custom-control-input">
-                                            <label class="custom-control-label" for="internalQ6A5">Cemerlang</label>
-                                        </div>
-                                    </div>
+                                    <select class="form-control custom-select" formControlName="answer_6">
+                                        <option value="1">1 - Lemah</option>
+                                        <option value="2">2 - Sederhana</option>
+                                        <option value="3">3 - Memuaskan</option>
+                                        <option value="4">4 - Bagus</option>
+                                        <option value="5">5 - Cemerlang</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -203,67 +132,135 @@
                         <div class="form-group">
                             <label class="form-control-label" style="word-wrap: break-word">
                                 5. Apakah komen anda tentang kursus ini 
-                                secara keseluruhan?
+                                secara keseluruhan? 
+                                <span class="text-warning">*</span>
                             </label>
         
                             <div class="pl-3">
-                                <textarea class="form-control" value="agegege"></textarea>
+                                <textarea class="form-control" placeholder="Isikan tempat kosong" formControlName="answer_7"></textarea>
                             </div>
                         </div>
         
                         <div class="form-group">
                             <label class="form-control-label" style="word-wrap: break-word">
                                 6. Apakah cadangan anda dalam memperbaiki 
-                                kursus ini?
+                                kursus ini? 
+                                <span class="text-warning">*</span>
                             </label>
         
                             <div class="pl-3">
-                                <textarea class="form-control" value="agegege"></textarea>
+                                <textarea class="form-control" placeholder="Isikan tempat kosong" formControlName="answer_8"></textarea>
                             </div>
                         </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-7">
+                                Kandungan Kursus
+                            </div>
+                            <div class="col-lg-6 col-5 text-right">
+                                <a
+                                    class="btn btn-sm btn-warm-blue text-white" 
+                                    (click)="addContent()"
+                                > 
+                                    Tambah Kandungan 
+                                </a>
+                            </div>
+                        </div>
+
+                        <form [formGroup]="contentForm">
+                            <div formArrayName="contentFormArray">
+                                <div 
+                                    [formGroupName]="i"
+                                    class="row"
+                                    *ngFor="let ind of contentForm.get('contentFormArray')['controls']; let i = index"
+                                >
+                                    <div class="col-lg-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Topik / Penceramah
+                                                <span class="text-warning">*</span>
+                                            </label>
+                                            <input class="form-control" formControlName="topic_trainer" placeholder="Isikan tempat kosong">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Isi Kandungan
+                                                <span class="text-warning">*</span>
+                                            </label>
+                                            <select class="form-control custom-select" formControlName="content">
+                                                <option value="1">1 - Lemah</option>
+                                                <option value="2">2 - Sederhana</option>
+                                                <option value="3">3 - Memuaskan</option>
+                                                <option value="4">4 - Bagus</option>
+                                                <option value="5">5 - Cemerlang</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Persembahan
+                                                <span class="text-warning">*</span>
+                                            </label>
+                                            <select class="form-control custom-select" formControlName="presentation">
+                                                <option value="1">1 - Lemah</option>
+                                                <option value="2">2 - Sederhana</option>
+                                                <option value="3">3 - Memuaskan</option>
+                                                <option value="4">4 - Bagus</option>
+                                                <option value="5">5 - Cemerlang</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-sm-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label">
+                                                Kaitan dengan kursus
+                                                <span class="text-warning">*</span>
+                                            </label>
+                                            <select class="form-control custom-select" formControlName="relevance">
+                                                <option value="1">1 - Lemah</option>
+                                                <option value="2">2 - Sederhana</option>
+                                                <option value="3">3 - Memuaskan</option>
+                                                <option value="4">4 - Bagus</option>
+                                                <option value="5">5 - Cemerlang</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2 col-sm-6 mb-2">
+                                        <button 
+                                            *ngIf="i != 0"
+                                            class="btn btn-warning btn-sm"
+                                            (click)="removeContent(i)"
+                                            style="position: absolute; bottom: 1.5rem;"
+                                        >
+                                            Buang
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
         
-                        <div class="text-right">
+                        <div class="text-right mb-2">
                             <button
                                 class="btn btn-warm-blue"
+                                (click)="confirm('internal')"
                             >
                                 Hantar
                             </button>
                         </div>
-        
-                        <div class="table-responsive">
-                            <table class="table align-items-center table-flush">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th scope="col">Bil</th>
-                                
-                                        <th scope="col">Topik / Penceramah</th>
-                                
-                                        <th scope="col">Isi Kandungan</th>
-                                
-                                        <th scope="col">Persembahan</th>
-                                
-                                        <th scope="col">Kaitan dengan kursus</th>
-                                    </tr>
-                                </thead>
-        
-                                <tbody class=" list">
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div> 
                     </form>
                 </div>
             </div>
 
             <div class="card" [hidden]="!isEvaluated">
                 <div class="card-header bg-secondary">
-                    <h4 class="m-0">Penilaian Dalaman</h4>
+                    <h4 class="m-0">Penilaian Dalaman [MBPP: PK-PS-PKP-34-B02]</h4>
                 </div>
     
                 <div class="card-body">
@@ -271,170 +268,99 @@
                         <div class="form-group">
                             <label class="form-control-label" style="word-wrap: break-word">
                                 1. Sejauh manakah anda fikir objektif kursus/latihan 
-                                ini telah dicapai
+                                ini telah dicapai 
+                                <span class="text-warning">*</span>
                             </label>
         
-                            <div class="pl-3">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ1A1" name="internalQ1" class="custom-control-input" disabled>
-                                    <label class="custom-control-label" for="internalQ1A1">Lemah</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ1A2" name="internalQ1" class="custom-control-input" disabled>
-                                    <label class="custom-control-label" for="internalQ1A2">Sederhana</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ1A3" name="internalQ1" class="custom-control-input" disabled>
-                                    <label class="custom-control-label" for="internalQ1A3">Memuaskan</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ1A4" name="internalQ1" class="custom-control-input" disabled>
-                                    <label class="custom-control-label" for="internalQ1A4">Bagus</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ1A5" name="internalQ1" class="custom-control-input" disabled>
-                                    <label class="custom-control-label" for="internalQ1A5">Cemerlang</label>
-                                </div>
-                            </div>
+                            <select class="form-control custom-select" formControlName="answer_1">
+                                <option value="1">1 - Lemah</option>
+                                <option value="2">2 - Sederhana</option>
+                                <option value="3">3 - Memuaskan</option>
+                                <option value="4">4 - Bagus</option>
+                                <option value="5">5 - Cemerlang</option>
+                            </select>
                         </div>
         
                         <div class="form-group">
                             <label class="form-control-label" style="word-wrap: break-word">
                                 2. Adakah kursus ini berkaitan untuk anda 
-                                menjalankan tugas-tugas seharian
+                                menjalankan tugas-tugas seharian 
+                                <span class="text-warning">*</span>
                             </label>
-        
-                            <div class="pl-3">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ2A1" name="internalQ2" class="custom-control-input" disabled>
-                                    <label class="custom-control-label" for="internalQ2A1">Kurang berkaitan</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ2A2" name="internalQ2" class="custom-control-input" disabled>
-                                    <label class="custom-control-label" for="internalQ2A2">Berkaitan</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ2A3" name="internalQ2" class="custom-control-input" disabled>
-                                    <label class="custom-control-label" for="internalQ2A3">Sangat berkaitan</label>
-                                </div>
-                            </div>
+
+                            <select class="form-control custom-select" formControlName="answer_2">
+                                <option value="1">1 - Kurang berkaitan</option>
+                                <option value="2">2 - Berkaitan</option>
+                                <option value="3">3 - Sangat berkaitan</option>
+                            </select>
                         </div>
         
                         <div class="form-group">
                             <label class="form-control-label">
                                 3. Apakah nilai-nilai positif yang anda perolehi 
                                 dari kursus/latihan ini dapat membantu anda ketika 
-                                balik bertugas
+                                balik bertugas 
+                                <span class="text-warning">*</span>
                             </label>
-        
-                            <div class="pl-3">
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ3A1" name="internalQ3" class="custom-control-input" disabled>
-                                    <label class="custom-control-label" for="internalQ3A1">Tidak membantu</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ3A2" name="internalQ3" class="custom-control-input" disabled>
-                                    <label class="custom-control-label" for="internalQ3A2">Kurang membantu</label>
-                                </div>
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" id="internalQ3A3" name="internalQ3" class="custom-control-input" disabled>
-                                    <label class="custom-control-label" for="internalQ3A3">Membantu</label>
-                                </div>
-                            </div>
+
+                            <select class="form-control custom-select" formControlName="answer_3">
+                                <option value="1">1 - Tidak membantu</option>
+                                <option value="2">2 - Kurang membantu</option>
+                                <option value="3">3 - Membantu</option>
+                            </select>
                         </div>
         
                         <div class="form-group">
                             <label class="form-control-label" style="word-wrap: break-word">
                                 4. Adakah kemudahan kursus/latihan yang disediakan 
-                                sesuai dan selesa
+                                sesuai dan selesa 
+                                <span class="text-warning">*</span>
                             </label>
         
                             <div class="pl-3">
                                 <div class="form-group">
                                     <label class="form-control-label" style="word-wrap: break-word">
-                                        i. Penginapan
+                                        i. Penginapan 
+                                        <span class="text-warning">*</span>
                                     </label>
             
-                                    <div class="pl-3">
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ4A1" name="internalQ4" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ4A1">Lemah</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ4A2" name="internalQ4" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ4A2">Sederhana</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ4A3" name="internalQ4" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ4A3">Memuaskan</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ4A4" name="internalQ4" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ4A4">Bagus</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ4A5" name="internalQ4" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ4A5">Cemerlang</label>
-                                        </div>
-                                    </div>
+                                    <select class="form-control custom-select" formControlName="answer_4">
+                                        <option value="1">1 - Lemah</option>
+                                        <option value="2">2 - Sederhana</option>
+                                        <option value="3">3 - Memuaskan</option>
+                                        <option value="4">4 - Bagus</option>
+                                        <option value="5">5 - Cemerlang</option>
+                                    </select>
                                 </div>
         
                                 <div class="form-group">
                                     <label class="form-control-label" style="word-wrap: break-word">
-                                        ii. Bilik kuliah
+                                        ii. Bilik kuliah 
+                                        <span class="text-warning">*</span>
                                     </label>
             
-                                    <div class="pl-3">
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ5A1" name="internalQ5" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ5A1">Lemah</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ5A2" name="internalQ5" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ5A2">Sederhana</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ5A3" name="internalQ5" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ5A3">Memuaskan</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ5A4" name="internalQ5" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ5A4">Bagus</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ5A5" name="internalQ5" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ5A5">Cemerlang</label>
-                                        </div>
-                                    </div>
+                                    <select class="form-control custom-select" formControlName="answer_5">
+                                        <option value="1">1 - Lemah</option>
+                                        <option value="2">2 - Sederhana</option>
+                                        <option value="3">3 - Memuaskan</option>
+                                        <option value="4">4 - Bagus</option>
+                                        <option value="5">5 - Cemerlang</option>
+                                    </select>
                                 </div>
         
                                 <div class="form-group">
                                     <label class="form-control-label" style="word-wrap: break-word">
-                                        iii. Jamuan makan minum
+                                        iii. Jamuan makan minum 
+                                        <span class="text-warning">*</span>
                                     </label>
             
-                                    <div class="pl-3">
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ6A1" name="internalQ6" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ6A1">Lemah</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ6A2" name="internalQ6" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ6A2">Sederhana</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ6A3" name="internalQ6" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ6A3">Memuaskan</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ6A4" name="internalQ6" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ6A4">Bagus</label>
-                                        </div>
-                                        <div class="custom-control custom-radio custom-control-inline">
-                                            <input type="radio" id="internalQ6A5" name="internalQ6" class="custom-control-input" disabled>
-                                            <label class="custom-control-label" for="internalQ6A5">Cemerlang</label>
-                                        </div>
-                                    </div>
+                                    <select class="form-control custom-select" formControlName="answer_6">
+                                        <option value="1">1 - Lemah</option>
+                                        <option value="2">2 - Sederhana</option>
+                                        <option value="3">3 - Memuaskan</option>
+                                        <option value="4">4 - Bagus</option>
+                                        <option value="5">5 - Cemerlang</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -442,61 +368,69 @@
                         <div class="form-group">
                             <label class="form-control-label" style="word-wrap: break-word">
                                 5. Apakah komen anda tentang kursus ini 
-                                secara keseluruhan?
+                                secara keseluruhan? 
+                                <span class="text-warning">*</span>
                             </label>
         
                             <div class="pl-3">
-                                <textarea class="form-control" value="agegege" disabled></textarea>
+                                <textarea class="form-control" placeholder="Isikan tempat kosong" formControlName="answer_7"></textarea>
                             </div>
                         </div>
         
                         <div class="form-group">
                             <label class="form-control-label" style="word-wrap: break-word">
                                 6. Apakah cadangan anda dalam memperbaiki 
-                                kursus ini?
+                                kursus ini? 
+                                <span class="text-warning">*</span>
                             </label>
         
                             <div class="pl-3">
-                                <textarea class="form-control" value="agegege" disabled></textarea>
+                                <textarea class="form-control" placeholder="Isikan tempat kosong" formControlName="answer_8"></textarea>
                             </div>
                         </div>
-        
-                        <div class="text-right">
-                            <button
-                                class="btn btn-warm-blue"
-                            >
-                                Hantar
-                            </button>
-                        </div>
-        
-                        <div class="table-responsive">
-                            <table class="table align-items-center table-flush">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th scope="col">Bil</th>
-                                
-                                        <th scope="col">Topik / Penceramah</th>
-                                
-                                        <th scope="col">Isi Kandungan</th>
-                                
-                                        <th scope="col">Persembahan</th>
-                                
-                                        <th scope="col">Kaitan dengan kursus</th>
-                                    </tr>
-                                </thead>
-        
-                                <tbody class=" list">
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div> 
                     </form>
+
+                    <div class="table-responsive" [hidden]="!internal">
+                        <table class="table table-flush align-items-center">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Bil.</th>
+                                    <th>Topik / Penceramah</th>
+                                    <th>Isi Kandungan</th>
+                                    <th>Persembahan</th>
+                                    <th>Kaitan dengan Kursus</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="list">
+                                <tr *ngFor="let content of internal?.evaluation_training; let i = index">
+                                    <td>{{i+1}}.</td>
+                                    <td>{{content.topic_trainer}}</td>
+                                    <td>
+                                        <span *ngIf="content.content === '1'">Lemah</span>
+                                        <span *ngIf="content.content === '2'">Sederhana</span>
+                                        <span *ngIf="content.content === '3'">Memuaskan</span>
+                                        <span *ngIf="content.content === '4'">Bagus</span>
+                                        <span *ngIf="content.content === '5'">Cemerlang</span>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="content.presentation === '1'">Lemah</span>
+                                        <span *ngIf="content.presentation === '2'">Sederhana</span>
+                                        <span *ngIf="content.presentation === '3'">Memuaskan</span>
+                                        <span *ngIf="content.presentation === '4'">Bagus</span>
+                                        <span *ngIf="content.presentation === '5'">Cemerlang</span>
+                                    </td>
+                                    <td>
+                                        <span *ngIf="content.relevance === '1'">Lemah</span>
+                                        <span *ngIf="content.relevance === '2'">Sederhana</span>
+                                        <span *ngIf="content.relevance === '3'">Memuaskan</span>
+                                        <span *ngIf="content.relevance === '4'">Bagus</span>
+                                        <span *ngIf="content.relevance === '5'">Cemerlang</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -506,7 +440,7 @@
         <div class="col">
            <div class="card">
                 <div class="card-header bg-secondary">
-                    <h4 class="m-0">Penilaian Luaran</h4>
+                    <h4 class="m-0">Penilaian Luaran [MBPP: PK-PS-PKP-34-B03]</h4>
                 </div>
 
                 <div class="card-body">
@@ -517,7 +451,7 @@
                             </label>
     
                             <div class="pl-3">
-                                <textarea class="form-control"></textarea>
+                                <textarea class="form-control" placeholder="Isikan tempat kosong" formControlName="answer_1"></textarea>
                             </div>
                         </div>
     
@@ -529,7 +463,7 @@
                             </label>
     
                             <div class="pl-3">
-                                <textarea class="form-control" value="agegege"></textarea>
+                                <textarea class="form-control" placeholder="Isikan tempat kosong" formControlName="answer_2"></textarea>
                             </div>
                         </div>
     
@@ -539,7 +473,7 @@
                             </label>
     
                             <div class="pl-3">
-                                <textarea class="form-control" value="agegege"></textarea>
+                                <textarea class="form-control" placeholder="Isikan tempat kosong" formControlName="answer_3"></textarea>
                             </div>
                         </div>
     
@@ -549,7 +483,7 @@
                             </label>
     
                             <div class="pl-3">
-                                <textarea class="form-control" value="agegege"></textarea>
+                                <textarea class="form-control" placeholder="Isikan tempat kosong" formControlName="answer_4"></textarea>
                             </div>
                         </div>
     
@@ -559,7 +493,7 @@
                             </label>
     
                             <div class="pl-3">
-                                <textarea class="form-control" value="agegege"></textarea>
+                                <textarea class="form-control" placeholder="Isikan tempat kosong" formControlName="answer_5"></textarea>
                             </div>
                         </div>
     
@@ -569,7 +503,7 @@
                             </label>
     
                             <div class="pl-3">
-                                <textarea class="form-control" value="agegege"></textarea>
+                                <textarea class="form-control" placeholder="Isikan tempat kosong" formControlName="answer_6"></textarea>
                             </div>
                         </div>
     
@@ -580,7 +514,7 @@
                             </label>
     
                             <div class="pl-3">
-                                <textarea class="form-control" value="agegege"></textarea>
+                                <textarea class="form-control" placeholder="Isikan tempat kosong" formControlName="answer_7"></textarea>
                             </div>
                         </div>
     
@@ -590,7 +524,7 @@
                             </label>
     
                             <div class="pl-3">
-                                <textarea class="form-control" value="agegege"></textarea>
+                                <textarea class="form-control" placeholder="Isikan tempat kosong" formControlName="answer_8"></textarea>
                             </div>
                         </div>
                     </form>
@@ -598,40 +532,15 @@
                     <div class="text-right">
                         <button
                             class="btn btn-warm-blue"
+                            (click)="confirm('external')"
+                            [hidden]="isEvaluated"
                         >
                             Hantar
                         </button>
                     </div>
-
-                    <!-- <div class="table-responsive">
-                        <table class="table align-items-center table-flush">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th scope="col">Bil</th>
-                            
-                                    <th scope="col">Topik / Penceramah</th>
-                            
-                                    <th scope="col">Isi Kandungan</th>
-                            
-                                    <th scope="col">Persembahan</th>
-                            
-                                    <th scope="col">Kaitan dengan kursus</th>
-                                </tr>
-                            </thead>
-
-                            <tbody class=" list">
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> -->
                 </div>
            </div>
         </div>
     </div>
 </div>
+

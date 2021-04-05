@@ -173,21 +173,13 @@
 								<span>Tindakan</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
-                                <button 
-                                    class="btn btn-warm-blue" 
-                                    type="button" 
-                                    (click)="openModal(editUser, row)"
-                                    *ngIf="row.user_type != 'AD'"
-                                >
-                                    Kemaskini
-                                </button>
-
-								<button 
-                                    class="ml-2 btn btn-outline-warm-blue" 
-                                    type="button" 
-                                >
-                                    Reset kata laluan
-                                </button>
+								<div class="btn-group dropdown" dropdown>
+									<button type="button" class="btn btn-sm btn-warm-blue dropdown-toggle" dropdownToggle container="body">Aktiviti</button>
+									<div *dropdownMenu class="dropdown-menu dropdown-menu-right">
+										<a class="dropdown-item" (click)="openModal(editUser, row)" [ngClass]="{ disabled: row.user_type == 'AD' }">Kemaskini</a>
+										<a class="dropdown-item">Reset kata laluan</a>
+									</div>
+								</div>
 							</ng-template>
 						</ngx-datatable-column>
 					</ngx-datatable>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <title>MBPP - eLatihan | Laporan</title>
+        <meta name="description" content="MBPP - eLatihan | Laporan">
+        <meta name="author" content="eLatihan">
+
+        <style>
+            @page {
+                size: letter portrait;
+                margin: 1cm;
+            }
+            html {
+                font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+            }
+            .default-template {
+                color: #333;
+                font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+            }
+            table tr.top table td.title {
+                color: #333;
+            }
+            table tr.heading td {
+                color: #333;
+                font-weight: bold;
+            }
+            #footer {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: 2.5rem;            /* Footer height */
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="default-template">
+            <h4 class="text-center mb-0">LAPORAN PENILAIAN KURSUS DALAMAN</h4>
+            <h4 class="text-center mt-0 mb-2">MAJLIS BANDARAYA PULAU PINANG</h4>
+
+            <h5 class="mt-5 mb-0">NAMA KURSUS: {{data.training.title}}</h5>
+            <h5 class="m-0">TARIKH KURSUS: {{data.training.full_date}}</h5>
+            <h5 class="mt-0 mb-5">TEMPAT: {{data.traning.venue}}</h5>
+
+            <div class="row">
+                <div class="col-12">
+                    <p style="margin-bottom: 0 !important">
+                        1. Sejauh manakah anda fikir objektif kursus/latihan ini telah dicapai
+                    </p>
+                    <strong>
+                        {% if data.evaluation.one == '1' %}
+                            Lemah
+                        {% elif data.evaluation.one == '2' %}
+                            Sederhana
+                        {% elif data.evaluation.one == '3' %}
+                            Memuaskan
+                        {% elif data.evaluation.one == '4' %}
+                            Bagus
+                        {% elif data.evaluation.one == '5' %}
+                            Cemerlang
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="col-12">
+                    <p style="margin-bottom: 0 !important">
+                        2. Adakah kursus/latihan ini berkaitan untuk anda menjalankan tugas-tugas seharian
+                    </p>
+                    <strong>
+                        {% if data.evaluation.two == '1' %}
+                            Lemah
+                        {% elif data.evaluation.two == '2' %}
+                            Sederhana
+                        {% elif data.evaluation.two == '3' %}
+                            Memuaskan
+                        {% elif data.evaluation.two == '4' %}
+                            Bagus
+                        {% elif data.evaluation.two == '5' %}
+                            Cemerlang
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="col-12">
+                    <p style="margin-bottom: 0 !important">
+                        3. Apakah nilai-nilai positif yang anda perolehi dari kursus/latihan ini dapat membantu anda ketika balik bertugas
+                    </p>
+                    <strong>
+                        {% if data.evaluation.three == '1' %}
+                            Lemah
+                        {% elif data.evaluation.three == '2' %}
+                            Sederhana
+                        {% elif data.evaluation.three == '3' %}
+                            Memuaskan
+                        {% elif data.evaluation.three == '4' %}
+                            Bagus
+                        {% elif data.evaluation.three == '5' %}
+                            Cemerlang
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="col-12">
+                    <p style="margin-bottom: 0 !important">
+                        4. Adakah kemudahan kursus/latihan yang disediakan sesuai dan selesa
+                    </p>
+                    <p style="margin-bottom: 0 !important">
+                        (i) Penginapan
+                    </p>
+                    <strong>
+                        {% if data.evaluation.four == '1' %}
+                            Lemah
+                        {% elif data.evaluation.four == '2' %}
+                            Sederhana
+                        {% elif data.evaluation.four == '3' %}
+                            Memuaskan
+                        {% elif data.evaluation.four == '4' %}
+                            Bagus
+                        {% elif data.evaluation.four == '5' %}
+                            Cemerlang
+                        {% endif %}
+                    </strong>
+                    <p style="margin-bottom: 0 !important">
+                        (ii) Bilik kuliah
+                    </p>
+                    <strong>
+                        {% if data.evaluation.five == '1' %}
+                            Lemah
+                        {% elif data.evaluation.five == '2' %}
+                            Sederhana
+                        {% elif data.evaluation.five == '3' %}
+                            Memuaskan
+                        {% elif data.evaluation.five == '4' %}
+                            Bagus
+                        {% elif data.evaluation.five == '5' %}
+                            Cemerlang
+                        {% endif %}
+                    </strong>
+                    <p style="margin-bottom: 0 !important">
+                        (iii) Jamuan makan minum
+                    </p>
+                    <strong>
+                        {% if data.evaluation.six == '1' %}
+                            Lemah
+                        {% elif data.evaluation.six == '2' %}
+                            Sederhana
+                        {% elif data.evaluation.six == '3' %}
+                            Memuaskan
+                        {% elif data.evaluation.six == '4' %}
+                            Bagus
+                        {% elif data.evaluation.six == '5' %}
+                            Cemerlang
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="col-12">
+                    <p style="margin-bottom: 0 !important">
+                        5. Apakah komen anda tentang kursus ini secara keseluruhan? (Nyatakan jika ada)
+                    </p>
+                    <strong>
+                        {{data.evaluation.seven}}
+                    </strong>
+                </div>
+
+                <div class="col-12">
+                    <p style="margin-bottom: 0 !important">
+                        6. Apakah cadangan anda dalam memperbaiki kursus ini? (Nyatakan jika ada)
+                    </p>
+                    <strong>
+                        {{data.evaluation.eight}}
+                    </strong>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <footer id="footer" class="default-template row">
+        <p class="col text-left">
+            <img src="https://pipeline-project.sgp1.digitaloceanspaces.com/images/mbpp-logo.png" style="max-width: 2rem">
+            <span>MBPP | eLatihan</span>
+        </p>
+        <p class="col text-right">
+            Dijana pada: {{data.misc.generated_at}}
+        </p>
+    </footer> 
+
+</html>

@@ -120,7 +120,11 @@
                     </div>
 
                     <div>
-                        <button class="btn btn-warm-blue" (click)="generateReport()">Jana Laporan</button>
+                        <button 
+                            class="btn btn-warm-blue" 
+                            (click)="generateReport()"
+                            [disabled]="selectedReportType === 'LK' && selectedMonthType === 'RANGE' && (!selectedMonthStart || !selectedMonthEnd)"
+                        >Jana Laporan</button>
                     </div>
                 </div>
             </div>

@@ -72,6 +72,11 @@ from evaluations.models import (
     InternalEvaluation
 )
 
+from evaluations.serializers import (
+    ExternalEvaluationSerializer,
+    InternalEvaluationExtendedSerializer
+)
+
 from users.models import (
     CustomUser
 )
@@ -1670,14 +1675,21 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         evaluation = None
 
         if training.organiser_type == 'DD':
-            evaluation = InternalEvaluation.objects.get(training=training, attendee=user)
+            evaluation = InternalEvaluation.objects.filter(training=training, attendee=user).first()
+            # print(evaluation)
+            
         elif training.organiser_type == 'LL':
-            evaluation = ExternalEvaluation.objects.get(training=training, attendee=user)
+            evaluation = ExternalEvaluation.objects.filter(training=training, attendee=user).first()
+            
         else:
             evaluation = None
         
         if evaluation:
             is_evaluated = True
+            if training.organiser_type == 'DD':
+                evaluation = InternalEvaluationExtendedSerializer(evaluation, many=False).data
+            elif training.organiser_type == 'LL':
+                evaluation = ExternalEvaluationSerializer(evaluation, many=False).data
         else:
             is_evaluated = False
         
@@ -2487,6 +2499,25 @@ class BasicLevelViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         user = self.request.user
         queryset = BasicLevel.objects.all()
         return queryset  
+    
+
+    @action(methods=['GET'], detail=False)
+    def check_report_config(self, request, *args, **kwargs):
+
+        # Timezone set
+        timezone_ = pytz.timezone('Asia/Kuala_Lumpur')
+        filter_year = str(datetime.datetime.now(tz=timezone_).year)
+
+        is_plan_exist = MonitoringPlan.objects.filter(year=filter_year).exists()
+        is_level_exist = BasicLevel.objects.filter(year=filter_year).exists()
+        
+        # print(data_to_pass_)
+        data_ = {
+            'plan': is_plan_exist,
+            'level': is_level_exist
+        }
+
+        return JsonResponse(data_)
     
     # Tolerasi = level - (5*2)
     # 5 tahun sebeleum

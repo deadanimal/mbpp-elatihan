@@ -2,6 +2,7 @@ import json
 import time
 import pytz
 import datetime
+import uuid
 
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -16,6 +17,15 @@ from rest_framework import viewsets, status
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from django_filters.rest_framework import DjangoFilterBackend
+
+from django.template.loader import render_to_string
+from weasyprint import HTML, CSS
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse
+
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
 
 from .models import (
     ContentEvaluation,
@@ -54,12 +64,12 @@ class ContentEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     def get_permissions(self):
         permission_classes = [IsAuthenticated]#[IsAuthenticated]
-        """
-        if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+        # """
+        if self.action == 'generate_evaluation':
+            permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
-        """
+        # """
         return [permission() for permission in permission_classes]    
 
     
@@ -224,12 +234,12 @@ class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     def get_permissions(self):
         permission_classes = [IsAuthenticated]#[IsAuthenticated]
-        """
+        # """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
-        """
+            permission_classes = [AllowAny]
+        # """
         return [permission() for permission in permission_classes]    
 
     
@@ -317,6 +327,46 @@ class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         serializer = InternalEvaluationExtendedSerializer(evaluation, many=False)
         return Response(serializer.data)
+
+    @action(methods=['GET'], detail=True)
+    def generate_evaluation(self, request, *args, **kwargs):
+
+        evaluation = self.get_object()
+
+        items = {
+            'training': {
+                'title': evaluation.training.title,
+                'full_date': '',
+                'venue': evaluation.training.venue
+            },
+            'evaluation': {
+                'one': evaluation.answer_1,
+                'two': evaluation.answer_2,
+                'three': evaluation.answer_3,
+                'four': evaluation.answer_4,
+                'five': evaluation.answer_5,
+                'six': evaluation.answer_6,
+                'seven': evaluation.answer_7,
+                'eight': evaluation.answer_8
+            }
+        }
+
+        html_string = render_to_string('report/internal_evaluation.html', {'data': items})
+        html = HTML(string=html_string)
+        pdf_file = html.write_pdf(stylesheets=[CSS('https://pipeline-project.sgp1.digitaloceanspaces.com/mbpp-elatihan/css/template.css')])
+        
+        file_path = "mbpp-elatihan/obb-report/" + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
+        # "mbpp-elatihan/application-report/" <-- naming system
+        saved_file = default_storage.save(
+            file_path, 
+            ContentFile(pdf_file)
+        )
+        
+        full_url_path = settings.MEDIA_ROOT + saved_file
+        # print(full_url_path)
+
+        serializer = 'https://pipeline-project.sgp1.digitaloceanspaces.com/'+full_url_path
+        return Response(serializer)
 
 
 class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):

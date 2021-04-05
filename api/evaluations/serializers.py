@@ -71,6 +71,7 @@ class InternalEvaluationExtendedSerializer(serializers.ModelSerializer):
     attendee = CustomUserSerializer(read_only=True)
     approved_by = CustomUserSerializer(read_only=True)
     verified_by = CustomUserSerializer(read_only=True)
+    evaluation_training = ContentEvaluationSerializer(read_only=True, many=True)
     class Meta:
         model = InternalEvaluation
         fields = '__all__'

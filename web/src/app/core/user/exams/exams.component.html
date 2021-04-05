@@ -140,8 +140,9 @@
                     <ng-template let-row="row" ngx-datatable-cell-template>
                         <button 
                             class="btn btn-warm-blue"
+                            (click)="openModal(editExam, row)"
                         >
-                            Lihat
+                            Kemaskini
                         </button>
                     </ng-template>
                 </ngx-datatable-column>
@@ -149,3 +150,157 @@
         </div>
     </div>
 </div>
+
+<ng-template #editExam>
+    <div class="modal-header bg-warm-blue">
+        <h6 class="modal-title text-white my-auto" id="modal-title-default">
+            Kemaskini Peperiksaan
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            <span aria-hidden="true" class="text-white my-auto"> × </span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="examForm">
+			<div class="form-group">
+				<label class="form-control-label">Jenis Peperiksaan <span class="text-warning">*</span></label>
+				<select
+					class="form-control custom-select"
+					[(ngModel)]="examTypeTemp"
+					[ngModelOptions]="{standalone: true}"
+					(change)="onClassificationChange($event.target.value)"
+				>
+					<option *ngFor="let choice of choicesType" value="{{choice.value}}">{{choice.text}}</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label class="form-control-label">Peperiksaan <span class="text-warning">*</span></label>
+				<select
+					class="form-control custom-select"
+					formControlName="exam"
+				>
+					<option *ngFor="let exam_ of examsTemp" value="{{exam_.id}}">[{{exam_.code}}] {{exam_.title}}</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label class="form-control-label">Tarikh</label>
+				<div class="input-group">
+					<div class="input-group-prepend">
+					  <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+					</div>
+					<input 
+						type="text"
+						placeholder="12/12/2019"
+						class="form-control"
+						bsDatepicker
+						[bsValue]="dateValue"
+						[bsConfig]="dateConfig"
+					>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="form-control-label">Keputusan</label>
+				<select
+					class="form-control custom-select"
+					placeholder="Keputusan"
+					formControlName="result"
+					type="text"
+				>
+					<option *ngFor="let result of choicesResult" value="{{result.value}}">{{result.text}}</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label class="form-control-label">Nota</label>
+				<input
+					class="form-control"
+					placeholder="Nota"
+					formControlName="note"
+				>
+			</div>
+
+			<!-- <div class="form-group">
+				<div class="custom-file">
+					<input
+					  class="custom-file-input"
+					  id="customFileLang"
+					  lang="ms"
+					  type="file"
+					/>
+	
+					<label class="custom-file-label" for="customFileLang">
+					  Pilih dokumen
+					</label>
+				</div>
+			</div> -->
+
+			<div class="form-group">
+				<label class="form-control-label">Dokumen <span class="text-warning">*</span></label>
+				<div class="custom-file">
+					<input 
+						type="file" 
+						class="custom-file-input" 
+						id="lampiran" 
+						lang="en"
+						(change)="onFileChange($event)" 
+						accept=".pdf, image/*"
+						size="5"
+					>
+					<label class="custom-file-label" for="lampiran">Sila muat naik lampiran berkenaan</label>
+				</div>
+
+				<ng-container *ngIf="examForm.value['document_copy'] && fileSizeInformation && fileNameInformation">
+					<div>
+						<i 
+							class="fas fa-trash-alt text-warning mr-2"
+							placement="top" 
+							tooltip="Remove attachment"
+							(click)="removeFile()"
+						>
+						</i>
+						{{fileNameInformation}} [{{fileSizeInformation/1000000 | number: '1.2-2'}}MB]
+					</div>
+				</ng-container>
+			</div>
+
+			<button 
+				class="btn btn-block btn-outline-warm-blue"
+				(click)="viewDocument()"
+				[hidden]="fileSizeInformation && fileNameInformation"
+			>
+				Cetak dokumen
+			</button>
+		</form>
+    </div>
+
+    <div class="modal-footer">
+        <button 
+            class="btn btn-warm-blue"
+            type="button"
+            (click)="confirm()"
+            [disabled]="!examForm.valid"
+        >
+            Kemaskini
+        </button>
+
+        <button
+            class="btn btn-outline-warm-blue ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            Tutup
+        </button>
+    </div>
+</ng-template>
