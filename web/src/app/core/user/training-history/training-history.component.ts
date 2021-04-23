@@ -74,7 +74,7 @@ export class TrainingHistoryComponent implements OnInit {
             row.end_date = moment(row.end_date).format('DD/MM/YYYY')
           }
         )
-        // console.log(this.tableRows)
+         console.log(this.tableRows)
       },
       () => {
         this.loadingBar.complete()

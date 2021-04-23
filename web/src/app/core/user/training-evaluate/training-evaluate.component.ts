@@ -340,7 +340,7 @@ export class TrainingEvaluateComponent implements OnInit {
             },
             () => {
               let title = 'Berjaya'
-              let message = 'Kandungan enilaian berjaya dihantar'
+              let message = 'Kandungan Penilaian berjaya dihantar'
               this.notifyService.openToastr(title, message)
               this.getData()
             }

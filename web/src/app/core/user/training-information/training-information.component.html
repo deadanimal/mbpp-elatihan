@@ -161,7 +161,7 @@
                     </div>
 
                     <div class="custom-control custom-checkbox">
-  [hidden]="!training?.transportation"                       <input type="checkbox" class="custom-control-input" id="checkTransportation" disabled [checked]="training?.transportation">
+                       <input type="checkbox" class="custom-control-input" id="checkTransportation" disabled [checked]="training?.transportation" [hidden]="!training?.transportation" > <!--Ubah [hidden]="!training?.transportation" masuk ke dalam input -->
                         <label class="custom-control-label" for="checkTransportation">Pengangkutan</label>
                     </div>
                     

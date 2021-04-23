@@ -1979,6 +1979,15 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                         application_type='PP'
                     )
                 )
+            elif user.user_type == 'TC':
+                applications.append(
+                    TrainingApplication.objects.create(
+                        training=training,
+                        applicant=applicant,
+                        approved_level_2_by=user,
+                        application_type='PP'
+                    )
+                )
 
         serializer_class = TrainingApplicationSerializer(applications, many=True)
         

@@ -99,8 +99,9 @@ export class TrainingHistoriesComponent implements OnInit {
   filterTable($event, type) {
     let val = $event.target.value.toLowerCase();
     if (type == 'name') {
+      console.log("filter table",this.tableTemp)
       this.tableTemp = this.tableRows.filter(function(d) {
-        return d.applicant.full_name.toLowerCase().indexOf(val) !== -1 || !val;
+        return d.training.title.toLowerCase().indexOf(val) !== -1 || !val;
       });
     }
     else if (type == 'organiser_type') {

@@ -48,6 +48,9 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
   tableEntries: number = 5
   tableSelected: any[] = []
   tableTemp = []
+  staff_sementara = []
+  staff_kontrak = []
+  staff_tetap = []
   tableActiveRow: any
   tableRows: any = []
   tableMessages = {
@@ -82,6 +85,7 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
     private zone: NgZone
   ) {
     this.getData()
+    this.getChartData()
   }
 
   ngOnInit() {
@@ -94,6 +98,29 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
         this.chart.dispose()
       }
     })
+  }
+
+  getChartData() {
+    let data = "service_status=T"
+    this.userService.filter(data).subscribe(
+      (res) => {
+        this.staff_tetap = res
+      }
+    )
+
+    let data2 = "service_status=S"
+    this.userService.filter(data2).subscribe(
+      (res) => {
+        this.staff_sementara = res
+      }
+    )
+
+    let data3 = "service_status=K"
+    this.userService.filter(data3).subscribe(
+      (res) => {
+        this.staff_kontrak = res
+      }
+    )
   }
 
   getData() {

@@ -212,4 +212,14 @@ export class AuthService {
     )
   }
 
+  filter(field: String): Observable<any[]> {
+    let urlTemp = this.urlUser + '?' + field
+    return this.http.get<any[]>(urlTemp).pipe(
+      tap((res) => {
+        this.userDetail = [res]
+        // console.log('Notes: ', this.notesFiltered)
+      })
+    )
+  }
+
 }
