@@ -11,6 +11,8 @@ import { Department, Section, ServiceStatus, UserType } from 'src/app/shared/cod
 import swal from 'sweetalert2';
 import * as moment from 'moment';
 import * as xlsx from 'xlsx';
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
+import { CustomValidators } from 'src/app/shared/validators/custom/custom-validators';
 
 export enum SelectionType {
   single = 'single',
@@ -39,6 +41,20 @@ export class UsersComponent implements OnInit {
   tableEntries: number = 5
   tableSelected: any[] = []
   tableTemp = []
+  passwordForm: FormGroup
+  passwordFormMessages = {
+    'new_password1': [
+      { type: 'required', message: 'Kata laluan diperlukan' },
+      { type: 'minlength', message: 'Kata laluan mesti mengandungi sekurang-kurangnya 8 aksara' },
+      { type: 'hasNumber', message: 'Kata laluan mesti mengandungi sekurang-kurangnya 1 digit' },
+      // { type: 'hasCapitalCase', message: 'Kata laluan mesti mengandungi sekurang-kurangnya 1 huruf besar' },
+      // { type: 'hasSmallCase', message: 'Kata laluan mesti mengandungi sekurang-kurangnya 1 huruf kecil' }
+    ],
+    'new_password2': [
+      { type: 'required', message: 'Ulang kata laluan diperlukan' },
+      { type: 'NoPassswordMatch', message: 'Kata laluan tidak sepadan' }
+    ]
+  }
   tableActiveRow: any
   tableRows: any = []
   tableMessages = {
@@ -62,16 +78,45 @@ export class UsersComponent implements OnInit {
 
   constructor(
     private userService: UsersService,
-    private fb: FormBuilder,
+    private formBuilder: FormBuilder,
     private loadingBar: LoadingBarService,
     private modalService: BsModalService,
     private notifyService: NotifyService,
+    private authService: AuthService
+    
   ) { 
     this.getData()
   }
 
   ngOnInit() {
     this.initForm()
+
+    this.passwordForm = this.formBuilder.group(
+      {
+        new_password1: new FormControl(
+          null,
+          Validators.compose([
+            Validators.required,
+            Validators.minLength(8),
+            CustomValidators.patternValidator(/\d/, {
+              hasNumber: true,
+            }),
+            // CustomValidators.patternValidator(/[A-Z]/, {
+            //   hasCapitalCase: true
+            // }),
+            // // check whether the entered password has a lower case letter
+            // CustomValidators.patternValidator(/[a-z]/, {
+            //   hasSmallCase: true
+            // })
+          ])
+        ),
+        new_password2: new FormControl(
+          null,
+          Validators.compose([Validators.required])
+        ),
+      },
+      { validator: CustomValidators.passwordMatchValidator }
+    );
   }
 
   getData() {
@@ -106,7 +151,7 @@ export class UsersComponent implements OnInit {
   }
 
   initForm() {
-    this.userForm = this.fb.group({
+    this.userForm = this.formBuilder.group({
       user_type: new FormControl(null, Validators.compose([
         Validators.required
       ]))
@@ -231,6 +276,30 @@ export class UsersComponent implements OnInit {
 
     /* save to file */
     xlsx.writeFile(wb, fileName);
+  }
+
+  changePassword() {
+    this.loadingBar.start();
+    console.log(this.passwordForm.value);
+    this.authService.changePassword(this.passwordForm.value).subscribe(
+      () => {
+        this.loadingBar.complete();
+      },
+      () => {
+        this.loadingBar.complete();
+        let title = "Ralat";
+        let message =
+          "Kata laluan tidak berjaya dikemaskini. Sila cuba sekali lagi";
+        this.notifyService.openToastrError(title, message);
+      },
+      () => {
+        let title = "Berjaya";
+        let message =
+          "Kata laluan berjaya dikemaskini. Sila log masuk semula menggunakan kata laluan baru";
+        this.notifyService.openToastr(title, message);
+        this.closeModal();
+      }
+    );
   }
 
 }

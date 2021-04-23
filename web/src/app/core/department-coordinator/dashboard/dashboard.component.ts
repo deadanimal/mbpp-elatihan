@@ -6,12 +6,15 @@ import { TrainingsService } from 'src/app/shared/services/trainings/trainings.se
 import { UsersService } from 'src/app/shared/services/users/users.service';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { forkJoin } from 'rxjs';
+import { Department, Section, ServiceStatus } from 'src/app/shared/code/user';
 import { Training } from 'src/app/shared/services/trainings/trainings.model';
 
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 am4core.useTheme(am4themes_animated);
+
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,6 +28,11 @@ export class DashboardComponent implements OnInit {
   totalAttendanceInternal: number = 0
   totalAttendanceExternal: number = 0
   attendanceByMonth: any
+
+  user: any
+  departments = Department
+  sections = Section
+  serviceStatus = ServiceStatus
 
   // Chart
   chart1: any // Kehadiran Kursus Kakitangan Jabatan
@@ -40,6 +48,7 @@ export class DashboardComponent implements OnInit {
     private zone: NgZone
   ) { 
     this.getData()
+    this.getData2()
   }
 
   ngOnInit() {
@@ -53,6 +62,75 @@ export class DashboardComponent implements OnInit {
         }
         if (this.chart2) {
           this.chart2.dispose()
+        }
+      }
+    )
+  }
+
+  getData2() {
+    this.loadingBar.start()
+    this.authService.getDetailByToken().subscribe(
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {
+        this.user = this.authService.userDetail
+        this.user['department'] = ''
+        this.user['section'] = ''
+        this.user['age'] = 0
+        this.user['role'] = 'KAKITANGAN'
+
+        this.departments.forEach(
+          (department) => {
+            if (this.user['department_code'] == department['value']) {
+              this.user['department'] = department['text']
+            }
+          }
+        )
+
+        this.sections.forEach(
+          (section) => {
+            if (this.user['section_code'] == section['value']) {
+              this.user['section'] = section['text']
+            }
+          }
+        )
+
+        this.serviceStatus.forEach(
+          (status) => {
+            if (this.user['service_status'] == status['value']) {
+              this.user['service_status'] = status['text']
+            }
+          }
+        )
+
+        let firstTwoNRIC = this.user['nric'].substring(0,2);
+        if (Number(firstTwoNRIC) >= 40) {
+          let genYear = 1900 + Number(firstTwoNRIC)
+          this.user['age'] = moment().year() - genYear
+        }
+        else {
+          let genYear = 2000 + Number(firstTwoNRIC)
+          this.user['age'] = moment().year() - genYear
+        }
+
+        if (this.user['user_type'] == 'DC') {
+          this.user['role'] = 'PENYELARAS JABATAN'
+        }
+        else if (this.user['user_type'] == 'TC') {
+          this.user['role'] = 'PENYELARAS LATIHAN'
+        }
+        else if (this.user['user_type'] == 'DH') {
+          this.user['role'] = 'KETUA JABATAN'
+        }
+        else if (this.user['user_type'] == 'AD') {
+          this.user['role'] = 'PENTADBIR SISTEM'
+        }
+        else {
+          this.user['role'] = 'KAKITANGAN'
         }
       }
     )

@@ -261,6 +261,9 @@ export class LoginComponent implements OnInit {
   }
 
   navigatePage(path: string) {
+    if (path == 'forgot') {
+      return this.router.navigate(['/auth/forgot'])
+    }
     if (this.isRedirect) {
       let redirect_path = '/trainings/information'
       let extras = this.paramID

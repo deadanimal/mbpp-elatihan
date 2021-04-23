@@ -483,6 +483,21 @@
                                         </ng-select>
                                     </div>
                                 </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Nama <span class="text-warning">*</span></label>
+                                        <ng-select 
+                                            placeholder="Sila cari nama kakitangan"
+                                            [(ngModel)]="selectedStaffs"
+                                            [multiple]="true"
+                                            (change)="onChangeSelect($event)"
+                                        >
+                                            <ng-container>
+                                                <ng-option *ngFor="let staff of staffs" [disabled]="staff.applied" [value]="staff">{{staff.full_name}}</ng-option>
+                                            </ng-container>
+                                        </ng-select>
+                                    </div>
+                                </div>
                             </div>
         
                             <div *ngIf="selectedStaffs">
@@ -744,9 +759,12 @@
                                         <div class="btn-group dropdown" dropdown container="body">
                                             <button type="button" class="btn btn-sm btn-warm-blue dropdown-toggle" dropdownToggle>Aktiviti</button>
                                             <div *dropdownMenu class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" (click)="approveApplication(row)" [ngClass]="{ disabled: row.status != 'RS' || row.status != 'IP' }">Terima</a>
+                                                <!--<a class="dropdown-item" (click)="approveApplication(row)" [ngClass]="{ disabled: row.status != 'IP' || row.status != 'RS' }">Terima</a>
                                                 <a class="dropdown-item" (click)="rejectApplication(row)" [ngClass]="{ disabled: row.status != 'RS' || row.status != 'IP' }">Tolak</a>
-                                                <a class="dropdown-item" (click)="reserveApplication(row)" [ngClass]="{ disabled: row.status == 'IP' }">Simpan</a>
+                                                <a class="dropdown-item" (click)="reserveApplication(row)" [ngClass]="{ disabled: row.status == 'IP' }">Simpan</a>-->
+                                                <a class="dropdown-item" (click)="approveApplication(row)">Terima</a>
+                                                <a class="dropdown-item" (click)="rejectApplication(row)" >Tolak</a>
+                                                <a class="dropdown-item" (click)="reserveApplication(row)" >Simpan</a>
                                             </div>
                                         </div>
                                     </ng-template>

@@ -82,6 +82,7 @@ export class TrainingDetailsComponent implements OnInit {
   // Form
   trainingForm: FormGroup
   noteForm: FormGroup
+  applyForm: FormGroup
 
   // Choices
   organiserChoices = [
@@ -419,6 +420,7 @@ export class TrainingDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.dateToday = moment().format('D/M/YYYY')
+    this.initForm()
     // console.log(this.dateToday)
   }
 
@@ -440,6 +442,8 @@ export class TrainingDetailsComponent implements OnInit {
         this.notes = this.training['training_training_notes']
         this.trainingTypes = this.trainingService.trainingTypes
         this.domains = this.domainService.domains
+        this.staffs = this.trainingService.applicableStaffs
+        this.applyForm.controls['training'].setValue(this.training['id'])
         this.loadingBar.complete() 
       },
       () => {
@@ -670,7 +674,8 @@ export class TrainingDetailsComponent implements OnInit {
             id_index: key+1
           };
         });
-
+        console.log("tableApplicationsTemp ",this.tableApplicationsTemp)
+        
         if (this.tableApplicationsTemp.length >= 1) {
           this.isApplicationsEmpty = false
         }
@@ -1343,6 +1348,18 @@ export class TrainingDetailsComponent implements OnInit {
         Validators.required
       ])),
       transportation: new FormControl(false, Validators.compose([
+        Validators.required
+      ]))
+    })
+
+    this.applyForm = this.formBuilder.group({
+      training: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      applicant: new FormControl(null, Validators.compose([
+        Validators.required
+      ])),
+      application_type: new FormControl('PS', Validators.compose([
         Validators.required
       ]))
     })
@@ -2182,6 +2199,7 @@ export class TrainingDetailsComponent implements OnInit {
   }
 
   reserveApplication(row) {
+    console.log("row = ",row)
     this.loadingBar.start()
     let infoTitle = 'Sedang proses'
     let infoMessage = 'Permohonan sedang disimpan'
@@ -2230,18 +2248,21 @@ export class TrainingDetailsComponent implements OnInit {
       'training': this.training['id'],
       'applicants': this.selectedStaffs
     }
+    console.log("body", body)
     let infoTitle = 'Sedang proses'
     let infoMessage = 'Pencalonan sedang diproses'
     this.notifyService.openToastrInfo(infoTitle, infoMessage)
 
     this.applicationService.postBatch(body).subscribe(
-      () => {
+      (res) => {
+        console.log("res", res);
         this.loadingBar.complete()
         let title = 'Berjaya'
         let message = 'Anda berjaya mencalonkan kakitangan berikut ke dalam latihan ini'
         this.notifyService.openToastr(title, message)
       },
-      () => {
+      (err) => {
+        console.log("err", err);
         this.loadingBar.complete()
         let title = 'Tidak berjaya'
         let message = 'Anda tidak berjaya untuk mencalonkan kakitangan berikut ke dalam latihan. Sila cuba sekali lagi'
@@ -2251,6 +2272,7 @@ export class TrainingDetailsComponent implements OnInit {
       () => {
         // this.navigatePage('/dc/dashboard')
         this.selectedStaffs = []
+        this.applyForm.reset()
         this.getData()
       }
     )

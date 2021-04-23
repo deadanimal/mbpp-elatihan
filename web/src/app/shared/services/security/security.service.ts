@@ -121,4 +121,24 @@ export class SecurityService {
       })
     )
   }
+
+  filterAnswer(field: String): Observable<any[]> {
+    let urlTemp = this.urlAnswer + '?' + field
+    return this.http.get<any[]>(urlTemp).pipe(
+      tap((res) => {
+        this.questions = res
+        // console.log('Notes: ', this.notesFiltered)
+      })
+    )
+  }
+
+  filterQuestion(field: String): Observable<any[]> {
+    let urlTemp = this.urlQuestion + '?' + field
+    return this.http.get<any[]>(urlTemp).pipe(
+      tap((res) => {
+        this.questions = res
+        // console.log('Notes: ', this.notesFiltered)
+      })
+    )
+  }
 }

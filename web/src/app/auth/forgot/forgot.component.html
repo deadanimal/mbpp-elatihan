@@ -1,4 +1,276 @@
 <ngx-loading-bar height="4px"></ngx-loading-bar>
+<div class="header py-7 py-lg-8" style="background-color: #346dc2; z-index: 1">
+  <div class="container">
+    <div class="header-body text-center mb-7">
+      <div class="row justify-content-center"></div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="main-content d-flex align-items-center"
+  style="background-color: #ebebeb; z-index: 2"
+>
+  <div class="container mt--9 pb-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-5 col-md-7">
+        <div class="card bg-secondary border-0 mb-0">
+          <div class="card-body px-lg-5 py-lg-5">
+            <div class="logo-box">
+              <img class="logo" [src]="imgLogo" />
+            </div>
+
+            <div class="logo-box text-center mt--4">
+              <h2 class="text-black mb-0">MAJLIS BANDARAYA PULAU PINANG</h2>
+              <h2 class="text-black mb-0" (click)="cheat()">eLatihan</h2>
+              <h2 class="text-black mb-0">Sistem Pengurusan Latihan</h2>
+              <br />
+              <h2 class="text-black mb-0">Reset Kata Laluan</h2>
+            </div>
+
+            <div *ngIf="!isFirstLogin">
+              <form [formGroup]="resetForm">
+                <div
+                  class="form-group mb-3"
+                  [ngClass]="{ focused: focusUsername === true }"
+                >
+                  <div class="input-group input-group-alternative">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text bg-primary">
+                        <i class="fas fa-envelope text-white"></i>
+                      </span>
+                    </div>
+                    <input
+                      class="form-control"
+                      placeholder="NRIC"
+                      formControlName="username"
+                      (focus)="focusUsername = true"
+                      (blur)="focusUsername = false"
+                    />
+                  </div>
+                  <ng-container
+                    *ngFor="let message of loginFormMessages.username"
+                  >
+                    <div
+                      *ngIf="
+                        resetForm.get('username').hasError(message.type) &&
+                        (resetForm.get('username').dirty ||
+                          resetForm.get('username').touched)
+                      "
+                    >
+                      <p class="error-message">
+                        <span>{{ message.message }}</span>
+                      </p>
+                    </div>
+                  </ng-container>
+                </div>
+              </form>
+
+              <div class="text-center">
+                <button
+                  type="button"
+                  class="btn btn-primary my-4 btn-block"
+                  (click)="GetUserID()"
+                >
+                  Reset Kata Laluan
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-warm-blue my-4 btn-block"
+                  (click)="navigatePage('/auth/login')"
+                >
+                  Kembali ke Log Masuk
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #SecurityQuestion>
+  <div class="modal-header bg-default">
+    <h6 class="modal-title text-white my-auto" id="modal-title-default">
+      Soalan Sekuriti
+    </h6>
+
+    <button
+      aria-label="Close"
+      class="close"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      <span aria-hidden="true" class="text-white my-auto"> × </span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="SecurityQuestionForm">
+      <div class="row">
+        <div class="col">
+        <b>{{this.questionDetail[0].question}}</b> <br>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label class="form-control-label">Jawapan</label>
+            <input
+              class="form-control"
+              placeholder=""
+              formControlName="answer"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      class="btn btn-success"
+      type="button"
+      (click)="CompareAnswerGiven()"
+    >
+      Submit
+    </button>
+
+    <button
+      class="btn btn-outline-danger ml-auto"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      Tutup
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #ResetPassword>
+  <div class="modal-header bg-default">
+    <h6 class="modal-title text-white my-auto" id="modal-title-default">
+      Reset Kata Laluan
+    </h6>
+
+    <button
+      aria-label="Close"
+      class="close"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      <span aria-hidden="true" class="text-white my-auto"> × </span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="passwordForm">
+      <div class="form-group">
+        <label class="form-control-label">Kata Laluan Baru</label>
+        <input
+          class="form-control"
+          formControlName="new_password1"
+          placeholder="Kata laluan baru"
+        />
+
+        <ng-container
+          *ngFor="let message of passwordFormMessages.new_password1"
+        >
+          <div
+            *ngIf="
+              passwordForm.get('new_password1').hasError(message.type) &&
+              (passwordForm.get('new_password1').dirty ||
+                passwordForm.get('new_password1').touched)
+            "
+          >
+            <p class="error-message">
+              <span>{{ message.message }}</span>
+            </p>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">Ulang Kata Laluan Baru</label>
+        <input
+          class="form-control"
+          formControlName="new_password2"
+          placeholder="Ulang kata laluan baru"
+        />
+
+        <ng-container
+          *ngFor="let message of passwordFormMessages.new_password2"
+        >
+          <div
+            *ngIf="
+              passwordForm.get('new_password2').hasError(message.type) &&
+              (passwordForm.get('new_password2').dirty ||
+                passwordForm.get('new_password2').touched)
+            "
+          >
+            <p class="error-message">
+              <span>{{ message.message }}</span>
+            </p>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- <div>
+        <button
+          class="btn btn-warm-blue btn-block"
+          (click)="changePassword()"
+          [disabled]="!passwordForm.valid"
+        >
+          Kemaskini
+        </button>
+      </div> -->
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-success" type="button" (click)="changePassword()">
+      Kemaskini
+    </button>
+
+    <button
+      class="btn btn-outline-danger ml-auto"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal2()"
+    >
+      Tutup
+    </button>
+  </div>
+</ng-template>
+
+<footer class="footer">
+  <div class="row align-items-center justify-content-xl-between">
+    <div class="col">
+      <div class="copyright text-center text-muted">
+        &copy; {{ currentDate | date: "yyyy" }}
+        Hak cipta terpelihara ©
+        <a
+          href="https://elatihan.mbpp.gov.my"
+          class="font-weight-bold ml-1"
+          target="_blank"
+        >
+          Majlis Bandaraya Pulau Pinang
+        </a>
+      </div>
+      <div class="copyright text-center text-muted">
+        Paparan terbaik menggunakan Chrome versi 69 dan ke atas, Firefox versi
+        61 dan ke atas, Safari versi 11 dan ke atas, Opera versi 54 dan ke atas,
+        dan Edge versi 16 dan ke atas.
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!--<ngx-loading-bar height="4px"></ngx-loading-bar>
 <div class="main-content auth-content d-flex align-items-center">
     <div class="container">
         <div class="row justify-content-center">
@@ -22,7 +294,7 @@
                                         class="form-control text-dark"
                                         placeholder="Email"
                                         type="email"
-                                        formControlName="email"
+                                        formControlName="NRIC"
                                         (focus)="focusEmail = true"
                                         (blur)="focusEmail = false"
                                     />
@@ -48,4 +320,4 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->

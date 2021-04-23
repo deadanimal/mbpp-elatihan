@@ -116,7 +116,7 @@ export const DCROUTES: RouteInfo[] = [
   { path: '/dc/exams', title: 'Peperiksaan Jabatan', type: 'sub', icontype: 'fas fa-list-alt text-primary',
     collapse: 'exams', isCollapsed: true, children: [
       { path: 'summary', title: 'Ringkasan', type: 'link' },
-      { path: 'add', title: 'Tambah', type: 'link' }
+      // { path: 'add', title: 'Tambah', type: 'link' }
     ]
   },
   { path: '/dc/staffs/list', title: 'Kakitangan Jabatan', type: 'link', icontype: 'fas fa-users text-primary' },
@@ -153,7 +153,7 @@ export const DHROUTES: RouteInfo[] = [
   { path: '/dc/exams', title: 'Peperiksaan Jabatan', type: 'sub', icontype: 'fas fa-list-alt text-primary',
     collapse: 'exams', isCollapsed: true, children: [
       { path: 'summary', title: 'Ringkasan', type: 'link' },
-      { path: 'add', title: 'Tambah', type: 'link' }
+      // { path: 'add', title: 'Tambah', type: 'link' }
     ]
   },
   { path: '/dc/staffs/list', title: 'Kakitangan Jabatan', type: 'link', icontype: 'fas fa-users text-primary' },

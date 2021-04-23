@@ -55,6 +55,11 @@ class CustomUserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    filterset_fields = [
+        'username',
+        'nric',
+        'service_status',
+    ]
 
     def get_permissions(self):
         permission_classes = [IsAuthenticated] #permission_classes = [IsAuthenticated]
@@ -171,7 +176,9 @@ class SecurityQuestionViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = SecurityQuestion.objects.all()
     serializer_class = SecurityQuestionSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    # filterset_fields = ['code', 'staff', 'date']
+    filterset_fields = [
+        'id'
+    ]
 
     def get_permissions(self):
         permission_classes = [AllowAny]#[IsAuthenticated]
@@ -194,7 +201,9 @@ class SecurityAnswerViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = SecurityAnswer.objects.all()
     serializer_class = SecurityAnswerSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    # filterset_fields = ['code', 'staff', 'date']
+    filterset_fields = [
+        'user_id'
+    ]
 
     def get_permissions(self):
         permission_classes = [IsAuthenticated]#[IsAuthenticated]
