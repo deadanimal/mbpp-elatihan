@@ -1,12 +1,15 @@
-amqp==2.5.2
+# amqp==2.5.2
+amqp==1.4.9
 anyjson==0.3.3
 Babel==2.8.0
-billiard==3.6.3.0
+# billiard==3.6.3.0
+billiard==3.3.0.23
 boto3==1.9.243
 botocore==1.12.243
 cairocffi==1.1.0
 CairoSVG==2.4.2
-celery==4.4.2
+# celery==4.4.2
+celery==3.1.25
 certifi==2019.9.11
 cffi==1.14.0
 chardet==3.0.4
@@ -42,7 +45,8 @@ html5lib==1.1
 idna==2.8
 importlib-metadata==1.6.0
 jmespath==0.9.4
-kombu==4.6.8
+# kombu==4.6.8
+kombu==3.0.37
 numpy==1.19.4
 oauthlib==3.1.0
 onesignal-notifications==0.2.6

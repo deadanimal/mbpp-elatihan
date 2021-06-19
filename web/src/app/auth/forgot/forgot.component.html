@@ -28,7 +28,18 @@
               <h2 class="text-black mb-0">Reset Kata Laluan</h2>
             </div>
 
-            <div *ngIf="!isFirstLogin">
+            <div>
+              <p> Sila hubungi Puan Afiza di afiza@mbpp.gov.my atau 03-12345678 untuk menukar kata laluan</p>
+                <button
+                  type="button"
+                  class="btn btn-outline-warm-blue my-4 btn-block"
+                  (click)="navigatePage('/auth/login')"
+                >
+                  Kembali ke Log Masuk
+                </button>              
+            </div>
+
+            <!--<div *ngIf="!isFirstLogin">
               <form [formGroup]="resetForm">
                 <div
                   class="form-group mb-3"
@@ -82,7 +93,7 @@
                   Kembali ke Log Masuk
                 </button>
               </div>
-            </div>
+            </div>-->
           </div>
         </div>
       </div>

@@ -352,7 +352,7 @@
               </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column>
+            <!--<ngx-datatable-column>
               <ng-template ngx-datatable-header-template>
                 <span>Tindakan</span>
               </ng-template>
@@ -365,7 +365,22 @@
                   Kemaskini
                 </button>
               </ng-template>
-            </ngx-datatable-column>
+            </ngx-datatable-column>-->
+
+            <ngx-datatable-column>
+							<ng-template ngx-datatable-header-template>
+								<span>Tindakan</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								<div class="btn-group dropdown" dropdown>
+									<button type="button" class="btn btn-sm btn-warm-blue dropdown-toggle" dropdownToggle container="body">Aktiviti</button>
+									<div *dropdownMenu class="dropdown-menu dropdown-menu-right">
+										<a class="dropdown-item" (click)="openModal(editUser, row)" [ngClass]="{ disabled: row.user_type == 'AD' }">Kemaskini</a>
+										<a class="dropdown-item" (click)="openModal(ResetPassword, row)" [ngClass]="{ disabled: row.user_type == 'AD' }">Tukar kata laluan</a>
+									</div>
+								</div>
+							</ng-template>
+						</ngx-datatable-column>
           </ngx-datatable>
         </div>
       </div>
@@ -417,6 +432,104 @@
 
     <button
       class="btn btn-outline-warm-blue ml-auto"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      Tutup
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #ResetPassword>
+  <div class="modal-header bg-default">
+    <h6 class="modal-title text-white my-auto" id="modal-title-default">
+      Reset Kata Laluan
+    </h6>
+
+    <button
+      aria-label="Close"
+      class="close"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      <span aria-hidden="true" class="text-white my-auto"> × </span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="passwordForm">
+    {{ row }}
+      <div class="form-group">
+        <label class="form-control-label">Kata Laluan Baru</label>
+        <input
+          class="form-control"
+          formControlName="new_password1"
+          placeholder="Kata laluan baru"
+        />
+
+        <ng-container
+          *ngFor="let message of passwordFormMessages.new_password1"
+        >
+          <div
+            *ngIf="
+              passwordForm.get('new_password1').hasError(message.type) &&
+              (passwordForm.get('new_password1').dirty ||
+                passwordForm.get('new_password1').touched)
+            "
+          >
+            <p class="error-message">
+              <span>{{ message.message }}</span>
+            </p>
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label">Ulang Kata Laluan Baru</label>
+        <input
+          class="form-control"
+          formControlName="new_password2"
+          placeholder="Ulang kata laluan baru"
+        />
+
+        <ng-container
+          *ngFor="let message of passwordFormMessages.new_password2"
+        >
+          <div
+            *ngIf="
+              passwordForm.get('new_password2').hasError(message.type) &&
+              (passwordForm.get('new_password2').dirty ||
+                passwordForm.get('new_password2').touched)
+            "
+          >
+            <p class="error-message">
+              <span>{{ message.message }}</span>
+            </p>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- <div>
+        <button
+          class="btn btn-warm-blue btn-block"
+          (click)="changePassword()"
+          [disabled]="!passwordForm.valid"
+        >
+          Kemaskini
+        </button>
+      </div> -->
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-success" type="button" (click)="changePassword()">
+      Kemaskini
+    </button>
+
+    <button
+      class="btn btn-outline-danger ml-auto"
       data-dismiss="modal"
       type="button"
       (click)="closeModal()"

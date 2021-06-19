@@ -93,4 +93,17 @@ export class UsersService {
     )
   }
 
+  changePassword(id: string, password: string) {
+    let urlTemp = this.urlUser + id + '/change_password/'
+    let data = {
+      'password': password
+    }
+    return this.http.post(urlTemp, data).pipe(
+      tap((res) => {
+        console.log(res)
+        // console.log('Staff: ', this.users)
+      })
+    )    
+  }
+
 }

@@ -442,7 +442,7 @@ export class TrainingAddComponent implements OnInit {
         this.cores.forEach(
           (core: Core) => {
             if (
-              core['parent'] == 'GN' &&
+              core['parent'] === 'GN' &&
               core['active']
             ) {
               this.coresTemp.push(core)
@@ -455,7 +455,7 @@ export class TrainingAddComponent implements OnInit {
 
         this.organisations.forEach(
           (organisation) => {
-            if (organisation['shortname'] == 'MBPP') {
+            if (organisation['shortname'] === 'MBPP') {
               this.trainingForm.controls['organiser'].setValue(organisation['id'])
             }
           }
@@ -1135,12 +1135,12 @@ export class TrainingAddComponent implements OnInit {
   }
 
   onChangeCoreParent(value) {
-    if (value == 'GN') {
+    if (value === 'GN') {
       this.coresTemp = []
       this.cores.forEach(
         (core: Core) => {
           if (
-            core['parent'] == 'GN' &&
+            core['parent'] === 'GN' &&
             core['active']
           ) {
             this.coresTemp.push(core)
@@ -1148,12 +1148,12 @@ export class TrainingAddComponent implements OnInit {
         }
       )
     }
-    else if (value == 'FN') {
+    else if (value === 'FN') {
       this.coresTemp = []
       this.cores.forEach(
         (core: Core) => {
           if (
-            core['parent'] == 'FN' &&
+            core['parent'] === 'FN' &&
             core['active']
           ) {
             this.coresTemp.push(core)
@@ -1164,17 +1164,17 @@ export class TrainingAddComponent implements OnInit {
   }
 
   onChangeOrganiserType(value) {
-    if (value == 'DD') {
+    if (value === 'DD') {
       this.organisations.forEach(
         (organisation) => {
-          if (organisation['shortname'] == 'MBPP') {
+          if (organisation['shortname'] === 'MBPP') {
             this.trainingForm.controls['organiser'].setValue(organisation['id'])
             // console.log('Type found D: ', organisation['shortname'])
           }
         }
       )
     }
-    else if (value == 'LL') {
+    else if (value === 'LL') {
       this.trainingForm.controls['organiser'].setValue(this.organisations[0]['id'])
       // console.log('Type found L: ', this.organisations[0]['id'])
     }
@@ -1184,12 +1184,12 @@ export class TrainingAddComponent implements OnInit {
     let isDD = false
     this.organisations.forEach(
       (organisation) => {
-        if (organisation['shortname'] == 'MBPP') {
-          if (organisation['id'] == value) {
+        if (organisation['shortname'] === 'MBPP') {
+          if (organisation['id'] === value) {
             this.trainingForm.controls['organiser_type'].setValue('DD')
             isDD = true
           }
-          else if (isDD == false) {
+          else if (isDD === false) {
             this.trainingForm.controls['organiser_type'].setValue('LL')
           }
         }
@@ -1436,8 +1436,8 @@ export class TrainingAddComponent implements OnInit {
   }
 
   onChangeTargetType(event) {
-    if (event == 'TB') {
-      this.isTargetLocked = true
+    if (event === 'TB') {
+      this.isTargetLocked = false
       this.trainingForm.controls['is_group_KP_A'].patchValue(true)
       this.trainingForm.controls['is_group_KP_B'].patchValue(true)
       this.trainingForm.controls['is_group_KP_C'].patchValue(true)
@@ -1614,81 +1614,81 @@ export class TrainingAddComponent implements OnInit {
       this.trainingForm.controls['is_group_KP_B'].patchValue(true)
       this.trainingForm.controls['is_group_KP_C'].patchValue(true)
       this.trainingForm.controls['is_group_KP_D'].patchValue(true)
-      this.trainingForm.controls['is_department_11'].patchValue(false)
-      this.trainingForm.controls['is_department_15'].patchValue(false)
-      this.trainingForm.controls['is_department_21'].patchValue(false)
-      this.trainingForm.controls['is_department_31'].patchValue(false)
-      this.trainingForm.controls['is_department_41'].patchValue(false)
-      this.trainingForm.controls['is_department_45'].patchValue(false)
-      this.trainingForm.controls['is_department_47'].patchValue(false)
-      this.trainingForm.controls['is_department_51'].patchValue(false)
-      this.trainingForm.controls['is_department_55'].patchValue(false)
-      this.trainingForm.controls['is_department_61'].patchValue(false)
-      this.trainingForm.controls['is_department_63'].patchValue(false)
-      this.trainingForm.controls['is_department_71'].patchValue(false)
-      this.trainingForm.controls['is_department_81'].patchValue(false)
-      this.trainingForm.controls['is_department_86'].patchValue(false)
-      this.trainingForm.controls['is_department_90'].patchValue(false)
-      this.trainingForm.controls['is_department_91'].patchValue(false)
-      this.trainingForm.controls['is_department_92'].patchValue(false)
-      this.trainingForm.controls['is_department_93'].patchValue(false)
-      this.trainingForm.controls['is_department_94'].patchValue(false)
-      this.trainingForm.controls['is_position_01'].patchValue(false)
-      this.trainingForm.controls['is_position_02'].patchValue(false)
-      this.trainingForm.controls['is_position_03'].patchValue(false)
-      this.trainingForm.controls['is_position_04'].patchValue(false)
-      this.trainingForm.controls['is_position_05'].patchValue(false)
-      this.trainingForm.controls['is_position_06'].patchValue(false)
-      this.trainingForm.controls['is_position_07'].patchValue(false)
-      this.trainingForm.controls['is_position_08'].patchValue(false)
-      this.trainingForm.controls['is_position_09'].patchValue(false)
-      this.trainingForm.controls['is_position_10'].patchValue(false)
-      this.trainingForm.controls['is_position_11'].patchValue(false)
-      this.trainingForm.controls['is_position_12'].patchValue(false)
-      this.trainingForm.controls['is_position_13'].patchValue(false)
-      this.trainingForm.controls['is_position_14'].patchValue(false)
-      this.trainingForm.controls['is_position_15'].patchValue(false)
-      this.trainingForm.controls['is_position_16'].patchValue(false)
-      this.trainingForm.controls['is_position_17'].patchValue(false)
-      this.trainingForm.controls['is_position_18'].patchValue(false)
-      this.trainingForm.controls['is_position_19'].patchValue(false)
-      this.trainingForm.controls['is_position_20'].patchValue(false)
-      this.trainingForm.controls['is_position_21'].patchValue(false)
-      this.trainingForm.controls['is_position_22'].patchValue(false)
-      this.trainingForm.controls['is_position_23'].patchValue(false)
-      this.trainingForm.controls['is_position_24'].patchValue(false)
-      this.trainingForm.controls['is_position_25'].patchValue(false)
-      this.trainingForm.controls['is_position_26'].patchValue(false)
-      this.trainingForm.controls['is_position_27'].patchValue(false)
-      this.trainingForm.controls['is_position_28'].patchValue(false)
-      this.trainingForm.controls['is_position_29'].patchValue(false)
-      this.trainingForm.controls['is_position_30'].patchValue(false)
-      this.trainingForm.controls['is_position_31'].patchValue(false)
-      this.trainingForm.controls['is_position_32'].patchValue(false)
-      this.trainingForm.controls['is_position_33'].patchValue(false)
-      this.trainingForm.controls['is_position_34'].patchValue(false)
-      this.trainingForm.controls['is_position_35'].patchValue(false)
-      this.trainingForm.controls['is_position_36'].patchValue(false)
-      this.trainingForm.controls['is_position_37'].patchValue(false)
-      this.trainingForm.controls['is_position_38'].patchValue(false)
-      this.trainingForm.controls['is_position_39'].patchValue(false)
-      this.trainingForm.controls['is_position_40'].patchValue(false)
-      this.trainingForm.controls['is_position_41'].patchValue(false)
-      this.trainingForm.controls['is_position_42'].patchValue(false)
-      this.trainingForm.controls['is_position_43'].patchValue(false)
-      this.trainingForm.controls['is_position_44'].patchValue(false)
-      this.trainingForm.controls['is_position_45'].patchValue(false)
-      this.trainingForm.controls['is_position_46'].patchValue(false)
-      this.trainingForm.controls['is_position_47'].patchValue(false)
-      this.trainingForm.controls['is_position_48'].patchValue(false)
-      this.trainingForm.controls['is_position_49'].patchValue(false)
-      this.trainingForm.controls['is_position_50'].patchValue(false)
-      this.trainingForm.controls['is_position_51'].patchValue(false)
-      this.trainingForm.controls['is_position_52'].patchValue(false)
-      this.trainingForm.controls['is_position_53'].patchValue(false)
-      this.trainingForm.controls['is_position_54'].patchValue(false)
-      this.trainingForm.controls['is_position_55'].patchValue(false)
-      this.trainingForm.controls['is_position_60'].patchValue(false)
+      this.trainingForm.controls['is_department_11'].patchValue(true)
+      this.trainingForm.controls['is_department_15'].patchValue(true)
+      this.trainingForm.controls['is_department_21'].patchValue(true)
+      this.trainingForm.controls['is_department_31'].patchValue(true)
+      this.trainingForm.controls['is_department_41'].patchValue(true)
+      this.trainingForm.controls['is_department_45'].patchValue(true)
+      this.trainingForm.controls['is_department_47'].patchValue(true)
+      this.trainingForm.controls['is_department_51'].patchValue(true)
+      this.trainingForm.controls['is_department_55'].patchValue(true)
+      this.trainingForm.controls['is_department_61'].patchValue(true)
+      this.trainingForm.controls['is_department_63'].patchValue(true)
+      this.trainingForm.controls['is_department_71'].patchValue(true)
+      this.trainingForm.controls['is_department_81'].patchValue(true)
+      this.trainingForm.controls['is_department_86'].patchValue(true)
+      this.trainingForm.controls['is_department_90'].patchValue(true)
+      this.trainingForm.controls['is_department_91'].patchValue(true)
+      this.trainingForm.controls['is_department_92'].patchValue(true)
+      this.trainingForm.controls['is_department_93'].patchValue(true)
+      this.trainingForm.controls['is_department_94'].patchValue(true)
+      this.trainingForm.controls['is_position_01'].patchValue(true)
+      this.trainingForm.controls['is_position_02'].patchValue(true)
+      this.trainingForm.controls['is_position_03'].patchValue(true)
+      this.trainingForm.controls['is_position_04'].patchValue(true)
+      this.trainingForm.controls['is_position_05'].patchValue(true)
+      this.trainingForm.controls['is_position_06'].patchValue(true)
+      this.trainingForm.controls['is_position_07'].patchValue(true)
+      this.trainingForm.controls['is_position_08'].patchValue(true)
+      this.trainingForm.controls['is_position_09'].patchValue(true)
+      this.trainingForm.controls['is_position_10'].patchValue(true)
+      this.trainingForm.controls['is_position_11'].patchValue(true)
+      this.trainingForm.controls['is_position_12'].patchValue(true)
+      this.trainingForm.controls['is_position_13'].patchValue(true)
+      this.trainingForm.controls['is_position_14'].patchValue(true)
+      this.trainingForm.controls['is_position_15'].patchValue(true)
+      this.trainingForm.controls['is_position_16'].patchValue(true)
+      this.trainingForm.controls['is_position_17'].patchValue(true)
+      this.trainingForm.controls['is_position_18'].patchValue(true)
+      this.trainingForm.controls['is_position_19'].patchValue(true)
+      this.trainingForm.controls['is_position_20'].patchValue(true)
+      this.trainingForm.controls['is_position_21'].patchValue(true)
+      this.trainingForm.controls['is_position_22'].patchValue(true)
+      this.trainingForm.controls['is_position_23'].patchValue(true)
+      this.trainingForm.controls['is_position_24'].patchValue(true)
+      this.trainingForm.controls['is_position_25'].patchValue(true)
+      this.trainingForm.controls['is_position_26'].patchValue(true)
+      this.trainingForm.controls['is_position_27'].patchValue(true)
+      this.trainingForm.controls['is_position_28'].patchValue(true)
+      this.trainingForm.controls['is_position_29'].patchValue(true)
+      this.trainingForm.controls['is_position_30'].patchValue(true)
+      this.trainingForm.controls['is_position_31'].patchValue(true)
+      this.trainingForm.controls['is_position_32'].patchValue(true)
+      this.trainingForm.controls['is_position_33'].patchValue(true)
+      this.trainingForm.controls['is_position_34'].patchValue(true)
+      this.trainingForm.controls['is_position_35'].patchValue(true)
+      this.trainingForm.controls['is_position_36'].patchValue(true)
+      this.trainingForm.controls['is_position_37'].patchValue(true)
+      this.trainingForm.controls['is_position_38'].patchValue(true)
+      this.trainingForm.controls['is_position_39'].patchValue(true)
+      this.trainingForm.controls['is_position_40'].patchValue(true)
+      this.trainingForm.controls['is_position_41'].patchValue(true)
+      this.trainingForm.controls['is_position_42'].patchValue(true)
+      this.trainingForm.controls['is_position_43'].patchValue(true)
+      this.trainingForm.controls['is_position_44'].patchValue(true)
+      this.trainingForm.controls['is_position_45'].patchValue(true)
+      this.trainingForm.controls['is_position_46'].patchValue(true)
+      this.trainingForm.controls['is_position_47'].patchValue(true)
+      this.trainingForm.controls['is_position_48'].patchValue(true)
+      this.trainingForm.controls['is_position_49'].patchValue(true)
+      this.trainingForm.controls['is_position_50'].patchValue(true)
+      this.trainingForm.controls['is_position_51'].patchValue(true)
+      this.trainingForm.controls['is_position_52'].patchValue(true)
+      this.trainingForm.controls['is_position_53'].patchValue(true)
+      this.trainingForm.controls['is_position_54'].patchValue(true)
+      this.trainingForm.controls['is_position_55'].patchValue(true)
+      this.trainingForm.controls['is_position_60'].patchValue(true)
       this.trainingForm.controls['is_ba19'].patchValue(true)
       this.trainingForm.controls['is_fa29'].patchValue(true)
       this.trainingForm.controls['is_fa32'].patchValue(true)
@@ -1779,7 +1779,180 @@ export class TrainingAddComponent implements OnInit {
       this.trainingForm.controls['is_wa54'].patchValue(true)
       this.trainingForm.controls['is_waa41'].patchValue(true)
       this.trainingForm.controls['is_waa44'].patchValue(true)
+      console.log(this.trainingForm)
     }
+    // else if (event === 'TH') {
+    //   this.isTargetLocked = false
+    //   this.trainingForm.controls['is_group_KP_A'].patchValue(true)
+    //   this.trainingForm.controls['is_group_KP_B'].patchValue(true)
+    //   this.trainingForm.controls['is_group_KP_C'].patchValue(true)
+    //   this.trainingForm.controls['is_group_KP_D'].patchValue(true)
+    //   this.trainingForm.controls['is_department_11'].patchValue(false)
+    //   this.trainingForm.controls['is_department_15'].patchValue(false)
+    //   this.trainingForm.controls['is_department_21'].patchValue(false)
+    //   this.trainingForm.controls['is_department_31'].patchValue(false)
+    //   this.trainingForm.controls['is_department_41'].patchValue(false)
+    //   this.trainingForm.controls['is_department_45'].patchValue(false)
+    //   this.trainingForm.controls['is_department_47'].patchValue(false)
+    //   this.trainingForm.controls['is_department_51'].patchValue(false)
+    //   this.trainingForm.controls['is_department_55'].patchValue(false)
+    //   this.trainingForm.controls['is_department_61'].patchValue(false)
+    //   this.trainingForm.controls['is_department_63'].patchValue(false)
+    //   this.trainingForm.controls['is_department_71'].patchValue(false)
+    //   this.trainingForm.controls['is_department_81'].patchValue(false)
+    //   this.trainingForm.controls['is_department_86'].patchValue(false)
+    //   this.trainingForm.controls['is_department_90'].patchValue(false)
+    //   this.trainingForm.controls['is_department_91'].patchValue(false)
+    //   this.trainingForm.controls['is_department_92'].patchValue(false)
+    //   this.trainingForm.controls['is_department_93'].patchValue(false)
+    //   this.trainingForm.controls['is_department_94'].patchValue(false)
+    //   this.trainingForm.controls['is_position_01'].patchValue(false)
+    //   this.trainingForm.controls['is_position_02'].patchValue(false)
+    //   this.trainingForm.controls['is_position_03'].patchValue(false)
+    //   this.trainingForm.controls['is_position_04'].patchValue(false)
+    //   this.trainingForm.controls['is_position_05'].patchValue(false)
+    //   this.trainingForm.controls['is_position_06'].patchValue(false)
+    //   this.trainingForm.controls['is_position_07'].patchValue(false)
+    //   this.trainingForm.controls['is_position_08'].patchValue(false)
+    //   this.trainingForm.controls['is_position_09'].patchValue(false)
+    //   this.trainingForm.controls['is_position_10'].patchValue(false)
+    //   this.trainingForm.controls['is_position_11'].patchValue(false)
+    //   this.trainingForm.controls['is_position_12'].patchValue(false)
+    //   this.trainingForm.controls['is_position_13'].patchValue(false)
+    //   this.trainingForm.controls['is_position_14'].patchValue(false)
+    //   this.trainingForm.controls['is_position_15'].patchValue(false)
+    //   this.trainingForm.controls['is_position_16'].patchValue(false)
+    //   this.trainingForm.controls['is_position_17'].patchValue(false)
+    //   this.trainingForm.controls['is_position_18'].patchValue(false)
+    //   this.trainingForm.controls['is_position_19'].patchValue(false)
+    //   this.trainingForm.controls['is_position_20'].patchValue(false)
+    //   this.trainingForm.controls['is_position_21'].patchValue(false)
+    //   this.trainingForm.controls['is_position_22'].patchValue(false)
+    //   this.trainingForm.controls['is_position_23'].patchValue(false)
+    //   this.trainingForm.controls['is_position_24'].patchValue(false)
+    //   this.trainingForm.controls['is_position_25'].patchValue(false)
+    //   this.trainingForm.controls['is_position_26'].patchValue(false)
+    //   this.trainingForm.controls['is_position_27'].patchValue(false)
+    //   this.trainingForm.controls['is_position_28'].patchValue(false)
+    //   this.trainingForm.controls['is_position_29'].patchValue(false)
+    //   this.trainingForm.controls['is_position_30'].patchValue(false)
+    //   this.trainingForm.controls['is_position_31'].patchValue(false)
+    //   this.trainingForm.controls['is_position_32'].patchValue(false)
+    //   this.trainingForm.controls['is_position_33'].patchValue(false)
+    //   this.trainingForm.controls['is_position_34'].patchValue(false)
+    //   this.trainingForm.controls['is_position_35'].patchValue(false)
+    //   this.trainingForm.controls['is_position_36'].patchValue(false)
+    //   this.trainingForm.controls['is_position_37'].patchValue(false)
+    //   this.trainingForm.controls['is_position_38'].patchValue(false)
+    //   this.trainingForm.controls['is_position_39'].patchValue(false)
+    //   this.trainingForm.controls['is_position_40'].patchValue(false)
+    //   this.trainingForm.controls['is_position_41'].patchValue(false)
+    //   this.trainingForm.controls['is_position_42'].patchValue(false)
+    //   this.trainingForm.controls['is_position_43'].patchValue(false)
+    //   this.trainingForm.controls['is_position_44'].patchValue(false)
+    //   this.trainingForm.controls['is_position_45'].patchValue(false)
+    //   this.trainingForm.controls['is_position_46'].patchValue(false)
+    //   this.trainingForm.controls['is_position_47'].patchValue(false)
+    //   this.trainingForm.controls['is_position_48'].patchValue(false)
+    //   this.trainingForm.controls['is_position_49'].patchValue(false)
+    //   this.trainingForm.controls['is_position_50'].patchValue(false)
+    //   this.trainingForm.controls['is_position_51'].patchValue(false)
+    //   this.trainingForm.controls['is_position_52'].patchValue(false)
+    //   this.trainingForm.controls['is_position_53'].patchValue(false)
+    //   this.trainingForm.controls['is_position_54'].patchValue(false)
+    //   this.trainingForm.controls['is_position_55'].patchValue(false)
+    //   this.trainingForm.controls['is_position_60'].patchValue(false)
+    //   this.trainingForm.controls['is_ba19'].patchValue(true)
+    //   this.trainingForm.controls['is_fa29'].patchValue(true)
+    //   this.trainingForm.controls['is_fa32'].patchValue(true)
+    //   this.trainingForm.controls['is_fa41'].patchValue(true)
+    //   this.trainingForm.controls['is_fa44'].patchValue(true)
+    //   this.trainingForm.controls['is_fa48'].patchValue(true)
+    //   this.trainingForm.controls['is_ft19'].patchValue(true)
+    //   this.trainingForm.controls['is_ga17'].patchValue(true)
+    //   this.trainingForm.controls['is_ga19'].patchValue(true)
+    //   this.trainingForm.controls['is_ga22'].patchValue(true)
+    //   this.trainingForm.controls['is_ga26'].patchValue(true)
+    //   this.trainingForm.controls['is_ga29'].patchValue(true)
+    //   this.trainingForm.controls['is_ga32'].patchValue(true)
+    //   this.trainingForm.controls['is_ga41'].patchValue(true)
+    //   this.trainingForm.controls['is_gv41'].patchValue(true)
+    //   this.trainingForm.controls['is_ha11'].patchValue(true)
+    //   this.trainingForm.controls['is_ha14'].patchValue(true)
+    //   this.trainingForm.controls['is_ha16'].patchValue(true)
+    //   this.trainingForm.controls['is_ha19'].patchValue(true)
+    //   this.trainingForm.controls['is_ha22'].patchValue(true)
+    //   this.trainingForm.controls['is_ja19'].patchValue(true)
+    //   this.trainingForm.controls['is_ja22'].patchValue(true)
+    //   this.trainingForm.controls['is_ja29'].patchValue(true)
+    //   this.trainingForm.controls['is_ja36'].patchValue(true)
+    //   this.trainingForm.controls['is_ja38'].patchValue(true)
+    //   this.trainingForm.controls['is_ja40'].patchValue(true)
+    //   this.trainingForm.controls['is_ja41'].patchValue(true)
+    //   this.trainingForm.controls['is_ja44'].patchValue(true)
+    //   this.trainingForm.controls['is_ja48'].patchValue(true)
+    //   this.trainingForm.controls['is_ja52'].patchValue(true)
+    //   this.trainingForm.controls['is_ja54'].patchValue(true)
+    //   this.trainingForm.controls['is_kp11'].patchValue(true)
+    //   this.trainingForm.controls['is_kp14'].patchValue(true)
+    //   this.trainingForm.controls['is_kp19'].patchValue(true)
+    //   this.trainingForm.controls['is_kp22'].patchValue(true)
+    //   this.trainingForm.controls['is_kp29'].patchValue(true)
+    //   this.trainingForm.controls['is_kp32'].patchValue(true)
+    //   this.trainingForm.controls['is_kp41'].patchValue(true)
+    //   this.trainingForm.controls['is_la29'].patchValue(true)
+    //   this.trainingForm.controls['is_la41'].patchValue(true)
+    //   this.trainingForm.controls['is_la44'].patchValue(true)
+    //   this.trainingForm.controls['is_la52'].patchValue(true)
+    //   this.trainingForm.controls['is_la54'].patchValue(true)
+    //   this.trainingForm.controls['is_na01'].patchValue(true)
+    //   this.trainingForm.controls['is_na11'].patchValue(true)
+    //   this.trainingForm.controls['is_na14'].patchValue(true)
+    //   this.trainingForm.controls['is_na17'].patchValue(true)
+    //   this.trainingForm.controls['is_na19'].patchValue(true)
+    //   this.trainingForm.controls['is_na22'].patchValue(true)
+    //   this.trainingForm.controls['is_na26'].patchValue(true)
+    //   this.trainingForm.controls['is_na29'].patchValue(true)
+    //   this.trainingForm.controls['is_na30'].patchValue(true)
+    //   this.trainingForm.controls['is_na32'].patchValue(true)
+    //   this.trainingForm.controls['is_na36'].patchValue(true)
+    //   this.trainingForm.controls['is_na41'].patchValue(true)
+    //   this.trainingForm.controls['is_na44'].patchValue(true)
+    //   this.trainingForm.controls['is_na48'].patchValue(true)
+    //   this.trainingForm.controls['is_na52'].patchValue(true)
+    //   this.trainingForm.controls['is_na54'].patchValue(true)
+    //   this.trainingForm.controls['is_ra01'].patchValue(true)
+    //   this.trainingForm.controls['is_ra03'].patchValue(true)
+    //   this.trainingForm.controls['is_ua11'].patchValue(true)
+    //   this.trainingForm.controls['is_ua14'].patchValue(true)
+    //   this.trainingForm.controls['is_ua17'].patchValue(true)
+    //   this.trainingForm.controls['is_ua19'].patchValue(true)
+    //   this.trainingForm.controls['is_ua24'].patchValue(true)
+    //   this.trainingForm.controls['is_ua29'].patchValue(true)
+    //   this.trainingForm.controls['is_ua32'].patchValue(true)
+    //   this.trainingForm.controls['is_ua36'].patchValue(true)
+    //   this.trainingForm.controls['is_ua41'].patchValue(true)
+    //   this.trainingForm.controls['is_ud43'].patchValue(true)
+    //   this.trainingForm.controls['is_ud48'].patchValue(true)
+    //   this.trainingForm.controls['is_ud52'].patchValue(true)
+    //   this.trainingForm.controls['is_vu06'].patchValue(true)
+    //   this.trainingForm.controls['is_vu07'].patchValue(true)
+    //   this.trainingForm.controls['is_wa17'].patchValue(true)
+    //   this.trainingForm.controls['is_wa19'].patchValue(true)
+    //   this.trainingForm.controls['is_wa22'].patchValue(true)
+    //   this.trainingForm.controls['is_wa26'].patchValue(true)
+    //   this.trainingForm.controls['is_wa28'].patchValue(true)
+    //   this.trainingForm.controls['is_wa29'].patchValue(true)
+    //   this.trainingForm.controls['is_wa32'].patchValue(true)
+    //   this.trainingForm.controls['is_wa36'].patchValue(true)
+    //   this.trainingForm.controls['is_wa41'].patchValue(true)
+    //   this.trainingForm.controls['is_wa44'].patchValue(true)
+    //   this.trainingForm.controls['is_wa48'].patchValue(true)
+    //   this.trainingForm.controls['is_wa52'].patchValue(true)
+    //   this.trainingForm.controls['is_wa54'].patchValue(true)
+    //   this.trainingForm.controls['is_waa41'].patchValue(true)
+    //   this.trainingForm.controls['is_waa44'].patchValue(true)
+    // }
   }
 
   onFileChange(event, type) {
@@ -1803,12 +1976,12 @@ export class TrainingAddComponent implements OnInit {
       
       reader.onload = () => {
         // console.log(reader['result'])
-        if (type == 'attachment') {
+        if (type === 'attachment') {
           this.trainingForm.controls['attachment'].setValue(file)
           this.fileSizeInformationAttachment = this.fileSize
           this.fileNameInformationAttachment = this.fileName
         }
-        else if (type == 'attachment_approval') {
+        else if (type === 'attachment_approval') {
           this.trainingForm.controls['attachment_approval'].setValue(file)
           this.fileSizeInformationAttachmentApproval = this.fileSize
           this.fileNameInformationAttachmentApproval = this.fileName
@@ -1824,7 +1997,7 @@ export class TrainingAddComponent implements OnInit {
   }
 
   removeFile(type) {
-    if (type == 'attachment') {
+    if (type === 'attachment') {
       this.fileSize = 0;
       this.fileName = null;
       this.trainingForm.controls['attachment'].patchValue(null);
@@ -1833,7 +2006,7 @@ export class TrainingAddComponent implements OnInit {
       //this.cd.markForCheck();
       //this.cd.detectChanges();
     }
-    else if (type == 'attachment_approval') {
+    else if (type === 'attachment_approval') {
       this.fileSize = 0;
       this.fileName = null;
       this.trainingForm.controls['attachment_approval'].patchValue(null);
@@ -1959,7 +2132,7 @@ export class TrainingAddComponent implements OnInit {
       'is_waa44'
     ]
 
-    if (add == 'is_group_KP_D') {
+    if (add === 'is_group_KP_D') {
       this.trainingForm.controls['is_ha11'].patchValue(true)
       this.trainingForm.controls['is_ha14'].patchValue(true)
       this.trainingForm.controls['is_ha16'].patchValue(true)
@@ -1980,14 +2153,14 @@ export class TrainingAddComponent implements OnInit {
           // console.log('gr: ', grp_sch)
           // console.log('sch: ', sch)
           // console.log(this.selectedSch.find(sch => sch === grp_sch))
-          if (this.selectedSch.find(sch => sch === grp_sch) == undefined) {
+          if (this.selectedSch.find(sch => sch === grp_sch) === undefined) {
             this.selectedSch.push(grp_sch)
             // console.log('masuke ke')
           }
         }
       )
     }
-    else if (add == 'is_group_KP_C') {
+    else if (add === 'is_group_KP_C') {
       this.trainingForm.controls['is_ba19'].patchValue(true)
       this.trainingForm.controls['is_ga29'].patchValue(true)
       this.trainingForm.controls['is_ft19'].patchValue(true)
@@ -2019,14 +2192,14 @@ export class TrainingAddComponent implements OnInit {
           // console.log('gr: ', grp_sch)
           // console.log('sch: ', sch)
           // console.log(this.selectedSch.find(sch => sch === grp_sch))
-          if (this.selectedSch.find(sch => sch === grp_sch) == undefined) {
+          if (this.selectedSch.find(sch => sch === grp_sch) === undefined) {
             this.selectedSch.push(grp_sch)
             // console.log('masuke ke')
           }
         }
       )
     }
-    else if (add == 'is_group_KP_B') {
+    else if (add === 'is_group_KP_B') {
       this.trainingForm.controls['is_fa32'].patchValue(true)
       this.trainingForm.controls['is_ga29'].patchValue(true)
       this.trainingForm.controls['is_ga32'].patchValue(true)
@@ -2055,14 +2228,14 @@ export class TrainingAddComponent implements OnInit {
           // console.log('gr: ', grp_sch)
           // console.log('sch: ', sch)
           // console.log(this.selectedSch.find(sch => sch === grp_sch))
-          if (this.selectedSch.find(sch => sch === grp_sch) == undefined) {
+          if (this.selectedSch.find(sch => sch === grp_sch) === undefined) {
             this.selectedSch.push(grp_sch)
             // console.log('masuke ke')
           }
         }
       )
     }
-    else if (add == 'is_group_KP_A') {
+    else if (add === 'is_group_KP_A') {
       this.trainingForm.controls['is_fa41'].patchValue(true)
       this.trainingForm.controls['is_fa44'].patchValue(true)
       this.trainingForm.controls['is_fa48'].patchValue(true)
@@ -2100,7 +2273,7 @@ export class TrainingAddComponent implements OnInit {
           // console.log('gr: ', grp_sch)
           // console.log('sch: ', sch)
           // console.log(this.selectedSch.find(sch => sch === grp_sch))
-          if (this.selectedSch.find(sch => sch === grp_sch) == undefined) {
+          if (this.selectedSch.find(sch => sch === grp_sch) === undefined) {
             this.selectedSch.push(grp_sch)
             // console.log('masuke ke')
           }
@@ -2317,7 +2490,7 @@ export class TrainingAddComponent implements OnInit {
       'is_waa44'
     ]
 
-    if (remove == 'is_group_KP_D') {
+    if (remove === 'is_group_KP_D') {
       this.trainingForm.controls['is_ha11'].patchValue(false)
       this.trainingForm.controls['is_ha14'].patchValue(false)
       this.trainingForm.controls['is_ha16'].patchValue(false)
@@ -2339,7 +2512,7 @@ export class TrainingAddComponent implements OnInit {
         }
       )
     }
-    else if (remove == 'is_group_KP_C') {
+    else if (remove === 'is_group_KP_C') {
       this.trainingForm.controls['is_ba19'].patchValue(false)
       this.trainingForm.controls['is_ga29'].patchValue(false)
       this.trainingForm.controls['is_ft19'].patchValue(false)
@@ -2372,7 +2545,7 @@ export class TrainingAddComponent implements OnInit {
         }
       )
     }
-    else if (remove == 'is_group_KP_B') {
+    else if (remove === 'is_group_KP_B') {
       this.trainingForm.controls['is_fa32'].patchValue(false)
       this.trainingForm.controls['is_ga29'].patchValue(false)
       this.trainingForm.controls['is_ga32'].patchValue(false)
@@ -2402,7 +2575,7 @@ export class TrainingAddComponent implements OnInit {
         }
       )
     }
-    else if (remove == 'is_group_KP_A') {
+    else if (remove === 'is_group_KP_A') {
       this.trainingForm.controls['is_fa41'].patchValue(false)
       this.trainingForm.controls['is_fa44'].patchValue(false)
       this.trainingForm.controls['is_fa48'].patchValue(false)
@@ -2443,7 +2616,7 @@ export class TrainingAddComponent implements OnInit {
     }
   }
 
-  // Jabatan sasaram
+  // Jabatan sasaran
   onAddTargetDep($event) {
     let add = $event['form']
     // console.log('add ', add)
@@ -2495,20 +2668,20 @@ export class TrainingAddComponent implements OnInit {
     this.trainingForm.controls[add].patchValue(true)
     if (Number(grade) >= 1 && Number(grade) <= 16) {
       if (
-        this.trainingForm.value['is_ha11'] == true &&
-        this.trainingForm.value['is_ha14'] == true &&
-        this.trainingForm.value['is_ha16'] == true &&
-        this.trainingForm.value['is_kp11'] == true &&
-        this.trainingForm.value['is_kp14'] == true &&
-        this.trainingForm.value['is_na01'] == true &&
-        this.trainingForm.value['is_na11'] == true &&
-        this.trainingForm.value['is_na14'] == true &&
-        this.trainingForm.value['is_ra01'] == true &&
-        this.trainingForm.value['is_ra03'] == true &&
-        this.trainingForm.value['is_ua11'] == true &&
-        this.trainingForm.value['is_ua14'] == true &&
-        this.trainingForm.value['is_vu06'] == true &&
-        this.trainingForm.value['is_vu07'] == true 
+        this.trainingForm.value['is_ha11'] === true &&
+        this.trainingForm.value['is_ha14'] === true &&
+        this.trainingForm.value['is_ha16'] === true &&
+        this.trainingForm.value['is_kp11'] === true &&
+        this.trainingForm.value['is_kp14'] === true &&
+        this.trainingForm.value['is_na01'] === true &&
+        this.trainingForm.value['is_na11'] === true &&
+        this.trainingForm.value['is_na14'] === true &&
+        this.trainingForm.value['is_ra01'] === true &&
+        this.trainingForm.value['is_ra03'] === true &&
+        this.trainingForm.value['is_ua11'] === true &&
+        this.trainingForm.value['is_ua14'] === true &&
+        this.trainingForm.value['is_vu06'] === true &&
+        this.trainingForm.value['is_vu07'] === true 
       ) {
         this.trainingForm.controls['is_group_KP_D'].patchValue(true)
         this.selectedGrp.push('is_group_KP_D')
@@ -2516,30 +2689,30 @@ export class TrainingAddComponent implements OnInit {
     }
     else if (Number(grade) >= 17 && Number(grade) <= 26) {
       if (
-        this.trainingForm.value['is_ba19'] == true &&
-        this.trainingForm.value['is_ga29'] == true &&
-        this.trainingForm.value['is_ft19'] == true &&
-        this.trainingForm.value['is_ga17'] == true &&
-        this.trainingForm.value['is_ga19'] == true &&
-        this.trainingForm.value['is_ga22'] == true &&
-        this.trainingForm.value['is_ga26'] == true &&
-        this.trainingForm.value['is_ha19'] == true &&
-        this.trainingForm.value['is_ha22'] == true &&
-        this.trainingForm.value['is_ja19'] == true &&
-        this.trainingForm.value['is_ja22'] == true &&
-        this.trainingForm.value['is_kp19'] == true &&
-        this.trainingForm.value['is_kp22'] == true &&
-        this.trainingForm.value['is_na17'] == true &&
-        this.trainingForm.value['is_na19'] == true &&
-        this.trainingForm.value['is_na22'] == true &&
-        this.trainingForm.value['is_na26'] == true &&
-        this.trainingForm.value['is_ua17'] == true &&
-        this.trainingForm.value['is_ua19'] == true &&
-        this.trainingForm.value['is_ua24'] == true &&
-        this.trainingForm.value['is_wa17'] == true &&
-        this.trainingForm.value['is_wa19'] == true &&
-        this.trainingForm.value['is_wa22'] == true &&
-        this.trainingForm.value['is_wa26'] == true
+        this.trainingForm.value['is_ba19'] === true &&
+        this.trainingForm.value['is_ga29'] === true &&
+        this.trainingForm.value['is_ft19'] === true &&
+        this.trainingForm.value['is_ga17'] === true &&
+        this.trainingForm.value['is_ga19'] === true &&
+        this.trainingForm.value['is_ga22'] === true &&
+        this.trainingForm.value['is_ga26'] === true &&
+        this.trainingForm.value['is_ha19'] === true &&
+        this.trainingForm.value['is_ha22'] === true &&
+        this.trainingForm.value['is_ja19'] === true &&
+        this.trainingForm.value['is_ja22'] === true &&
+        this.trainingForm.value['is_kp19'] === true &&
+        this.trainingForm.value['is_kp22'] === true &&
+        this.trainingForm.value['is_na17'] === true &&
+        this.trainingForm.value['is_na19'] === true &&
+        this.trainingForm.value['is_na22'] === true &&
+        this.trainingForm.value['is_na26'] === true &&
+        this.trainingForm.value['is_ua17'] === true &&
+        this.trainingForm.value['is_ua19'] === true &&
+        this.trainingForm.value['is_ua24'] === true &&
+        this.trainingForm.value['is_wa17'] === true &&
+        this.trainingForm.value['is_wa19'] === true &&
+        this.trainingForm.value['is_wa22'] === true &&
+        this.trainingForm.value['is_wa26'] === true
       ) {
         this.trainingForm.controls['is_group_KP_C'].patchValue(true)
         this.selectedGrp.push('is_group_KP_C')
@@ -2547,28 +2720,28 @@ export class TrainingAddComponent implements OnInit {
     }
     else if (Number(grade) >= 27 && Number(grade) <= 40) {
       if (
-        this.trainingForm.value['is_fa32'] == true &&
-        this.trainingForm.value['is_ga29'] == true &&
-        this.trainingForm.value['is_ga32'] == true &&
-        this.trainingForm.value['is_ja29'] == true &&
-        this.trainingForm.value['is_ja36'] == true &&
-        this.trainingForm.value['is_ja38'] == true &&
-        this.trainingForm.value['is_ja40'] == true &&
-        this.trainingForm.value['is_kp29'] == true &&
-        this.trainingForm.value['is_kp32'] == true &&
-        this.trainingForm.value['is_la29'] == true &&
-        this.trainingForm.value['is_na26'] == true &&
-        this.trainingForm.value['is_na29'] == true &&
-        this.trainingForm.value['is_na30'] == true &&
-        this.trainingForm.value['is_na32'] == true &&
-        this.trainingForm.value['is_na36'] == true &&
-        this.trainingForm.value['is_ua29'] == true &&
-        this.trainingForm.value['is_ua32'] == true &&
-        this.trainingForm.value['is_ua36'] == true &&
-        this.trainingForm.value['is_wa28'] == true &&
-        this.trainingForm.value['is_wa29'] == true &&
-        this.trainingForm.value['is_wa32'] == true &&
-        this.trainingForm.value['is_wa36'] == true
+        this.trainingForm.value['is_fa32'] === true &&
+        this.trainingForm.value['is_ga29'] === true &&
+        this.trainingForm.value['is_ga32'] === true &&
+        this.trainingForm.value['is_ja29'] === true &&
+        this.trainingForm.value['is_ja36'] === true &&
+        this.trainingForm.value['is_ja38'] === true &&
+        this.trainingForm.value['is_ja40'] === true &&
+        this.trainingForm.value['is_kp29'] === true &&
+        this.trainingForm.value['is_kp32'] === true &&
+        this.trainingForm.value['is_la29'] === true &&
+        this.trainingForm.value['is_na26'] === true &&
+        this.trainingForm.value['is_na29'] === true &&
+        this.trainingForm.value['is_na30'] === true &&
+        this.trainingForm.value['is_na32'] === true &&
+        this.trainingForm.value['is_na36'] === true &&
+        this.trainingForm.value['is_ua29'] === true &&
+        this.trainingForm.value['is_ua32'] === true &&
+        this.trainingForm.value['is_ua36'] === true &&
+        this.trainingForm.value['is_wa28'] === true &&
+        this.trainingForm.value['is_wa29'] === true &&
+        this.trainingForm.value['is_wa32'] === true &&
+        this.trainingForm.value['is_wa36'] === true
       ) {
         this.trainingForm.controls['is_group_KP_B'].patchValue(true)
         this.selectedGrp.push('is_group_KP_B')
@@ -2576,37 +2749,37 @@ export class TrainingAddComponent implements OnInit {
     }
     else if (Number(grade) >= 41) {
       if (        
-        this.trainingForm.value['is_fa41'] == true &&
-        this.trainingForm.value['is_fa44'] == true &&
-        this.trainingForm.value['is_fa48'] == true &&
-        this.trainingForm.value['is_ga41'] == true &&
-        this.trainingForm.value['is_gv41'] == true &&
-        this.trainingForm.value['is_ja41'] == true &&
-        this.trainingForm.value['is_ja44'] == true &&
-        this.trainingForm.value['is_ja48'] == true &&
-        this.trainingForm.value['is_ja52'] == true &&
-        this.trainingForm.value['is_ja54'] == true &&
-        this.trainingForm.value['is_kp41'] == true &&
-        this.trainingForm.value['is_la41'] == true &&
-        this.trainingForm.value['is_la44'] == true &&
-        this.trainingForm.value['is_la52'] == true &&
-        this.trainingForm.value['is_la54'] == true &&
-        this.trainingForm.value['is_na41'] == true &&
-        this.trainingForm.value['is_na44'] == true &&
-        this.trainingForm.value['is_na48'] == true &&
-        this.trainingForm.value['is_na52'] == true &&
-        this.trainingForm.value['is_na54'] == true &&
-        this.trainingForm.value['is_ua41'] == true &&
-        this.trainingForm.value['is_ud43'] == true &&
-        this.trainingForm.value['is_ud48'] == true &&
-        this.trainingForm.value['is_ud52'] == true &&
-        this.trainingForm.value['is_wa41'] == true &&
-        this.trainingForm.value['is_wa44'] == true &&
-        this.trainingForm.value['is_wa48'] == true &&
-        this.trainingForm.value['is_wa52'] == true &&
-        this.trainingForm.value['is_wa54'] == true &&
-        this.trainingForm.value['is_waa41'] == true &&
-        this.trainingForm.value['is_waa44'] == true
+        this.trainingForm.value['is_fa41'] === true &&
+        this.trainingForm.value['is_fa44'] === true &&
+        this.trainingForm.value['is_fa48'] === true &&
+        this.trainingForm.value['is_ga41'] === true &&
+        this.trainingForm.value['is_gv41'] === true &&
+        this.trainingForm.value['is_ja41'] === true &&
+        this.trainingForm.value['is_ja44'] === true &&
+        this.trainingForm.value['is_ja48'] === true &&
+        this.trainingForm.value['is_ja52'] === true &&
+        this.trainingForm.value['is_ja54'] === true &&
+        this.trainingForm.value['is_kp41'] === true &&
+        this.trainingForm.value['is_la41'] === true &&
+        this.trainingForm.value['is_la44'] === true &&
+        this.trainingForm.value['is_la52'] === true &&
+        this.trainingForm.value['is_la54'] === true &&
+        this.trainingForm.value['is_na41'] === true &&
+        this.trainingForm.value['is_na44'] === true &&
+        this.trainingForm.value['is_na48'] === true &&
+        this.trainingForm.value['is_na52'] === true &&
+        this.trainingForm.value['is_na54'] === true &&
+        this.trainingForm.value['is_ua41'] === true &&
+        this.trainingForm.value['is_ud43'] === true &&
+        this.trainingForm.value['is_ud48'] === true &&
+        this.trainingForm.value['is_ud52'] === true &&
+        this.trainingForm.value['is_wa41'] === true &&
+        this.trainingForm.value['is_wa44'] === true &&
+        this.trainingForm.value['is_wa48'] === true &&
+        this.trainingForm.value['is_wa52'] === true &&
+        this.trainingForm.value['is_wa54'] === true &&
+        this.trainingForm.value['is_waa41'] === true &&
+        this.trainingForm.value['is_waa44'] === true
       ) {
         this.trainingForm.controls['is_group_KP_A'].patchValue(true)
         this.selectedGrp.push('is_group_KP_A')

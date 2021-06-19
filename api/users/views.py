@@ -62,7 +62,7 @@ class CustomUserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated] #permission_classes = [IsAuthenticated]
+        permission_classes = [AllowAny] #permission_classes = [IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -121,6 +121,15 @@ class CustomUserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                     break
 
         return Response('Ok')
+    
+    @action(methods=['POST'], detail=True)
+    def change_password(self, request, pk=None, *args, **kwargs):
+        received_data = json.loads(request.body)
+        user = CustomUser.objects.filter(id=pk).first()
+        user.set_password(received_data['password'])
+        user.save()
+
+        return Response('Ok')    
     
 
     @action(methods=['GET'], detail=False)

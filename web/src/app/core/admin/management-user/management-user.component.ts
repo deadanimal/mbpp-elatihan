@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Department, Section, ServiceStatus, UserType } from 'src/app/shared/code/user';
+import { CustomValidators } from 'src/app/shared/validators/custom/custom-validators';
 
 import { forkJoin } from 'rxjs';
 import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
@@ -43,6 +44,21 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
 
   // Form
   userForm: FormGroup
+  passwordForm: FormGroup
+  passwordFormMessages = {
+    'new_password1': [
+      { type: 'required', message: 'Kata laluan diperlukan' },
+      { type: 'minlength', message: 'Kata laluan mesti mengandungi sekurang-kurangnya 8 aksara' },
+      { type: 'hasNumber', message: 'Kata laluan mesti mengandungi sekurang-kurangnya 1 digit' },
+      // { type: 'hasCapitalCase', message: 'Kata laluan mesti mengandungi sekurang-kurangnya 1 huruf besar' },
+      // { type: 'hasSmallCase', message: 'Kata laluan mesti mengandungi sekurang-kurangnya 1 huruf kecil' }
+    ],
+    'new_password2': [
+      { type: 'required', message: 'Ulang kata laluan diperlukan' },
+      { type: 'NoPassswordMatch', message: 'Kata laluan tidak sepadan' }
+    ]
+  }
+  security  
 
   // Table
   tableEntries: number = 5
@@ -160,6 +176,26 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
         Validators.required
       ]))
     })
+
+    this.passwordForm = this.fb.group({
+      new_password1: new FormControl(null, Validators.compose([
+        Validators.required,
+        Validators.minLength(8),
+        CustomValidators.patternValidator(/\d/, {
+          hasNumber: true
+        }),
+        // CustomValidators.patternValidator(/[A-Z]/, {
+        //   hasCapitalCase: true
+        // }),
+        // // check whether the entered password has a lower case letter
+        // CustomValidators.patternValidator(/[a-z]/, {
+        //   hasSmallCase: true
+        // })
+      ])),
+      new_password2: new FormControl(null, Validators.compose([
+        Validators.required
+      ]))
+    }, { validator: CustomValidators.passwordMatchValidator })
   }
 
   getCharts() {
@@ -417,6 +453,17 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
 
     /* save to file */
     xlsx.writeFile(wb, fileName);
+  }
+
+  changePassword() {
+    console.log(this.selectedUser.id)
+    console.log(this.passwordForm.value)
+    this.userService.changePassword(this.selectedUser.id, this.passwordForm.value['new_password1']).subscribe(
+      (res)=> {
+        console.log(res)
+      }
+    )
+    this.closeModal()
   }
 
 
