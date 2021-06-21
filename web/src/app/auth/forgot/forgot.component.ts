@@ -29,6 +29,7 @@ export class ForgotComponent implements OnInit {
 
   // Form
   focusEmail;
+  currentDate: Date = new Date();
   userDetail = [];
   answerDetail = [];
   questionDetail = [];
