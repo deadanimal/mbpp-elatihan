@@ -18,6 +18,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 from django.shortcuts import render
 from django.db.models import Q
 from django.http import JsonResponse
+from django.core.mail import send_mail
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -215,7 +216,7 @@ class SecurityAnswerViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -239,6 +240,17 @@ class SecurityAnswerViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         serializer = SecurityAnswerSerializer(answer_)
         return Response(serializer.data)
+    
+    @action(methods=['POST'], detail=False)
+    def sending_email(self, request, *args, **kwargs):
+        nric = request.username
+        print (nric)
+        send_mail('Reset kata laluan pengguna', 'Terdapat pengguna sistem ingin memohan untuk pihak admin menukarkan kata laluan yang sedia ada kepada kata laluan umum.', 'reset-katalaluan-pengguna@mbpp.com', ['raziman@pipeline.com.my'], fail_silently=False)
+        # email = self.request.data['email']
+        # if email_template:
+        #     subject = 'Pemohonan untuk reset kata laluan bagi sistem MBPP eLatihan'
+        #     body = ''
+        
     
     @action(methods=['GET'], detail=False)
     def checker(self, request, *args, **kwargs):

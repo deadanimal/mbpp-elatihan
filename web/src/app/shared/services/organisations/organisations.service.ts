@@ -91,4 +91,12 @@ export class OrganisationsService {
     )
   }
 
+  sendingResetEmail(body): Observable<any> {
+    return this.http.post<any>(this.urlOrganisations + 'sending_email/', body).pipe(
+      tap((res) => {
+        console.log("send_email: ", res);
+      })
+    );
+  }
+
 }

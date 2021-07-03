@@ -1,3 +1,4 @@
+import { UsersService } from './../../shared/services/users/users.service';
 import { Component, OnInit, TemplateRef } from "@angular/core";
 import {
   FormGroup,
@@ -14,6 +15,9 @@ import { SecurityService } from "src/app/shared/services/security/security.servi
 import Swal from "sweetalert2";
 import { ViewChild } from "@angular/core";
 import { CustomValidators } from "src/app/shared/validators/custom/custom-validators";
+import { User } from 'src/app/shared/services/users/users.model';
+import { OrganisationsService } from 'src/app/shared/services/organisations/organisations.service';
+
 
 @Component({
   selector: "app-forgot",
@@ -28,6 +32,9 @@ export class ForgotComponent implements OnInit {
   @ViewChild("ResetPassword") modalRef2: any;
 
   // Form
+  users: User[] = []
+  selectedUser: User
+
   focusEmail;
   currentDate: Date = new Date();
   userDetail = [];
@@ -80,7 +87,9 @@ export class ForgotComponent implements OnInit {
     private loadingBar: LoadingBarService,
     private router: Router,
     private modalService: BsModalService,
-    private securityService: SecurityService
+    private securityService: SecurityService,
+    private organisationsService:OrganisationsService,
+    private userService: UsersService
   ) {}
 
   ngOnInit() {
@@ -131,13 +140,13 @@ export class ForgotComponent implements OnInit {
     this.successMessage();
   }
 
-  token(){
-    this.authService.obtainToken(this.resetForm.value).subscribe(
-      (res)=>{
-        console.log("dalam refresh token ")
-      }
-    )
-  }
+  // token(){
+  //   this.authService.obtainToken(this.resetForm.value).subscribe(
+  //     (res)=>{
+  //       console.log("dalam refresh token ")
+  //     }
+  //   )
+  // }
 
   openModal(modalRef: TemplateRef<any>) {
     this.modal = this.modalService.show(modalRef, this.modalConfig);
@@ -151,19 +160,30 @@ export class ForgotComponent implements OnInit {
     this.modal.hide();
     this.resetForm.reset();
     this.SecurityQuestionForm.reset();
+    this.resetForm.reset();
   }
 
   closeModal2() {
     this.modal.hide();
   }
 
-  GetUserID() {
+  reset_password() {
     if (this.resetForm.value.username == null){
       this.NoInputMessage()
     }
     else {
       let id = "username=" + this.resetForm.value.username;
-      this.authService.filter(id).subscribe(
+      console.log("ic = ",this.resetForm.value.username)
+      // let reset = this.resetForm.value.username
+      // this.organisationsService.sendingResetEmail(reset).subscribe(
+      //   (res) => {
+      //     console.log(res)
+      //   },
+      //   (err) => {
+      //     console.log(err)
+      //   }
+      // )
+      this.userService.filter(id).subscribe(
         (res) => {
           this.userDetail = res
           console.log(this.userDetail[0].id)
@@ -224,30 +244,42 @@ export class ForgotComponent implements OnInit {
     });
   }
 
-  changePassword() {
-    this.loadingBar.start();
-    console.log(this.passwordForm.value);
-    this.authService.changePassword(this.passwordForm.value).subscribe(
-      () => {
-        this.loadingBar.complete();
-      },
-      () => {
-        this.loadingBar.complete();
-        let title = "Ralat";
-        let message =
-          "Kata laluan tidak berjaya dikemaskini. Sila cuba sekali lagi";
-        this.notifyService.openToastrError(title, message);
-      },
-      () => {
-        let title = "Berjaya";
-        let message =
-          "Kata laluan berjaya dikemaskini. Sila log masuk semula menggunakan kata laluan baru";
-        this.notifyService.openToastr(title, message);
-        this.closeModal2();
-        this.navigatePage("/auth/login");
+  changePasswordNew() {
+    console.log(this.userDetail[0].id)
+    console.log(this.passwordForm.value)
+    this.userService.changePassword(this.userDetail[0].id, this.passwordForm.value['new_password1']).subscribe(
+      (res)=> {
+        console.log(res)
       }
-    );
+    )
+    // this.successChangePassword()
+    this.closeModal()
   }
+
+  // changePassword() {
+  //   this.loadingBar.start();
+  //   console.log(this.passwordForm.value);
+  //   this.authService.changePassword(this.passwordForm.value).subscribe(
+  //     () => {
+  //       this.loadingBar.complete();
+  //     },
+  //     () => {
+  //       this.loadingBar.complete();
+  //       let title = "Ralat";
+  //       let message =
+  //         "Kata laluan tidak berjaya dikemaskini. Sila cuba sekali lagi";
+  //       this.notifyService.openToastrError(title, message);
+  //     },
+  //     () => {
+  //       let title = "Berjaya";
+  //       let message =
+  //         "Kata laluan berjaya dikemaskini. Sila log masuk semula menggunakan kata laluan baru";
+  //       this.notifyService.openToastr(title, message);
+  //       this.closeModal2();
+  //       this.navigatePage("/auth/login");
+  //     }
+  //   );
+  // }
 
   navigatePage(path: string) {
     return this.router.navigate([path]);
@@ -276,4 +308,5 @@ export class ForgotComponent implements OnInit {
       timer: 3000,
     });
   }
+  
 }

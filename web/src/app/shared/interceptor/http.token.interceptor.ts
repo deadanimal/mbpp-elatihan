@@ -63,7 +63,8 @@ export class HttpTokenInterceptor implements HttpInterceptor {
             // console.log('Is obtain? ', req.url.includes('auth/obtain'))
             this.jwtService.destroyToken()
         }
-
+        console.log(this.router.url)
+        console.log(req.url)
         if (
             this.router.url != '/home' &&
             req.url.split('v1')[1] != '/security-questions/'

@@ -1,5 +1,6 @@
 import json
 import time
+import requests
 
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -13,6 +14,7 @@ from rest_framework import viewsets, status
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from django_filters.rest_framework import DjangoFilterBackend
+from django.core.mail import send_mail
 
 from .models import (
     Organisation
@@ -30,12 +32,12 @@ class OrganisationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[IsAuthenticated]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -53,4 +55,13 @@ class OrganisationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     #     serializer = OrganisationSerializer(organisation)
     #     return Response(serializer.data)
+    
+    action(methods=['POST'], detail=False)
+    def sending_email(self, request, *args, **kwargs):
+        
+        nric = request.username
+        print (nric)
+        send_mail('Reset kata laluan pengguna', 'Terdapat pengguna sistem ingin memohan untuk pihak admin menukarkan kata laluan yang sedia ada kepada kata laluan umum.', 'reset-katalaluan-pengguna@mbpp.com', ['raziman@pipeline.com.my'], fail_silently=False)
+    
+    
     

@@ -395,10 +395,42 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
     })
   }
 
+  confirmChangePassword() {
+    // console.log('Wee', this.examForm.value)
+    swal.fire({
+      title: 'Pengesahan',
+      text: 'Anda pasti untuk mengemaskini kata laluan pengguna ini?',
+      type: 'info',
+      buttonsStyling: false,
+      showCancelButton: true,
+      confirmButtonClass: 'btn btn-info',
+      confirmButtonText: 'Pasti',
+      cancelButtonClass: 'btn btn-outline-info',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.value) {
+        this.changePassword()
+      }
+    })
+  }
+
   success() {
     swal.fire({
       title: 'Berjaya',
       text: 'Pengguna berjaya dikemaskini',
+      type: 'success',
+      buttonsStyling: false,
+      showCancelButton: true,
+      showConfirmButton: false,
+      cancelButtonClass: 'btn btn-outline-success',
+      cancelButtonText: 'Tutup'
+    })
+  }
+
+  successChangePassword() {
+    swal.fire({
+      title: 'Berjaya',
+      text: 'Kata laluan pengguna berjaya dikemaskini',
       type: 'success',
       buttonsStyling: false,
       showCancelButton: true,
@@ -463,6 +495,7 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
         console.log(res)
       }
     )
+    this.successChangePassword()
     this.closeModal()
   }
 

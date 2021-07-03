@@ -28,8 +28,8 @@
               <h2 class="text-black mb-0">Reset Kata Laluan</h2>
             </div>
 
-            <div>
-              <p> Sila hubungi Puan Afiza di afiza@mbpp.gov.my atau 03-12345678 untuk menukar kata laluan</p>
+            <!--<div>
+              <p> Sila hubungi accreset@mbpp.gov.my untuk menukar kata laluan</p>
                 <button
                   type="button"
                   class="btn btn-outline-warm-blue my-4 btn-block"
@@ -37,9 +37,9 @@
                 >
                   Kembali ke Log Masuk
                 </button>              
-            </div>
+            </div>-->
 
-            <!--<div *ngIf="!isFirstLogin">
+            <div *ngIf="!isFirstLogin">
               <form [formGroup]="resetForm">
                 <div
                   class="form-group mb-3"
@@ -53,7 +53,7 @@
                     </div>
                     <input
                       class="form-control"
-                      placeholder="NRIC"
+                      placeholder="Sila masukkan no. kad pengenalan anda"
                       formControlName="username"
                       (focus)="focusUsername = true"
                       (blur)="focusUsername = false"
@@ -81,7 +81,7 @@
                 <button
                   type="button"
                   class="btn btn-primary my-4 btn-block"
-                  (click)="GetUserID()"
+                  (click)="reset_password()"
                 >
                   Reset Kata Laluan
                 </button>
@@ -93,7 +93,7 @@
                   Kembali ke Log Masuk
                 </button>
               </div>
-            </div>-->
+            </div>
           </div>
         </div>
       </div>
@@ -243,7 +243,7 @@
   </div>
 
   <div class="modal-footer">
-    <button class="btn btn-success" type="button" (click)="changePassword()">
+    <button class="btn btn-success" type="button" (click)="changePasswordNew()">
       Kemaskini
     </button>
 

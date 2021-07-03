@@ -106,4 +106,12 @@ export class UsersService {
     )    
   }
 
+  sendingResetEmail(body): Observable<any> {
+    return this.http.post<any>(this.urlUser + 'send_email/', body).pipe(
+      tap((res) => {
+        console.log("send_email: ", res);
+      })
+    );
+  }
+
 }

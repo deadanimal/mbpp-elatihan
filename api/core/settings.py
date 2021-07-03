@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django_rest_passwordreset',
 
     'evaluations',
     'exams',
@@ -265,3 +266,15 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_BEAT_SCHEDULE = {}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SENDGRID_API_KEY = config('SENDGRID_API_KEY')
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'  # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = 'test@mcmc.gov.my'

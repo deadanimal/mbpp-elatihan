@@ -160,4 +160,5 @@ urlpatterns = [
     url('auth/obtain/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     url('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  
     url('auth/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    url('api/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
 ]
