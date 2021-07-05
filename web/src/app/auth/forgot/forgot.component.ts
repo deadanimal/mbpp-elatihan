@@ -210,7 +210,7 @@ export class ForgotComponent implements OnInit {
     this.securityService.filterAnswer(answerID).subscribe(
       (res) => {
         this.answerDetail = res;
-        console.log(this.answerDetail[0].answer);
+        // console.log(this.answerDetail[0].answer);
       },
       (err) => {
         console.log("error", err);
@@ -240,7 +240,7 @@ export class ForgotComponent implements OnInit {
     this.securityService.filterQuestion(questionID).subscribe((res) => {
       this.questionDetail = res;
       this.SecurityQuestionForm.patchValue(res);
-      console.log(this.questionDetail[0].question);
+      // console.log(this.questionDetail[0].question);
     });
   }
 
