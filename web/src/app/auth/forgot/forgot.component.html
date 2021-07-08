@@ -39,60 +39,58 @@
                 </button>              
             </div>-->
 
-            <div *ngIf="!isFirstLogin">
-              <form [formGroup]="resetForm">
-                <div
-                  class="form-group mb-3"
-                  [ngClass]="{ focused: focusUsername === true }"
-                >
-                  <div class="input-group input-group-alternative">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text bg-primary">
-                        <i class="fas fa-envelope text-white"></i>
-                      </span>
-                    </div>
-                    <input
-                      class="form-control"
-                      placeholder="Sila masukkan no. kad pengenalan anda"
-                      formControlName="username"
-                      (focus)="focusUsername = true"
-                      (blur)="focusUsername = false"
-                    />
+            <form [formGroup]="resetForm">
+              <div
+                class="form-group mb-3"
+                [ngClass]="{ focused: focusUsername === true }"
+              >
+                <div class="input-group input-group-alternative">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-primary">
+                      <i class="fas fa-envelope text-white"></i>
+                    </span>
                   </div>
-                  <ng-container
-                    *ngFor="let message of loginFormMessages.username"
-                  >
-                    <div
-                      *ngIf="
-                        resetForm.get('username').hasError(message.type) &&
-                        (resetForm.get('username').dirty ||
-                          resetForm.get('username').touched)
-                      "
-                    >
-                      <p class="error-message">
-                        <span>{{ message.message }}</span>
-                      </p>
-                    </div>
-                  </ng-container>
+                  <input
+                    class="form-control"
+                    placeholder="Sila masukkan no. kad pengenalan anda"
+                    formControlName="username"
+                    (focus)="focusUsername = true"
+                    (blur)="focusUsername = false"
+                  />
                 </div>
-              </form>
-
-              <div class="text-center">
-                <button
-                  type="button"
-                  class="btn btn-primary my-4 btn-block"
-                  (click)="reset_password()"
+                <ng-container
+                  *ngFor="let message of loginFormMessages.username"
                 >
-                  Reset Kata Laluan
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-outline-warm-blue my-4 btn-block"
-                  (click)="navigatePage('/auth/login')"
-                >
-                  Kembali ke Log Masuk
-                </button>
+                  <div
+                    *ngIf="
+                      resetForm.get('username').hasError(message.type) &&
+                      (resetForm.get('username').dirty ||
+                        resetForm.get('username').touched)
+                    "
+                  >
+                    <p class="error-message">
+                      <span>{{ message.message }}</span>
+                    </p>
+                  </div>
+                </ng-container>
               </div>
+            </form>
+
+            <div class="text-center">
+              <button
+                type="button"
+                class="btn btn-primary my-4 btn-block"
+                (click)="reset_password()"
+              >
+                Reset Kata Laluan
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-warm-blue my-4 btn-block"
+                (click)="navigatePage('/auth/login')"
+              >
+                Kembali ke Log Masuk
+              </button>
             </div>
           </div>
         </div>
@@ -122,8 +120,7 @@
     <form [formGroup]="SecurityQuestionForm">
       <div class="row">
         <div class="col">
-        <b>{{this.questionDetail[0]?.question}}</b> <br>
-
+          <b>{{ this.questionDetail[0]?.question }}</b> <br />
         </div>
       </div>
       <div class="row">
