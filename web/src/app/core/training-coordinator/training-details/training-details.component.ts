@@ -81,6 +81,7 @@ export class TrainingDetailsComponent implements OnInit {
 
   // Form
   trainingForm: FormGroup
+  trainingFormData: FormData
   noteForm: FormGroup
   applyForm: FormGroup
 
@@ -195,6 +196,18 @@ export class TrainingDetailsComponent implements OnInit {
   fileName: any
   fileSizeInformation = null
   fileNameInformation = null
+
+  // File
+  fileSizeAttachment: any
+  fileNameAttachment: any
+  fileSizeInformationAttachment = null
+  fileNameInformationAttachment = null
+
+  // File
+  fileSizeAttachmentApproval: any
+  fileNameAttachmentApproval: any
+  fileSizeInformationAttachmentApproval = null
+  fileNameInformationAttachmentApproval = null
 
   // Predefined
   targetGrpOpts = [
@@ -647,8 +660,8 @@ export class TrainingDetailsComponent implements OnInit {
         this.trainingForm.controls['schedule_notes'].setValue(this.training['schedule_notes'])
         this.trainingForm.controls['cost'].setValue(this.training['cost'])
         this.trainingForm.controls['status'].setValue(this.training['status'])
-        // this.trainingForm.controls['attachment'].setValue(this.training['attachment'])
-        // this.trainingForm.controls['attachment_approval'].setValue(this.training['attachment_approval'])
+        this.trainingForm.controls['attachment'].setValue(this.training['attachment'])
+        this.trainingForm.controls['attachment_approval'].setValue(this.training['attachment_approval'])
 
         this.noteForm.controls['training'].setValue(this.training['id'])
 
@@ -674,7 +687,6 @@ export class TrainingDetailsComponent implements OnInit {
             id_index: key+1
           };
         });
-        console.log("tableApplicationsTemp ",this.tableApplicationsTemp)
         
         if (this.tableApplicationsTemp.length >= 1) {
           this.isApplicationsEmpty = false
@@ -1349,7 +1361,9 @@ export class TrainingDetailsComponent implements OnInit {
       ])),
       transportation: new FormControl(false, Validators.compose([
         Validators.required
-      ]))
+      ])),
+      attachment: new FormControl(""),
+      attachment_approval: new FormControl(""),
     })
 
     this.applyForm = this.formBuilder.group({
@@ -1363,9 +1377,6 @@ export class TrainingDetailsComponent implements OnInit {
         Validators.required
       ]))
     })
-
-    // attachment: new FormControl(null),
-    // attachment_approval: new FormControl(null),
 
     this.noteForm = this.formBuilder.group({
       training: new FormControl(null, Validators.compose([
@@ -1490,6 +1501,25 @@ export class TrainingDetailsComponent implements OnInit {
     this.trainingForm.controls['end_date'].setValue(endDate)
     // console.log('After ', this.trainingForm.value)
 
+    this.trainingFormData = new FormData()
+    Object.keys(this.trainingForm.controls).forEach(key => {
+      if (key == 'attachment' || key == 'attachment_approval') {
+        if (typeof this.trainingForm.get("attachment").value != "string") {
+          this.trainingFormData.append(
+            "attachment",
+            this.trainingForm.get("attachment").value
+          );
+        }
+        if (typeof this.trainingForm.get("attachment_approval").value != "string") {
+          this.trainingFormData.append(
+            "attachment_approval",
+            this.trainingForm.get("attachment_approval").value
+          );
+        }
+      }
+      else this.trainingFormData.append(key, this.trainingForm.value[key])
+    })
+
     swal.fire({
       title: 'Pengesahan',
       text: 'Anda pasti untuk mengemaskini latihan ini?',
@@ -1515,7 +1545,7 @@ export class TrainingDetailsComponent implements OnInit {
 
     this.loadingBar.complete()
 
-    this.trainingService.update(this.training['id'], this.trainingForm.value).subscribe(
+    this.trainingService.update(this.training['id'], this.trainingFormData).subscribe(
       () => {
         this.loadingBar.complete()
       },
@@ -2007,13 +2037,13 @@ export class TrainingDetailsComponent implements OnInit {
 
   onFileChange(event, type) {
     let reader = new FileReader();
-    this.fileSize = event.target.files[0].size
-    this.fileName = event.target.files[0].name
+    let fileSize = event.target.files[0].size
+    let fileName = event.target.files[0].name
     
     if (
       event.target.files && 
       event.target.files.length &&
-      this.fileSize < 5000000
+      fileSize < 5000000
     ) {
       const [file] = event.target.files;
       reader.readAsDataURL(file)
@@ -2023,10 +2053,27 @@ export class TrainingDetailsComponent implements OnInit {
       
       reader.onload = () => {
         // console.log(reader['result'])
+        console.log('event.target', event.target)
         if (type == 'notes') {
           this.noteForm.controls['note_file'].setValue(file)
+          this.fileSize = event.target.files[0].size
+          this.fileName = event.target.files[0].name
           this.fileSizeInformation = this.fileSize
           this.fileNameInformation = this.fileName
+        }
+        else if (type == 'attachment') {
+          this.trainingForm.controls['attachment'].setValue(file)
+          this.fileSizeAttachment = event.target.files[0].size
+          this.fileNameAttachment = event.target.files[0].name
+          this.fileSizeInformationAttachment = this.fileSize
+          this.fileNameInformationAttachment = this.fileName
+        }
+        else if (type == 'attachment_approval') {
+          this.trainingForm.controls['attachment_approval'].setValue(file)
+          this.fileSizeAttachmentApproval = event.target.files[0].size
+          this.fileNameAttachmentApproval = event.target.files[0].name
+          this.fileSizeInformationAttachmentApproval = this.fileSize
+          this.fileNameInformationAttachmentApproval = this.fileName
         }
         // console.log(this.registerForm.value)
         // console.log('he', this.registerForm.valid)
@@ -2040,14 +2087,32 @@ export class TrainingDetailsComponent implements OnInit {
 
   removeFile(type) {
     if (type == 'notes') {
-     this.fileSize = 0;
-     this.fileName = null;
-     this.noteForm.value['note_file'] = null;
-     this.fileSizeInformation = null
-     this.fileNameInformation = null
-     //this.cd.markForCheck();
-     //this.cd.detectChanges();
-   }
+      this.fileSize = 0;
+      this.fileName = null;
+      this.noteForm.value['note_file'] = null;
+      this.fileSizeInformation = null
+      this.fileNameInformation = null
+      //this.cd.markForCheck();
+      //this.cd.detectChanges();
+    }
+    else if (type == 'attachment') {
+      this.fileSizeAttachment = 0;
+      this.fileNameAttachment = null;
+      this.trainingForm.value['attachment'] = null;
+      this.fileSizeInformationAttachment = null
+      this.fileNameInformationAttachment = null
+      //this.cd.markForCheck();
+      //this.cd.detectChanges();
+    }
+    else if (type == 'attachment_approval') {
+      this.fileSizeAttachmentApproval = 0;
+      this.fileNameAttachmentApproval = null;
+      this.trainingForm.value['attachment_approval'] = null;
+      this.fileSizeInformationAttachmentApproval = null
+      this.fileNameInformationAttachmentApproval = null
+      //this.cd.markForCheck();
+      //this.cd.detectChanges();
+    }
     this.fileName = null
     this.fileSize = null
   }
@@ -2067,6 +2132,10 @@ export class TrainingDetailsComponent implements OnInit {
       window.open(url, '_blank');
     }
 
+  }
+
+  downloadAbsence(row) {
+    window.open(row, '_blank');
   }
 
   verifyAbsence(row) {

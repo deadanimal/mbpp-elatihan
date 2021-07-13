@@ -228,6 +228,34 @@ export class ExamsComponent implements OnInit {
     this.examForm.reset()
   }
 
+  confirm() {
+    let examDate = moment(this.dateValue).format('YYYY-MM-DDTHH:mm:ss.SSSSZ')
+    this.examForm.controls['date'].setValue(examDate)
+    // console.log(typeof this.examForm.value['document_copy'])
+    if (typeof this.examForm.value['document_copy'] == 'string') {
+      this.examForm.removeControl('document_copy')
+    }
+    if (this.examForm.value['note'] === '') {
+      this.examForm.controls['note'].patchValue(null)
+    }
+    // console.log('Wee', this.examForm.value)
+    swal.fire({
+      title: 'Pengesahan',
+      text: 'Anda pasti untuk mengemaskini peperiksaan ini?',
+      type: 'info',
+      buttonsStyling: false,
+      showCancelButton: true,
+      confirmButtonClass: 'btn btn-info',
+      confirmButtonText: 'Pasti',
+      cancelButtonClass: 'btn btn-outline-info',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.value) {
+        this.update()
+      }
+    })
+  }
+
   update() {
     this.loadingBar.start()
     let infoTitle = 'Sedang proses'
@@ -268,6 +296,96 @@ export class ExamsComponent implements OnInit {
       cancelButtonClass: 'btn btn-outline-success',
       cancelButtonText: 'Tutup'
     })
+  }
+
+  onFileChange(event) {
+    let reader = new FileReader();
+    this.fileSize = event.target.files[0].size
+    this.fileName = event.target.files[0].name
+    
+    if (
+      event.target.files && 
+      event.target.files.length &&
+      this.fileSize < 5000000
+    ) {
+      
+      
+      const [file] = event.target.files;
+      reader.readAsDataURL(file)
+      // readAsDataURL(file);
+      // console.log(event.target)
+      // console.log(reader)
+      
+      
+      reader.onload = () => {
+        // console.log(reader['result'])
+        this.examForm.controls['document_copy'].setValue(file)
+        this.fileSizeInformation = this.fileSize
+        this.fileNameInformation = this.fileName
+        // console.log(this.registerForm.value)
+        // console.log('he', this.registerForm.valid)
+        // console.log(this.isAgree)
+        // !registerForm.valid || !isAgree
+        // need to run CD since file load runs outside of zone
+        this.cd.markForCheck();
+      };
+    }
+  }
+
+  removeFile() {
+    this.fileSize = 0;
+    this.fileName = null;
+    this.examForm.controls['document_copy'].patchValue(null);
+    this.fileSizeInformation = null
+    this.fileNameInformation = null
+  }
+
+  onClassificationChange(value) {
+    this.examsTemp = []
+    if (value == 'FKW') {
+      this.examsOption.forEach(
+        (exam: Exam) => {
+          if (
+            exam['classification'] == 'FKW' &&
+            exam['active']
+          ) {
+            this.examsTemp.push(exam)
+            this.examForm.controls['exam'].setValue(this.examsTemp[0]['id'])
+          }
+        }
+      )
+    }
+    else if (value == 'PDP') {
+      this.examsOption.forEach(
+        (exam: Exam) => {
+          if (
+            exam['classification'] == 'PDP' &&
+            exam['active']
+          ) {
+            this.examsTemp.push(exam)
+            this.examForm.controls['exam'].setValue(this.examsTemp[0]['id'])
+          }
+        }
+      )
+    }
+    else if (value == 'PSL') {
+      this.examsOption.forEach(
+        (exam: Exam) => {
+          if (
+            exam['classification'] == 'PSL' &&
+            exam['active']
+          ) {
+            this.examsTemp.push(exam)
+            this.examForm.controls['exam'].setValue(this.examsTemp[0]['id'])
+          }
+        }
+      )
+    }
+  }
+
+  viewDocument() {
+    let url = this.selectedExam['document_copy']
+    window.open(url, '_blank');
   }
 
 }

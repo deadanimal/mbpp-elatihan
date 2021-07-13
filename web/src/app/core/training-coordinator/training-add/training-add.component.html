@@ -1,840 +1,1296 @@
 <ngx-loading-bar height="4px"></ngx-loading-bar>
 <div class="header pb-6">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-dark d-inline-block mb-0">Pengurusan  <span (click)="checkForm()">Latihan</span></h6>
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-dark d-inline-block mb-0">
+            Pengurusan <span (click)="checkForm()">Latihan</span>
+          </h6>
 
-                    <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
-                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                            <li class=" breadcrumb-item">
-                                <a href="javascript:void(0)"> <i class="fas fa-chalkboard-teacher text-dark"> </i> </a>
-                            </li>
-                        </ol>
-                    </nav>
-                </div>
-
-                <div class="col-lg-6 col-5 text-right">
-                    <a
-                        class="btn btn-sm btn-warm-blue text-white" 
-                        (click)="openModal(modalAddOrganisation)"
-                    > 
-                        Tambah Penganjur 
-                    </a>
-
-                    <a
-                        class="btn btn-sm btn-warm-blue text-white" 
-                        (click)="openModal(modalAddType)"
-                    > 
-                        Tambah Jenis Latihan 
-                    </a>
-				</div>
-            </div>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item">
+                <a href="javascript:void(0)">
+                  <i class="fas fa-chalkboard-teacher text-dark"> </i>
+                </a>
+              </li>
+            </ol>
+          </nav>
         </div>
+
+        <div class="col-lg-6 col-5 text-right">
+          <a
+            class="btn btn-sm btn-warm-blue text-white"
+            (click)="openModal(modalAddOrganisation)"
+          >
+            Tambah Penganjur
+          </a>
+
+          <a
+            class="btn btn-sm btn-warm-blue text-white"
+            (click)="openModal(modalAddType)"
+          >
+            Tambah Jenis Latihan
+          </a>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <div class="container-fluid mt--6">
-    <div class="row">
-        <div class="col">
-            <div class="card">
-                <div class="card-header bg-secondary">
-                    <h4 class="m-0">Tambah Latihan</h4>
-                </div>
-                <div class="card-body">
-                    <form [formGroup]="trainingForm">
-                        <mat-horizontal-stepper 
-                            [linear]="isLinear" 
-                            [labelPosition]="labelPosition"
-                            [disableRipple]="isDisableRipple"
-                            #stepper
-                        >
-                            <mat-step>
-                                <ng-template matStepLabel>Klasifikasi</ng-template>
-                                <h6 class="heading-small text-muted mb-4">Klasifikasi Latihan</h6>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Jenis Penganjur <span class="text-warning">*</span></label>
-                                            <!-- organiser_type -->
-                                            <select class="form-control custom-select" formControlName="organiser_type" (change)="onChangeOrganiserType($event.target.value)">
-                                                <option *ngFor="let choice of organiserChoices" value="{{choice.value}}">{{choice.text}}</option>
-                                            </select>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.organiser_type">
-                                                <div *ngIf="trainingForm.get('organiser_type').hasError(message.type) && (trainingForm.get('organiser_type').dirty || trainingForm.get('organiser_type').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Penganjur <span class="text-warning">*</span></label>
-                                            <!-- organiser -->
-                                            <select class="form-control custom-select" formControlName="organiser" (change)="onChangeOrganiser($event.target.value)">
-                                                <ng-container *ngFor="let organisation of organisations">
-                                                    <option *ngIf="organisation.active" value="{{organisation.id}}">{{organisation.shortname}} - {{organisation.name}}</option>
-                                                </ng-container>
-                                            </select>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.organiser">
-                                                <div *ngIf="trainingForm.get('organiser').hasError(message.type) && (trainingForm.get('organiser').dirty || trainingForm.get('organiser').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Jenis Latihan <span class="text-warning">*</span></label>
-                                            <!-- course_type -->
-                                            <select class="form-control custom-select" formControlName="training_type">
-                                                <ng-container *ngFor="let choice of trainingTypes">
-                                                    <option *ngIf="choice.active" value="{{choice.id}}">{{choice.name}}</option>
-                                                </ng-container>
-                                            </select>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.training_type">
-                                                <div *ngIf="trainingForm.get('training_type').hasError(message.type) && (trainingForm.get('training_type').dirty || trainingForm.get('training_type').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Kaedah Latihan <span class="text-warning">*</span></label>
-                                            <!-- course_type -->
-                                            <select class="form-control custom-select" formControlName="method">
-                                                <option *ngFor="let choice of methodChoices" value="{{choice.value}}">{{choice.text}}</option>
-                                            </select>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.method">
-                                                <div *ngIf="trainingForm.get('method').hasError(message.type) && (trainingForm.get('method').dirty || trainingForm.get('method').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Anjuran Latihan <span class="text-warning">*</span></label>
-                                            <!-- course_type -->
-                                            <select class="form-control custom-select" formControlName="country">
-                                                <option *ngFor="let choice of countryChoices" value="{{choice.value}}">{{choice.text}}</option>
-                                            </select>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.country">
-                                                <div *ngIf="trainingForm.get('country').hasError(message.type) && (trainingForm.get('country').dirty || trainingForm.get('country').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Domain <span class="text-warning">*</span></label>
-                                            <!-- course_type -->
-                                            <select class="form-control custom-select" formControlName="domain">
-                                                <ng-container *ngFor="let domain of domains">
-                                                    <option *ngIf="domain.active" value="{{domain.id}}">{{domain.name}}</option>
-                                                </ng-container>
-                                            </select>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.domain">
-                                                <div *ngIf="trainingForm.get('domain').hasError(message.type) && (trainingForm.get('domain').dirty || trainingForm.get('domain').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <hr class="my-4" />
-                                <h6 class="heading-small text-muted mb-4">Klasifikasi Sasaran</h6>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Jenis Sasaran <span class="text-warning">*</span></label>
-                                            <!-- target_group_type -->
-                                            <select class="form-control custom-select" formControlName="target_group_type" (change)="onChangeTargetType($event.target.value)">
-                                                <option *ngFor="let choice of targetGroupTypeChoices" value="{{choice.value}}">{{choice.text}}</option>
-                                            </select>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.target_group_type">
-                                                <div *ngIf="trainingForm.get('target_group_type').hasError(message.type) && (trainingForm.get('target_group_type').dirty || trainingForm.get('target_group_type').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group" [hidden]="isTargetLocked">
-                                    <label class="form-control-label">Kumpulan Sasaran <span class="text-warning">*</span></label>
-                                    <!-- target_group -->
-                                    <ng-select
-                                        [items]="targetGrpOpts"
-                                        [multiple]="true"
-                                        bindLabel="name"
-                                        [closeOnSelect]="false"
-                                        bindValue="form"
-                                        [(ngModel)]="selectedGrp"
-                                        [ngModelOptions]="{standalone: true}"
-                                        (add)="onAddTargetGrp($event)"
-                                        (clear)="onClearTargetGrp($event)"
-                                        (remove)="onRemoveTargetGrp($event)"
-                                    >
-                                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                                            <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"  [ngModelOptions]="{standalone: true}" /> {{item.name | uppercase}}
-                                        </ng-template>
-                                    </ng-select>
-                                    <!-- <small>{{selectedGrp | json}}</small> -->
-                                </div>
-
-                                <div class="form-group" [hidden]="isTargetLocked">
-                                    <label class="form-control-label">Jawatan Sasaran <span class="text-warning">*</span></label>
-                                    <!-- position -->
-                                    <ng-select
-                                        [items]="targetPosOpts"
-                                        [multiple]="true"
-                                        bindLabel="name"
-                                        [closeOnSelect]="false"
-                                        bindValue="form"
-                                        [(ngModel)]="selectedPos"
-                                        [ngModelOptions]="{standalone: true}"
-                                        (add)="onAddTargetPos($event)"
-                                        (clear)="onClearTargetPos($event)"
-                                        (remove)="onRemoveTargetPos($event)"
-                                    >
-                                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                                            <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"  [ngModelOptions]="{standalone: true}" /> {{item.name | uppercase}}
-                                        </ng-template>
-                                    </ng-select>
-                                    <!-- <small>{{selectedPos | json}}</small> -->
-                                </div>
-
-                                <div class="form-group" [hidden]="isTargetLocked">
-                                    <label class="form-control-label">Gred Sasaran <span class="text-warning">*</span></label>
-                                    <!-- schema -->
-                                    <ng-select
-                                        [items]="targetSchOpts"
-                                        [multiple]="true"
-                                        bindLabel="name"
-                                        [closeOnSelect]="false"
-                                        bindValue="form"
-                                        [(ngModel)]="selectedSch"
-                                        [ngModelOptions]="{standalone: true}"
-                                        (add)="onAddTargetSch($event)"
-                                        (clear)="onClearTargetSch($event)"
-                                        (remove)="onRemoveTargetSch($event)"
-                                    >
-                                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                                            <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"  [ngModelOptions]="{standalone: true}" /> {{item.name | uppercase}}
-                                        </ng-template>
-                                    </ng-select>
-                                    <!-- <small>{{selectedSch | json}}</small> -->
-                                </div>
-
-                                <div class="form-group" [hidden]="isTargetLocked">
-                                    <label class="form-control-label">Jabatan Sasaran <span class="text-warning">*</span></label>
-                                    <!-- department -->
-                                    <ng-select
-                                        [items]="targetDepOpts"
-                                        [multiple]="true"
-                                        bindLabel="name"
-                                        [closeOnSelect]="false"
-                                        bindValue="form"
-                                        [(ngModel)]="selectedDep"
-                                        [ngModelOptions]="{standalone: true}"
-                                        (add)="onAddTargetDep($event)"
-                                        (clear)="onClearTargetDep($event)"
-                                        (remove)="onRemoveTargetDep($event)"
-                                    >
-                                        <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
-                                            <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"  [ngModelOptions]="{standalone: true}" /> {{item.name | uppercase}}
-                                        </ng-template>
-                                    </ng-select>
-                                    <!-- <small>{{selectedDep | json}}</small> -->
-                                </div>
-
-                                <div>
-                                    <button class="btn btn-warm-blue" matStepperNext>Seterusnya</button>
-                                </div>
-                            </mat-step>
-
-                            <mat-step>
-                                <ng-template matStepLabel>Butiran</ng-template>
-                                <!-- <h6 class="heading-small text-muted mb-4"></h6> -->
-
-                                <div class="form-group">
-                                    <label class="form-control-label">Tajuk <span class="text-warning">*</span></label>
-                                    <input class="form-control" formControlName="title">
-
-                                    <ng-container *ngFor="let message of trainingFormMessages.title">
-                                        <div *ngIf="trainingForm.get('title').hasError(message.type) && (trainingForm.get('title').dirty || trainingForm.get('title').touched)">
-                                            <p class="error-message"><span>*{{ message.message }}</span></p>
-                                        </div>
-                                    </ng-container>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-control-label">Deskripsi <span class="text-warning">*</span></label>
-                                    <textarea class="form-control" formControlName="description"></textarea>
-
-                                    <ng-container *ngFor="let message of trainingFormMessages.description">
-                                        <div *ngIf="trainingForm.get('description').hasError(message.type) && (trainingForm.get('description').dirty || trainingForm.get('description').touched)">
-                                            <p class="error-message"><span>*{{ message.message }}</span></p>
-                                        </div>
-                                    </ng-container>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Jenis Teras <span class="text-warning">*</span></label>
-                                            <select 
-                                                class="form-control custom-select" 
-                                                [(ngModel)]="coresParentTemp" 
-                                                [ngModelOptions]="{standalone: true}" 
-                                                (change)="onChangeCoreParent($event.target.value)"
-                                            >
-                                                <option value="GN">GENERIK</option>
-                                                <option value="FN">FUNGSIONAL</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Teras <span class="text-warning">*</span></label>
-                                            <select class="form-control custom-select" formControlName="core">
-                                                <option *ngFor="let core of coresTemp" value="{{core.id}}">
-                                                    {{core.child}}
-                                                </option>
-                                            </select>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.core">
-                                                <div *ngIf="trainingForm.get('core').hasError(message.type) && (trainingForm.get('core').dirty || trainingForm.get('core').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Kod Kursus  <span class="text-warning">*akan dijana secara automatik</span></label>
-                                            <input class="form-control" [value]="nextCode" disabled>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Jumlah Peserta <span class="text-warning">*</span></label>
-                                            <input class="form-control" formControlName="max_participant" type="number">
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.max_participant">
-                                                <div *ngIf="trainingForm.get('max_participant').hasError(message.type) && (trainingForm.get('max_participant').dirty || trainingForm.get('max_participant').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Lokasi <span class="text-warning">*</span></label>
-                                            <input class="form-control" formControlName="venue">
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.venue">
-                                                <div *ngIf="trainingForm.get('venue').hasError(message.type) && (trainingForm.get('venue').dirty || trainingForm.get('venue').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Alamat Lokasi</label>
-                                            <input class="form-control" formControlName="address">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Anggaran Kos <span class="text-warning">*</span></label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text bg-secondary">
-                                                        RM
-                                                    </span>
-                                                </div>
-                                                <input class="form-control" formControlName="cost" type="number">
-                                            </div>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.cost">
-                                                <div *ngIf="trainingForm.get('cost').hasError(message.type) && (trainingForm.get('cost').dirty || trainingForm.get('cost').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <button class="btn btn-outline-warm-blue" matStepperPrevious>Sebelum</button>
-                                    <button class="btn btn-warm-blue" matStepperNext>Seterusnya</button>
-                                </div>
-                            </mat-step>
-
-                            <mat-step>
-                                <ng-template matStepLabel>Jadual</ng-template>
-                                <!-- <hr class="my-4" /> -->
-                                <h6 class="heading-small text-muted mb-4">Tarikh & Waktu</h6>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-12 ">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Tarikh Mula <span class="text-warning">*</span></label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text bg-secondary">
-                                                        <i class="far fa-calendar-alt"></i>
-                                                    </span>
-                                                </div>
-                                                <input 
-                                                    type="text"
-                                                    placeholder="12/12/2019"
-                                                    class="form-control"
-                                                    bsDatepicker
-                                                    formControlName="start_date"
-                                                    [bsValue]="dateStart"
-                                                    [bsConfig]="dateConfig"
-                                                >
-                                            </div>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.start_date">
-                                                <div *ngIf="trainingForm.get('start_date').hasError(message.type) && (trainingForm.get('start_date').dirty || trainingForm.get('start_date').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Waktu Mula <span class="text-warning">*</span></label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text bg-secondary">
-                                                        <i class="far fa-clock"></i>
-                                                    </span>
-                                                </div>
-                                                <input type="time" value="10:30:00" class="form-control" formControlName="start_time">
-                                            </div>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.start_time">
-                                                <div *ngIf="trainingForm.get('start_time').hasError(message.type) && (trainingForm.get('start_time').dirty || trainingForm.get('start_time').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-12 ">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Tarikh Tamat <span class="text-warning">*</span></label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text bg-secondary">
-                                                        <i class="far fa-calendar-alt"></i>
-                                                    </span>
-                                                </div>
-                                                <input 
-                                                    type="text"
-                                                    placeholder="12/12/2019"
-                                                    class="form-control"
-                                                    bsDatepicker
-                                                    formControlName="end_date"
-                                                    [bsValue]="dateEnd"
-                                                    [bsConfig]="dateConfig"
-                                                >
-                                            </div>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.end_date">
-                                                <div *ngIf="trainingForm.get('end_date').hasError(message.type) && (trainingForm.get('end_date').dirty || trainingForm.get('end_date').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Waktu Tamat <span class="text-warning">*</span></label>
-                                            <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text bg-secondary">
-                                                        <i class="far fa-clock"></i>
-                                                    </span>
-                                                </div>
-                                                <input type="time" value="10:30:00" class="form-control" formControlName="end_time">
-                                            </div>
-
-                                            <ng-container *ngFor="let message of trainingFormMessages.end_time">
-                                                <div *ngIf="trainingForm.get('end_time').hasError(message.type) && (trainingForm.get('end_time').dirty || trainingForm.get('end_time').touched)">
-                                                    <p class="error-message"><span>*{{ message.message }}</span></p>
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-control-label">Nota Jadual</label>
-                                    <quill-editor
-                                        #scheduleNotes 
-                                        formControlName="schedule_notes">
-                                    </quill-editor>
-                                </div>
-
-                                <hr class="my-4" />
-                                <h6 class="heading-small text-muted mb-4">Tambahan</h6>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Lampiran <span class="text-warning">*Format PDF sahaja, maksimum 5MB</span></label>
-                                            <div class="custom-file">
-                                                <input 
-                                                    type="file" 
-                                                    class="custom-file-input" 
-                                                    id="lampiran" 
-                                                    lang="en"
-                                                    (change)="onFileChange($event, 'attachment')" 
-                                                    accept=".pdf, image/*"
-                                                    size="5"
-                                                >
-                                                <label class="custom-file-label" for="lampiran">Sila muat naik lampiran berkenaan</label>
-                                              </div>
-
-                                              <ng-container *ngIf="trainingForm.value['attachment']">
-                                                <div>
-                                                    <i 
-                                                        class="fas fa-trash-alt text-warning mr-2"
-                                                        placement="top" 
-                                                        tooltip="Remove attachment"
-                                                        (click)="removeFile('attachment')"
-                                                    >
-                                                    </i>
-                                                    {{fileNameInformationAttachment}} [{{fileSizeInformationAttachment/1000000 | number: '1.2-2'}}MB]
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6 col-sm-12">
-                                        <div class="form-group">
-                                            <label class="form-control-label">Lampiran Kelulusan <span class="text-warning">*Format PDF sahaja, maksimum 5MB</span></label>
-                                            <div class="custom-file">
-                                                <input 
-                                                    type="file" 
-                                                    class="custom-file-input" 
-                                                    id="lampiran" 
-                                                    lang="en"
-                                                    (change)="onFileChange($event, 'attachment_approval')" 
-                                                    accept=".pdf, image/*"
-                                                    size="5"
-                                                >
-                                                <label class="custom-file-label" for="lampiran">Sila muat naik lampiran berkenaan</label>
-                                              </div>
-
-                                              <ng-container *ngIf="trainingForm.value['attachment_approval']">
-                                                <div>
-                                                    <i 
-                                                        class="fas fa-trash-alt text-warning mr-2"
-                                                        placement="top" 
-                                                        tooltip="Remove attachment"
-                                                        (click)="removeFile('attachment_approval')"
-                                                    >
-                                                    </i>
-                                                    {{fileNameInformationAttachmentApproval}} [{{fileSizeInformationAttachmentApproval/1000000 | number: '1.2-2'}}MB]
-                                                </div>
-                                            </ng-container>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-sm-12">
-                                        <label class="form-control-label">Pengangkutan <span class="text-warning">*</span></label>
-                                        <div class="form-group">
-                                            <div class="custom-control custom-radio custom-control-inline">
-                                                <input 
-                                                    type="radio" 
-                                                    id="transportationRadio1" 
-                                                    name="transportation"
-                                                    class="custom-control-input" 
-                                                    [value]="true" 
-                                                    formControlName="transportation"
-                                                >
-                                                <label class="custom-control-label" for="transportationRadio1">Ada</label>
-                                              </div>
-                                              <div class="custom-control custom-radio custom-control-inline">
-                                                <input 
-                                                    type="radio" 
-                                                    id="transportationRadio2" 
-                                                    name="transportation"
-                                                    class="custom-control-input" 
-                                                    [value]="false" 
-                                                    formControlName="transportation"
-                                                >
-                                                <label class="custom-control-label" for="transportationRadio2">Tiada</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-7"></div>
-                                    <div class="col-lg-6 col-5 text-right">
-                                        <a
-                                            class="btn btn-sm btn-warm-blue text-white" 
-                                            (click)="addSpeaker()"
-                                        > 
-                                            Tambah Penceramah 
-                                        </a>
-
-                                        <a
-                                            class="btn btn-sm btn-warm-blue text-white" 
-                                            (click)="addFacilitator()"
-                                        > 
-                                            Tambah Fasilitator 
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <form [formGroup]="trainerSpeakerForm">
-                                    <div formArrayName="trainerSpeakerFormArray">
-                                        <div 
-                                            [formGroupName]="i"
-                                            class="row"
-                                            *ngFor="let ind of trainerSpeakerForm.get('trainerSpeakerFormArray')['controls']; let i = index"
-                                        >
-                                            <div class="col-lg-5 col-sm-12">
-                                                <div class="form-group">
-                                                    <label class="form-control-label">Nama Penceramah </label>
-                                                    <input class="form-control" formControlName="name">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-5 col-sm-12">
-                                                <div class="form-group">
-                                                    <label class="form-control-label">No. Telefon </label>
-                                                    <input class="form-control" formControlName="phone">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-sm-12">
-                                                <button 
-                                                    *ngIf="i != 0"
-                                                    class="btn btn-warning btn-sm"
-                                                    (click)="removeSpeaker(i)"
-                                                    style="position: absolute; bottom: 1.5rem;"
-                                                >
-                                                    Buang
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-
-                                <form [formGroup]="trainerFacilitatorForm">
-                                    <div formArrayName="trainerFacilitatorFormArray">
-                                        <div 
-                                            [formGroupName]="i"
-                                            class="row"
-                                            *ngFor="let ind of trainerFacilitatorForm.get('trainerFacilitatorFormArray')['controls']; let i = index"
-                                        >
-                                            <div class="col-lg-5 col-sm-12">
-                                                <div class="form-group">
-                                                    <label class="form-control-label">Nama Fasilitator </label>
-                                                    <input class="form-control" formControlName="name">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-5 col-sm-12">
-                                                <div class="form-group">
-                                                    <label class="form-control-label">No. Telefon</label>
-                                                    <input class="form-control" formControlName="phone">
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-sm-12">
-                                                <button
-                                                    *ngIf="i != 0"
-                                                    class="btn btn-warning btn-sm"
-                                                    (click)="removeFacilitator(i)"
-                                                    style="position: absolute; bottom: 1.5rem;"
-                                                >
-                                                    Buang
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                                
-                                <div>
-                                    <div class="text-lead">
-                                        <span>*Wajib diisi</span>
-                                    </div>
-                                    <button class="btn btn-outline-warm-blue" matStepperPrevious>Sebelum</button>
-                                    <button 
-                                        class="btn btn-warm-blue" 
-                                        (click)="confirm()"
-                                        [disabled]="!trainingForm.valid"
-                                    >
-                                        Daftar
-                                    </button>
-                                </div>
-                            </mat-step>
-                        </mat-horizontal-stepper>
-                    </form>
-                </div>
-            </div>
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-header bg-secondary">
+          <h4 class="m-0">Tambah Latihan</h4>
         </div>
+        <div class="card-body">
+          <form [formGroup]="trainingForm">
+            <mat-horizontal-stepper
+              [linear]="isLinear"
+              [labelPosition]="labelPosition"
+              [disableRipple]="isDisableRipple"
+              #stepper
+            >
+              <mat-step>
+                <ng-template matStepLabel>Klasifikasi</ng-template>
+                <h6 class="heading-small text-muted mb-4">
+                  Klasifikasi Latihan
+                </h6>
+
+                <div class="row">
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Jenis Penganjur
+                        <span class="text-warning">*</span></label
+                      >
+                      <!-- organiser_type -->
+                      <select
+                        class="form-control custom-select"
+                        formControlName="organiser_type"
+                        (change)="onChangeOrganiserType($event.target.value)"
+                      >
+                        <option
+                          *ngFor="let choice of organiserChoices"
+                          value="{{ choice.value }}"
+                        >
+                          {{ choice.text }}
+                        </option>
+                      </select>
+
+                      <ng-container
+                        *ngFor="
+                          let message of trainingFormMessages.organiser_type
+                        "
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm
+                              .get('organiser_type')
+                              .hasError(message.type) &&
+                            (trainingForm.get('organiser_type').dirty ||
+                              trainingForm.get('organiser_type').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Penganjur <span class="text-warning">*</span></label
+                      >
+                      <!-- organiser -->
+                      <select
+                        class="form-control custom-select"
+                        formControlName="organiser"
+                        (change)="onChangeOrganiser($event.target.value)"
+                      >
+                        <ng-container
+                          *ngFor="let organisation of organisations"
+                        >
+                          <option
+                            *ngIf="organisation.active"
+                            value="{{ organisation.id }}"
+                          >
+                            {{ organisation.shortname }} -
+                            {{ organisation.name }}
+                          </option>
+                        </ng-container>
+                      </select>
+
+                      <ng-container
+                        *ngFor="let message of trainingFormMessages.organiser"
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm
+                              .get('organiser')
+                              .hasError(message.type) &&
+                            (trainingForm.get('organiser').dirty ||
+                              trainingForm.get('organiser').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Jenis Latihan
+                        <span class="text-warning">*</span></label
+                      >
+                      <!-- course_type -->
+                      <select
+                        class="form-control custom-select"
+                        formControlName="training_type"
+                      >
+                        <ng-container *ngFor="let choice of trainingTypes">
+                          <option *ngIf="choice.active" value="{{ choice.id }}">
+                            {{ choice.name }}
+                          </option>
+                        </ng-container>
+                      </select>
+
+                      <ng-container
+                        *ngFor="
+                          let message of trainingFormMessages.training_type
+                        "
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm
+                              .get('training_type')
+                              .hasError(message.type) &&
+                            (trainingForm.get('training_type').dirty ||
+                              trainingForm.get('training_type').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Kaedah Latihan
+                        <span class="text-warning">*</span></label
+                      >
+                      <!-- course_type -->
+                      <select
+                        class="form-control custom-select"
+                        formControlName="method"
+                      >
+                        <option
+                          *ngFor="let choice of methodChoices"
+                          value="{{ choice.value }}"
+                        >
+                          {{ choice.text }}
+                        </option>
+                      </select>
+
+                      <ng-container
+                        *ngFor="let message of trainingFormMessages.method"
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm.get('method').hasError(message.type) &&
+                            (trainingForm.get('method').dirty ||
+                              trainingForm.get('method').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Anjuran Latihan
+                        <span class="text-warning">*</span></label
+                      >
+                      <!-- course_type -->
+                      <select
+                        class="form-control custom-select"
+                        formControlName="country"
+                      >
+                        <option
+                          *ngFor="let choice of countryChoices"
+                          value="{{ choice.value }}"
+                        >
+                          {{ choice.text }}
+                        </option>
+                      </select>
+
+                      <ng-container
+                        *ngFor="let message of trainingFormMessages.country"
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm
+                              .get('country')
+                              .hasError(message.type) &&
+                            (trainingForm.get('country').dirty ||
+                              trainingForm.get('country').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Domain <span class="text-warning">*</span></label
+                      >
+                      <!-- course_type -->
+                      <select
+                        class="form-control custom-select"
+                        formControlName="domain"
+                      >
+                        <ng-container *ngFor="let domain of domains">
+                          <option *ngIf="domain.active" value="{{ domain.id }}">
+                            {{ domain.name }}
+                          </option>
+                        </ng-container>
+                      </select>
+
+                      <ng-container
+                        *ngFor="let message of trainingFormMessages.domain"
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm.get('domain').hasError(message.type) &&
+                            (trainingForm.get('domain').dirty ||
+                              trainingForm.get('domain').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <hr class="my-4" />
+                <h6 class="heading-small text-muted mb-4">
+                  Klasifikasi Sasaran
+                </h6>
+
+                <div class="row">
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Jenis Sasaran
+                        <span class="text-warning">*</span></label
+                      >
+                      <!-- target_group_type -->
+                      <select
+                        class="form-control custom-select"
+                        formControlName="target_group_type"
+                        (change)="onChangeTargetType($event.target.value)"
+                      >
+                        <option value="">Sila pilih</option>
+                        <option
+                          *ngFor="let choice of targetGroupTypeChoices"
+                          value="{{ choice.value }}"
+                        >
+                          {{ choice.text }}
+                        </option>
+                      </select>
+
+                      <ng-container
+                        *ngFor="
+                          let message of trainingFormMessages.target_group_type
+                        "
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm
+                              .get('target_group_type')
+                              .hasError(message.type) &&
+                            (trainingForm.get('target_group_type').dirty ||
+                              trainingForm.get('target_group_type').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" [hidden]="isTargetLocked">
+                  <label class="form-control-label"
+                    >Kumpulan Sasaran <span class="text-warning">*</span></label
+                  >
+                  <!-- target_group -->
+                  <ng-select
+                    [items]="targetGrpOpts"
+                    [multiple]="true"
+                    bindLabel="name"
+                    [closeOnSelect]="false"
+                    bindValue="form"
+                    [(ngModel)]="selectedGrp"
+                    [ngModelOptions]="{ standalone: true }"
+                    (add)="onAddTargetGrp($event)"
+                    (clear)="onClearTargetGrp($event)"
+                    (remove)="onRemoveTargetGrp($event)"
+                  >
+                    <ng-template
+                      ng-option-tmp
+                      let-item="item"
+                      let-item$="item$"
+                      let-index="index"
+                    >
+                      <input
+                        id="item-{{ index }}"
+                        type="checkbox"
+                        [ngModel]="item$.selected"
+                        [ngModelOptions]="{ standalone: true }"
+                      />
+                      {{ item.name | uppercase }}
+                    </ng-template>
+                  </ng-select>
+                  <!-- <small>{{selectedGrp | json}}</small> -->
+                </div>
+
+                <div class="form-group" [hidden]="isTargetLocked">
+                  <label class="form-control-label"
+                    >Jawatan Sasaran <span class="text-warning">*</span></label
+                  >
+                  <!-- position -->
+                  <ng-select
+                    [items]="targetPosOpts"
+                    [multiple]="true"
+                    bindLabel="name"
+                    [closeOnSelect]="false"
+                    bindValue="form"
+                    [(ngModel)]="selectedPos"
+                    [ngModelOptions]="{ standalone: true }"
+                    (add)="onAddTargetPos($event)"
+                    (clear)="onClearTargetPos($event)"
+                    (remove)="onRemoveTargetPos($event)"
+                  >
+                    <ng-template
+                      ng-option-tmp
+                      let-item="item"
+                      let-item$="item$"
+                      let-index="index"
+                    >
+                      <input
+                        id="item-{{ index }}"
+                        type="checkbox"
+                        [ngModel]="item$.selected"
+                        [ngModelOptions]="{ standalone: true }"
+                      />
+                      {{ item.name | uppercase }}
+                    </ng-template>
+                  </ng-select>
+                  <!-- <small>{{selectedPos | json}}</small> -->
+                </div>
+
+                <div class="form-group" [hidden]="isTargetLocked">
+                  <label class="form-control-label"
+                    >Gred Sasaran <span class="text-warning">*</span></label
+                  >
+                  <!-- schema -->
+                  <ng-select
+                    [items]="targetSchOpts"
+                    [multiple]="true"
+                    bindLabel="name"
+                    [closeOnSelect]="false"
+                    bindValue="form"
+                    [(ngModel)]="selectedSch"
+                    [ngModelOptions]="{ standalone: true }"
+                    (add)="onAddTargetSch($event)"
+                    (clear)="onClearTargetSch($event)"
+                    (remove)="onRemoveTargetSch($event)"
+                  >
+                    <ng-template
+                      ng-option-tmp
+                      let-item="item"
+                      let-item$="item$"
+                      let-index="index"
+                    >
+                      <input
+                        id="item-{{ index }}"
+                        type="checkbox"
+                        [ngModel]="item$.selected"
+                        [ngModelOptions]="{ standalone: true }"
+                      />
+                      {{ item.name | uppercase }}
+                    </ng-template>
+                  </ng-select>
+                  <!-- <small>{{selectedSch | json}}</small> -->
+                </div>
+
+                <div class="form-group" [hidden]="isTargetLocked">
+                  <label class="form-control-label"
+                    >Jabatan Sasaran <span class="text-warning">*</span></label
+                  >
+                  <!-- department -->
+                  <ng-select
+                    [items]="targetDepOpts"
+                    [multiple]="true"
+                    bindLabel="name"
+                    [closeOnSelect]="false"
+                    bindValue="form"
+                    [(ngModel)]="selectedDep"
+                    [ngModelOptions]="{ standalone: true }"
+                    (add)="onAddTargetDep($event)"
+                    (clear)="onClearTargetDep($event)"
+                    (remove)="onRemoveTargetDep($event)"
+                  >
+                    <ng-template
+                      ng-option-tmp
+                      let-item="item"
+                      let-item$="item$"
+                      let-index="index"
+                    >
+                      <input
+                        id="item-{{ index }}"
+                        type="checkbox"
+                        [ngModel]="item$.selected"
+                        [ngModelOptions]="{ standalone: true }"
+                      />
+                      {{ item.name | uppercase }}
+                    </ng-template>
+                  </ng-select>
+                  <!-- <small>{{selectedDep | json}}</small> -->
+                </div>
+
+                <div>
+                  <button class="btn btn-warm-blue" matStepperNext>
+                    Seterusnya
+                  </button>
+                </div>
+              </mat-step>
+
+              <mat-step>
+                <ng-template matStepLabel>Butiran</ng-template>
+                <!-- <h6 class="heading-small text-muted mb-4"></h6> -->
+
+                <div class="form-group">
+                  <label class="form-control-label"
+                    >Tajuk <span class="text-warning">*</span></label
+                  >
+                  <input class="form-control" formControlName="title" />
+
+                  <ng-container
+                    *ngFor="let message of trainingFormMessages.title"
+                  >
+                    <div
+                      *ngIf="
+                        trainingForm.get('title').hasError(message.type) &&
+                        (trainingForm.get('title').dirty ||
+                          trainingForm.get('title').touched)
+                      "
+                    >
+                      <p class="error-message">
+                        <span>*{{ message.message }}</span>
+                      </p>
+                    </div>
+                  </ng-container>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-control-label"
+                    >Deskripsi <span class="text-warning">*</span></label
+                  >
+                  <textarea
+                    class="form-control"
+                    formControlName="description"
+                  ></textarea>
+
+                  <ng-container
+                    *ngFor="let message of trainingFormMessages.description"
+                  >
+                    <div
+                      *ngIf="
+                        trainingForm
+                          .get('description')
+                          .hasError(message.type) &&
+                        (trainingForm.get('description').dirty ||
+                          trainingForm.get('description').touched)
+                      "
+                    >
+                      <p class="error-message">
+                        <span>*{{ message.message }}</span>
+                      </p>
+                    </div>
+                  </ng-container>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Jenis Teras <span class="text-warning">*</span></label
+                      >
+                      <select
+                        class="form-control custom-select"
+                        [(ngModel)]="coresParentTemp"
+                        [ngModelOptions]="{ standalone: true }"
+                        (change)="onChangeCoreParent($event.target.value)"
+                      >
+                        <option value="GN">GENERIK</option>
+                        <option value="FN">FUNGSIONAL</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Teras <span class="text-warning">*</span></label
+                      >
+                      <select
+                        class="form-control custom-select"
+                        formControlName="core"
+                      >
+                        <option
+                          *ngFor="let core of coresTemp"
+                          value="{{ core.id }}"
+                        >
+                          {{ core.child }}
+                        </option>
+                      </select>
+
+                      <ng-container
+                        *ngFor="let message of trainingFormMessages.core"
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm.get('core').hasError(message.type) &&
+                            (trainingForm.get('core').dirty ||
+                              trainingForm.get('core').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Kod Kursus
+                        <span class="text-warning"
+                          >*akan dijana secara automatik</span
+                        ></label
+                      >
+                      <input class="form-control" [value]="nextCode" disabled />
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Jumlah Peserta
+                        <span class="text-warning">*</span></label
+                      >
+                      <input
+                        class="form-control"
+                        formControlName="max_participant"
+                        type="number"
+                      />
+
+                      <ng-container
+                        *ngFor="
+                          let message of trainingFormMessages.max_participant
+                        "
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm
+                              .get('max_participant')
+                              .hasError(message.type) &&
+                            (trainingForm.get('max_participant').dirty ||
+                              trainingForm.get('max_participant').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Lokasi <span class="text-warning">*</span></label
+                      >
+                      <input class="form-control" formControlName="venue" />
+
+                      <ng-container
+                        *ngFor="let message of trainingFormMessages.venue"
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm.get('venue').hasError(message.type) &&
+                            (trainingForm.get('venue').dirty ||
+                              trainingForm.get('venue').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label">Alamat Lokasi</label>
+                      <input class="form-control" formControlName="address" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Anggaran Kos <span class="text-warning">*</span></label
+                      >
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-secondary">
+                            RM
+                          </span>
+                        </div>
+                        <input
+                          class="form-control"
+                          formControlName="cost"
+                          type="number"
+                        />
+                      </div>
+
+                      <ng-container
+                        *ngFor="let message of trainingFormMessages.cost"
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm.get('cost').hasError(message.type) &&
+                            (trainingForm.get('cost').dirty ||
+                              trainingForm.get('cost').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <button class="btn btn-outline-warm-blue" matStepperPrevious>
+                    Sebelum
+                  </button>
+                  <button class="btn btn-warm-blue" matStepperNext>
+                    Seterusnya
+                  </button>
+                </div>
+              </mat-step>
+
+              <mat-step>
+                <ng-template matStepLabel>Jadual</ng-template>
+                <!-- <hr class="my-4" /> -->
+                <h6 class="heading-small text-muted mb-4">Tarikh & Waktu</h6>
+
+                <div class="row">
+                  <div class="col-lg-6 col-md-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Tarikh Mula <span class="text-warning">*</span></label
+                      >
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-secondary">
+                            <i class="far fa-calendar-alt"></i>
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="12/12/2019"
+                          class="form-control"
+                          bsDatepicker
+                          formControlName="start_date"
+                          [bsValue]="dateStart"
+                          [bsConfig]="dateConfig"
+                        />
+                      </div>
+
+                      <ng-container
+                        *ngFor="let message of trainingFormMessages.start_date"
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm
+                              .get('start_date')
+                              .hasError(message.type) &&
+                            (trainingForm.get('start_date').dirty ||
+                              trainingForm.get('start_date').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Waktu Mula <span class="text-warning">*</span></label
+                      >
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-secondary">
+                            <i class="far fa-clock"></i>
+                          </span>
+                        </div>
+                        <input
+                          type="time"
+                          value="10:30:00"
+                          class="form-control"
+                          formControlName="start_time"
+                        />
+                      </div>
+
+                      <ng-container
+                        *ngFor="let message of trainingFormMessages.start_time"
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm
+                              .get('start_time')
+                              .hasError(message.type) &&
+                            (trainingForm.get('start_time').dirty ||
+                              trainingForm.get('start_time').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-6 col-md-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Tarikh Tamat <span class="text-warning">*</span></label
+                      >
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-secondary">
+                            <i class="far fa-calendar-alt"></i>
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="12/12/2019"
+                          class="form-control"
+                          bsDatepicker
+                          formControlName="end_date"
+                          [bsValue]="dateEnd"
+                          [bsConfig]="dateConfig"
+                        />
+                      </div>
+
+                      <ng-container
+                        *ngFor="let message of trainingFormMessages.end_date"
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm
+                              .get('end_date')
+                              .hasError(message.type) &&
+                            (trainingForm.get('end_date').dirty ||
+                              trainingForm.get('end_date').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Waktu Tamat <span class="text-warning">*</span></label
+                      >
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-secondary">
+                            <i class="far fa-clock"></i>
+                          </span>
+                        </div>
+                        <input
+                          type="time"
+                          value="10:30:00"
+                          class="form-control"
+                          formControlName="end_time"
+                        />
+                      </div>
+
+                      <ng-container
+                        *ngFor="let message of trainingFormMessages.end_time"
+                      >
+                        <div
+                          *ngIf="
+                            trainingForm
+                              .get('end_time')
+                              .hasError(message.type) &&
+                            (trainingForm.get('end_time').dirty ||
+                              trainingForm.get('end_time').touched)
+                          "
+                        >
+                          <p class="error-message">
+                            <span>*{{ message.message }}</span>
+                          </p>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-control-label">Nota Jadual</label>
+                  <quill-editor #scheduleNotes formControlName="schedule_notes">
+                  </quill-editor>
+                </div>
+
+                <hr class="my-4" />
+                <h6 class="heading-small text-muted mb-4">Tambahan</h6>
+
+                <div class="row">
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Lampiran
+                        <span class="text-warning"
+                          >*Format PDF sahaja, maksimum 5MB</span
+                        ></label
+                      >
+                      <div class="custom-file">
+                        <input
+                          type="file"
+                          class="custom-file-input"
+                          id="lampiran"
+                          lang="en"
+                          (change)="onFileChange($event, 'attachment')"
+                          accept=".pdf, image/*"
+                          size="5"
+                        />
+                        <label class="custom-file-label" for="lampiran"
+                          >Sila muat naik lampiran berkenaan</label
+                        >
+                      </div>
+
+                      <ng-container *ngIf="trainingForm.value['attachment']">
+                        <div>
+                          <i
+                            class="fas fa-trash-alt text-warning mr-2"
+                            placement="top"
+                            tooltip="Remove attachment"
+                            (click)="removeFile('attachment')"
+                          >
+                          </i>
+                          {{ fileNameInformationAttachment }} [{{
+                            fileSizeInformationAttachment / 1000000
+                              | number: "1.2-2"
+                          }}MB]
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="form-group">
+                      <label class="form-control-label"
+                        >Lampiran Kelulusan
+                        <span class="text-warning"
+                          >*Format PDF sahaja, maksimum 5MB</span
+                        ></label
+                      >
+                      <div class="custom-file">
+                        <input
+                          type="file"
+                          class="custom-file-input"
+                          id="lampiran"
+                          lang="en"
+                          (change)="onFileChange($event, 'attachment_approval')"
+                          accept=".pdf, image/*"
+                          size="5"
+                        />
+                        <label class="custom-file-label" for="lampiran"
+                          >Sila muat naik lampiran berkenaan</label
+                        >
+                      </div>
+
+                      <ng-container
+                        *ngIf="trainingForm.value['attachment_approval']"
+                      >
+                        <div>
+                          <i
+                            class="fas fa-trash-alt text-warning mr-2"
+                            placement="top"
+                            tooltip="Remove attachment"
+                            (click)="removeFile('attachment_approval')"
+                          >
+                          </i>
+                          {{ fileNameInformationAttachmentApproval }} [{{
+                            fileSizeInformationAttachmentApproval / 1000000
+                              | number: "1.2-2"
+                          }}MB]
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-6 col-sm-12">
+                    <label class="form-control-label"
+                      >Pengangkutan <span class="text-warning">*</span></label
+                    >
+                    <div class="form-group">
+                      <div
+                        class="
+                          custom-control custom-radio custom-control-inline
+                        "
+                      >
+                        <input
+                          type="radio"
+                          id="transportationRadio1"
+                          name="transportation"
+                          class="custom-control-input"
+                          [value]="true"
+                          formControlName="transportation"
+                        />
+                        <label
+                          class="custom-control-label"
+                          for="transportationRadio1"
+                          >Ada</label
+                        >
+                      </div>
+                      <div
+                        class="
+                          custom-control custom-radio custom-control-inline
+                        "
+                      >
+                        <input
+                          type="radio"
+                          id="transportationRadio2"
+                          name="transportation"
+                          class="custom-control-input"
+                          [value]="false"
+                          formControlName="transportation"
+                        />
+                        <label
+                          class="custom-control-label"
+                          for="transportationRadio2"
+                          >Tiada</label
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-6 col-7"></div>
+                  <div class="col-lg-6 col-5 text-right">
+                    <a
+                      class="btn btn-sm btn-warm-blue text-white"
+                      (click)="addSpeaker()"
+                    >
+                      Tambah Penceramah
+                    </a>
+
+                    <a
+                      class="btn btn-sm btn-warm-blue text-white"
+                      (click)="addFacilitator()"
+                    >
+                      Tambah Fasilitator
+                    </a>
+                  </div>
+                </div>
+
+                <form [formGroup]="trainerSpeakerForm">
+                  <div formArrayName="trainerSpeakerFormArray">
+                    <div
+                      [formGroupName]="i"
+                      class="row"
+                      *ngFor="
+                        let ind of trainerSpeakerForm.get(
+                          'trainerSpeakerFormArray'
+                        )['controls'];
+                        let i = index
+                      "
+                    >
+                      <div class="col-lg-5 col-sm-12">
+                        <div class="form-group">
+                          <label class="form-control-label"
+                            >Nama Penceramah
+                          </label>
+                          <input class="form-control" formControlName="name" />
+                        </div>
+                      </div>
+
+                      <div class="col-lg-5 col-sm-12">
+                        <div class="form-group">
+                          <label class="form-control-label">No. Telefon </label>
+                          <input class="form-control" formControlName="phone" />
+                        </div>
+                      </div>
+                      <div class="col-lg-2 col-sm-12">
+                        <button
+                          *ngIf="i != 0"
+                          class="btn btn-warning btn-sm"
+                          (click)="removeSpeaker(i)"
+                          style="position: absolute; bottom: 1.5rem"
+                        >
+                          Buang
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+                <form [formGroup]="trainerFacilitatorForm">
+                  <div formArrayName="trainerFacilitatorFormArray">
+                    <div
+                      [formGroupName]="i"
+                      class="row"
+                      *ngFor="
+                        let ind of trainerFacilitatorForm.get(
+                          'trainerFacilitatorFormArray'
+                        )['controls'];
+                        let i = index
+                      "
+                    >
+                      <div class="col-lg-5 col-sm-12">
+                        <div class="form-group">
+                          <label class="form-control-label"
+                            >Nama Fasilitator
+                          </label>
+                          <input class="form-control" formControlName="name" />
+                        </div>
+                      </div>
+
+                      <div class="col-lg-5 col-sm-12">
+                        <div class="form-group">
+                          <label class="form-control-label">No. Telefon</label>
+                          <input class="form-control" formControlName="phone" />
+                        </div>
+                      </div>
+                      <div class="col-lg-2 col-sm-12">
+                        <button
+                          *ngIf="i != 0"
+                          class="btn btn-warning btn-sm"
+                          (click)="removeFacilitator(i)"
+                          style="position: absolute; bottom: 1.5rem"
+                        >
+                          Buang
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+                <div>
+                  <div class="text-lead">
+                    <span>*Wajib diisi</span>
+                  </div>
+                  <button class="btn btn-outline-warm-blue" matStepperPrevious>
+                    Sebelum
+                  </button>
+                  <button
+                    class="btn btn-warm-blue"
+                    (click)="confirm()"
+                    [disabled]="!trainingForm.valid"
+                  >
+                    Daftar
+                  </button>
+                </div>
+              </mat-step>
+            </mat-horizontal-stepper>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
-
 <ng-template #modalAddOrganisation>
-    <div class="modal-header bg-warm-blue">
-        <h6 class="modal-title text-white my-auto" id="modal-title-default">
-            Tambah penganjur
-        </h6>
+  <div class="modal-header bg-warm-blue">
+    <h6 class="modal-title text-white my-auto" id="modal-title-default">
+      Tambah penganjur
+    </h6>
 
-        <button
-            aria-label="Close"
-            class="close"
-            data-dismiss="modal"
-            type="button"
-            (click)="closeModal()"
+    <button
+      aria-label="Close"
+      class="close"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      <span aria-hidden="true" class="text-white my-auto"> × </span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="organisationForm">
+      <div class="form-group">
+        <label class="form-control-label"
+          >Nama Penganjur <span class="text-warning">*</span></label
         >
-            <span aria-hidden="true" class="text-white my-auto"> × </span>
-        </button>
-    </div>
+        <input
+          class="form-control"
+          placeholder="Nama penganjur"
+          formControlName="name"
+        />
+      </div>
 
-    <div class="modal-body">
-        <form [formGroup]="organisationForm">
-            <div class="form-group">
-                <label class="form-control-label">Nama Penganjur <span class="text-warning">*</span></label>
-                <input 
-                    class="form-control" 
-                    placeholder="Nama penganjur"
-                    formControlName="name"
-                >
-            </div>
-
-            <div class="form-group">
-                <label class="form-control-label">Nama Pendek Penganjur <span class="text-warning">*</span></label>
-                <input 
-                    class="form-control" 
-                    placeholder="Nama pendek penganjur"
-                    formControlName="shortname"
-                >
-            </div>
-        </form>
-    </div>
-
-    <div class="modal-footer">
-        <button 
-            class="btn btn-warm-blue"
-            type="button"
-            (click)="addOrganisation()"
-            [disabled]="!organisationForm.valid"
+      <div class="form-group">
+        <label class="form-control-label"
+          >Nama Pendek Penganjur <span class="text-warning">*</span></label
         >
-            Simpan
-        </button>
+        <input
+          class="form-control"
+          placeholder="Nama pendek penganjur"
+          formControlName="shortname"
+        />
+      </div>
+    </form>
+  </div>
 
-        <button
-            class="btn btn-outline-warm-blue ml-auto"
-            data-dismiss="modal"
-            type="button"
-            (click)="closeModal()"
-        >
-            Tutup
-        </button>
-    </div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-warm-blue"
+      type="button"
+      (click)="addOrganisation()"
+      [disabled]="!organisationForm.valid"
+    >
+      Simpan
+    </button>
+
+    <button
+      class="btn btn-outline-warm-blue ml-auto"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      Tutup
+    </button>
+  </div>
 </ng-template>
 
 <ng-template #modalAddType>
-    <div class="modal-header bg-warm-blue">
-        <h6 class="modal-title text-white my-auto" id="modal-title-default">
-            Tambah jenis latihan
-        </h6>
+  <div class="modal-header bg-warm-blue">
+    <h6 class="modal-title text-white my-auto" id="modal-title-default">
+      Tambah jenis latihan
+    </h6>
 
-        <button
-            aria-label="Close"
-            class="close"
-            data-dismiss="modal"
-            type="button"
-            (click)="closeModal()"
+    <button
+      aria-label="Close"
+      class="close"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      <span aria-hidden="true" class="text-white my-auto"> × </span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="typeForm">
+      <div class="form-group">
+        <label class="form-control-label"
+          >Jenis Latihan <span class="text-warning">*</span></label
         >
-            <span aria-hidden="true" class="text-white my-auto"> × </span>
-        </button>
-    </div>
+        <input
+          class="form-control"
+          placeholder="Jenis latihan"
+          formControlName="name"
+        />
+      </div>
+    </form>
+  </div>
 
-    <div class="modal-body">
-        <form [formGroup]="typeForm">
-            <div class="form-group">
-                <label class="form-control-label">Jenis Latihan <span class="text-warning">*</span></label>
-                <input 
-                    class="form-control" 
-                    placeholder="Jenis latihan"
-                    formControlName="name"
-                >
-            </div>
-        </form>
-    </div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-warm-blue"
+      type="button"
+      (click)="addType()"
+      [disabled]="!typeForm.valid"
+    >
+      Simpan
+    </button>
 
-    <div class="modal-footer">
-        <button 
-            class="btn btn-warm-blue"
-            type="button"
-            (click)="addType()"
-            [disabled]="!typeForm.valid"
-        >
-            Simpan
-        </button>
-
-        <button
-            class="btn btn-outline-warm-blue ml-auto"
-            data-dismiss="modal"
-            type="button"
-            (click)="closeModal()"
-        >
-            Tutup
-        </button>
-    </div>
+    <button
+      class="btn btn-outline-warm-blue ml-auto"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      Tutup
+    </button>
+  </div>
 </ng-template>

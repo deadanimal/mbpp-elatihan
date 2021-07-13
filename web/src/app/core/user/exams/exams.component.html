@@ -1,236 +1,243 @@
 <ngx-loading-bar height="4px"></ngx-loading-bar>
 <div class="header pb-6">
-	<div class="container-fluid">
-		<div class="header-body">
-			<div class="row align-items-center py-4">
-				<div class="col-lg-6 col-7">
-					<h6 class="h2 text-dark d-inline-block mb-0">Peperiksaan</h6>
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-dark d-inline-block mb-0">Peperiksaan</h6>
 
-					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
-						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-							<li class=" breadcrumb-item">
-								<a href="javascript:void(0)"> <i class="fas fa-list-alt text-dark"> </i> </a>
-							</li>
-						</ol>
-					</nav>
-				</div>
-			</div>
-		</div>
-	</div>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item">
+                <a href="javascript:void(0)">
+                  <i class="fas fa-list-alt text-dark"> </i>
+                </a>
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="container-fluid mt--6">
-    <div class="card">
-        <div class="card-header bg-secondary">
-            <h4 class="m-0">Senarai Peperiksaan</h4>
-        </div>
-        <div class="dataTables_wrapper py-4">
-            <div class="row">
-                <div class="col-sm-12 col-md-6">
-                    <div class="dataTables_length" id="datatable_length">
-                        <label>
-                            Lihat
-                            <select 
-                                name="datatable_length" 
-                                aria-controls="datatable" 
-                                class="form-control form-control-sm custom-select custom-select-sm"
-                                (change)="entriesChange($event)"
-                            >
-                                <option value="5" [selected]="tableEntries == 5">5</option>
-                                <option value="10" [selected]="tableEntries == 10">10</option>
-                                <option value="15" [selected]="tableEntries == 15">15</option>
-                                <option value="-1" [selected]="tableEntries == -1">Semua</option>
-                            </select>
-                            rekod
-                        </label>
-                    </div>
-                </div>
-                <div class="col-sm-12 col-md-6">
-                    <div id="datatable_filter" class="dataTables_filter">
-                        <label>
-                            <input 
-                                type="search"
-                                class="form-control form-control-sm"
-                                placeholder="Cari rekod"
-                                aria-controls="datatable"
-                                (keyup)="filterTable($event)"
-                            />
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="pt-4 text-center" *ngIf="isEmpty">
-                <img [src]="iconEmpty" class="error-icon">
-                <p>Tiada rekod dijumpai</p>
-            </div>
-    
-            <ngx-datatable 
-                class="bootstrap selection-cell" 
-                [columnMode]="'force'" 
-                [headerHeight]="50" 
-                [footerHeight]="50"
-                [rowHeight]="'auto'"
-                [limit]="tableEntries != -1 ? tableEntries : undefined" 
-                [rows]="tableTemp"
-                [messages]="tableMessages"
-                (activate)="onActivate($event)"
-                *ngIf="!isEmpty"
-                [scrollbarH]="true"
-            >
-                <ngx-datatable-column
-                    prop="date"
-                >
-                    <ng-template ngx-datatable-header-template>
-                        <span>Tarikh Peperiksaan</span>
-                    </ng-template>
-                    <ng-template let-row="row" ngx-datatable-cell-template>
-                        {{row.date}}
-                    </ng-template>
-                </ngx-datatable-column>
-    
-                <ngx-datatable-column
-                    prop="exam.code"
-                >
-                    <ng-template ngx-datatable-header-template>
-                        <span>Kod</span>
-                    </ng-template>
-                    <ng-template let-row="row" ngx-datatable-cell-template>
-                        {{row.exam.code}}
-                    </ng-template>
-                </ngx-datatable-column>
-    
-                <ngx-datatable-column
-                    prop="exam.title"
-                >
-                    <ng-template ngx-datatable-header-template>
-                        <span>Tajuk Peperiksaan</span>
-                    </ng-template>
-                    <ng-template let-row="row" ngx-datatable-cell-template>
-                        {{row.exam.title}}
-                    </ng-template>
-                </ngx-datatable-column>
-    
-                <ngx-datatable-column
-                    prop="result"
-                >
-                    <ng-template ngx-datatable-header-template>
-                        <span>Keputusan</span>
-                    </ng-template>
-                    <ng-template let-row="row" ngx-datatable-cell-template>
-                        <span
-                            *ngIf="row.result == 'PA'"
-                            class="badge badge-pill badge-success"
-                        >
-                            Lulus
-                        </span>
-                        <span
-                            *ngIf="row.result == 'FA'"
-                            class="badge badge-pill badge-danger"
-                        >
-                            Gagal
-                        </span>
-                    </ng-template>
-                </ngx-datatable-column>
-
-                <ngx-datatable-column>
-                    <ng-template ngx-datatable-header-template>
-                        <span>Aktiviti</span>
-                    </ng-template>
-                    <ng-template let-row="row" ngx-datatable-cell-template>
-                        <button 
-                            class="btn btn-warm-blue"
-                            (click)="openModal(editExam, row)"
-                        >
-                            Kemaskini
-                        </button>
-                    </ng-template>
-                </ngx-datatable-column>
-            </ngx-datatable>
-        </div>
+  <div class="card">
+    <div class="card-header bg-secondary">
+      <h4 class="m-0">Senarai Peperiksaan</h4>
     </div>
+    <div class="dataTables_wrapper py-4">
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+          <div class="dataTables_length" id="datatable_length">
+            <label>
+              Lihat
+              <select
+                name="datatable_length"
+                aria-controls="datatable"
+                class="
+                  form-control form-control-sm
+                  custom-select custom-select-sm
+                "
+                (change)="entriesChange($event)"
+              >
+                <option value="5" [selected]="tableEntries == 5">5</option>
+                <option value="10" [selected]="tableEntries == 10">10</option>
+                <option value="15" [selected]="tableEntries == 15">15</option>
+                <option value="-1" [selected]="tableEntries == -1">
+                  Semua
+                </option>
+              </select>
+              rekod
+            </label>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+          <div id="datatable_filter" class="dataTables_filter">
+            <label>
+              <input
+                type="search"
+                class="form-control form-control-sm"
+                placeholder="Cari rekod"
+                aria-controls="datatable"
+                (keyup)="filterTable($event)"
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-4 text-center" *ngIf="isEmpty">
+        <img [src]="iconEmpty" class="error-icon" />
+        <p>Tiada rekod dijumpai</p>
+      </div>
+
+      <ngx-datatable
+        class="bootstrap selection-cell"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="'auto'"
+        [limit]="tableEntries != -1 ? tableEntries : undefined"
+        [rows]="tableTemp"
+        [messages]="tableMessages"
+        (activate)="onActivate($event)"
+        *ngIf="!isEmpty"
+        [scrollbarH]="true"
+      >
+        <ngx-datatable-column prop="date">
+          <ng-template ngx-datatable-header-template>
+            <span>Tarikh Peperiksaan</span>
+          </ng-template>
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.date }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column prop="exam.code">
+          <ng-template ngx-datatable-header-template>
+            <span>Kod</span>
+          </ng-template>
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.exam.code }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column prop="exam.title">
+          <ng-template ngx-datatable-header-template>
+            <span>Tajuk Peperiksaan</span>
+          </ng-template>
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.exam.title }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column prop="result">
+          <ng-template ngx-datatable-header-template>
+            <span>Keputusan</span>
+          </ng-template>
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span
+              *ngIf="row.result == 'PA'"
+              class="badge badge-pill badge-success"
+            >
+              Lulus
+            </span>
+            <span
+              *ngIf="row.result == 'FA'"
+              class="badge badge-pill badge-danger"
+            >
+              Gagal
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column>
+          <ng-template ngx-datatable-header-template>
+            <span>Aktiviti</span>
+          </ng-template>
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button
+              class="btn btn-warm-blue"
+              (click)="openModal(editExam, row)"
+            >
+              Kemaskini
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
 </div>
 
 <ng-template #editExam>
-    <div class="modal-header bg-warm-blue">
-        <h6 class="modal-title text-white my-auto" id="modal-title-default">
-            Kemaskini Peperiksaan
-        </h6>
+  <div class="modal-header bg-warm-blue">
+    <h6 class="modal-title text-white my-auto" id="modal-title-default">
+      Kemaskini Peperiksaan
+    </h6>
 
-        <button
-            aria-label="Close"
-            class="close"
-            data-dismiss="modal"
-            type="button"
-            (click)="closeModal()"
+    <button
+      aria-label="Close"
+      class="close"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      <span aria-hidden="true" class="text-white my-auto"> × </span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="examForm">
+      <div class="form-group">
+        <label class="form-control-label"
+          >Jenis Peperiksaan <span class="text-warning">*</span></label
         >
-            <span aria-hidden="true" class="text-white my-auto"> × </span>
-        </button>
-    </div>
+        <select
+          class="form-control custom-select"
+          [(ngModel)]="examTypeTemp"
+          [ngModelOptions]="{ standalone: true }"
+          (change)="onClassificationChange($event.target.value)"
+        >
+          <option *ngFor="let choice of choicesType" value="{{ choice.value }}">
+            {{ choice.text }}
+          </option>
+        </select>
+      </div>
 
-    <div class="modal-body">
-        <form [formGroup]="examForm">
-			<div class="form-group">
-				<label class="form-control-label">Jenis Peperiksaan <span class="text-warning">*</span></label>
-				<select
-					class="form-control custom-select"
-					[(ngModel)]="examTypeTemp"
-					[ngModelOptions]="{standalone: true}"
-					(change)="onClassificationChange($event.target.value)"
-				>
-					<option *ngFor="let choice of choicesType" value="{{choice.value}}">{{choice.text}}</option>
-				</select>
-			</div>
+      <div class="form-group">
+        <label class="form-control-label"
+          >Peperiksaan <span class="text-warning">*</span></label
+        >
+        <select class="form-control custom-select" formControlName="exam">
+          <option *ngFor="let exam_ of examsTemp" value="{{ exam_.id }}">
+            [{{ exam_.code }}] {{ exam_.title }}
+          </option>
+        </select>
+      </div>
 
-			<div class="form-group">
-				<label class="form-control-label">Peperiksaan <span class="text-warning">*</span></label>
-				<select
-					class="form-control custom-select"
-					formControlName="exam"
-				>
-					<option *ngFor="let exam_ of examsTemp" value="{{exam_.id}}">[{{exam_.code}}] {{exam_.title}}</option>
-				</select>
-			</div>
+      <div class="form-group">
+        <label class="form-control-label">Tarikh</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text"
+              ><i class="far fa-calendar-alt"></i
+            ></span>
+          </div>
+          <input
+            type="text"
+            placeholder="12/12/2019"
+            class="form-control"
+            bsDatepicker
+            [bsValue]="dateValue"
+            [bsConfig]="dateConfig"
+          />
+        </div>
+      </div>
 
-			<div class="form-group">
-				<label class="form-control-label">Tarikh</label>
-				<div class="input-group">
-					<div class="input-group-prepend">
-					  <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-					</div>
-					<input 
-						type="text"
-						placeholder="12/12/2019"
-						class="form-control"
-						bsDatepicker
-						[bsValue]="dateValue"
-						[bsConfig]="dateConfig"
-					>
-				</div>
-			</div>
+      <div class="form-group">
+        <label class="form-control-label">Keputusan</label>
+        <select
+          class="form-control custom-select"
+          placeholder="Keputusan"
+          formControlName="result"
+          type="text"
+        >
+          <option
+            *ngFor="let result of choicesResult"
+            value="{{ result.value }}"
+          >
+            {{ result.text }}
+          </option>
+        </select>
+      </div>
 
-			<div class="form-group">
-				<label class="form-control-label">Keputusan</label>
-				<select
-					class="form-control custom-select"
-					placeholder="Keputusan"
-					formControlName="result"
-					type="text"
-				>
-					<option *ngFor="let result of choicesResult" value="{{result.value}}">{{result.text}}</option>
-				</select>
-			</div>
+      <div class="form-group">
+        <label class="form-control-label">Nota</label>
+        <input class="form-control" placeholder="Nota" formControlName="note" />
+      </div>
 
-			<div class="form-group">
-				<label class="form-control-label">Nota</label>
-				<input
-					class="form-control"
-					placeholder="Nota"
-					formControlName="note"
-				>
-			</div>
-
-			<!-- <div class="form-group">
+      <!-- <div class="form-group">
 				<div class="custom-file">
 					<input
 					  class="custom-file-input"
@@ -245,62 +252,74 @@
 				</div>
 			</div> -->
 
-			<div class="form-group">
-				<label class="form-control-label">Dokumen <span class="text-warning">*</span></label>
-				<div class="custom-file">
-					<input 
-						type="file" 
-						class="custom-file-input" 
-						id="lampiran" 
-						lang="en"
-						(change)="onFileChange($event)" 
-						accept=".pdf, image/*"
-						size="5"
-					>
-					<label class="custom-file-label" for="lampiran">Sila muat naik lampiran berkenaan</label>
-				</div>
-
-				<ng-container *ngIf="examForm.value['document_copy'] && fileSizeInformation && fileNameInformation">
-					<div>
-						<i 
-							class="fas fa-trash-alt text-warning mr-2"
-							placement="top" 
-							tooltip="Remove attachment"
-							(click)="removeFile()"
-						>
-						</i>
-						{{fileNameInformation}} [{{fileSizeInformation/1000000 | number: '1.2-2'}}MB]
-					</div>
-				</ng-container>
-			</div>
-
-			<button 
-				class="btn btn-block btn-outline-warm-blue"
-				(click)="viewDocument()"
-				[hidden]="fileSizeInformation && fileNameInformation"
-			>
-				Cetak dokumen
-			</button>
-		</form>
-    </div>
-
-    <div class="modal-footer">
-        <button 
-            class="btn btn-warm-blue"
-            type="button"
-            (click)="confirm()"
-            [disabled]="!examForm.valid"
+      <div class="form-group">
+        <label class="form-control-label"
+          >Dokumen <span class="text-warning">*</span></label
         >
-            Kemaskini
-        </button>
+        <div class="custom-file">
+          <input
+            type="file"
+            class="custom-file-input"
+            id="lampiran"
+            lang="en"
+            (change)="onFileChange($event)"
+            accept=".pdf, image/*"
+            size="5"
+          />
+          <label class="custom-file-label" for="lampiran"
+            >Sila muat naik lampiran berkenaan</label
+          >
+        </div>
 
-        <button
-            class="btn btn-outline-warm-blue ml-auto"
-            data-dismiss="modal"
-            type="button"
-            (click)="closeModal()"
+        <ng-container
+          *ngIf="
+            examForm.value['document_copy'] &&
+            fileSizeInformation &&
+            fileNameInformation
+          "
         >
-            Tutup
-        </button>
-    </div>
+          <div>
+            <i
+              class="fas fa-trash-alt text-warning mr-2"
+              placement="top"
+              tooltip="Remove attachment"
+              (click)="removeFile()"
+            >
+            </i>
+            {{ fileNameInformation }} [{{
+              fileSizeInformation / 1000000 | number: "1.2-2"
+            }}MB]
+          </div>
+        </ng-container>
+      </div>
+
+      <button
+        class="btn btn-block btn-outline-warm-blue"
+        (click)="viewDocument()"
+        [hidden]="fileSizeInformation && fileNameInformation"
+      >
+        Cetak dokumen
+      </button>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      class="btn btn-warm-blue"
+      type="button"
+      (click)="confirm()"
+      [disabled]="!examForm.valid"
+    >
+      Kemaskini
+    </button>
+
+    <button
+      class="btn btn-outline-warm-blue ml-auto"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      Tutup
+    </button>
+  </div>
 </ng-template>

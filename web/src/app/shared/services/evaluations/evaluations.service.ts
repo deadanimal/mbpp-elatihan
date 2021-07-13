@@ -256,4 +256,22 @@ export class EvaluationsService {
     )
   }
 
+  filterInternal(field: String): Observable<InternalExtended[]> {
+    let urlTemp = this.urlInternal + '?' + field
+    return this.http.get<InternalExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        // console.log('Filter Internal: ', res)
+      })
+    )
+  }
+
+  filterExternal(field: String): Observable<ExternalExtended[]> {
+    let urlTemp = this.urlExternal + '?' + field
+    return this.http.get<ExternalExtended[]>(urlTemp).pipe(
+      tap((res) => {
+        // console.log('Filter External: ', res)
+      })
+    )
+  }
+
 }

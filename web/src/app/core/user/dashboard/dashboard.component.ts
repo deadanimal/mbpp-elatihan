@@ -6,6 +6,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { ApplicationSelfExtended } from 'src/app/shared/services/applications/applications.model';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
+import { EvaluationsService } from 'src/app/shared/services/evaluations/evaluations.service';
 
 import * as moment from 'moment';
 import { UsersService } from 'src/app/shared/services/users/users.service';
@@ -32,6 +33,7 @@ export class DashboardComponent implements OnInit {
   // training: Training
   // trainings: Training[] = []
   applications: ApplicationSelfExtended[] = []
+  evaluationApplications: ApplicationSelfExtended[] = []
   summary: any
   totalTrainings: number = 0
   totalExams: number = 0
@@ -65,8 +67,20 @@ export class DashboardComponent implements OnInit {
   }
   SelectionType = SelectionType;
 
+  // Evaluation Table
+  evaluationTableEntries: number = 5
+  evaluationTableSelected: any[] = []
+  evaluationTableTemp = []
+  evaluationTableActiveRow: any
+  evaluationTableRows: any = []
+  evaluationTableMessages = { 
+    emptyMessage: 'Tiada rekod dijumpai',
+    totalMessage: 'rekod'
+  }
+
   // Checker
   isEmpty: boolean = true
+  evaluationIsEmpty: boolean = true
 
   // Icon
   iconEmpty = 'assets/img/icons/box.svg'
@@ -84,6 +98,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private applicationService: ApplicationsService,
+    private evaluationService: EvaluationsService,
     private securityService: SecurityService,
     private userService: UsersService,
     private loadingBar: LoadingBarService,
@@ -102,7 +117,8 @@ export class DashboardComponent implements OnInit {
     forkJoin([
       this.applicationService.getSelf(),
       this.userService.getSummarySelf(),
-      this.securityService.checker()
+      this.securityService.checker(),
+      this.applicationService.getSelfHistory()
     ]).subscribe(
       () => {
         this.loadingBar.complete()
@@ -114,6 +130,39 @@ export class DashboardComponent implements OnInit {
         //     row.created_at = moment(row.created_at).format('DD/MM/YYYY')
         //   }
         // )
+        this.evaluationApplications = this.applicationService.applicationsHistory
+        this.evaluationTableRows = this.evaluationApplications
+        this.evaluationTableRows.forEach(
+          (row, index) => {
+            row.start_date = moment(row.start_date).format('DD/MM/YYYY')
+            row.end_date = moment(row.end_date).format('DD/MM/YYYY')
+
+            forkJoin([
+              this.evaluationService.filterInternal("applicant="+row.applicant+"&training="+row.training.id),
+              this.evaluationService.filterExternal("applicant="+row.applicant+"&training="+row.training.id)
+            ]).subscribe((res) => {
+              if (res[0].length > 0 || res[1].length > 0) {
+                this.evaluationTableRows.splice(index, 1)
+              }
+            },
+            () => {},
+            () => {
+              this.evaluationTableTemp = this.evaluationTableRows.map((prop, key) => {
+                return {
+                  ...prop,
+                  id_index: key+1
+                };
+              });
+      
+              if (this.evaluationTableTemp.length >= 1) {
+                this.evaluationIsEmpty = false
+              }
+              else {
+                this.evaluationIsEmpty = true
+              }
+            })
+          }
+        )
       },
       () => {
         this.loadingBar.complete()
@@ -161,6 +210,26 @@ export class DashboardComponent implements OnInit {
     this.tableActiveRow = event.row;
   }
 
+  entriesChangeEvaluation($event) {
+    this.evaluationTableEntries = $event.target.value;
+  }
+
+  filterTableEvaluation($event) {
+    let val = $event.target.value.toLowerCase();
+    this.evaluationTableTemp = this.evaluationTableRows.filter(function(d) {
+      return d.title.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+  }
+
+  onSelectEvaluation({ selected }) {
+    this.evaluationTableSelected.splice(0, this.evaluationTableSelected.length);
+    this.evaluationTableSelected.push(...selected);
+  }
+
+  onActivateEvaluation(event) {
+    this.evaluationTableActiveRow = event.row;
+  }
+
   view(id, status) {
     let pathApproved = '/trainings/detail'
     let pathNotApproved = '/trainings/information'
@@ -177,6 +246,26 @@ export class DashboardComponent implements OnInit {
     else {
       this.router.navigate([pathNotApproved], queryParams)
     }
+  }
+
+  viewEvaluation(training) {
+    let path = '/trainings/evaluate'
+    let extras = training['id']
+    let organiser_type = 'DD'
+
+    if (training['organiser_type'] == 'DD') {
+      organiser_type = 'DD'
+    }
+    else {
+      organiser_type = 'LL'
+    }
+    let queryParams = {
+      queryParams: {
+        id: extras,
+        type: organiser_type
+      }
+    }
+    this.router.navigate([path], queryParams)
   }
 
   openModal(modalRef: TemplateRef<any>) {

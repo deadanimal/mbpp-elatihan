@@ -1,282 +1,451 @@
 <div class="header pb-6">
-	<div class="container-fluid">
-		<div class="header-body">
-			<div class="row align-items-center py-4">
-				<div class="col-lg-6 col-7">
-					<h6 class="h2 text-dark d-inline-block mb-0">Butiran Latihan</h6>
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-dark d-inline-block mb-0">Butiran Latihan</h6>
 
-					<nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
-						<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-							<li class=" breadcrumb-item">
-								<a href="javascript:void(0)"> <i class="fas fa-chalkboard-teacher text-dark"> </i> </a>
-							</li>
-						</ol>
-					</nav>
-				</div>
-			</div>
-		</div>
-	</div>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item">
+                <a href="javascript:void(0)">
+                  <i class="fas fa-chalkboard-teacher text-dark"> </i>
+                </a>
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="container-fluid mt--6">
-    <div class="row">
-		<div class="col">
-			<tabset type="pills" class="nav-fill no-tab-content">
-                <!-- Information -->
-                <tab heading="Informasi">
-                    <div class="card mt-2">
-                        <div class="card-header bg-secondary">
-                            <h4 class="m-0">Butiran Latihan</h4>
+  <div class="row">
+    <div class="col">
+      <tabset type="pills" class="nav-fill no-tab-content">
+        <!-- Information -->
+        <tab heading="Informasi">
+          <div class="card mt-2">
+            <div class="card-header bg-secondary">
+              <h4 class="m-0">Butiran Latihan</h4>
 
-                            <span *ngIf="training?.status == 'DB'" class="ml-2 badge badge-pill badge-default">Dibuka</span>
-                            <span *ngIf="training?.status == 'OT'" class="ml-2 badge badge-pill badge-primary">Lain-lain</span>
-                            <span *ngIf="training?.status == 'PN'" class="ml-2 badge badge-pill badge-info">Penuh</span>
-                            <span *ngIf="training?.status == 'SL'" class="ml-2 badge badge-pill badge-success">Selesai</span>
-                            <span *ngIf="training?.status == 'DT'" class="ml-2 badge badge-pill badge-danger">Ditutup</span>
-                            <span *ngIf="training?.status == 'TN'" class="ml-2 badge badge-pill badge-warning">Tangguh</span>
-                        </div>
-                        
-                        <div class="card-body">
-                            <h6 class="heading-small text-muted mb-4">Butiran</h6>
-                            <div class="form-group">
-                                <label class="form-control-label">Tajuk</label>
-                                <textarea class="form-control" value="[{{training?.course_code}}] {{training?.title}}" disabled></textarea>
-                            </div>
-        
-                            <div class="form-group">
-                                <label class="form-control-label">Deskripsi</label>
-                                <textarea class="form-control" value="{{training?.description}}" disabled></textarea>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Jenis Teras</label>
-                                        <input *ngIf="training?.core.parent == 'GN'" class="form-control" value="GENERIK" disabled>
-                                        <input *ngIf="training?.core.parent == 'FN'" class="form-control" value="FUNGSIONAL" disabled>
-                                    </div>
-                                </div>
-        
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Teras</label>
-                                        <input class="form-control" value="{{training?.core.child}}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Lokasi</label>
-                                        <input class="form-control" value="{{training?.venue}}" disabled>
-                                    </div>
-                                </div>
-        
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Alamat Lokasi</label>
-                                        <input class="form-control" value="{{training?.address}}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <hr class="my-4" />
-                            <h6 class="heading-small text-muted mb-4">Tarikh & Waktu</h6>
-        
-                            <div class="row">
-                                <div class="col-lg-3 col-sm-12">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Tarikh Mula</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text bg-secondary">
-                                                    <i class="far fa-calendar-alt"></i>
-                                                </span>
-                                            </div>
-                                            <input type="text" class="form-control" value="{{training?.start_date | date: 'd/M/y'}}" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-        
-                                <div class="col-lg-3 col-sm-12">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Waktu Mula</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text bg-secondary">
-                                                    <i class="far fa-clock"></i>
-                                                </span>
-                                            </div>
-                                            <input class="form-control" value="{{training?.start_time}}" disabled>
-                                        </div>
-                                    </div>
-                                </div>
+              <span
+                *ngIf="training?.status == 'DB'"
+                class="ml-2 badge badge-pill badge-default"
+                >Dibuka</span
+              >
+              <span
+                *ngIf="training?.status == 'OT'"
+                class="ml-2 badge badge-pill badge-primary"
+                >Lain-lain</span
+              >
+              <span
+                *ngIf="training?.status == 'PN'"
+                class="ml-2 badge badge-pill badge-info"
+                >Penuh</span
+              >
+              <span
+                *ngIf="training?.status == 'SL'"
+                class="ml-2 badge badge-pill badge-success"
+                >Selesai</span
+              >
+              <span
+                *ngIf="training?.status == 'DT'"
+                class="ml-2 badge badge-pill badge-danger"
+                >Ditutup</span
+              >
+              <span
+                *ngIf="training?.status == 'TN'"
+                class="ml-2 badge badge-pill badge-warning"
+                >Tangguh</span
+              >
+            </div>
 
-                                <div class="col-lg-3 col-sm-12">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Tarikh Tamat</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text bg-secondary">
-                                                    <i class="far fa-calendar-alt"></i>
-                                                </span>
-                                            </div>
-                                            <input type="text" class="form-control" value="{{training?.end_date | date: 'd/M/y'}}" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-        
-                                <div class="col-lg-3 col-sm-12">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Waktu Tamat</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text bg-secondary">
-                                                    <i class="far fa-clock"></i>
-                                                </span>
-                                            </div>
-                                            <input class="form-control" value="{{training?.end_time}}" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-        
-                            <div class="form-group">
-                                <label class="form-control-label">Nota Lain</label>
-                                <div class="form-control" [innerHTML]="training?.schedule_notes">{{training?.schedule_notes}}</div>
-                            </div>
-                            
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="checkTransportation" disabled [checked]="training?.transportation">
-                                <label class="custom-control-label" for="checkTransportation">Pengangkutan</label>
-                            </div>
-                            
-                            <hr class="my-4" />
-                            <h6 class="heading-small text-muted mb-4">Klasifikasi Latihan</h6>
-        
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Jenis Penganjur</label>
-                                        <input *ngIf="training?.organiser_type == 'DD'" class="form-control" value="Dalaman" disabled>
-                                        <input *ngIf="training?.organiser_type == 'LL'" class="form-control" value="Luaran" disabled>
-                                    </div>
-                                </div>
-        
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Penganjur</label>
-                                        <input class="form-control" value="{{training?.organiser.name}} ({{training?.organiser.shortname}})" disabled>
-                                    </div>
-                                </div>
-                            </div>
-        
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Jenis Latihan</label>
-                                        <input class="form-control" value="{{training?.training_type.name}}" disabled>
-                                    </div>
-                                </div>
-        
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Kaedah Latihan</label>
-                                        <input *ngIf="training?.method == 'BS'" class="form-control" value="Bersemuka (offline)" disabled>
-                                        <input *ngIf="training?.method == 'TB'" class="form-control" value="Tidak bersemuka (online)" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Anjuran Latihan</label>
-                                        <input *ngIf="training?.country == 'DN'" class="form-control" value="Dalam negara" disabled>
-                                        <input *ngIf="training?.country == 'LN'" class="form-control" value="Luar negara" disabled>
-                                    </div>
-                                </div>
-        
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label class="form-control-label">Domain</label>
-                                        <input class="form-control" value="{{training?.domain.name}}" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="card-body">
+              <h6 class="heading-small text-muted mb-4">Butiran</h6>
+              <div class="form-group">
+                <label class="form-control-label">Tajuk</label>
+                <textarea
+                  class="form-control"
+                  value="[{{ training?.course_code }}] {{ training?.title }}"
+                  disabled
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-control-label">Deskripsi</label>
+                <textarea
+                  class="form-control"
+                  value="{{ training?.description }}"
+                  disabled
+                ></textarea>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label class="form-control-label">Jenis Teras</label>
+                    <input
+                      *ngIf="training?.core.parent == 'GN'"
+                      class="form-control"
+                      value="GENERIK"
+                      disabled
+                    />
+                    <input
+                      *ngIf="training?.core.parent == 'FN'"
+                      class="form-control"
+                      value="FUNGSIONAL"
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="form-group">
+                    <label class="form-control-label">Teras</label>
+                    <input
+                      class="form-control"
+                      value="{{ training?.core.child }}"
+                      disabled
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label class="form-control-label">Lokasi</label>
+                    <input
+                      class="form-control"
+                      value="{{ training?.venue }}"
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="form-group">
+                    <label class="form-control-label">Alamat Lokasi</label>
+                    <input
+                      class="form-control"
+                      value="{{ training?.address }}"
+                      disabled
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <hr class="my-4" />
+              <h6 class="heading-small text-muted mb-4">Tarikh & Waktu</h6>
+
+              <div class="row">
+                <div class="col-lg-3 col-sm-12">
+                  <div class="form-group">
+                    <label class="form-control-label">Tarikh Mula</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text bg-secondary">
+                          <i class="far fa-calendar-alt"></i>
+                        </span>
+                      </div>
+                      <input
+                        type="text"
+                        class="form-control"
+                        value="{{ training?.start_date | date: 'd/M/y' }}"
+                        disabled
+                      />
                     </div>
-                </tab>
-				<!-- Attendance -->
-				<tab heading="Kehadiran">
-					<div class="card mt-2">
-						<div class="card-header bg-secondary">
-							<h4 class="m-0">Kedatangan</h4>
-						</div>
+                  </div>
+                </div>
 
-						<div class="card-body">
-                            <button
-                                type="button"
-                                placement="top-center"
-                                triggers="hover focus click"
-                                tooltip="Imbas kod QR kedatangan"
-                                class="btn-icon-clipboard"
-                                (click)="openModal(qrModal)"
-                                *ngIf="isSameAfterStart && isSameBeforeEnd && !memo"
-                            >
-                                <div class="row">
-                                    <div class="col-2">
-                                        <img [src]="iconQR" class="card-icon">
-                                    </div>
-                                    <div class="col-10">
-                                        <span>Imbas kod QR kehadiran</span>
-                                    </div>
-                                </div>
-                            </button>
+                <div class="col-lg-3 col-sm-12">
+                  <div class="form-group">
+                    <label class="form-control-label">Waktu Mula</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text bg-secondary">
+                          <i class="far fa-clock"></i>
+                        </span>
+                      </div>
+                      <input
+                        class="form-control"
+                        value="{{ training?.start_time }}"
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
 
-                            <button
-                                type="button"
-                                placement="top-center"
-                                triggers="hover focus click"
-                                tooltip="Hantar memo tidak hadir"
-                                class="btn-icon-clipboard"
-                                (click)="openModal(memoModal)"
-                                *ngIf="isBeforeStart && isMemoEmpty"
-                            >
-                                <div class="row">
-                                    <div class="col-2">
-                                        <img [src]="iconMemo" class="card-icon">
-                                    </div>
-                                    <div class="col-10">
-                                        <span>Hantar memo tidak hadir</span>
-                                    </div>
-                                </div>
-                            </button>
-                        </div>
-                        
-                        <div class="dataTables_wrapper py-4">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="dataTables_length" id="datatable_length">
-                                        <label>
-                                            Lihat
-                                            <select 
-                                                name="datatable_length" 
-                                                aria-controls="datatable" 
-                                                class="form-control form-control-sm custom-select custom-select-sm"
-                                                (change)="entriesChange($event)">
-                                                <option value="5" [selected]="tableAttendancesEntries == 5">5</option>
-                                                <option value="10" [selected]="tableAttendancesEntries == 10">10</option>
-                                                <option value="15" [selected]="tableAttendancesEntries == 15">15</option>
-                                                <option value="-1" [selected]="tableAttendancesEntries == -1">Semua</option>
-                                            </select>
-                                            rekod
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <!-- <div id="datatable_filter" class="dataTables_filter">
+                <div class="col-lg-3 col-sm-12">
+                  <div class="form-group">
+                    <label class="form-control-label">Tarikh Tamat</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text bg-secondary">
+                          <i class="far fa-calendar-alt"></i>
+                        </span>
+                      </div>
+                      <input
+                        type="text"
+                        class="form-control"
+                        value="{{ training?.end_date | date: 'd/M/y' }}"
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-12">
+                  <div class="form-group">
+                    <label class="form-control-label">Waktu Tamat</label>
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text bg-secondary">
+                          <i class="far fa-clock"></i>
+                        </span>
+                      </div>
+                      <input
+                        class="form-control"
+                        value="{{ training?.end_time }}"
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-control-label">Nota Lain</label>
+                <div
+                  class="form-control"
+                  [innerHTML]="training?.schedule_notes"
+                >
+                  {{ training?.schedule_notes }}
+                </div>
+              </div>
+
+              <div class="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  class="custom-control-input"
+                  id="checkTransportation"
+                  disabled
+                  [checked]="training?.transportation"
+                />
+                <label class="custom-control-label" for="checkTransportation"
+                  >Pengangkutan</label
+                >
+              </div>
+
+              <hr class="my-4" />
+              <h6 class="heading-small text-muted mb-4">Klasifikasi Latihan</h6>
+
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label class="form-control-label">Jenis Penganjur</label>
+                    <input
+                      *ngIf="training?.organiser_type == 'DD'"
+                      class="form-control"
+                      value="Dalaman"
+                      disabled
+                    />
+                    <input
+                      *ngIf="training?.organiser_type == 'LL'"
+                      class="form-control"
+                      value="Luaran"
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="form-group">
+                    <label class="form-control-label">Penganjur</label>
+                    <input
+                      class="form-control"
+                      value="{{ training?.organiser.name }} ({{
+                        training?.organiser.shortname
+                      }})"
+                      disabled
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label class="form-control-label">Jenis Latihan</label>
+                    <input
+                      class="form-control"
+                      value="{{ training?.training_type.name }}"
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="form-group">
+                    <label class="form-control-label">Kaedah Latihan</label>
+                    <input
+                      *ngIf="training?.method == 'BS'"
+                      class="form-control"
+                      value="Bersemuka (offline)"
+                      disabled
+                    />
+                    <input
+                      *ngIf="training?.method == 'TB'"
+                      class="form-control"
+                      value="Tidak bersemuka (online)"
+                      disabled
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label class="form-control-label">Anjuran Latihan</label>
+                    <input
+                      *ngIf="training?.country == 'DN'"
+                      class="form-control"
+                      value="Dalam negara"
+                      disabled
+                    />
+                    <input
+                      *ngIf="training?.country == 'LN'"
+                      class="form-control"
+                      value="Luar negara"
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="form-group">
+                    <label class="form-control-label">Domain</label>
+                    <input
+                      class="form-control"
+                      value="{{ training?.domain.name }}"
+                      disabled
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </tab>
+        <!-- Attendance -->
+        <tab heading="Kehadiran">
+          <div class="card mt-2">
+            <div class="card-header bg-secondary">
+              <h4 class="m-0">Kedatangan</h4>
+            </div>
+
+            <div class="card-body">
+              <div *ngIf="!isMemoEmpty">
+                <p>
+                  Anda telah memilih untuk tidak menghadiri latihan ini. Alasan
+                  anda ialah <b>{{ memo.reason }}</b>. Sila rujuk
+                  <a
+                    [href]="memo.attachment"
+                    target="_blank"
+                    class="font-weight-bold"
+                    >dokumen</a
+                  >
+                  yang telah anda muat-naik.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                placement="top-center"
+                triggers="hover focus click"
+                tooltip="Imbas kod QR kedatangan"
+                class="btn-icon-clipboard"
+                (click)="openModal(qrModal)"
+                *ngIf="isSameAfterStart && isSameBeforeEnd && !memo"
+              >
+                <div class="row">
+                  <div class="col-2">
+                    <img [src]="iconQR" class="card-icon" />
+                  </div>
+                  <div class="col-10">
+                    <span>Imbas kod QR kehadiran</span>
+                  </div>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                placement="top-center"
+                triggers="hover focus click"
+                tooltip="Hantar memo tidak hadir"
+                class="btn-icon-clipboard"
+                (click)="openModal(memoModal)"
+                *ngIf="isBeforeStart && isMemoEmpty"
+              >
+                <div class="row">
+                  <div class="col-2">
+                    <img [src]="iconMemo" class="card-icon" />
+                  </div>
+                  <div class="col-10">
+                    <span>Hantar memo tidak hadir</span>
+                  </div>
+                </div>
+              </button>
+            </div>
+
+            <div class="dataTables_wrapper py-4">
+              <div class="row">
+                <div class="col-sm-12 col-md-6">
+                  <div class="dataTables_length" id="datatable_length">
+                    <label>
+                      Lihat
+                      <select
+                        name="datatable_length"
+                        aria-controls="datatable"
+                        class="
+                          form-control form-control-sm
+                          custom-select custom-select-sm
+                        "
+                        (change)="entriesChange($event)"
+                      >
+                        <option
+                          value="5"
+                          [selected]="tableAttendancesEntries == 5"
+                        >
+                          5
+                        </option>
+                        <option
+                          value="10"
+                          [selected]="tableAttendancesEntries == 10"
+                        >
+                          10
+                        </option>
+                        <option
+                          value="15"
+                          [selected]="tableAttendancesEntries == 15"
+                        >
+                          15
+                        </option>
+                        <option
+                          value="-1"
+                          [selected]="tableAttendancesEntries == -1"
+                        >
+                          Semua
+                        </option>
+                      </select>
+                      rekod
+                    </label>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <!-- <div id="datatable_filter" class="dataTables_filter">
                                         <label>
                                             <input 
                                                 type="search"
@@ -287,163 +456,181 @@
                                             />
                                         </label>
                                     </div> -->
-                                </div>
-                            </div>
-                
-                            <div class="pt-4 text-center" *ngIf="isAttendancesEmpty">
-                                <img [src]="iconEmpty" class="error-icon">
-                                <p>Tiada rekod dijumpai</p>
-                            </div>
-                    
-                            <ngx-datatable 
-                                class="bootstrap selection-cell" 
-                                [columnMode]="'force'" 
-                                [headerHeight]="50" 
-                                [footerHeight]="50"
-                                [rowHeight]="'auto'"
-                                [limit]="tableAttendancesEntries != -1 ? tableAttendancesEntries : undefined" 
-                                [rows]="tableAttendancesTemp"
-                                [messages]="tableMessages"
-                                (activate)="onActivate($event)"
-                                *ngIf="!isAttendancesEmpty"
-                                [scrollbarH]="true"
-                            >
-                                <ngx-datatable-column
-                                >
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Waktu Masuk</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.check_in | date: 'd/M/y h:mm a'}}
-                                    </ng-template>
-                                </ngx-datatable-column>
-                    
-                                <ngx-datatable-column
-                                >
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Waktu Keluar</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.check_out | date: 'd/M/y h:mm a'}}
-                                    </ng-template>
-                                </ngx-datatable-column>
+                </div>
+              </div>
 
-                                <ngx-datatable-column
-                                >
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Status</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        <span *ngIf="row.is_attend" class="badge badge-pill badge-success">Telah disahkan</span>
-                                        <span *ngIf="!row.is_attend" class="badge badge-pill badge-warning">Belum disahkan</span>
-                                    </ng-template>
-                                </ngx-datatable-column>
-        
-                            </ngx-datatable>
-                        </div>
-					</div>
-                </tab>
-                <!-- Notes -->
-				<tab heading="Nota">
-					<div class="card mt-2">
-						<div class="card-header bg-secondary">
-							<h4 class="m-0">Nota</h4>
-						</div>
+              <div class="pt-4 text-center" *ngIf="isAttendancesEmpty">
+                <img [src]="iconEmpty" class="error-icon" />
+                <p>Tiada rekod dijumpai</p>
+              </div>
 
-						<div class="dataTables_wrapper py-4">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="dataTables_length" id="datatable_length">
-                                        <label>
-                                            Lihat
-                                            <select 
-                                                name="datatable_length" 
-                                                aria-controls="datatable" 
-                                                class="form-control form-control-sm custom-select custom-select-sm"
-                                                (change)="entriesChange($event)">
-                                                <option value="5" [selected]="tableNotesEntries == 5">5</option>
-                                                <option value="10" [selected]="tableNotesEntries == 10">10</option>
-                                                <option value="15" [selected]="tableNotesEntries == 15">15</option>
-                                                <option value="-1" [selected]="tableNotesEntries == -1">Semua</option>
-                                            </select>
-                                            rekod
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <div id="datatable_filter" class="dataTables_filter">
-                                        <label>
-                                            <input 
-                                                type="search"
-                                                class="form-control form-control-sm"
-                                                placeholder="Cari tajuk nota"
-                                                aria-controls="datatable"
-                                                (keyup)="filterTable($event)"
-                                            />
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                
-                            <div class="pt-4 text-center" *ngIf="isNotesEmpty">
-                                <img [src]="iconEmpty" class="error-icon">
-                                <p>Tiada rekod dijumpai</p>
-                            </div>
-                    
-                            <ngx-datatable 
-                                class="bootstrap selection-cell" 
-                                [columnMode]="'force'" 
-                                [headerHeight]="50" 
-                                [footerHeight]="50"
-                                [rowHeight]="'auto'"
-                                [limit]="tableNotesEntries != -1 ? tableNotesEntries : undefined" 
-                                [rows]="tableNotesTemp"
-                                [messages]="tableMessages"
-                                (activate)="onActivate($event)"
-                                *ngIf="!isNotesEmpty"
-                                [scrollbarH]="true"
-                            >
-                                <ngx-datatable-column
-                                    prop="title"
-                                >
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Tajuk</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.title}}
-                                    </ng-template>
-                                </ngx-datatable-column>
-                    
-                                <ngx-datatable-column
-                                    prop="note_code" 
-                                >
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Kod</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.note_code}}
-                                    </ng-template>
-                                </ngx-datatable-column>
-        
-                                <ngx-datatable-column>
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Aktiviti</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        <button 
-                                            class="btn btn-sm btn-warm-blue"
-                                            (click)="downloadNote(row)"
-                                        >
-                                            Muat turun
-                                        </button>
-                                    </ng-template>
-                                </ngx-datatable-column>
-                            </ngx-datatable>
-                        </div>
-					</div>
-                </tab>
-                <!--  -->
-				<!-- <tab heading="C">
+              <ngx-datatable
+                class="bootstrap selection-cell"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="'auto'"
+                [limit]="
+                  tableAttendancesEntries != -1
+                    ? tableAttendancesEntries
+                    : undefined
+                "
+                [rows]="tableAttendancesTemp"
+                [messages]="tableMessages"
+                (activate)="onActivate($event)"
+                *ngIf="!isAttendancesEmpty"
+                [scrollbarH]="true"
+              >
+                <ngx-datatable-column>
+                  <ng-template ngx-datatable-header-template>
+                    <span>Waktu Masuk</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.check_in | date: "d/M/y h:mm a" }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column>
+                  <ng-template ngx-datatable-header-template>
+                    <span>Waktu Keluar</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.check_out | date: "d/M/y h:mm a" }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column>
+                  <ng-template ngx-datatable-header-template>
+                    <span>Status</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    <span
+                      *ngIf="row.is_attend"
+                      class="badge badge-pill badge-success"
+                      >Telah disahkan</span
+                    >
+                    <span
+                      *ngIf="!row.is_attend"
+                      class="badge badge-pill badge-warning"
+                      >Belum disahkan</span
+                    >
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+            </div>
+          </div>
+        </tab>
+        <!-- Notes -->
+        <tab heading="Nota">
+          <div class="card mt-2">
+            <div class="card-header bg-secondary">
+              <h4 class="m-0">Nota</h4>
+            </div>
+
+            <div class="dataTables_wrapper py-4">
+              <div class="row">
+                <div class="col-sm-12 col-md-6">
+                  <div class="dataTables_length" id="datatable_length">
+                    <label>
+                      Lihat
+                      <select
+                        name="datatable_length"
+                        aria-controls="datatable"
+                        class="
+                          form-control form-control-sm
+                          custom-select custom-select-sm
+                        "
+                        (change)="entriesChange($event)"
+                      >
+                        <option value="5" [selected]="tableNotesEntries == 5">
+                          5
+                        </option>
+                        <option value="10" [selected]="tableNotesEntries == 10">
+                          10
+                        </option>
+                        <option value="15" [selected]="tableNotesEntries == 15">
+                          15
+                        </option>
+                        <option value="-1" [selected]="tableNotesEntries == -1">
+                          Semua
+                        </option>
+                      </select>
+                      rekod
+                    </label>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <div id="datatable_filter" class="dataTables_filter">
+                    <label>
+                      <input
+                        type="search"
+                        class="form-control form-control-sm"
+                        placeholder="Cari tajuk nota"
+                        aria-controls="datatable"
+                        (keyup)="filterTable($event)"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-4 text-center" *ngIf="isNotesEmpty">
+                <img [src]="iconEmpty" class="error-icon" />
+                <p>Tiada rekod dijumpai</p>
+              </div>
+
+              <ngx-datatable
+                class="bootstrap selection-cell"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="'auto'"
+                [limit]="
+                  tableNotesEntries != -1 ? tableNotesEntries : undefined
+                "
+                [rows]="tableNotesTemp"
+                [messages]="tableMessages"
+                (activate)="onActivate($event)"
+                *ngIf="!isNotesEmpty"
+                [scrollbarH]="true"
+              >
+                <ngx-datatable-column prop="title">
+                  <ng-template ngx-datatable-header-template>
+                    <span>Tajuk</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.title }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column prop="note_code">
+                  <ng-template ngx-datatable-header-template>
+                    <span>Kod</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.note_code }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column>
+                  <ng-template ngx-datatable-header-template>
+                    <span>Aktiviti</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    <button
+                      class="btn btn-sm btn-warm-blue"
+                      (click)="downloadNote(row)"
+                    >
+                      Muat turun
+                    </button>
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+            </div>
+          </div>
+        </tab>
+        <!--  -->
+        <!-- <tab heading="C">
 					<div class="card mt-2">
 						<div class="card-header">
 							<h4 class="m-0"></h4>
@@ -454,120 +641,126 @@
 						</div>
 					</div>
 				</tab> -->
-			</tabset>
-		</div>
+      </tabset>
     </div>
+  </div>
 </div>
 
 <ng-template #qrModal>
-    <div class="modal-header bg-warm-blue">
-        <h6 class="modal-title text-white my-auto" id="modal-title-default">
-            QR kedatangan
-        </h6>
+  <div class="modal-header bg-warm-blue">
+    <h6 class="modal-title text-white my-auto" id="modal-title-default">
+      QR kedatangan
+    </h6>
 
-        <button
-            aria-label="Close"
-            class="close"
-            data-dismiss="modal"
-            type="button"
-            (click)="closeModal()"
-        >
-            <span aria-hidden="true" class="text-white my-auto"> × </span>
-        </button>
-    </div>
+    <button
+      aria-label="Close"
+      class="close"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      <span aria-hidden="true" class="text-white my-auto"> × </span>
+    </button>
+  </div>
 
-    <div class="modal-body px-auto mx-auto">
-        <zxing-scanner
-            (scanSuccess)="scanSuccessHandler($event)"
-            (scanError)="scanErrorHandler($event)"
-        ></zxing-scanner>
-    </div>
+  <div class="modal-body px-auto mx-auto">
+    <zxing-scanner
+      (scanSuccess)="scanSuccessHandler($event)"
+      (scanError)="scanErrorHandler($event)"
+    ></zxing-scanner>
+  </div>
 
-    <div class="modal-footer">
-        <button
-            class="btn btn-outline-warm-blue ml-auto"
-            data-dismiss="modal"
-            type="button"
-            (click)="closeModal()"
-        >
-            Tutup
-        </button>
-    </div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-outline-warm-blue ml-auto"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      Tutup
+    </button>
+  </div>
 </ng-template>
 
 <ng-template #memoModal>
-    <div class="modal-header bg-warm-blue">
-        <h6 class="modal-title text-white my-auto" id="modal-title-default">
-            Memo tidak hadir
-        </h6>
+  <div class="modal-header bg-warm-blue">
+    <h6 class="modal-title text-white my-auto" id="modal-title-default">
+      Memo tidak hadir
+    </h6>
 
-        <button
-            aria-label="Close"
-            class="close"
-            data-dismiss="modal"
-            type="button"
-            (click)="closeModal()"
+    <button
+      aria-label="Close"
+      class="close"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      <span aria-hidden="true" class="text-white my-auto"> × </span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="absenceForm">
+      <div class="form-group">
+        <label class="form-control-label">Sebab Tidak Hadir</label>
+        <textarea class="form-control" formControlName="reason"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-control-label"
+          >Dokumen <span class="text-warning">*</span></label
         >
-            <span aria-hidden="true" class="text-white my-auto"> × </span>
-        </button>
-    </div>
+        <div class="custom-file">
+          <input
+            type="file"
+            class="custom-file-input"
+            id="lampiran"
+            lang="en"
+            (change)="onFileChange($event)"
+            accept=".pdf, image/*"
+            size="5"
+          />
+          <label class="custom-file-label" for="lampiran"
+            >Sila muat naik dokumen berkenaan</label
+          >
+        </div>
 
-    <div class="modal-body">
-        <form [formGroup]="absenceForm">
-            <div class="form-group">
-                <label class="form-control-label">Sebab Tidak Hadir</label>
-                <textarea class="form-control" formControlName="reason"></textarea>
-            </div>
+        <ng-container *ngIf="absenceForm.value['attachment']">
+          <div>
+            <i
+              class="fas fa-trash-alt text-warning mr-2"
+              placement="top"
+              tooltip="Remove attachment"
+              (click)="removeFile()"
+            >
+            </i>
+            {{ fileNameInformation }} [{{
+              fileSizeInformation / 1000000 | number: "1.2-2"
+            }}MB]
+          </div>
+        </ng-container>
+      </div>
+    </form>
+  </div>
 
-            <div class="form-group">
-                <label class="form-control-label">Dokumen <span class="text-warning">*</span></label>
-                <div class="custom-file">
-                    <input 
-                        type="file" 
-                        class="custom-file-input" 
-                        id="lampiran" 
-                        lang="en"
-                        (change)="onFileChange($event)" 
-                        accept=".pdf, image/*"
-                        size="5"
-                    >
-                    <label class="custom-file-label" for="lampiran">Sila muat naik lampiran berkenaan</label>
-                  </div>
+  <div class="modal-footer">
+    <button
+      class="btn btn-warm-blue mr-auto"
+      data-dismiss="modal"
+      type="button"
+      (click)="confirm()"
+      [disabled]="!absenceForm.valid"
+    >
+      Hantar
+    </button>
 
-                  <ng-container *ngIf="absenceForm.value['attachment']">
-                    <div>
-                        <i 
-                            class="fas fa-trash-alt text-warning mr-2"
-                            placement="top" 
-                            tooltip="Remove attachment"
-                            (click)="removeFile()"
-                        >
-                        </i>
-                        {{fileNameInformation}} [{{fileSizeInformation/1000000 | number: '1.2-2'}}MB]
-                    </div>
-                </ng-container>
-            </div>
-        </form>
-    </div>
-
-    <div class="modal-footer">
-        <button
-            class="btn btn-warm-blue mr-auto"
-            data-dismiss="modal"
-            type="button"
-            (click)="confirm()"
-            [disabled]="!absenceForm.valid"
-        >
-            Hantar
-        </button>
-
-        <button
-            class="btn btn-outline-warm-blue ml-auto"
-            data-dismiss="modal"
-            type="button"
-            (click)="closeModal()"
-        >
-            Tutup
-        </button>
-    </div>
+    <button
+      class="btn btn-outline-warm-blue ml-auto"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal()"
+    >
+      Tutup
+    </button>
+  </div>
 </ng-template>

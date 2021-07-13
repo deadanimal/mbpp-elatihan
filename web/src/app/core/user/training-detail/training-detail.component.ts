@@ -372,6 +372,7 @@ export class TrainingDetailComponent implements OnInit {
     this.absenceFormData = new FormData()
     this.absenceFormData.append('attendee', this.absenceForm.value['attendee'])
     this.absenceFormData.append('training', this.absenceForm.value['training'])
+    this.absenceFormData.append('reason', this.absenceForm.value['reason'])
     this.absenceFormData.append('exam', this.absenceForm.value['exam'])
     this.absenceFormData.append('attachment', this.absenceForm.value['attachment'])
     // console.log(examDate)

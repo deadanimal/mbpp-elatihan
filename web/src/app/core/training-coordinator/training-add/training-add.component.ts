@@ -494,7 +494,7 @@ export class TrainingAddComponent implements OnInit {
         Validators.required
       ])),
       course_code: new FormControl({value: null, disabled: true}),
-      target_group_type: new FormControl('TB', Validators.compose([
+      target_group_type: new FormControl('', Validators.compose([
         Validators.required
       ])),
       is_group_KP_A: new FormControl(true, Validators.compose([
