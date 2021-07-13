@@ -227,10 +227,10 @@ class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = InternalEvaluation.objects.all()
     serializer_class = InternalEvaluationSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    # filterset_fields = [
-    #     'staff',
-    #     'date'
-    # ]
+    filterset_fields = [
+        'training',
+        'attendee'
+    ]
 
     def get_permissions(self):
         permission_classes = [IsAuthenticated]#[IsAuthenticated]
