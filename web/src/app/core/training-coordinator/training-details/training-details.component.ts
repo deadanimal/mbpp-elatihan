@@ -36,7 +36,7 @@ import { UsersService } from 'src/app/shared/services/users/users.service';
 import * as moment from 'moment';
 import * as xlsx from 'xlsx';
 import swal from 'sweetalert2';
-import { Section } from 'src/app/shared/code/user';
+import { Department, Section } from 'src/app/shared/code/user';
 
 export enum SelectionType {
   single = "single",
@@ -73,6 +73,7 @@ export class TrainingDetailsComponent implements OnInit {
   qrValue: string
   staffs: User[] = []
   selectedStaffs: User[]
+  departments = Department
   sections = Section
   selectedGrp = []
   selectedDep = []

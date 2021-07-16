@@ -1803,8 +1803,8 @@
         <td>Jabatan</td>
         <td>Gred</td>
         <td>Taraf Lantikan</td>
-        <td>Bil Hari</td>
-        <td>Kursus</td>
+        <!-- <td>Bil Hari</td> -->
+        <!-- <td>Kursus</td> -->
         <th>Status</th>
         <th>Disahkan oleh</th>
         <th>Diterima oleh</th>
@@ -1817,22 +1817,26 @@
           {{ row.applicant?.full_name }}
         </td>
         <td>
-          {{ row.applicant?.position_code }}
+          {{ row.applicant?.position }}
         </td>
         <td>
           {{ row.applicant?.nric }}
         </td>
         <td>
-          {{ row.applicant?.department_code }}
+          <div *ngFor="let department of departments">
+            <span *ngIf="department.value == row.applicant?.department_code">{{department.text}}</span>
+          </div>
         </td>
         <td>
-          {{ row.applicant?.grade_code }}
+          {{ row.applicant?.salary_code }}
         </td>
         <td>
-          {{ row.applicant?.service_status }}
+          <span *ngIf="row.applicant?.service_status == 'K'">Kontrak</span>
+          <span *ngIf="row.applicant?.service_status == 'S'">Sementara</span>
+          <span *ngIf="row.applicant?.service_status == 'T'">Tetap</span>
         </td>
-        <td></td>
-        <td></td>
+        <!-- <td></td> -->
+        <!-- <td></td> -->
         <td>
           <span class="badge badge-success" *ngIf="row.status == 'AP'"
             >Diterima</span
