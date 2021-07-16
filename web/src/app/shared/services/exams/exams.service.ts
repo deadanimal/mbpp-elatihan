@@ -151,7 +151,7 @@ export class ExamsService {
     )
   }
 
-  updateAttendee(id: string, body: Form): Observable<Exam> {
+  updateAttendee(id: string, body): Observable<Exam> {
     let urlTemp = this.urlAttendees + id + '/'
     return this.http.patch<Exam>(urlTemp, body).pipe(
       tap((res) => {

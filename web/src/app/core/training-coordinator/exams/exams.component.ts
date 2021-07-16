@@ -71,6 +71,7 @@ export class ExamsComponent implements OnInit {
 
   // Form
   examForm: FormGroup
+  examFormData: FormData
 
   // Datepicker
   dateValue: Date
@@ -630,7 +631,20 @@ export class ExamsComponent implements OnInit {
     let fileNamePrefix = 'Laporan_Peperiksaan_Mengikut_Jabatan_' + todayDateFormat
 
     chart.exporting.menu = new am4core.ExportMenu();
-    chart.exporting.filePrefix = fileNamePrefix; 
+    chart.exporting.filePrefix = fileNamePrefix;
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].lulus = data.data[i].subData[0].value;
+        data.data[i].gagal = data.data[i].subData[1].value;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'department': 'Jabatan',
+      'total': 'Jumlah',
+      'lulus': 'Lulus',
+      'gagal': 'Gagal'
+    }
 
     this.chartDep = container
   }
@@ -720,6 +734,20 @@ export class ExamsComponent implements OnInit {
       this.examForm.controls['note'].patchValue(null)
     }
     // console.log('Wee', this.examForm.value)
+
+    this.examFormData = new FormData()
+    Object.keys(this.examForm.controls).forEach(key => {
+      if (key == 'document_copy') {
+        if (typeof this.examForm.get("document_copy").value != "string") {
+          this.examFormData.append(
+            "document_copy",
+            this.examForm.get("document_copy").value
+          );
+        }
+      }
+      else this.examFormData.append(key, this.examForm.value[key])
+    })
+
     swal.fire({
       title: 'Pengesahan',
       text: 'Anda pasti untuk mengemaskini peperiksaan ini?',
@@ -743,7 +771,7 @@ export class ExamsComponent implements OnInit {
     let infoMessage = 'Peperiksaan sedang dikemaskini'
     this.notifyService.openToastrInfo(infoTitle, infoMessage)
 
-    this.examService.updateAttendee(this.selectedAttendee.id, this.examForm.value).subscribe(
+    this.examService.updateAttendee(this.selectedAttendee.id, this.examFormData).subscribe(
       () => {
         this.loadingBar.complete()
       },
