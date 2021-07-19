@@ -13,6 +13,7 @@ import { TrainingAddComponent } from './training-add/training-add.component';
 import { TrainingDetailsComponent } from './training-details/training-details.component';
 import { UsersComponent } from './users/users.component';
 import { EvaluationDetailsComponent } from './evaluation-details/evaluation-details.component';
+import { TrainingHistoriesComponent } from './training-histories/training-histories.component';
 
 export const TrainingCoordinatorRoutes: Routes = [
     {
@@ -70,7 +71,11 @@ export const TrainingCoordinatorRoutes: Routes = [
                     {
                         path: 'details',
                         component: TrainingDetailsComponent
-                    }
+                    },
+                    {
+                        path: 'applicant-histories',
+                        component: TrainingHistoriesComponent
+                    },
                 ]
             },
             {

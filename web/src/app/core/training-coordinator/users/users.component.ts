@@ -1,5 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { forkJoin } from 'rxjs';
@@ -13,6 +14,7 @@ import * as moment from 'moment';
 import * as xlsx from 'xlsx';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { CustomValidators } from 'src/app/shared/validators/custom/custom-validators';
+
 
 export enum SelectionType {
   single = 'single',
@@ -82,8 +84,8 @@ export class UsersComponent implements OnInit {
     private loadingBar: LoadingBarService,
     private modalService: BsModalService,
     private notifyService: NotifyService,
-    private authService: AuthService
-    
+    private authService: AuthService,
+    private router: Router
   ) { 
     this.getData()
   }
@@ -300,6 +302,17 @@ export class UsersComponent implements OnInit {
         this.closeModal();
       }
     );
+  }
+
+  view(row) {
+    let path = '/tc/trainings/applicant-histories'
+    let extras = row.id
+    let queryParams = {
+      queryParams: {
+        id: extras
+      }
+    }
+    this.router.navigate([path], queryParams)
   }
 
 }

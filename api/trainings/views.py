@@ -1858,6 +1858,18 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer_class = TrainingApplicationExtendedDepartmentSerializer(applications, many=True)
         return Response(serializer_class.data)
     
+    @action(methods=['POST'], detail=False)
+    def get_department_applicant_histories(self, request, *args, **kwargs):
+
+        user = request.user
+        request_ = json.loads(request.body)
+        applications = TrainingApplication.objects.filter(
+            applicant=request_['applicant']
+        )
+
+        serializer_class = TrainingApplicationExtendedDepartmentSerializer(applications, many=True)
+        return Response(serializer_class.data)
+    
     @action(methods=['GET'], detail=False)
     def get_department_coordinator_histories(self, request, *args, **kwargs):
 
@@ -2000,7 +2012,8 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     filterset_fields = [
         'training', 
         'attendee',
-        'verified_by'
+        'verified_by',
+        'is_attend'
     ]
 
     def get_permissions(self):

@@ -37,6 +37,7 @@ import { UsersComponent } from './users/users.component';
 import { EvaluationsComponent } from './evaluations/evaluations.component';
 import { ReportConfigurationComponent } from './report-configuration/report-configuration.component';
 import { EvaluationDetailsComponent } from './evaluation-details/evaluation-details.component';
+import { TrainingHistoriesComponent } from './training-histories/training-histories.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
@@ -55,7 +56,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     UsersComponent,
     EvaluationsComponent,
     ReportConfigurationComponent,
-    EvaluationDetailsComponent
+    EvaluationDetailsComponent,
+    TrainingHistoriesComponent
   ],
   imports: [
     CommonModule,
