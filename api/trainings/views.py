@@ -1734,7 +1734,7 @@ class TrainingCoreViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['core', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -2337,7 +2337,7 @@ class TrainingNeedAnalysisViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -2425,33 +2425,48 @@ class TrainingNeedAnalysisViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         #         'core': core.child,
         #         'value': len(TrainingNeedAnalysis.objects.filter(core=core))
         #     })
-        data_to_pass_fn_ = []
-        data_to_pass_gn_ = []
+        # data_to_pass_fn_ = []
+        # data_to_pass_gn_ = []
 
+        # for core in cores:
+        #     if core.parent == 'FN':
+        #         data_to_pass_fn_.append({
+        #             'name': core.child,
+        #             'value': len(TrainingNeedAnalysis.objects.filter(core=core))
+        #         })
+        #     elif core.parent == 'GN':
+        #         data_to_pass_gn_.append({
+        #             'name': core.child,
+        #             'value': len(TrainingNeedAnalysis.objects.filter(core=core))
+        #         })
+
+        # data_to_pass_ = [
+        #     {
+        #         'type': 'FUNGSIONAL',
+        #         'value': len(TrainingNeedAnalysis.objects.filter(core__parent='FN')),
+        #         'subData': data_to_pass_fn_
+        #     },
+        #     {
+        #         'type': 'GENERIK',
+        #         'value': len(TrainingNeedAnalysis.objects.filter(core__parent='GN')),
+        #         'subData': data_to_pass_gn_
+        #     }
+        # ]
+        
+        data_to_pass_ = []
         for core in cores:
-            if core.parent == 'FN':
-                data_to_pass_fn_.append({
-                    'name': core.child,
-                    'value': len(TrainingNeedAnalysis.objects.filter(core=core))
+            if len(TrainingNeedAnalysis.objects.filter(core__child=core.child)) > 0:
+                data_to_pass_.append({
+                    'type': core.child,
+                    'value': len(TrainingNeedAnalysis.objects.filter(core__child=core.child)),
+                    'subData': [{
+                        'name': 'Fungsional',
+                        'value': len(TrainingNeedAnalysis.objects.filter(core__parent='FN', core__child=core.child))
+                    },{
+                        'name': 'Generik',
+                        'value': len(TrainingNeedAnalysis.objects.filter(core__parent='GN', core__child=core.child))
+                    }]
                 })
-            elif core.parent == 'GN':
-                data_to_pass_gn_.append({
-                    'name': core.child,
-                    'value': len(TrainingNeedAnalysis.objects.filter(core=core))
-                })
-
-        data_to_pass_ = [
-            {
-                'type': 'FUNGSIONAL',
-                'value': len(TrainingNeedAnalysis.objects.filter(core__parent='FN')),
-                'subData': data_to_pass_fn_
-            },
-            {
-                'type': 'GENERIK',
-                'value': len(TrainingNeedAnalysis.objects.filter(core__parent='GN')),
-                'subData': data_to_pass_gn_
-            }
-        ]
         """
         data_to_generate = [
             {

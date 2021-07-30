@@ -1,5 +1,5 @@
 import { Component, OnInit, NgZone, TemplateRef, ChangeDetectorRef } from '@angular/core';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService, BsDatepickerConfig } from 'ngx-bootstrap';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -77,7 +77,8 @@ export class ExamsComponent implements OnInit {
   dateValue: Date
   dateConfig = { 
     isAnimated: true, 
-    dateInputFormate: 'YYYY-MM-DDTHH:mm:ss.SSSSZ',
+    // dateInputFormate: 'YYYY-MM-DDTHH:mm:ss.SSSSZ',
+    dateInputFormat: 'DD/MM/YYYY',
     containerClass: 'theme-dark-blue modal-lg' 
   }
 
@@ -698,7 +699,7 @@ export class ExamsComponent implements OnInit {
     this.examForm.controls['document_copy'].setValue(this.selectedAttendee['document_copy'])
     this.examForm.controls['result'].setValue(this.selectedAttendee['result'])
     this.examForm.controls['note'].setValue(this.selectedAttendee['note'])
-    this.examForm.controls['date'].setValue(this.selectedAttendee['date'])
+    this.examForm.controls['date'].setValue(moment(this.selectedAttendee['date'], 'YYYY-MM-DDTHH:mm:ss.SSSSZ').toDate())
     this.dateValue = moment(this.selectedAttendee['date'], 'YYYY-MM-DDTHH:mm:ss.SSSSZ').toDate()
     this.examTypeTemp = this.selectedAttendee['exam']['classification']
 
@@ -724,8 +725,8 @@ export class ExamsComponent implements OnInit {
   }
 
   confirm() {
-    let examDate = moment(this.dateValue).format('YYYY-MM-DDTHH:mm:ss.SSSSZ')
-    this.examForm.controls['date'].setValue(examDate)
+    // let examDate = moment(this.dateValue).format('YYYY-MM-DDTHH:mm:ss.SSSSZ')
+    this.examForm.controls['date'].setValue(moment(this.examForm.value.date).format('YYYY-MM-DDTHH:mm:ss.SSSSZ'))
     // console.log(typeof this.examForm.value['document_copy'])
     if (typeof this.examForm.value['document_copy'] == 'string') {
       this.examForm.removeControl('document_copy')
