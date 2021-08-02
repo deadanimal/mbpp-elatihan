@@ -1,0 +1,260 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      MBPP - eLatihan | Laporan Penilaian dan Keberkesanan Kursus Luar
+    </title>
+    <meta
+      name="description"
+      content="MBPP - eLatihan | Laporan Penilaian dan Keberkesanan Kursus Luar"
+    />
+    <meta name="author" content="eLatihan" />
+
+    <style>
+      @page {
+        size: "A4";
+      }
+      html {
+        font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+      }
+      /* #footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 2.5rem;
+      } */
+    </style>
+  </head>
+
+  <body>
+    <table class="table table-borderless">
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-center">
+          <img
+            src="{% static 'image/mbpp-logo.png' %}"
+            style="height: 100px; width: 120px"
+          />
+        </td>
+        <td>
+          <div
+            class="p-2 text-center font-weight-bold"
+            style="border: 1px solid black"
+          >
+            MBPP: PK-PS-PKP-34-B03
+          </div>
+        </td>
+      </tr>
+    </table>
+    <h4 class="text-center font-weight-bold">
+      LAPORAN PENILAIAN KURSUS LUARAN<br />(KURSUS PENDEK)
+    </h4>
+
+    <table class="table table-borderless">
+      <tr>
+        <td class="font-weight-bold" style="width: 10px">A</td>
+        <td class="font-weight-bold" colspan="3">BUTIR-BUTIR PESERTA</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="font-weight-bold" style="width: 25%">Nama Peserta</td>
+        <td style="width: 10px">:</td>
+        <td style="text-decoration: underline">
+          {{ data.participant.full_name }}
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="font-weight-bold">Tempat</td>
+        <td>:</td>
+        <td style="text-decoration: underline">{{ data.participant.place }}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="font-weight-bold">Jawatan</td>
+        <td>:</td>
+        <td style="text-decoration: underline">
+          {{ data.participant.position }}
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="font-weight-bold">Jabatan</td>
+        <td>:</td>
+        <td style="text-decoration: underline">
+          {{ data.participant.department }}
+        </td>
+      </tr>
+    </table>
+    <table class="table table-borderless">
+      <tr>
+        <td class="font-weight-bold" style="width: 10px">B</td>
+        <td class="font-weight-bold" colspan="3">BUTIR-BUTIR KURSUS</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="font-weight-bold" style="width: 25%">Nama Kursus</td>
+        <td style="width: 10px">:</td>
+        <td style="text-decoration: underline">{{ data.training.title }}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="font-weight-bold">Tarikh</td>
+        <td>:</td>
+        <td style="text-decoration: underline">
+          {{ data.training.full_date }}
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="font-weight-bold">Tempoh Kursus</td>
+        <td>:</td>
+        <td style="text-decoration: underline">{{ data.training.duration }}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="font-weight-bold">Tempat Kursus</td>
+        <td>:</td>
+        <td style="text-decoration: underline">{{ data.training.venue }}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="font-weight-bold">Anjuran</td>
+        <td>:</td>
+        <td style="text-decoration: underline">
+          {{ data.training.organiser }}
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="font-weight-bold">Tajaan/Perbelanjaan</td>
+        <td>:</td>
+        <td style="text-decoration: underline">
+          {{ data.training.sponsor_expenses }}
+        </td>
+      </tr>
+    </table>
+    <table class="table table-borderless">
+      <tr>
+        <td class="font-weight-bold" style="width: 10px">C</td>
+        <td class="font-weight-bold">OBJEKTIF KURSUS</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="text-decoration: underline">{{ data.evaluation.one }}</td>
+      </tr>
+    </table>
+    <table class="table table-borderless">
+      <tr>
+        <td class="font-weight-bold" style="width: 10px">D</td>
+        <td>
+          ISI KANDUNGAN KURSUS<br />(Nyatakan tajuk-tajuk utama syarahan,
+          lawatan dan taklimat yang diadakan dan sertakan kertas projek/ country
+          report yang ditulis. Kepilkan maklumat program)
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="text-decoration: underline">{{ data.evaluation.two }}</td>
+      </tr>
+    </table>
+    <table class="table table-borderless">
+      <tr>
+        <td class="font-weight-bold" style="width: 10px">E</td>
+        <td>FAEDAH KURSUS YANG DIPEROLEHI BERHUBUNGKAIT DENGAN :</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="tab-size: 2">E1 Tugas dan Tanggungjawab anda</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="text-decoration: underline">{{ data.evaluation.three }}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="tab-size: 2">E1 Kemajuan Kerjaya anda</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="text-decoration: underline">{{ data.evaluation.four }}</td>
+      </tr>
+    </table>
+    <table class="table table-borderless">
+      <tr>
+        <td class="font-weight-bold" style="width: 10px">F</td>
+        <td>KEBAIKAN DAN KELEMAHAN KURSUS :</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="tab-size: 2">F1 Kebaikan</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="text-decoration: underline">{{ data.evaluation.five }}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="tab-size: 2">F1 Kelemahan</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="text-decoration: underline">{{ data.evaluation.six }}</td>
+      </tr>
+    </table>
+    <table class="table table-borderless">
+      <tr>
+        <td class="font-weight-bold" style="width: 10px">G</td>
+        <td>
+          PELAN TINDAKAN (ACTION PLAN) SELEPAS KURSUS<br />(Nyatakan
+          tindakan/rancangan yang anda fikir boleh diambil oleh anda/organisasi
+          hasil dari kursus ini)
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="text-decoration: underline">{{ data.evaluation.seven }}</td>
+      </tr>
+    </table>
+    <table class="table table-borderless">
+      <tr>
+        <td class="font-weight-bold" style="width: 10px">H</td>
+        <td class="font-weight-bold">
+          ADAKAH KURSUS INI SESUAI DIHADIRI OLEH PEGAWAI LAIN
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="text-decoration: underline">{{ data.evaluation.eight }}</td>
+      </tr>
+    </table>
+    <table class="table table-borderless">
+      <tr>
+        <td class="font-weight-bold" style="width: 10px">I</td>
+        <td class="font-weight-bold">BAHAN KURSUS<br />(Seperti dikepilkan)</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+    <hr style="border: 1px solid black" />
+    <table class="table table-borderless">
+      <tr>
+        <td class="font-weight-bold" style="width: 10px">J</td>
+        <td class="font-weight-bold">
+          PENGESAHAN KETUA JABATAN<br />Ulasan Ketua Jabatan (Sekiranya Ada)
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+    <hr style="border: 1px solid black" />
+    <h4 class="text-center">PENGESAHAN PENERIMAAN UNIT LATIHAN</h4>
+  </body>
+</html>

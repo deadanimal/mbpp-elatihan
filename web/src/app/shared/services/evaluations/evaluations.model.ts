@@ -179,6 +179,7 @@ export class Internal {
     public answer_6: string
     public answer_7: string
     public answer_8: string
+    public answer_9: string
     public approved_by: string
     public verified_by: string
     public created_at: string
@@ -196,6 +197,7 @@ export class Internal {
         answer_6: string,
         answer_7: string,
         answer_8: string,
+        answer_9: string,
         approved_by: string,
         verified_by: string,
         created_at: string,
@@ -212,6 +214,7 @@ export class Internal {
         this.answer_6 = answer_6
         this.answer_7 = answer_7
         this.answer_8 = answer_8
+        this.answer_9 = answer_9
         this.approved_by = approved_by
         this.verified_by = verified_by
         this.created_at = created_at
@@ -231,6 +234,7 @@ export class InternalExtended {
     public answer_6: string
     public answer_7: string
     public answer_8: string
+    public answer_9: string
     public approved_by: User
     public verified_by: User
     public created_at: string
@@ -248,6 +252,7 @@ export class InternalExtended {
         answer_6: string,
         answer_7: string,
         answer_8: string,
+        answer_9: string,
         approved_by: User,
         verified_by: User,
         created_at: string,
@@ -264,6 +269,7 @@ export class InternalExtended {
         this.answer_6 = answer_6
         this.answer_7 = answer_7
         this.answer_8 = answer_8
+        this.answer_9 = answer_9
         this.approved_by = approved_by
         this.verified_by = verified_by
         this.created_at = created_at

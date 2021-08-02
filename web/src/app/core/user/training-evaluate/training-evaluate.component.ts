@@ -142,6 +142,9 @@ export class TrainingEvaluateComponent implements OnInit {
       ])),
       answer_8: new FormControl(null, Validators.compose([
         Validators.required
+      ])),
+      answer_9: new FormControl(null, Validators.compose([
+        Validators.required
       ]))
     })
 
@@ -213,6 +216,7 @@ export class TrainingEvaluateComponent implements OnInit {
             this.internalForm.controls['answer_6'].patchValue(this.internal['answer_6'])
             this.internalForm.controls['answer_7'].patchValue(this.internal['answer_7'])
             this.internalForm.controls['answer_8'].patchValue(this.internal['answer_8'])
+            this.internalForm.controls['answer_9'].patchValue(this.internal['answer_9'])
             this.internalForm.controls['answer_1'].disable()
             this.internalForm.controls['answer_2'].disable()
             this.internalForm.controls['answer_3'].disable()
@@ -221,6 +225,7 @@ export class TrainingEvaluateComponent implements OnInit {
             this.internalForm.controls['answer_6'].disable()
             this.internalForm.controls['answer_7'].disable()
             this.internalForm.controls['answer_8'].disable()
+            this.internalForm.controls['answer_9'].disable()
           }
         }
         else if (this.trainingType == 'LL') {

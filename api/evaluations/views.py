@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.db.models import Q
 from django.utils import timezone
+from core.utils import get_departments, get_training_durations
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -53,6 +54,7 @@ from users.models import (
     CustomUser
 )
 
+
 class ContentEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = ContentEvaluation.objects.all()
     serializer_class = ContentEvaluationSerializer
@@ -63,21 +65,20 @@ class ContentEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]  # [IsAuthenticated]
         # """
         if self.action == 'generate_evaluation':
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
         # """
-        return [permission() for permission in permission_classes]    
+        return [permission() for permission in permission_classes]
 
-    
     def get_queryset(self):
         user = self.request.user
         queryset = ContentEvaluation.objects.all()
-        return queryset  
-    
+        return queryset
+
     @action(methods=['POST'], detail=False)
     def get_self(self, request, *args, **kwargs):
 
@@ -86,7 +87,8 @@ class ContentEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             evaluation__attendee=user
         )
 
-        serializer = ContentEvaluationExtendedSerializer(evaluations, many=True)
+        serializer = ContentEvaluationExtendedSerializer(
+            evaluations, many=True)
         return Response(serializer.data)
 
     @action(methods=['POST'], detail=False)
@@ -99,7 +101,8 @@ class ContentEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             training__id=request_training_
         )
 
-        serializer = ContentEvaluationExtendedSerializer(evaluations, many=True)
+        serializer = ContentEvaluationExtendedSerializer(
+            evaluations, many=True)
         return Response(serializer.data)
 
     @action(methods=['POST'], detail=False)
@@ -113,7 +116,8 @@ class ContentEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             evaluation__training__attendee=user
         )
 
-        serializer = ContentEvaluationExtendedSerializer(evaluation, many=False)
+        serializer = ContentEvaluationExtendedSerializer(
+            evaluation, many=False)
         return Response(serializer.data)
 
 
@@ -127,40 +131,39 @@ class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
-        """
-        if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+        permission_classes = [IsAuthenticated]  # [IsAuthenticated]
+        # """
+        if self.action == 'generate_evaluation':
+            permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
-        """
-        return [permission() for permission in permission_classes]    
+        # """
+        return [permission() for permission in permission_classes]
 
-    
     def get_queryset(self):
         user = self.request.user
         queryset = ExternalEvaluation.objects.all()
         return queryset
-    
+
     @action(methods=['GET'], detail=True)
     def extended(self, request, *args, **kwargs):
 
         user = self.request.user
         evaluation = self.get_object()
 
-        serializer = ExternalEvaluationExtendedSerializer(evaluation, many=False)
+        serializer = ExternalEvaluationExtendedSerializer(
+            evaluation, many=False)
         return Response(serializer.data)
 
-    
     @action(methods=['GET'], detail=False)
     def extended_all(self, request, *args, **kwargs):
 
         user = self.request.user
         evaluations = ExternalEvaluation.objects.all()
 
-        serializer = ExternalEvaluationExtendedSerializer(evaluations, many=True)
+        serializer = ExternalEvaluationExtendedSerializer(
+            evaluations, many=True)
         return Response(serializer.data)
-    
 
     @action(methods=['POST'], detail=False)
     def get_self(self, request, *args, **kwargs):
@@ -170,9 +173,10 @@ class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             attendee=user
         )
 
-        serializer = ExternalEvaluationExtendedSerializer(evaluations, many=True)
+        serializer = ExternalEvaluationExtendedSerializer(
+            evaluations, many=True)
         return Response(serializer.data)
-    
+
     @action(methods=['POST'], detail=False)
     def get_training(self, request, *args, **kwargs):
 
@@ -183,9 +187,10 @@ class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             training__id=request_training_
         )
 
-        serializer = ExternalEvaluationExtendedSerializer(evaluations, many=True)
+        serializer = ExternalEvaluationExtendedSerializer(
+            evaluations, many=True)
         return Response(serializer.data)
-    
+
     @action(methods=['POST'], detail=False)
     def get_training_self(self, request, *args, **kwargs):
 
@@ -197,7 +202,8 @@ class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             attendee=user
         )
 
-        serializer = ExternalEvaluationExtendedSerializer(evaluation, many=False)
+        serializer = ExternalEvaluationExtendedSerializer(
+            evaluation, many=False)
         return Response(serializer.data)
 
     @action(methods=['GET'], detail=True)
@@ -208,7 +214,8 @@ class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         evaluation.approved_by = user
         evaluation.save()
 
-        serializer = ExternalEvaluationExtendedSerializer(evaluation, many=False)
+        serializer = ExternalEvaluationExtendedSerializer(
+            evaluation, many=False)
         return Response(serializer.data)
 
     @action(methods=['GET'], detail=True)
@@ -219,125 +226,29 @@ class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         evaluation.verified_by = user
         evaluation.save()
 
-        serializer = ExternalEvaluationExtendedSerializer(evaluation, many=False)
-        return Response(serializer.data)
-
-
-class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
-    queryset = InternalEvaluation.objects.all()
-    serializer_class = InternalEvaluationSerializer
-    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    filterset_fields = [
-        'training',
-        'attendee'
-    ]
-
-    def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
-        # """
-        if self.action == 'list':
-            permission_classes = [AllowAny]
-        else:
-            permission_classes = [AllowAny]
-        # """
-        return [permission() for permission in permission_classes]    
-
-    
-    def get_queryset(self):
-        user = self.request.user
-        queryset = InternalEvaluation.objects.all()
-        return queryset  
-    
-
-    @action(methods=['GET'], detail=True)
-    def extended(self, request, *args, **kwargs):
-
-        user = self.request.user
-        evaluation = self.get_object()
-
-        serializer = InternalEvaluationExtendedSerializer(evaluation, many=False)
-        return Response(serializer.data)
-
-    
-    @action(methods=['GET'], detail=False)
-    def extended_all(self, request, *args, **kwargs):
-
-        user = self.request.user
-        evaluations = InternalEvaluation.objects.all()
-
-        serializer = InternalEvaluationExtendedSerializer(evaluations, many=True)
+        serializer = ExternalEvaluationExtendedSerializer(
+            evaluation, many=False)
         return Response(serializer.data)
     
-    @action(methods=['GET'], detail=False)
-    def get_self(self, request, *args, **kwargs):
-
-        user = self.request.user
-        evaluations = InternalEvaluation.objects.filter(
-            attendee=user
-        )
-
-        serializer = InternalEvaluationExtendedSerializer(evaluations, many=True)
-        return Response(serializer.data)
-    
-    @action(methods=['POST'], detail=False)
-    def get_training(self, request, *args, **kwargs):
-
-        user = self.request.user
-        request_ = json.loads(request.body)
-        request_training_ = request_['training']
-        evaluations = InternalEvaluation.objects.filter(
-            training__id=request_training_
-        )
-
-        serializer = InternalEvaluationExtendedSerializer(evaluations, many=True)
-        return Response(serializer.data)
-
-    @action(methods=['POST'], detail=False)
-    def get_training_self(self, request, *args, **kwargs):
-
-        user = self.request.user
-        request_ = json.loads(request.body)
-        request_training_ = request_['training']
-        evaluation = InternalEvaluation.objects.get(
-            training__id=request_training_,
-            attendee=user
-        )
-
-        serializer = InternalEvaluationExtendedSerializer(evaluation, many=False)
-        return Response(serializer.data)
-
-    @action(methods=['GET'], detail=True)
-    def approve(self, request, *args, **kwargs):
-
-        user = self.request.user
-        evaluation = self.get_object()
-        evaluation.approved_by = user
-        evaluation.save()
-
-        serializer = InternalEvaluationExtendedSerializer(evaluation, many=False)
-        return Response(serializer.data)
-
-    @action(methods=['GET'], detail=True)
-    def verify(self, request, *args, **kwargs):
-
-        user = self.request.user
-        evaluation = self.get_object()
-        evaluation.verified_by = user
-        evaluation.save()
-
-        serializer = InternalEvaluationExtendedSerializer(evaluation, many=False)
-        return Response(serializer.data)
-
     @action(methods=['GET'], detail=True)
     def generate_evaluation(self, request, *args, **kwargs):
 
         evaluation = self.get_object()
 
         items = {
+            'participant': {
+                'full_name': evaluation.attendee.full_name,
+                'place': '',
+                'position': evaluation.attendee.position,
+                'department': get_departments(evaluation.attendee.department_code)
+            },
             'training': {
                 'title': evaluation.training.title,
-                'full_date': '',
-                'venue': evaluation.training.venue
+                'full_date': evaluation.training.start_date.strftime("%d %B %Y") +' - '+ evaluation.training.end_date.strftime("%d %B %Y"),
+                'duration': get_training_durations(evaluation.training.start_date, evaluation.training.start_time, evaluation.training.end_date, evaluation.training.end_time),
+                'venue': evaluation.training.venue,
+                'organiser': evaluation.training.organiser.name,
+                'sponsor_expenses': ''
             },
             'evaluation': {
                 'one': evaluation.answer_1,
@@ -351,22 +262,215 @@ class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             }
         }
 
-        html_string = render_to_string('report/internal_evaluation.html', {'data': items})
-        html = HTML(string=html_string)
-        pdf_file = html.write_pdf(stylesheets=[CSS('https://pipeline-project.sgp1.digitaloceanspaces.com/mbpp-elatihan/css/template.css')])
-        
-        file_path = "mbpp-elatihan/obb-report/" + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
-        # "mbpp-elatihan/application-report/" <-- naming system
-        saved_file = default_storage.save(
-            file_path, 
-            ContentFile(pdf_file)
-        )
-        
-        full_url_path = settings.MEDIA_ROOT + saved_file
-        # print(full_url_path)
+        html_string = render_to_string(
+            'report/external_evaluation.html', {'data': items})
+        html = HTML(string=html_string, base_url=request.build_absolute_uri())
+        pdf_file = html.write_pdf(
+            stylesheets=[CSS(settings.STATIC_ROOT + '/css/bootstrap.css')])
 
-        serializer = 'https://pipeline-project.sgp1.digitaloceanspaces.com/'+full_url_path
-        return Response(serializer)
+        # Creating http response
+        filename = 'Laporan_Penilaian_Dan_Keberkesanan_Kursus_Luar.pdf'
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="'+filename+'"'
+        response['Content-Transfer-Encoding'] = 'binary'
+        # with tempfile.NamedTemporaryFile(delete=True) as output:
+        #     output.write(result)
+        #     output.flush()
+        #     output = open(output.name, 'rb')
+        #     response.write(output.read())
+
+        return response
+
+        # file_path = "mbpp-elatihan/obb-report/" + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
+        # # "mbpp-elatihan/application-report/" <-- naming system
+        # saved_file = default_storage.save(
+        #     file_path,
+        #     ContentFile(pdf_file)
+        # )
+
+        # full_url_path = settings.MEDIA_ROOT + saved_file
+        # # print(full_url_path)
+
+        # serializer = 'https://pipeline-project.sgp1.digitaloceanspaces.com/'+full_url_path
+        # return Response(serializer)
+
+
+class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = InternalEvaluation.objects.all()
+    serializer_class = InternalEvaluationSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    filterset_fields = [
+        'training',
+        'attendee'
+    ]
+
+    def get_permissions(self):
+        permission_classes = [IsAuthenticated]  # [IsAuthenticated]
+        # """
+        if self.action == 'generate_evaluation':
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAuthenticated]
+        # """
+        return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = InternalEvaluation.objects.all()
+        return queryset
+
+    @action(methods=['GET'], detail=True)
+    def extended(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluation = self.get_object()
+
+        serializer = InternalEvaluationExtendedSerializer(
+            evaluation, many=False)
+        return Response(serializer.data)
+
+    @action(methods=['GET'], detail=False)
+    def extended_all(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluations = InternalEvaluation.objects.all()
+
+        serializer = InternalEvaluationExtendedSerializer(
+            evaluations, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['GET'], detail=False)
+    def get_self(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluations = InternalEvaluation.objects.filter(
+            attendee=user
+        )
+
+        serializer = InternalEvaluationExtendedSerializer(
+            evaluations, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['POST'], detail=False)
+    def get_training(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+        evaluations = InternalEvaluation.objects.filter(
+            training__id=request_training_
+        )
+
+        serializer = InternalEvaluationExtendedSerializer(
+            evaluations, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['POST'], detail=False)
+    def get_training_self(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+        evaluation = InternalEvaluation.objects.get(
+            training__id=request_training_,
+            attendee=user
+        )
+
+        serializer = InternalEvaluationExtendedSerializer(
+            evaluation, many=False)
+        return Response(serializer.data)
+
+    @action(methods=['GET'], detail=True)
+    def approve(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluation = self.get_object()
+        evaluation.approved_by = user
+        evaluation.save()
+
+        serializer = InternalEvaluationExtendedSerializer(
+            evaluation, many=False)
+        return Response(serializer.data)
+
+    @action(methods=['GET'], detail=True)
+    def verify(self, request, *args, **kwargs):
+
+        user = self.request.user
+        evaluation = self.get_object()
+        evaluation.verified_by = user
+        evaluation.save()
+
+        serializer = InternalEvaluationExtendedSerializer(
+            evaluation, many=False)
+        return Response(serializer.data)
+
+    @action(methods=['GET'], detail=True)
+    def generate_evaluation(self, request, *args, **kwargs):
+
+        evaluation = self.get_object()
+        content_evaluation = ContentEvaluation.objects.filter(
+            evaluation=evaluation.id).values()
+
+        contents = []
+        for data in content_evaluation:
+            contents.append({
+                "topic_trainer": data['topic_trainer'],
+                "content": data['content'],
+                "presentation": data['presentation'],
+                "relevance": data['relevance'],
+            })
+
+        items = {
+            'training': {
+                'title': evaluation.training.title,
+                'full_date': evaluation.training.start_date.strftime("%d %B %Y"),
+                'venue': evaluation.training.venue
+            },
+            'evaluation': {
+                'one': evaluation.answer_1,
+                'two': evaluation.answer_2,
+                'three': evaluation.answer_3,
+                'four': evaluation.answer_4,
+                'five': evaluation.answer_5,
+                'six': evaluation.answer_6,
+                'seven': evaluation.answer_7,
+                'eight': evaluation.answer_8,
+                'nine': evaluation.answer_9
+            },
+            'contents': contents
+        }
+
+        html_string = render_to_string(
+            'report/internal_evaluation.html', {'data': items})
+        html = HTML(string=html_string, base_url=request.build_absolute_uri())
+        pdf_file = html.write_pdf(
+            stylesheets=[CSS(settings.STATIC_ROOT + '/css/bootstrap.css')])
+
+        # Creating http response
+        filename = 'Borang_Penilaian_Kursus_Dalaman.pdf'
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="'+filename+'"'
+        response['Content-Transfer-Encoding'] = 'binary'
+        # with tempfile.NamedTemporaryFile(delete=True) as output:
+        #     output.write(result)
+        #     output.flush()
+        #     output = open(output.name, 'rb')
+        #     response.write(output.read())
+
+        return response
+
+        # file_path = "mbpp-elatihan/obb-report/" + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
+        # # "mbpp-elatihan/application-report/" <-- naming system
+        # saved_file = default_storage.save(
+        #     file_path,
+        #     ContentFile(pdf_file)
+        # )
+
+        # full_url_path = settings.MEDIA_ROOT + saved_file
+        # # print(full_url_path)
+
+        # serializer = 'https://pipeline-project.sgp1.digitaloceanspaces.com/'+full_url_path
+        # return Response(serializer)
 
 
 class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
@@ -379,21 +483,20 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [IsAuthenticated]  # [IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
         else:
             permission_classes = [IsAuthenticated]
         """
-        return [permission() for permission in permission_classes]    
+        return [permission() for permission in permission_classes]
 
-    
     def get_queryset(self):
         user = self.request.user
         queryset = Certificate.objects.all()
-        return queryset  
-    
+        return queryset
+
     @action(methods=['GET'], detail=False)
     def get_self(self, request, *args, **kwargs):
 
@@ -455,8 +558,8 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             }
 
             html_string = render_to_string(
-                'cert/cert.html', 
-                { 'data': data_ }
+                'cert/cert.html',
+                {'data': data_}
             )
             html = HTML(string=html_string)
             pdf_file = html.write_pdf(stylesheets=[CSS(css_file)])
@@ -474,7 +577,7 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                 generated_by=user,
                 cert=full_url_path
             )
-        
+
         certificates = Certificate.objects.filter(training=training)
 
         serializer = CertificateExtendedSerializer(certificates, many=True)

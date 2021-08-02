@@ -41,6 +41,7 @@ class InternalEvaluation(models.Model):
     answer_6 = models.CharField(max_length=1, null=True) # Question 4.3: 1/2/3/4/5
     answer_7 = models.TextField(null=True) # Question 5: Free text
     answer_8 = models.TextField(null=True) # Question 6: Free text
+    answer_9 = models.TextField(null=True) # Question 2: Free text
 
     approved_by = models.ForeignKey( # Department head
         CustomUser, 
@@ -68,8 +69,8 @@ class InternalEvaluation(models.Model):
     class Meta:
         ordering = ['-created_at']
 
-    def __str__(self):
-        return self.training
+    # def __str__(self):
+    #     return self.training
 
 
 class ExternalEvaluation(models.Model):
@@ -124,8 +125,8 @@ class ExternalEvaluation(models.Model):
     class Meta:
         ordering = ['-created_at']
 
-    def __str__(self):
-        return self.training
+    # def __str__(self):
+    #     return self.training
 
 
 class ContentEvaluation(models.Model):
@@ -148,8 +149,8 @@ class ContentEvaluation(models.Model):
     class Meta:
         ordering = ['-created_at']
 
-    def __str__(self):
-        return self.evaluation
+    # def __str__(self):
+    #     return self.evaluation
 
 
 class Certificate(models.Model):
@@ -184,5 +185,5 @@ class Certificate(models.Model):
     class Meta:
         ordering = ['-created_at']
 
-    def __str__(self):
-        return self.evaluation
+    # def __str__(self):
+    #     return self.evaluation

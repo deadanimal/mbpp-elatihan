@@ -6,6 +6,7 @@ import pytz
 import dateutil.parser
 
 from django.utils import timezone
+from core.utils import get_departments
 
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -326,45 +327,8 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             ).filter(
                 department_code=request_department_
             )
-
-            if request_department_ == '11':
-                department = 'JABATAN KHIDMAT PENGURUSAN'
-            elif request_department_ == '15':
-                department = 'JABATAN PENGUATKUASAAN'
-            elif request_department_ == '21':
-                department = 'JABATAN PERBENDAHARAAN'
-            elif request_department_ == '31':
-                department = 'JABATAN KEJURUTERAAN'
-            elif request_department_ == '41':
-                department = 'JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN'
-            elif request_department_ == '45':
-                department = 'JABATAN PERKHIDMATAN DAN PERBANDARAAN'
-            elif request_department_ == '47':
-                department = 'JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN - PELESENAN'
-            elif request_department_ == '51':
-                department = 'JABATAN KAWALAN BANGUNAN'
-            elif request_department_ == '55':
-                department = 'JABATAN KONSERVASI WARISAN'
-            elif request_department_ == '61':
-                department = 'JABATAN PENILAIAN DAN PENGURUSAN HARTA'
-            elif request_department_ == '63':
-                department = 'JABATAN PESURUHJAYA BANGUNAN'
-            elif request_department_ == '71':
-                department = 'JABATAN PERANCANGAN PEMBANGUNAN'
-            elif request_department_ == '81':
-                department = 'JABATAN KHIDMAT KEMASYARAKATAN'
-            elif request_department_ == '86':
-                department = 'JABATAN LANDSKAP'
-            elif request_department_ == '90':
-                department = 'PEJABAT DATUK BANDAR'
-            elif request_department_ == '91':
-                department = 'PEJABAT DATUK BANDAR - UNDANG - UNDANG'
-            elif request_department_ == '92':
-                department = 'PEJABAT DATUK BANDAR - PENYELARASAN PEMBANGUNAN'
-            elif request_department_ == '93':
-                department = 'PEJABAT DATUK BANDAR - AUDIT DALAM'
-            elif request_department_ == '94':
-                department = 'PEJABAT DATUK BANDAR - OSC'
+            
+            department = get_departments(request_department_)
         
         # Filter month
         if request_month_type_ == 'ALL':
