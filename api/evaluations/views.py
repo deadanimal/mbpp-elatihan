@@ -245,7 +245,7 @@ class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             'training': {
                 'title': evaluation.training.title,
                 'full_date': evaluation.training.start_date.strftime("%d %B %Y") +' - '+ evaluation.training.end_date.strftime("%d %B %Y"),
-                'duration': get_training_durations(evaluation.training.start_date, evaluation.training.start_time, evaluation.training.end_date, evaluation.training.end_time),
+                'duration': get_training_durations('string', evaluation.training.start_date, evaluation.training.start_time, evaluation.training.end_date, evaluation.training.end_time),
                 'venue': evaluation.training.venue,
                 'organiser': evaluation.training.organiser.name,
                 'sponsor_expenses': ''

@@ -113,9 +113,10 @@ export class AttendancesService {
     )
   }
 
-  signAttendance(id: string) {
-    let urlTemp = this.urlAttendances + id + '/sign/'
-    return this.http.get<any>(urlTemp).pipe(
+  signAttendance(body) {
+    // let urlTemp = this.urlAttendances + id + '/sign/'
+    let urlTemp = this.urlAttendances + '/sign/'
+    return this.http.post<any>(urlTemp, body).pipe(
       tap((res) => {
         this.attendance = res
         // console.log('Attendance: ', this.attendance)

@@ -498,6 +498,7 @@ class TrainingAttendee(models.Model):
         related_name='attendee'
     )
     is_attend = models.BooleanField(default=False)
+    check_date = models.DateField(null=True)
     check_in = models.DateTimeField(null=True)
     check_out = models.DateTimeField(null=True)
     checked_in_by = models.ForeignKey(

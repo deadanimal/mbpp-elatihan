@@ -350,7 +350,8 @@
               <div *ngIf="!isMemoEmpty">
                 <p>
                   Anda telah memilih untuk tidak menghadiri latihan ini. Alasan
-                  anda ialah <b>{{ memo.reason }}</b>. Sila rujuk
+                  anda ialah <b>{{ memo.reason }}</b
+                  >. Sila rujuk
                   <a
                     [href]="memo.attachment"
                     target="_blank"
@@ -361,6 +362,7 @@
                 </p>
               </div>
 
+              <!-- *ngIf="isSameAfterStart && isSameBeforeEnd && !memo" -->
               <button
                 type="button"
                 placement="top-center"
@@ -368,7 +370,6 @@
                 tooltip="Imbas kod QR kedatangan"
                 class="btn-icon-clipboard"
                 (click)="openModal(qrModal)"
-                *ngIf="isSameAfterStart && isSameBeforeEnd && !memo"
               >
                 <div class="row">
                   <div class="col-2">
@@ -481,6 +482,15 @@
                 *ngIf="!isAttendancesEmpty"
                 [scrollbarH]="true"
               >
+                <ngx-datatable-column>
+                  <ng-template ngx-datatable-header-template>
+                    <span>Tarikh Kehadiran</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.check_date | date: "d/M/y" }}
+                  </ng-template>
+                </ngx-datatable-column>
+
                 <ngx-datatable-column>
                   <ng-template ngx-datatable-header-template>
                     <span>Waktu Masuk</span>

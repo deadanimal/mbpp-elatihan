@@ -86,6 +86,10 @@ from users.serializers import (
     CustomUserSerializer
 )
 
+def daterange(start_date, end_date):
+    for n in range(int((end_date - start_date).days)):
+        yield start_date + datetime.timedelta(n)
+
 class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Training.objects.all()
     serializer_class = TrainingSerializer
@@ -1996,26 +2000,47 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         queryset = TrainingAttendee.objects.all()
         return queryset  
     
-    @action(methods=['GET'], detail=True)
+    @action(methods=['POST'], detail=False)
     def sign(self, request, *args, **kwargs):
 
-        attendance = self.get_object()
-        attendee = request.user
+        # attendance = self.get_object()
+        data = json.loads(request.body)
+        data_split = data['qr_code'].split('|')
         
-        if datetime.time(12) > datetime.datetime.now().time():
-            attendance.check_in = datetime.datetime.now()
-            attendance.checked_in_by = attendee
+        """
+        QR Code Format: <training_id>|<check_type>|<current_date:YYYY-MM-DD>
+        """
+        
+        if uuid.UUID(data_split[0]) and datetime.datetime.strptime(data_split[2], '%Y-%m-%d'):
+
+            attendance = TrainingAttendee.objects.get(training=data_split[0], check_date=data_split[2])
+            attendee = request.user
+            
+            if data_split[1] == 'check_in':
+                attendance.check_in = datetime.datetime.now()
+                attendance.checked_in_by = attendee    
+            elif data_split[1] == 'check_out':
+                attendance.check_out = datetime.datetime.now()
+                attendance.checked_out_by = attendee
+                
+            attendance.save()
+            
+            serializer = TrainingAttendeeSerializer(attendance)
+            
+            return Response(serializer.data)
         else:
-            attendance.check_out = datetime.datetime.now()
-            attendance.checked_out_by = attendee
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        # if datetime.time(12) > datetime.datetime.now().time():
+        #     attendance.check_in = datetime.datetime.now()
+        #     attendance.checked_in_by = attendee
+        # else:
+        #     attendance.check_out = datetime.datetime.now()
+        #     attendance.checked_out_by = attendee
         
         # if attendance.check_in and attendance.check_out:
         #     attendance.is_attend = True
 
-        attendance.save()
-
-        serializer = TrainingAttendeeSerializer(attendance)
-        return Response(serializer.data)
     
     @action(methods=['GET'], detail=True)
     def sign_coordinator(self, request, *args, **kwargs):
@@ -2086,18 +2111,33 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                 attendee=attendee,
                 training=training,
                 created_at__date=datetime.datetime.now().date()
-            ).first()
+            )
             
             if attendance:
-                serializer = TrainingAttendeeSerializer(attendance)
+                serializer = TrainingAttendeeSerializer(attendance, many=True)
                 return Response(serializer.data)
             else:
+                # to create multiple attendance if more than 1 day
+                for single_date in daterange(training.start_date, training.end_date):
+                    attendance_ = TrainingAttendee.objects.create(
+                        attendee=attendee,
+                        training=training,
+                        check_date=single_date
+                    )
+                
                 attendance_ = TrainingAttendee.objects.create(
                     attendee=attendee,
-                    training=training
+                    training=training,
+                    check_date=training.end_date
+                )
+                
+                attendance = TrainingAttendee.objects.filter(
+                    attendee=attendee,
+                    training=training,
+                    created_at__date=datetime.datetime.now().date()
                 )
 
-                serializer = TrainingAttendeeSerializer(attendance_)
+                serializer = TrainingAttendeeSerializer(attendance, many=True)
                 return Response(serializer.data)
         else:
             return HttpResponse(status=204)

@@ -43,7 +43,7 @@ def get_departments(department_code):
         
     return department
 
-def get_training_durations(start_date, start_time, end_date, end_time):
+def get_training_durations(type, start_date, start_time, end_date, end_time):
     
     start_dt = str(start_date) + ' ' + str(start_time)
     end_dt = str(end_date) + ' ' + str(end_time)
@@ -62,15 +62,24 @@ def get_training_durations(start_date, start_time, end_date, end_time):
     seconds = time
 
     str_day = ''
+    num_day = 0
     if day > 0:
         str_day = str(int(day)) + ' hari'
+        num_day = int(day)
 
     str_hour = ''
+    num_hour = 0
     if hour > 0:
         str_hour = str(int(hour)) + ' jam'
+        num_hour = int(hour)
 
     str_minutes = ''
+    num_minutes = 0
     if minutes > 0:
         str_minutes = str(int(minutes)) + ' minit'
+        num_minutes = int(minutes)
         
-    return ' '.join([str_day, str_hour, str_minutes])
+    if type == 'string':
+        return ' '.join([str_day, str_hour, str_minutes])
+    elif type == 'number':
+        return [num_day, num_hour, num_minutes]

@@ -40,6 +40,8 @@ export class TrainingDetailComponent implements OnInit {
   training: TrainingExtended
   notes: Note[] = []
   qrID
+  qrCodeCheckIn
+  qrCodeCheckOut
   memo: AbsenceMemo
   attendances: Attendance[] = []
   user: User
@@ -273,7 +275,11 @@ export class TrainingDetailComponent implements OnInit {
       () => {},
       () => {},
       () => {
-        this.qrID = this.attendanceService.attendanceQRID['id']
+        this.qrID = this.attendanceService.attendanceQRID[0]['id']
+        this.qrCodeCheckIn = this.attendanceService.attendanceQRID[0]['training']+'|check_in|'+moment(new Date()).format('YYYY-MM-DD')
+        this.qrCodeCheckOut = this.attendanceService.attendanceQRID[0]['training']+'|check_out|'+moment(new Date()).format('YYYY-MM-DD')
+        console.log('qrCodeCheckIn', this.qrCodeCheckIn)
+        console.log('qrCodeCheckOut', this.qrCodeCheckOut)
         this.attendances = this.attendanceService.attendances
         // console.log(this.qrID)
         this.tableAttendancesRows = this.attendances
@@ -334,8 +340,9 @@ export class TrainingDetailComponent implements OnInit {
 
   scanSuccessHandler(event) {
     this.loadingBar.start()
-    if (event == this.qrID) {
-      this.attendanceService.signAttendance(this.qrID).subscribe(
+    console.log('event', event)
+    if (event == this.qrCodeCheckIn || event == this.qrCodeCheckOut) {
+      this.attendanceService.signAttendance({'qr_code': event}).subscribe(
         () => {
           this.loadingBar.complete()
         },

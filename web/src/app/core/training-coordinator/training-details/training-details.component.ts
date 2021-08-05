@@ -71,6 +71,8 @@ export class TrainingDetailsComponent implements OnInit {
   qrID
   qrElementType = 'url'
   qrValue: string
+  qrValueCheckIn: string
+  qrValueCheckOut: string
   staffs: User[] = []
   selectedStaffs: User[]
   departments = Department
@@ -683,8 +685,12 @@ export class TrainingDetailsComponent implements OnInit {
         
         this.tableApplicationsRows = this.applications
         this.tableApplicationsTemp = this.tableApplicationsRows.map((prop, key) => {
+          let result = this.departments.find((obj) => {
+            return obj.value == prop.applicant.department_code
+          })
           return {
             ...prop,
+            department: result.text,
             id_index: key+1
           };
         });
@@ -761,6 +767,10 @@ export class TrainingDetailsComponent implements OnInit {
         // Get live / before
         let today = moment().toDate()
         let end_date = moment(this.training['end_date'], 'YYYY-MM-DD').toDate()
+
+        // Set QR code value for check in and check out
+        this.qrValueCheckIn = this.training['id']+'|check_in|'+moment(today).format('YYYY-MM-DD')
+        this.qrValueCheckOut = this.training['id']+'|check_out|'+moment(today).format('YYYY-MM-DD')
         
         // Same day
         if (moment(today).isSameOrBefore(end_date)) {

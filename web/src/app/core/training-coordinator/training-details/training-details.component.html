@@ -3,7 +3,7 @@
   <div class="container-fluid">
     <div class="header-body">
       <div class="row align-items-center py-4">
-        <div class="col-lg-6 col-7">
+        <div class="col">
           <h6 class="h2 text-dark d-inline-block mb-0">
             Butiran <span (click)="viewForm()">Latihan</span>
           </h6>
@@ -19,7 +19,7 @@
           </nav>
         </div>
 
-        <div class="col-lg-6 col-5 text-right">
+        <div class="col-auto text-right">
           <a
             class="btn btn-sm btn-warm-blue text-white"
             *ngIf="training?.status == 'DB' || training?.status == 'TN'"
@@ -29,12 +29,24 @@
             Tambah Permohonan
           </a>
 
-          <a
+          <!-- <a
             class="btn btn-sm btn-warm-blue text-white"
             (click)="openModal(qrModal)"
             *ngIf="!isQREmpty"
           >
             QR Kedatangan
+          </a> -->
+          <a
+            class="btn btn-sm btn-warm-blue text-white"
+            (click)="openModal(qrCheckInModal)"
+          >
+            QR Kedatangan (Daftar masuk)
+          </a>
+          <a
+            class="btn btn-sm btn-warm-blue text-white"
+            (click)="openModal(qrCheckOutModal)"
+          >
+            QR Kedatangan (Daftar keluar)
           </a>
 
           <a
@@ -1046,7 +1058,7 @@
                     <span>Jabatan</span>
                   </ng-template>
                   <ng-template let-row="row" ngx-datatable-cell-template>
-                    {{ row.applicant?.department_code }}
+                    {{ row.department }}
                   </ng-template>
                 </ngx-datatable-column>
 
@@ -1255,7 +1267,7 @@
                     <span>Tarikh</span>
                   </ng-template>
                   <ng-template let-row="row" ngx-datatable-cell-template>
-                    {{ row.created_at | date: "d/M/y" }}
+                    {{ row.check_date | date: "d/M/y" }}
                   </ng-template>
                 </ngx-datatable-column>
 
@@ -1720,7 +1732,7 @@
   </div>
 </ng-template>
 
-<ng-template #qrModal>
+<!-- <ng-template #qrModal>
   <div class="modal-header bg-warm-blue">
     <h6 class="modal-title text-white my-auto" id="modal-title-default">
       QR kedatangan
@@ -1753,6 +1765,84 @@
       data-dismiss="modal"
       type="button"
       (click)="closeModal('qr')"
+    >
+      Tutup
+    </button>
+  </div>
+</ng-template> -->
+<ng-template #qrCheckInModal>
+  <div class="modal-header bg-warm-blue">
+    <h6 class="modal-title text-white my-auto" id="modal-title-default">
+      QR Kedatangan (Daftar Masuk)
+    </h6>
+
+    <button
+      aria-label="Close"
+      class="close"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal('qrCheckIn')"
+    >
+      <span aria-hidden="true" class="text-white my-auto"> × </span>
+    </button>
+  </div>
+
+  <div class="modal-body px-auto mx-auto">
+    <ngx-qrcode
+      [elementType]="qrElementType"
+      [value]="qrValueCheckIn"
+      cssClass="aclass"
+      errorCorrectionLevel="L"
+    >
+    </ngx-qrcode>
+    <div class="text-center"><h4 class="font-weight-bold">Tarikh: {{ dateToday }}</h4></div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      class="btn btn-outline-warm-blue ml-auto"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal('qrCheckIn')"
+    >
+      Tutup
+    </button>
+  </div>
+</ng-template>
+<ng-template #qrCheckOutModal>
+  <div class="modal-header bg-warm-blue">
+    <h6 class="modal-title text-white my-auto" id="modal-title-default">
+      QR Kedatangan (Daftar Keluar)
+    </h6>
+
+    <button
+      aria-label="Close"
+      class="close"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal('qrCheckOut')"
+    >
+      <span aria-hidden="true" class="text-white my-auto"> × </span>
+    </button>
+  </div>
+
+  <div class="modal-body px-auto mx-auto">
+    <ngx-qrcode
+      [elementType]="qrElementType"
+      [value]="qrValueCheckOut"
+      cssClass="aclass"
+      errorCorrectionLevel="L"
+    >
+    </ngx-qrcode>
+    <div class="text-center"><h4 class="font-weight-bold">Tarikh: {{ dateToday }}</h4></div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      class="btn btn-outline-warm-blue ml-auto"
+      data-dismiss="modal"
+      type="button"
+      (click)="closeModal('qrCheckOut')"
     >
       Tutup
     </button>
