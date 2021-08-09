@@ -107,7 +107,7 @@ export class StaffsComponent implements OnInit {
   filterTable($event) {
     let val = $event.target.value.toLowerCase();
     this.tableTemp = this.tableRows.filter(function (d) {
-      return d.staff_name.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.full_name.toLowerCase().indexOf(val) !== -1 || !val;
     });
   }
 
@@ -137,6 +137,17 @@ export class StaffsComponent implements OnInit {
 
     /* save to file */
     xlsx.writeFile(wb, fileName);
+  }
+
+  view(row) {
+    let path = '/dc/staffs/information'
+    let extras = row.id
+    let queryParams = {
+      queryParams: {
+        id: extras
+      }
+    }
+    this.router.navigate([path], queryParams)
   }
 
 }

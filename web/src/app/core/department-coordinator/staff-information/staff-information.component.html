@@ -1,1 +1,243 @@
-<p>staff-information works!</p>
+<ngx-loading-bar height="4px"></ngx-loading-bar>
+<div class="header pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-dark d-inline-block mb-0">Sejarah Kakitangan</h6>
+
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item">
+                <a href="javascript:void(0)">
+                  <i class="fas fa-chalkboard-teacher text-dark"> </i>
+                </a>
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-header bg-secondary">
+          <div class="row">
+            <div class="col my-auto">
+              <h4 class="m-0">Senarai Sejarah Kursus Kehadiran</h4>
+            </div>
+
+            <!-- <div class="col text-right">
+              <button class="btn btn-sm btn-warm-blue" (click)="exportExcel()">
+                Cetak
+              </button>
+            </div> -->
+          </div>
+        </div>
+        <div class="dataTables_wrapper py-4">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
+              <div class="dataTables_length" id="datatable_length">
+                <label>
+                  Lihat
+                  <select
+                    name="datatable_length"
+                    aria-controls="datatable"
+                    class="
+                      form-control form-control-sm
+                      custom-select custom-select-sm
+                    "
+                    (change)="entriesChange($event)"
+                  >
+                    <option value="5" [selected]="tableEntries == 5">5</option>
+                    <option value="10" [selected]="tableEntries == 10">
+                      10
+                    </option>
+                    <option value="15" [selected]="tableEntries == 15">
+                      15
+                    </option>
+                    <option value="-1" [selected]="tableEntries == -1">
+                      Semua
+                    </option>
+                  </select>
+                  rekod
+                </label>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div id="datatable_filter" class="dataTables_filter">
+                <label>
+                  <input
+                    type="search"
+                    class="form-control form-control-sm"
+                    placeholder="Cari tajuk latihan"
+                    aria-controls="datatable"
+                    (keyup)="filterTable($event, 'name')"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 text-center" *ngIf="isEmpty">
+            <img [src]="iconEmpty" class="error-icon" />
+            <p>Tiada rekod dijumpai</p>
+          </div>
+
+          <ngx-datatable
+            class="bootstrap selection-cell"
+            [columnMode]="'force'"
+            [headerHeight]="50"
+            [footerHeight]="50"
+            [rowHeight]="'auto'"
+            [limit]="tableEntries != -1 ? tableEntries : undefined"
+            [rows]="tableTemp"
+            [messages]="tableMessages"
+            (activate)="onActivate($event)"
+            *ngIf="!isEmpty"
+            [scrollbarH]="true"
+          >
+            <ngx-datatable-column prop="training.title">
+              <ng-template ngx-datatable-header-template>
+                <span>Nama Kursus</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.training?.title }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="training.venue">
+              <ng-template ngx-datatable-header-template>
+                <span>Tempat</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.training?.venue }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="training.organiser.name">
+              <ng-template ngx-datatable-header-template>
+                <span>Penganjur</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.training?.organiser?.name }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="training.start_date">
+              <ng-template ngx-datatable-header-template>
+                <span>Tarikh Mula</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.training?.start_date | date: "d/M/y" }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="training.end_date">
+              <ng-template ngx-datatable-header-template>
+                <span>Tarikh Tamat</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.training?.end_date | date: "d/M/y" }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="day_attend">
+              <ng-template ngx-datatable-header-template>
+                <span>Hari</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row?.day_attend }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="training.start_date">
+              <ng-template ngx-datatable-header-template>
+                <span>Tahun</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                {{ row.training?.start_date | date: "yyyy" }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!-- <ngx-datatable-column>
+              <ng-template ngx-datatable-header-template>
+                <span>Aktiviti</span>
+              </ng-template>
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <div class="btn-group dropdown" dropdown>
+                  <button class="btn btn-warm-blue" (click)="view(row)">
+                    Lihat
+                  </button>
+                </div>
+              </ng-template>
+            </ngx-datatable-column> -->
+          </ngx-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="table"
+  id="summaryTable"
+  #summaryTable
+  [hidden]="isSummaryTableHidden"
+>
+  <table class="table table-responsive table-flush">
+    <thead>
+      <tr>
+        <th>Nama Kakitangan</th>
+        <th>Kad Pengenalan</th>
+        <th>Bahagian</th>
+        <th>Kod Gaji</th>
+        <th>Latihan</th>
+        <th>Tarikh Mula</th>
+        <th>Tarikh Tamat</th>
+        <th>Kelulusaan Penyelaras</th>
+        <th>Kelulusaan Ketua</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let row of tableRows">
+        <td>
+          {{ row.applicant?.full_name }}
+        </td>
+        <td>
+          {{ row.applicant?.username }}
+        </td>
+        <td>
+          <ng-container *ngFor="let section of sections">
+            <span *ngIf="section.value == row.applicant?.section_code">{{
+              section.text
+            }}</span>
+          </ng-container>
+        </td>
+        <td>
+          {{ row.applicant?.salary_code }}
+        </td>
+        <td>
+          {{ row.training?.title }}
+        </td>
+        <td>
+          {{ row.training?.start_date | date: "d/M/y" }}
+        </td>
+        <td>
+          {{ row.training?.end_date | date: "d/M/y" }}
+        </td>
+        <td>
+          {{ row.approved_level_1_by?.full_name }}
+        </td>
+        <td>
+          {{ row.approved_level_2_by?.full_name }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

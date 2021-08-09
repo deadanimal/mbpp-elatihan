@@ -27,7 +27,7 @@ export class ReportComponent implements OnInit {
   // Choices
   reports = [
     { text: 'LAPORAN KEHADIRAN', value: 'LK' },
-    { text: 'LAPORAN OBB', value: 'LO' }
+    // { text: 'LAPORAN OBB', value: 'LO' }
   ]
   departments = Department
   monthTypes = [
