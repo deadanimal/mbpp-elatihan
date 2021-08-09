@@ -17,6 +17,7 @@ import { LoadingBarModule } from '@ngx-loading-bar/core';
 import { RouterModule } from '@angular/router';
 import { PagesRoutes } from './pages.routing';
 import { HomeComponent } from './home/home.component';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 @NgModule({
   declarations: [HomeComponent],
@@ -34,7 +35,8 @@ import { HomeComponent } from './home/home.component';
     ReactiveFormsModule,
     LoadingBarModule,
     NgxDatatableModule,
-    RouterModule.forChild(PagesRoutes)
+    RouterModule.forChild(PagesRoutes),
+    CarouselModule.forRoot()
   ]
 })
 export class PagesModule { }

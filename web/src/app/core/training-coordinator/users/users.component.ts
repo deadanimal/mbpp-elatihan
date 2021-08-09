@@ -283,11 +283,12 @@ export class UsersComponent implements OnInit {
   changePassword() {
     this.loadingBar.start();
     console.log(this.passwordForm.value);
-    this.authService.changePassword(this.passwordForm.value).subscribe(
-      () => {
-        this.loadingBar.complete();
+    this.userService.changePassword(this.selectedUser.id, this.passwordForm.value['new_password1']).subscribe(
+      (res)=> {
+        console.log(res)
+        this.loadingBar.complete()
       },
-      () => {
+      (error) => {
         this.loadingBar.complete();
         let title = "Ralat";
         let message =
@@ -301,7 +302,26 @@ export class UsersComponent implements OnInit {
         this.notifyService.openToastr(title, message);
         this.closeModal();
       }
-    );
+    )
+    // this.authService.changePassword(this.passwordForm.value).subscribe(
+    //   () => {
+    //     this.loadingBar.complete();
+    //   },
+    //   () => {
+    //     this.loadingBar.complete();
+    //     let title = "Ralat";
+    //     let message =
+    //       "Kata laluan tidak berjaya dikemaskini. Sila cuba sekali lagi";
+    //     this.notifyService.openToastrError(title, message);
+    //   },
+    //   () => {
+    //     let title = "Berjaya";
+    //     let message =
+    //       "Kata laluan berjaya dikemaskini. Sila log masuk semula menggunakan kata laluan baru";
+    //     this.notifyService.openToastr(title, message);
+    //     this.closeModal();
+    //   }
+    // );
   }
 
   view(row) {

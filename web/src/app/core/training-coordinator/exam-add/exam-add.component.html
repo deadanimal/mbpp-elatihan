@@ -28,7 +28,7 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-lg-4">
+                        <div class="col-lg-6 col-sm-12">
                             <div class="form-group">
                                 <label class="form-control-label">NRIC <span class="text-warning">*</span></label>
                                 <ng-select 
@@ -38,6 +38,18 @@
                                 >
                                     <ng-option *ngFor="let staff of staffs" [value]="staff">{{staff.nric}}</ng-option>
                                 </ng-select>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="form-group">
+                            <label class="form-control-label">Nama <span class="text-warning">*</span></label>
+                            <ng-select 
+                                placeholder="Sila cari nama kakitangan"
+                                [(ngModel)]="selectedStaff"
+                                (change)="onStaffChange($event)"
+                            >
+                                <ng-option *ngFor="let staff of staffs" [value]="staff">{{staff.full_name}}</ng-option>
+                            </ng-select>
                             </div>
                         </div>
                     </div>
