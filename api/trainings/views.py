@@ -2177,6 +2177,7 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     @action(methods=['GET'], detail=False)
     def get_dashboard_tc(self, request, *args, **kwargs):
 
+        # Kehadiran Kursus Mengikut Jabatan
         # SQL Query
         # select b.department_code, count(attendee_id) 
         # from trainings_trainingattendee a
@@ -2185,6 +2186,38 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         # group by b.department_code;
 
         queryset = (TrainingAttendee.objects.filter(is_attend=True).values('attendee__department_code').annotate(count=Count('attendee_id'))).order_by()
+
+        return Response(queryset)
+
+    @action(methods=['GET'], detail=False)
+    def get_dashboard_tc1(self, request, *args, **kwargs):
+
+        # Jabatan Belum Mencapai 5 Hari Berkursus
+        # SQL Query
+        # select a.attendee_id, b.department_code, count(a.attendee_id) 
+        # from trainings_trainingattendee a
+        # join users_customuser b on b.id = a.attendee_id
+        # where a.is_attend is true
+        # group by a.attendee_id, b.department_code
+        # having count(a.attendee_id) < 5;
+
+        queryset = (TrainingAttendee.objects.filter(is_attend=True).values('attendee_id', 'attendee__department_code').annotate(count=Count('attendee_id')).filter(count__lt=5).distinct()).order_by()
+
+        return Response(queryset)
+
+    @action(methods=['GET'], detail=False)
+    def get_dashboard_tc2(self, request, *args, **kwargs):
+
+        # Jabatan yang telah Mencapai 5 Hari Berkursus
+        # SQL Query
+        # select a.attendee_id, b.department_code, count(a.attendee_id) 
+        # from trainings_trainingattendee a
+        # join users_customuser b on b.id = a.attendee_id
+        # where a.is_attend is true
+        # group by a.attendee_id, b.department_code
+        # having count(a.attendee_id) >= 5;
+
+        queryset = (TrainingAttendee.objects.filter(is_attend=True).values('attendee_id', 'attendee__department_code').annotate(count=Count('attendee_id')).filter(count__gte=5).distinct()).order_by()
 
         return Response(queryset)
 

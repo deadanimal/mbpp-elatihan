@@ -108,8 +108,8 @@ export class DashboardComponent implements OnInit {
     this.zone.runOutsideAngular(() => {
       this.getChartData1();
       this.getChart2();
-      this.getChart3();
-      this.getChart4();
+      this.getChartData3();
+      this.getChartData4();
     });
   }
 
@@ -191,94 +191,45 @@ export class DashboardComponent implements OnInit {
 
   getChart2() {}
 
-  getChart3() {
+  getChartData3() {
+    this.attendanceService.getDashboardTC1().subscribe(
+      (res) => {
+        // console.log("res", res);
+        var result = []
+
+        res.forEach(obj => {
+          let result = this.departments.find(value => {
+            return value.value == obj.attendee__department_code;
+          });
+
+          obj['department'] = result.text;
+          obj['value'] = obj.count;
+        });
+
+        res.forEach((a) => {
+          if (!res[a.department]) {
+            res[a.department] = {department: a.department, value: 0}
+            result.push(res[a.department])
+          }
+          res[a.department].value += 1
+        }, Object.create(null))
+
+        this.getChart3(result);
+      },
+      (err) => {
+        console.error("err", err);
+      }
+    );
+  }
+
+  getChart3(data) {
     let chart = am4core.create(
       "chart-tc-dashboard-chart3",
       am4charts.PieChart3D
     );
-    chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-
-    // chart.legend = new am4charts.Legend();
 
     // Add data
-    chart.data = [
-      {
-        department: "JABATAN KHIDMAT PENGURUSAN",
-        value: 0,
-      },
-      {
-        department: "JABATAN PENGUATKUASAAN",
-        value: 0,
-      },
-      {
-        department: "JABATAN PERBENDAHARAAN",
-        value: 0,
-      },
-      {
-        department: "JABATAN KEJURUTERAAN",
-        value: 0,
-      },
-      {
-        department: "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN",
-        value: 0,
-      },
-      {
-        department: "JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN - PELESENAN",
-        value: 0,
-      },
-      {
-        department: "JABATAN PERKHIDMATAN DAN PERBANDARAAN",
-        value: 0,
-      },
-      {
-        department: "JABATAN KAWALAN BANGUNAN",
-        value: 0,
-      },
-      {
-        department: "JABATAN KONSERVASI WARISAN",
-        value: 0,
-      },
-      {
-        department: "JABATAN PENILAIAN DAN PENGURUSAN HARTA",
-        value: 0,
-      },
-      {
-        department: "JABATAN PESURUHJAYA BANGUNAN",
-        value: 0,
-      },
-      {
-        department: "JABATAN PERANCANGAN PEMBANGUNAN",
-        value: 0,
-      },
-      {
-        department: "JABATAN KHIDMAT KEMASYARAKATAN",
-        value: 0,
-      },
-      {
-        department: "JABATAN LANDSKAP",
-        value: 0,
-      },
-      {
-        department: "PEJABAT DATUK BANDAR",
-        value: 0,
-      },
-      {
-        department: "PEJABAT DATUK BANDAR - UNDANG - UNDANG",
-        value: 0,
-      },
-      {
-        department: "PEJABAT DATUK BANDAR - PENYELARASAN PEMBANGUNAN",
-        value: 0,
-      },
-      {
-        department: "PEJABAT DATUK BANDAR - AUDIT DALAM",
-        value: 0,
-      },
-      {
-        department: "PEJABAT DATUK BANDAR - OSC",
-        value: 0,
-      },
-    ];
+    chart.data = data
 
     let series = chart.series.push(new am4charts.PieSeries3D());
     series.dataFields.value = "value";
@@ -287,7 +238,52 @@ export class DashboardComponent implements OnInit {
     this.chart3 = chart;
   }
 
-  getChart4() {}
+  getChartData4() {
+    this.attendanceService.getDashboardTC2().subscribe(
+      (res) => {
+        // console.log("res", res);
+        var result = []
+
+        res.forEach(obj => {
+          let result = this.departments.find(value => {
+            return value.value == obj.attendee__department_code;
+          });
+
+          obj['department'] = result.text;
+          obj['value'] = obj.count;
+        });
+
+        res.forEach((a) => {
+          if (!res[a.department]) {
+            res[a.department] = {department: a.department, value: 0}
+            result.push(res[a.department])
+          }
+          res[a.department].value += 1
+        }, Object.create(null))
+
+        this.getChart4(result);
+      },
+      (err) => {
+        console.error("err", err);
+      }
+    );
+  }
+
+  getChart4(data) {
+    let chart = am4core.create(
+      "chart-tc-dashboard-chart4",
+      am4charts.PieChart3D
+    );
+
+    // Add data
+    chart.data = data
+
+    let series = chart.series.push(new am4charts.PieSeries3D());
+    series.dataFields.value = "value";
+    series.dataFields.category = "department";
+
+    this.chart4 = chart;
+  }
 
   // calculateStats() {
   //   this.totalTrainingPlanned = 0 //

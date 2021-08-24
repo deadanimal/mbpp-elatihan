@@ -163,6 +163,22 @@ export class AttendancesService {
     )
   }
 
+  getDashboardTC1(): Observable<any[]> {
+    return this.http.get<any[]>(this.urlAttendances + 'get_dashboard_tc1').pipe(
+      tap((res) => {
+        // console.log('Attendances: ', this.attendances)
+      })
+    )
+  }
+
+  getDashboardTC2(): Observable<any[]> {
+    return this.http.get<any[]>(this.urlAttendances + 'get_dashboard_tc2').pipe(
+      tap((res) => {
+        // console.log('Attendances: ', this.attendances)
+      })
+    )
+  }
+
   getReportAttendanceByDay(training: string): Observable<any[]> {
     let body = {
       training
