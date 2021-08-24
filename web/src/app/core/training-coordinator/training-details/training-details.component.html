@@ -1524,10 +1524,134 @@
         <tab heading="Laporan">
           <div class="card mt-2">
             <div class="card-header bg-secondary">
-              <h4 class="m-0">Laporan</h4>
+              <h4 class="m-0">1. Pengenalan</h4>
             </div>
 
-            <div class="card-body"></div>
+            <div class="card-body">
+              <h4>Tajuk Kursus:</h4>
+              <p class="text-danger">{{ training?.title }}</p>
+              <h4>Anjuran:</h4>
+              <p class="text-danger">{{ training?.organiser?.name }}</p>
+              <h4>Tarikh Kursus:</h4>
+              <p class="text-danger">
+                {{ training?.start_date | date: "mediumDate" }} -
+                {{ training?.end_date | date: "mediumDate" }}
+              </p>
+              <h4>Tempat Kursus:</h4>
+              <p class="text-danger">{{ training?.venue }}</p>
+              <h4>Tenaga Pengajar:</h4>
+              <p class="text-danger" *ngIf="trainer?.name">
+                {{ trainer?.name }}
+              </p>
+              <p class="text-danger" *ngIf="!trainer?.name">{{ "Tiada" }}</p>
+              <h4>Peserta Kursus:</h4>
+              <div
+                *ngFor="
+                  let trainingReportAttendance of trainingReportAttendances
+                "
+              >
+                <p class="text-danger">
+                  {{ trainingReportAttendance.count }}/{{
+                    training?.max_participant
+                  }}
+                  orang peserta telah hadir ({{
+                    trainingReportAttendance.check_date | date: "mediumDate"
+                  }})
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-2" *ngIf="training?.organiser_type == 'DD'">
+            <div class="card-header bg-secondary">
+              <h4 class="m-0">2. Penilaian Kursus</h4>
+            </div>
+
+            <div class="card-body">
+              <h4>2.1 Pencapaian Objektif Kursus</h4>
+              <div class="chart">
+                <div class="amchart" id="chart_21"></div>
+              </div>
+              <p class="text-center">
+                Sejauh manakah anda fikir objektif kursus/latihan ini telah
+                dicapai
+              </p>
+
+              <h4>
+                2.2 Kaitan dengan tugas harian dan membantu untuk tugas harian
+              </h4>
+              <div class="chart-500">
+                <div class="amchart" id="chart_22"></div>
+              </div>
+
+              <h4>2.3 Kemudahan Fasiliti & Makanan</h4>
+              <div class="chart">
+                <div class="amchart" id="chart_23"></div>
+              </div>
+              <table class="table table-bordered" *ngIf="arrayChart23.length > 0">
+                <thead>
+                  <tr>
+                    <td></td>
+                    <td>Penginapan</td>
+                    <td>Bilik Kuliah</td>
+                    <td>Jamuan Makan Minum</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let number of ['five', 'four', 'three', 'two', 'one']">
+                    <td><div style="display: inline-block; height: 20px; width: 20px" [ngStyle]="{'background-color': arrayKriteriaChart23[0][number]['color'] }"></div> {{ arrayKriteriaChart23[0][number]['kriteria'] }}</td>
+                    <td class="text-center">{{ arrayChart23[0][number] | number:"1.0-0" }}%</td>
+                    <td class="text-center">{{ arrayChart23[1][number] | number:"1.0-0" }}%</td>
+                    <td class="text-center">{{ arrayChart23[2][number] | number:"1.0-0" }}%</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h4 class="mt-5">2.4 Penilaian terhadap tenaga pengajar</h4>
+              <div class="chart">
+                <div class="amchart" id="chart_24"></div>
+              </div>
+              <table class="table table-bordered" *ngIf="arrayChart24.length > 0">
+                <thead>
+                  <tr>
+                    <td></td>
+                    <td>Isi kandungan</td>
+                    <td>Persembahan</td>
+                    <td>Kaitan dengan Kursus</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let number of ['five', 'four', 'three', 'two', 'one']">
+                    <td><div style="display: inline-block; height: 20px; width: 20px" [ngStyle]="{'background-color': arrayKriteriaChart24[0][number]['color'] }"></div> {{ arrayKriteriaChart24[0][number]['kriteria'] }}</td>
+                    <td class="text-center">{{ arrayChart24[0][number] | number:"1.0-0" }}%</td>
+                    <td class="text-center">{{ arrayChart24[1][number] | number:"1.0-0" }}%</td>
+                    <td class="text-center">{{ arrayChart24[2][number] | number:"1.0-0" }}%</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h4 class="mt-5 text-uppercase">2.5 Maklumbalas dan cadangan peserta</h4>
+              <p>Peserta-peserta yang hadir memberi komen kepada pihak penganjur tentang perkara-perkara seperti berikut:</p>
+              <ol>
+                <li *ngFor="let text of internalFiltered"><p class="text-danger">{{ text.answer_8 }}</p></li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="card mt-2" *ngIf="training?.organiser_type == 'LL'">
+            <div class="card-header bg-secondary">
+              <h4 class="m-0">2. Penilaian Kursus</h4>
+            </div>
+
+            <div class="card-body">
+              <h4>2.1 Keberkesanan Kursus Luaran</h4>
+              <div class="chart">
+                <div class="amchart" id="chart_2"></div>
+              </div>
+              <p class="text-center">
+                Adakah kursus ini berkaitan untuk anda menjalankan tugas-tugas seharian?
+              </p>
+            </div>
           </div>
         </tab>
         <!-- Notes -->
@@ -1795,7 +1919,9 @@
       errorCorrectionLevel="L"
     >
     </ngx-qrcode>
-    <div class="text-center"><h4 class="font-weight-bold">Tarikh: {{ dateToday }}</h4></div>
+    <div class="text-center">
+      <h4 class="font-weight-bold">Tarikh: {{ dateToday }}</h4>
+    </div>
   </div>
 
   <div class="modal-footer">
@@ -1834,7 +1960,9 @@
       errorCorrectionLevel="L"
     >
     </ngx-qrcode>
-    <div class="text-center"><h4 class="font-weight-bold">Tarikh: {{ dateToday }}</h4></div>
+    <div class="text-center">
+      <h4 class="font-weight-bold">Tarikh: {{ dateToday }}</h4>
+    </div>
   </div>
 
   <div class="modal-footer">
@@ -1914,7 +2042,9 @@
         </td>
         <td>
           <div *ngFor="let department of departments">
-            <span *ngIf="department.value == row.applicant?.department_code">{{department.text}}</span>
+            <span *ngIf="department.value == row.applicant?.department_code">{{
+              department.text
+            }}</span>
           </div>
         </td>
         <td>

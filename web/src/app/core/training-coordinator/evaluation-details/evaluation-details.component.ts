@@ -124,6 +124,10 @@ export class EvaluationDetailsComponent implements OnInit {
         null,
         Validators.compose([Validators.required])
       ),
+      answer_9: new FormControl(
+        null,
+        Validators.compose([Validators.required])
+      ),
     });
 
     this.internalForm = this.fb.group({
@@ -301,6 +305,9 @@ export class EvaluationDetailsComponent implements OnInit {
             this.externalForm.controls["answer_8"].patchValue(
               this.external["answer_8"]
             );
+            this.externalForm.controls["answer_9"].patchValue(
+              this.external["answer_9"]
+            );
             this.externalForm.controls["answer_1"].disable();
             this.externalForm.controls["answer_2"].disable();
             this.externalForm.controls["answer_3"].disable();
@@ -309,6 +316,7 @@ export class EvaluationDetailsComponent implements OnInit {
             this.externalForm.controls["answer_6"].disable();
             this.externalForm.controls["answer_7"].disable();
             this.externalForm.controls["answer_8"].disable();
+            this.externalForm.controls["answer_9"].disable();
           }
         },
         (err) => {

@@ -18,6 +18,7 @@ export class AttendancesService {
   attendance: Attendance
   attendances: Attendance[] = []
   attendancesFiltered: Attendance[] = []
+  attendancesReport: any
 
   attendanceQRID: any
 
@@ -150,6 +151,26 @@ export class AttendancesService {
       tap((res) => {
         this.attendance = res
         // console.log('Attendance: ', this.attendance)
+      })
+    )
+  }
+
+  getDashboardTC(): Observable<any[]> {
+    return this.http.get<any[]>(this.urlAttendances + 'get_dashboard_tc').pipe(
+      tap((res) => {
+        // console.log('Attendances: ', this.attendances)
+      })
+    )
+  }
+
+  getReportAttendanceByDay(training: string): Observable<any[]> {
+    let body = {
+      training
+    }
+    return this.http.post<any[]>(this.urlAttendances + 'get_report_attendance_by_day/', body).pipe(
+      tap((res) => {
+        this.attendancesReport = res
+        // console.log('Attendances: ', this.attendances)
       })
     )
   }

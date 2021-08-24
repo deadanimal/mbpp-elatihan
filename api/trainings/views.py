@@ -10,7 +10,7 @@ from core.utils import get_departments
 
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import HttpResponse
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -2174,6 +2174,35 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer = TrainingAttendeeSerializer(attendance)
         return Response(serializer.data)
 
+    @action(methods=['GET'], detail=False)
+    def get_dashboard_tc(self, request, *args, **kwargs):
+
+        # SQL Query
+        # select b.department_code, count(attendee_id) 
+        # from trainings_trainingattendee a
+        # join users_customuser b on a.attendee_id = b.id
+        # where is_attend = true
+        # group by b.department_code;
+
+        queryset = (TrainingAttendee.objects.filter(is_attend=True).values('attendee__department_code').annotate(count=Count('attendee_id'))).order_by()
+
+        return Response(queryset)
+
+    @action(methods=['POST'], detail=False)
+    def get_report_attendance_by_day(self, request, *args, **kwargs):
+
+        # SQL Query
+        # select check_date, count(*) from trainings_trainingattendee
+        # where training_id = <training_id>
+        # and is_attend = true
+        # group by check_date;
+        request_ = json.loads(request.body)
+
+        # queryset = (TrainingAttendee.objects.filter(is_attend=True, check_date__isnull=False, training=request_['training']).values('check_date').annotate(count=Count('check_date'))).order_by()
+        queryset = (TrainingAttendee.objects.filter(check_date__isnull=False, training=request_['training']).values('check_date').annotate(count=Count('check_date'))).order_by()
+
+        return Response(queryset)
+
 class TrainingAbsenceMemoViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = TrainingAbsenceMemo.objects.all()
     serializer_class = TrainingAbsenceMemoSerializer
@@ -2246,7 +2275,7 @@ class TrainerViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Trainer.objects.all()
     serializer_class = TrainerSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    # filterset_fields = ['code', 'staff', 'date']
+    filterset_fields = ['trainer_type', 'training']
 
     def get_permissions(self):
         permission_classes = [IsAuthenticated]#[IsAuthenticated]

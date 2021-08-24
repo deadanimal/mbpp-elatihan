@@ -32,6 +32,7 @@ export class EvaluationsService {
   internal: Internal
   internalExtended: InternalExtended
   internals: InternalExtended[] = []
+  internalFiltered: InternalExtended[] = []
 
   constructor(
     private http: HttpClient
@@ -260,6 +261,7 @@ export class EvaluationsService {
     let urlTemp = this.urlInternal + '?' + field
     return this.http.get<InternalExtended[]>(urlTemp).pipe(
       tap((res) => {
+        this.internalFiltered = res
         // console.log('Filter Internal: ', res)
       })
     )
@@ -270,6 +272,51 @@ export class EvaluationsService {
     return this.http.get<ExternalExtended[]>(urlTemp).pipe(
       tap((res) => {
         // console.log('Filter External: ', res)
+      })
+    )
+  }
+
+  getChart21(body: any): Observable<any[]> {
+    let urlTemp = this.urlInternal + 'get_chart_21/'
+    return this.http.post<any[]>(urlTemp, body).pipe(
+      tap((res) => {
+        // console.log('Filter Internal: ', res)
+      })
+    )
+  }
+
+  getChart22(body: any): Observable<any[]> {
+    let urlTemp = this.urlInternal + 'get_chart_22/'
+    return this.http.post<any[]>(urlTemp, body).pipe(
+      tap((res) => {
+        // console.log('Filter Internal: ', res)
+      })
+    )
+  }
+
+  getChart23(body: any): Observable<any[]> {
+    let urlTemp = this.urlInternal + 'get_chart_23/'
+    return this.http.post<any[]>(urlTemp, body).pipe(
+      tap((res) => {
+        // console.log('Filter Internal: ', res)
+      })
+    )
+  }
+
+  getChart24(body: any): Observable<any[]> {
+    let urlTemp = this.urlContent + 'get_chart_24/'
+    return this.http.post<any[]>(urlTemp, body).pipe(
+      tap((res) => {
+        // console.log('Filter Internal: ', res)
+      })
+    )
+  }
+
+  getChart2(body: any): Observable<any[]> {
+    let urlTemp = this.urlExternal + 'get_chart_2/'
+    return this.http.post<any[]>(urlTemp, body).pipe(
+      tap((res) => {
+        // console.log('Filter Internal: ', res)
       })
     )
   }

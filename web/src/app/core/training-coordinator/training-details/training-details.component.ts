@@ -1,11 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, NgZone, TemplateRef, ViewChild } from '@angular/core';
 import { 
   FormBuilder, 
   FormControl, 
   FormGroup, 
   Validators 
 } from '@angular/forms';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -21,12 +21,14 @@ import { Domain } from 'src/app/shared/services/domains/domains.model';
 import { Organisation } from 'src/app/shared/services/organisations/organisations.model';
 import { Note } from 'src/app/shared/services/notes/notes.model';
 import { TrainingExtended, TrainingType } from 'src/app/shared/services/trainings/trainings.model';
+import { Trainer } from 'src/app/shared/services/trainers/trainers.model';
 import { User } from 'src/app/shared/services/users/users.model';
 
 import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
 import { AttendancesService } from 'src/app/shared/services/attendances/attendances.service';
 import { CoresService } from 'src/app/shared/services/cores/cores.service';
 import { DomainsService } from 'src/app/shared/services/domains/domains.service';
+import { EvaluationsService } from 'src/app/shared/services/evaluations/evaluations.service';
 import { NotesService } from 'src/app/shared/services/notes/notes.service';
 import { OrganisationsService } from 'src/app/shared/services/organisations/organisations.service';
 import { TrainersService } from 'src/app/shared/services/trainers/trainers.service';
@@ -37,6 +39,13 @@ import * as moment from 'moment';
 import * as xlsx from 'xlsx';
 import swal from 'sweetalert2';
 import { Department, Section } from 'src/app/shared/code/user';
+
+import * as am4core from "@amcharts/amcharts4/core";
+import * as am4charts from "@amcharts/amcharts4/charts";
+import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+
+am4core.useTheme(am4themes_animated);
+am4core.addLicense("ch-custom-attribution");
 
 export enum SelectionType {
   single = "single",
@@ -52,10 +61,65 @@ export enum SelectionType {
   styleUrls: ['./training-details.component.scss']
 })
 export class TrainingDetailsComponent implements OnInit {
+  // Chart
+  chart_2: am4charts.XYChart
+  chart_21: am4charts.XYChart
+  chart_22: am4charts.XYChart
+  chart_23: am4charts.XYChart
+  chart_24: am4charts.XYChart
 
   // Data
+  arrayChart23 = []
+  arrayKriteriaChart23 = [{
+    'five': {
+      kriteria: 'Cemerlang',
+      color: '#AB4543'
+    },
+    'four': {
+      kriteria: 'Bagus',
+      color: '#89A155'
+    },
+    'three': {
+      kriteria: 'Memuaskan',
+      color: '#71568F'
+    },
+    'two': {
+      kriteria: 'Sederhana',
+      color: '#4195B6'
+    },
+    'one': {
+      kriteria: 'Lemah',
+      color: '#DB823D'
+    },
+  }]
+  arrayChart24 = []
+  arrayKriteriaChart24 = [{
+    'five': {
+      kriteria: 'Cemerlang',
+      color: '#517BB6'
+    },
+    'four': {
+      kriteria: 'Bagus',
+      color: '#BC5057'
+    },
+    'three': {
+      kriteria: 'Memuaskan',
+      color: '#9EB55D'
+    },
+    'two': {
+      kriteria: 'Sederhana',
+      color: '#776299'
+    },
+    'one': {
+      kriteria: 'Lemah',
+      color: '#51A3B7'
+    },
+  }]
+  internalFiltered
   trainingID
   training: TrainingExtended
+  trainer: Trainer
+  trainingReportAttendances: any
   organisations: Organisation[] = []
   currentUser: User
   users: User[] = []
@@ -396,11 +460,15 @@ export class TrainingDetailsComponent implements OnInit {
     static: true
   }) headerEN: QuillViewHTMLComponent
 
+  // Subscriber
+  subscription: Subscription;
+
   constructor(
     private applicationService: ApplicationsService,
     private attendanceService: AttendancesService,
     private coreService: CoresService,
     private domainService: DomainsService,
+    private evaluationService: EvaluationsService,
     private organisationService: OrganisationsService,
     private trainingService: TrainingsService,
     private noteService: NotesService,
@@ -412,7 +480,8 @@ export class TrainingDetailsComponent implements OnInit {
     private modalService: BsModalService,
     private notifyService: NotifyService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private zone: NgZone
   ) { 
     this.trainingID = this.route.snapshot.queryParamMap.get('id')
     // console.log('Training ID', this.trainingID)
@@ -440,18 +509,37 @@ export class TrainingDetailsComponent implements OnInit {
     // console.log(this.dateToday)
   }
 
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
+    this.zone.runOutsideAngular(() => {
+      if (this.chart_21) this.chart_21.dispose();
+      if (this.chart_22) this.chart_22.dispose();
+      if (this.chart_23) this.chart_23.dispose();
+      if (this.chart_24) this.chart_24.dispose();
+      if (this.chart_2) this.chart_2.dispose();
+    });
+  }
+
   getData() {
     this.loadingBar.start() 
-    forkJoin([
+    this.subscription = forkJoin([
       this.organisationService.getAll(),
       this.userService.getAll(),
       this.coreService.getAll(),
       this.trainingService.getOne(this.trainingID),
       this.trainingService.getTrainingTypes(),
-      this.domainService.getDomains()
+      this.domainService.getDomains(),
+      this.trainerService.filter("training="+this.trainingID),
+      this.attendanceService.getReportAttendanceByDay(this.trainingID),
+      this.evaluationService.filterInternal("training="+"62542427-35da-4fea-8520-e8db58647459")
     ]).subscribe(
       () => {
         this.training = this.trainingService.trainingExtended
+        this.trainer = this.trainerService.trainerFiltered[0]
+        this.trainingReportAttendances = this.attendanceService.attendancesReport
         this.applications = this.training['training_application']
         this.attendances = this.training['training_attendee']
         this.absences = this.training['training_absence_memo']
@@ -460,6 +548,7 @@ export class TrainingDetailsComponent implements OnInit {
         this.domains = this.domainService.domains
         this.staffs = this.trainingService.applicableStaffs
         this.applyForm.controls['training'].setValue(this.training['id'])
+        this.internalFiltered = this.evaluationService.internalFiltered
         this.loadingBar.complete() 
       },
       () => {
@@ -781,8 +870,666 @@ export class TrainingDetailsComponent implements OnInit {
         else {
           this.isSameBefore = false
         }
+
+        this.getCharts();
       }
     )
+  }
+
+  getCharts() {
+    this.zone.runOutsideAngular(() => {
+      if (this.training.organiser_type == 'DD') {
+        this.getDataChart21();
+        this.getDataChart22();
+        this.getDataChart23();
+        this.getDataChart24();
+      } else if (this.training.organiser_type == 'LL') {
+        this.getDataChart2();
+      }
+    });
+  }
+
+  sumObjectValues( obj ) {
+    var sum = 0;
+    for( var el in obj ) {
+      if( obj.hasOwnProperty( el ) ) {
+        sum += parseFloat( obj[el] );
+      }
+    }
+    return sum;
+  }
+
+  getDataChart2() {
+    let body = {
+      training: this.trainingID
+    }
+    this.evaluationService.getChart2(body).subscribe(
+      (res) => {
+        // console.log("res", res)
+        let arrayRes = []
+        var sum = this.sumObjectValues(res)
+        
+        for (let obj in res) {
+          if (obj === "one") {
+            arrayRes.push({
+              kriteria: "Kurang berkaitan",
+              jumlah: Math.round((res[obj] / sum) * 100),
+              color: am4core.color("#7A6C9E")
+            })
+          }
+          else if (obj === "two") {
+            arrayRes.push({
+              kriteria: "Berkaitan",
+              jumlah: Math.round((res[obj] / sum) * 100),
+              color: am4core.color("#9BB062")
+            })
+          }
+          else if (obj === "three") {
+            arrayRes.push({
+              kriteria: "Sangat berkaitan",
+              jumlah: Math.round((res[obj] / sum) * 100),
+              color: am4core.color("#B15154")
+            })
+          }
+        }
+        this.getChart2(arrayRes)
+      },
+      (err) => {
+        console.error("err", err)
+      })
+  }
+
+  getChart2(data) {
+    let chart = am4core.create("chart_2", am4charts.XYChart);
+
+    // Add data
+    chart.data = data;
+
+    // Create axes
+
+    let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = "kriteria";
+    categoryAxis.renderer.grid.template.location = 0;
+    categoryAxis.renderer.minGridDistance = 20;
+    categoryAxis.renderer.labels.template.disabled = true;
+
+    categoryAxis.renderer.labels.template.adapter.add("dy", function(dy, target) {
+      if (target.dataItem && target.dataItem.index & 1) {
+        return dy + 25;
+      }
+      return dy;
+    });
+
+    let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.title.text = "[bold]Penilaian Peserta[/]";
+    valueAxis.renderer.labels.template.adapter.add("text", function(text) {
+      return text + "%";
+    });
+
+    // Create series
+    let series = chart.series.push(new am4charts.ColumnSeries());
+    series.dataFields.valueY = "jumlah";
+    series.dataFields.categoryX = "kriteria";
+    series.name = "Jumlah";
+    series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]%";
+    series.columns.template.fillOpacity = .8;
+    series.columns.template.propertyFields.stroke = "color";
+    series.columns.template.propertyFields.fill = "color";
+    series.columns.template.width = am4core.percent(100);
+
+    let columnTemplate = series.columns.template;
+    columnTemplate.strokeWidth = 2;
+    columnTemplate.strokeOpacity = 1;
+
+    var legend = new am4charts.Legend();
+    legend.parent = chart.chartContainer;
+    legend.itemContainers.template.togglable = false;
+    legend.marginTop = 20;
+
+    series.events.on("ready", function(ev) {
+      let legenddata = [];
+      series.columns.each(function(column) {
+        let col = column as any;
+        legenddata.push({
+          name: col.dataItem.categoryX,
+          fill: column.fill
+        })
+      });
+      legend.data = legenddata;
+    });
+
+    this.chart_21 = chart;
+  }
+
+  getDataChart21() {
+    let body = {
+      training: this.trainingID
+    }
+    this.evaluationService.getChart21(body).subscribe(
+      (res) => {
+        // console.log("res", res)
+        let arrayRes = []
+        var sum = this.sumObjectValues(res)
+        
+        for (let obj in res) {
+          if (obj === "one") {
+            arrayRes.push({
+              kriteria: "Lemah",
+              jumlah: Math.round((res[obj] / sum) * 100),
+              color: am4core.color("#D7803C")
+            })
+          }
+          else if (obj === "two") {
+            arrayRes.push({
+              kriteria: "Sederhana",
+              jumlah: Math.round((res[obj] / sum) * 100),
+              color: am4core.color("#4197B1")
+            })
+          }
+          else if (obj === "three") {
+            arrayRes.push({
+              kriteria: "Memuaskan",
+              jumlah: Math.round((res[obj] / sum) * 100),
+              color: am4core.color("#6B578E")
+            })
+          }
+          else if (obj === "four") {
+            arrayRes.push({
+              kriteria: "Bagus",
+              jumlah: Math.round((res[obj] / sum) * 100),
+              color: am4core.color("#89A24F")
+            })
+          }
+          else if (obj === "five") {
+            arrayRes.push({
+              kriteria: "Cemerlang",
+              jumlah: Math.round((res[obj] / sum) * 100),
+              color: am4core.color("#AD424D")
+            })
+          }
+        }
+        this.getChart21(arrayRes)
+      },
+      (err) => {
+        console.error("err", err)
+      })
+  }
+
+  getChart21(data) {
+    let chart = am4core.create("chart_21", am4charts.XYChart);
+
+    // Add data
+    chart.data = data;
+
+    // Create axes
+
+    let categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = "kriteria";
+    categoryAxis.renderer.grid.template.location = 0;
+    categoryAxis.renderer.minGridDistance = 20;
+    categoryAxis.renderer.labels.template.disabled = true;
+
+    categoryAxis.renderer.labels.template.adapter.add("dy", function(dy, target) {
+      if (target.dataItem && target.dataItem.index & 1) {
+        return dy + 25;
+      }
+      return dy;
+    });
+
+    let valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.title.text = "[bold]Penilaian Peserta[/]";
+    valueAxis.renderer.labels.template.adapter.add("text", function(text) {
+      return text + "%";
+    });
+
+    // Create series
+    let series = chart.series.push(new am4charts.ColumnSeries());
+    series.dataFields.valueY = "jumlah";
+    series.dataFields.categoryX = "kriteria";
+    series.name = "Jumlah";
+    series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]%";
+    series.columns.template.fillOpacity = .8;
+    series.columns.template.propertyFields.stroke = "color";
+    series.columns.template.propertyFields.fill = "color";
+    series.columns.template.width = am4core.percent(100);
+
+    let columnTemplate = series.columns.template;
+    columnTemplate.strokeWidth = 2;
+    columnTemplate.strokeOpacity = 1;
+
+    var legend = new am4charts.Legend();
+    legend.parent = chart.chartContainer;
+    legend.itemContainers.template.togglable = false;
+    legend.marginTop = 20;
+
+    series.events.on("ready", function(ev) {
+      let legenddata = [];
+      series.columns.each(function(column) {
+        let col = column as any;
+        legenddata.push({
+          name: col.dataItem.categoryX,
+          fill: column.fill
+        })
+      });
+      legend.data = legenddata;
+    });
+
+    this.chart_21 = chart;
+  }
+
+  getDataChart22() {
+    let body = {
+      training: this.trainingID
+    }
+    this.evaluationService.getChart22(body).subscribe(
+      (res) => {
+        // console.log("res", res)
+        let arrayRes = []
+        var sum2 = this.sumObjectValues(res['soalan2'])
+        var sum3 = this.sumObjectValues(res['soalan3'])
+
+        arrayRes.push({
+          'soalan': 'Adakah kursus/latihan ini berkaitan untuk anda menjalankan tugas-tugas harian',
+          'three': Math.round((res['soalan2']['three'] / sum2) * 100),
+          'two': Math.round((res['soalan2']['two'] / sum2) * 100),
+          'one': Math.round((res['soalan2']['one'] / sum2) * 100),
+        })
+
+        arrayRes.push({
+          'soalan': 'Apakah nilai-nilai positif anda perolehi dari kursus/latihan ini dapat membantu anda ketika balik bertugas',
+          'three': Math.round((res['soalan3']['three'] / sum3) * 100),
+          'two': Math.round((res['soalan3']['two'] / sum3) * 100),
+          'one': Math.round((res['soalan3']['one'] / sum3) * 100),
+        })
+        
+        this.getChart22(arrayRes)
+      },
+      (err) => {
+        console.error("err", err)
+      })
+  }
+
+  getChart22(data) {
+    let chart = am4core.create('chart_22', am4charts.XYChart)
+    chart.colors.step = 2;
+
+    chart.legend = new am4charts.Legend()
+    chart.legend.position = 'bottom'
+    chart.legend.paddingBottom = 20
+    chart.legend.labels.template.maxWidth = 95
+
+    let xAxis = chart.xAxes.push(new am4charts.CategoryAxis())
+    xAxis.dataFields.category = 'soalan'
+    xAxis.renderer.cellStartLocation = 0.1
+    xAxis.renderer.cellEndLocation = 0.9
+    xAxis.renderer.grid.template.location = 0;
+    let label = xAxis.renderer.labels.template;
+    label.wrap = true;
+    label.maxWidth = 300;
+    label.textAlign = 'middle';
+
+    let yAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    yAxis.title.text = "[bold]Penilaian Peserta[/]";
+    yAxis.renderer.labels.template.adapter.add("text", function(text) {
+      return text + "%";
+    });
+    yAxis.min = 0;
+
+    function createSeries(value, name, color) {
+      let series = chart.series.push(new am4charts.ColumnSeries())
+      series.dataFields.valueY = value
+      series.dataFields.categoryX = 'soalan'
+      series.name = name
+      series.columns.template.stroke = am4core.color(color)
+      series.columns.template.fill = am4core.color(color)
+      series.columns.template.width = am4core.percent(100);
+      series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]%";
+
+      series.events.on("hidden", arrangeColumns);
+      series.events.on("shown", arrangeColumns);
+
+      // let bullet = series.bullets.push(new am4charts.LabelBullet())
+      // bullet.interactionsEnabled = false
+      // bullet.dy = 30;
+      // bullet.label.text = '{valueY}'
+      // bullet.label.fill = am4core.color('#ffffff')
+
+      return series;
+    }
+
+    chart.data = data;
+
+    createSeries('three', 'Sangat Berkaitan/Membantu', am4core.color("#B15154"));
+    createSeries('two', 'Berkaitan/Kurang Membantu', am4core.color("#9BB062"));
+    createSeries('one', 'Kurang berkaitan/Tidak Membantu', am4core.color("#7A6C9E"));
+
+    function arrangeColumns() {
+
+      let series = chart.series.getIndex(0);
+
+      let w = 1 - xAxis.renderer.cellStartLocation - (1 - xAxis.renderer.cellEndLocation);
+      if (series.dataItems.length > 1) {
+        let x0 = xAxis.getX(series.dataItems.getIndex(0), "categoryX");
+        let x1 = xAxis.getX(series.dataItems.getIndex(1), "categoryX");
+        let delta = ((x1 - x0) / chart.series.length) * w;
+        if (am4core.isNumber(delta)) {
+          let middle = chart.series.length / 2;
+
+          let newIndex = 0;
+          chart.series.each(function(series) {
+            if (!series.isHidden && !series.isHiding) {
+                series.dummyData = newIndex;
+                newIndex++;
+            }
+            else {
+                series.dummyData = chart.series.indexOf(series);
+            }
+          })
+          let visibleCount = newIndex;
+          let newMiddle = visibleCount / 2;
+
+          chart.series.each(function(series) {
+            let trueIndex = chart.series.indexOf(series);
+            let newIndex = series.dummyData;
+
+            let dx = (newIndex - trueIndex + middle - newMiddle) * delta
+
+            series.animate({ property: "dx", to: dx }, series.interpolationDuration, series.interpolationEasing);
+            series.bulletsContainer.animate({ property: "dx", to: dx }, series.interpolationDuration, series.interpolationEasing);
+          })
+        }
+      }
+    }
+
+    this.chart_22 = chart;
+  }
+
+  getDataChart23() {
+    let body = {
+      training: this.trainingID
+    }
+    this.evaluationService.getChart23(body).subscribe(
+      (res) => {
+        // console.log("res", res)
+        let arrayRes = []
+        var sum4a = this.sumObjectValues(res['soalan4a'])
+        var sum4b = this.sumObjectValues(res['soalan4b'])
+        var sum4c = this.sumObjectValues(res['soalan4c'])
+
+        arrayRes.push({
+          'kriteria': 'Penginapan',
+          'five': Math.round((res['soalan4a']['five'] / sum4a) * 100),
+          'four': Math.round((res['soalan4a']['four'] / sum4a) * 100),
+          'three': Math.round((res['soalan4a']['three'] / sum4a) * 100),
+          'two': Math.round((res['soalan4a']['two'] / sum4a) * 100),
+          'one': Math.round((res['soalan4a']['one'] / sum4a) * 100),
+        })
+
+        arrayRes.push({
+          'kriteria': 'Bilik Kuliah',
+          'five': Math.round((res['soalan4b']['five'] / sum4b) * 100),
+          'four': Math.round((res['soalan4b']['four'] / sum4b) * 100),
+          'three': Math.round((res['soalan4b']['three'] / sum4b) * 100),
+          'two': Math.round((res['soalan4b']['two'] / sum4b) * 100),
+          'one': Math.round((res['soalan4b']['one'] / sum4b) * 100),
+        })
+
+        arrayRes.push({
+          'kriteria': 'Jamuan Makan Minum',
+          'five': Math.round((res['soalan4c']['five'] / sum4c) * 100),
+          'four': Math.round((res['soalan4c']['four'] / sum4c) * 100),
+          'three': Math.round((res['soalan4c']['three'] / sum4c) * 100),
+          'two': Math.round((res['soalan4c']['two'] / sum4c) * 100),
+          'one': Math.round((res['soalan4c']['one'] / sum4c) * 100),
+        })
+        
+        this.arrayChart23 = arrayRes
+        this.getChart23(arrayRes)
+      },
+      (err) => {
+        console.error("err", err)
+      })
+  }
+
+  getChart23(data) {
+    let chart = am4core.create('chart_23', am4charts.XYChart)
+    chart.colors.step = 2;
+
+    // chart.legend = new am4charts.Legend()
+    // chart.legend.position = 'bottom'
+    // chart.legend.paddingBottom = 20
+    // chart.legend.labels.template.maxWidth = 95
+
+    let xAxis = chart.xAxes.push(new am4charts.CategoryAxis())
+    xAxis.dataFields.category = 'kriteria'
+    xAxis.renderer.cellStartLocation = 0.1
+    xAxis.renderer.cellEndLocation = 0.9
+    xAxis.renderer.grid.template.location = 0;
+    let label = xAxis.renderer.labels.template;
+    label.wrap = true;
+    label.maxWidth = 300;
+    label.textAlign = 'middle';
+
+    let yAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    yAxis.title.text = "[bold]Penilaian Peserta[/]";
+    yAxis.renderer.labels.template.adapter.add("text", function(text) {
+      return text + "%";
+    });
+    yAxis.min = 0;
+
+    function createSeries(value, name, color) {
+      let series = chart.series.push(new am4charts.ColumnSeries())
+      series.dataFields.valueY = value
+      series.dataFields.categoryX = 'kriteria'
+      series.name = name
+      series.columns.template.stroke = am4core.color(color)
+      series.columns.template.fill = am4core.color(color)
+      series.columns.template.width = am4core.percent(100);
+      series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]%";
+
+      series.events.on("hidden", arrangeColumns);
+      series.events.on("shown", arrangeColumns);
+
+      // let bullet = series.bullets.push(new am4charts.LabelBullet())
+      // bullet.interactionsEnabled = false
+      // bullet.dy = 30;
+      // bullet.label.text = '{valueY}'
+      // bullet.label.fill = am4core.color('#ffffff')
+
+      return series;
+    }
+
+    chart.data = data
+
+    createSeries('five', 'Cemerlang', am4core.color("#AB4543"));
+    createSeries('four', 'Bagus', am4core.color("#89A155"));
+    createSeries('three', 'Memuaskan', am4core.color("#71568F"));
+    createSeries('two', 'Sederhana', am4core.color("#4195B6"));
+    createSeries('one', 'Lemah', am4core.color("#DB823D"));
+
+    function arrangeColumns() {
+
+      let series = chart.series.getIndex(0);
+
+      let w = 1 - xAxis.renderer.cellStartLocation - (1 - xAxis.renderer.cellEndLocation);
+      if (series.dataItems.length > 1) {
+        let x0 = xAxis.getX(series.dataItems.getIndex(0), "categoryX");
+        let x1 = xAxis.getX(series.dataItems.getIndex(1), "categoryX");
+        let delta = ((x1 - x0) / chart.series.length) * w;
+        if (am4core.isNumber(delta)) {
+          let middle = chart.series.length / 2;
+
+          let newIndex = 0;
+          chart.series.each(function(series) {
+            if (!series.isHidden && !series.isHiding) {
+                series.dummyData = newIndex;
+                newIndex++;
+            }
+            else {
+                series.dummyData = chart.series.indexOf(series);
+            }
+          })
+          let visibleCount = newIndex;
+          let newMiddle = visibleCount / 2;
+
+          chart.series.each(function(series) {
+            let trueIndex = chart.series.indexOf(series);
+            let newIndex = series.dummyData;
+
+            let dx = (newIndex - trueIndex + middle - newMiddle) * delta
+
+            series.animate({ property: "dx", to: dx }, series.interpolationDuration, series.interpolationEasing);
+            series.bulletsContainer.animate({ property: "dx", to: dx }, series.interpolationDuration, series.interpolationEasing);
+          })
+        }
+      }
+    }
+
+    this.chart_23 = chart;
+  }
+
+  getDataChart24() {
+    let body = {
+      training: this.trainingID
+    }
+    this.evaluationService.getChart24(body).subscribe(
+      (res) => {
+        // console.log("res", res)
+        let arrayRes = []
+        var sumisikandungan = this.sumObjectValues(res['soalanisikandungan'])
+        var sumpersembahan = this.sumObjectValues(res['soalanpersembahan'])
+        var sumkaitan = this.sumObjectValues(res['soalankaitan'])
+
+        arrayRes.push({
+          'kriteria': 'Isi kandungan',
+          'five': Math.round((res['soalanisikandungan']['five'] / sumisikandungan) * 100),
+          'four': Math.round((res['soalanisikandungan']['four'] / sumisikandungan) * 100),
+          'three': Math.round((res['soalanisikandungan']['three'] / sumisikandungan) * 100),
+          'two': Math.round((res['soalanisikandungan']['two'] / sumisikandungan) * 100),
+          'one': Math.round((res['soalanisikandungan']['one'] / sumisikandungan) * 100),
+        })
+
+        arrayRes.push({
+          'kriteria': 'Persembahan',
+          'five': Math.round((res['soalanpersembahan']['five'] / sumpersembahan) * 100),
+          'four': Math.round((res['soalanpersembahan']['four'] / sumpersembahan) * 100),
+          'three': Math.round((res['soalanpersembahan']['three'] / sumpersembahan) * 100),
+          'two': Math.round((res['soalanpersembahan']['two'] / sumpersembahan) * 100),
+          'one': Math.round((res['soalanpersembahan']['one'] / sumpersembahan) * 100),
+        })
+
+        arrayRes.push({
+          'kriteria': 'Kaitan dengan Kursus',
+          'five': Math.round((res['soalankaitan']['five'] / sumkaitan) * 100),
+          'four': Math.round((res['soalankaitan']['four'] / sumkaitan) * 100),
+          'three': Math.round((res['soalankaitan']['three'] / sumkaitan) * 100),
+          'two': Math.round((res['soalankaitan']['two'] / sumkaitan) * 100),
+          'one': Math.round((res['soalankaitan']['one'] / sumkaitan) * 100),
+        })
+        
+        this.arrayChart24 = arrayRes
+        this.getChart24(arrayRes)
+      },
+      (err) => {
+        console.error("err", err)
+      })
+  }
+
+  getChart24(data) {
+    let chart = am4core.create('chart_24', am4charts.XYChart)
+    chart.colors.step = 2;
+
+    // chart.legend = new am4charts.Legend()
+    // chart.legend.position = 'bottom'
+    // chart.legend.paddingBottom = 20
+    // chart.legend.labels.template.maxWidth = 95
+
+    let xAxis = chart.xAxes.push(new am4charts.CategoryAxis())
+    xAxis.dataFields.category = 'kriteria'
+    xAxis.renderer.cellStartLocation = 0.1
+    xAxis.renderer.cellEndLocation = 0.9
+    xAxis.renderer.grid.template.location = 0;
+    let label = xAxis.renderer.labels.template;
+    label.wrap = true;
+    label.maxWidth = 300;
+    label.textAlign = 'middle';
+
+    let yAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    yAxis.title.text = "[bold]Penilaian Peserta[/]";
+    yAxis.renderer.labels.template.adapter.add("text", function(text) {
+      return text + "%";
+    });
+    yAxis.min = 0;
+
+    function createSeries(value, name, color) {
+      let series = chart.series.push(new am4charts.ColumnSeries())
+      series.dataFields.valueY = value
+      series.dataFields.categoryX = 'kriteria'
+      series.name = name
+      series.columns.template.stroke = am4core.color(color)
+      series.columns.template.fill = am4core.color(color)
+      series.columns.template.width = am4core.percent(100);
+      series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/]%";
+
+      series.events.on("hidden", arrangeColumns);
+      series.events.on("shown", arrangeColumns);
+
+      // let bullet = series.bullets.push(new am4charts.LabelBullet())
+      // bullet.interactionsEnabled = false
+      // bullet.dy = 30;
+      // bullet.label.text = '{valueY}'
+      // bullet.label.fill = am4core.color('#ffffff')
+
+      return series;
+    }
+
+    chart.data = data
+
+    createSeries('five', 'Cemerlang', am4core.color("#517BB6"));
+    createSeries('four', 'Bagus', am4core.color("#BC5057"));
+    createSeries('three', 'Memuaskan', am4core.color("#9EB55D"));
+    createSeries('two', 'Sederhana', am4core.color("#776299"));
+    createSeries('one', 'Lemah', am4core.color("#51A3B7"));
+
+    function arrangeColumns() {
+
+      let series = chart.series.getIndex(0);
+
+      let w = 1 - xAxis.renderer.cellStartLocation - (1 - xAxis.renderer.cellEndLocation);
+      if (series.dataItems.length > 1) {
+        let x0 = xAxis.getX(series.dataItems.getIndex(0), "categoryX");
+        let x1 = xAxis.getX(series.dataItems.getIndex(1), "categoryX");
+        let delta = ((x1 - x0) / chart.series.length) * w;
+        if (am4core.isNumber(delta)) {
+          let middle = chart.series.length / 2;
+
+          let newIndex = 0;
+          chart.series.each(function(series) {
+            if (!series.isHidden && !series.isHiding) {
+                series.dummyData = newIndex;
+                newIndex++;
+            }
+            else {
+                series.dummyData = chart.series.indexOf(series);
+            }
+          })
+          let visibleCount = newIndex;
+          let newMiddle = visibleCount / 2;
+
+          chart.series.each(function(series) {
+            let trueIndex = chart.series.indexOf(series);
+            let newIndex = series.dummyData;
+
+            let dx = (newIndex - trueIndex + middle - newMiddle) * delta
+
+            series.animate({ property: "dx", to: dx }, series.interpolationDuration, series.interpolationEasing);
+            series.bulletsContainer.animate({ property: "dx", to: dx }, series.interpolationDuration, series.interpolationEasing);
+          })
+        }
+      }
+    }
+
+    this.chart_24 = chart;
   }
 
   getQRID() {

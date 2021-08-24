@@ -6,7 +6,7 @@ import uuid
 
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.utils import timezone
 from core.utils import get_departments, get_training_durations
 
@@ -120,6 +120,43 @@ class ContentEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             evaluation, many=False)
         return Response(serializer.data)
 
+    @action(methods=['POST'], detail=False)
+    def get_chart_24(self, request, *args, **kwargs):
+
+        request_ = json.loads(request.body)
+
+        querysetcontent = ContentEvaluation.objects.filter(evaluation__training=request_['training']).aggregate(
+                    five=Count('content', filter=Q(content=5)),
+                    four=Count('content', filter=Q(content=4)),
+                    three=Count('content', filter=Q(content=3)),
+                    two=Count('content', filter=Q(content=2)),
+                    one=Count('content', filter=Q(content=1)),
+                )
+
+        querysetpresentation = ContentEvaluation.objects.filter(evaluation__training=request_['training']).aggregate(
+                    five=Count('presentation', filter=Q(presentation=5)),
+                    four=Count('presentation', filter=Q(presentation=4)),
+                    three=Count('presentation', filter=Q(presentation=3)),
+                    two=Count('presentation', filter=Q(presentation=2)),
+                    one=Count('presentation', filter=Q(presentation=1)),
+                )
+
+        querysetrelevance = ContentEvaluation.objects.filter(evaluation__training=request_['training']).aggregate(
+                    five=Count('relevance', filter=Q(relevance=5)),
+                    four=Count('relevance', filter=Q(relevance=4)),
+                    three=Count('relevance', filter=Q(relevance=3)),
+                    two=Count('relevance', filter=Q(relevance=2)),
+                    one=Count('relevance', filter=Q(relevance=1)),
+                )
+
+        queryset = {
+            'soalanisikandungan': querysetcontent,
+            'soalanpersembahan': querysetpresentation,
+            'soalankaitan': querysetrelevance
+        }
+
+        return Response(queryset)
+
 
 class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = ExternalEvaluation.objects.all()
@@ -229,6 +266,19 @@ class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer = ExternalEvaluationExtendedSerializer(
             evaluation, many=False)
         return Response(serializer.data)
+
+    @action(methods=['POST'], detail=False)
+    def get_chart_2(self, request, *args, **kwargs):
+
+        request_ = json.loads(request.body)
+
+        queryset = ExternalEvaluation.objects.filter(training=request_['training']).aggregate(
+                    three=Count('answer_9', filter=Q(answer_9=3)),
+                    two=Count('answer_9', filter=Q(answer_9=2)),
+                    one=Count('answer_9', filter=Q(answer_9=1)),
+                )
+
+        return Response(queryset)
     
     @action(methods=['GET'], detail=True)
     def generate_evaluation(self, request, *args, **kwargs):
@@ -471,6 +521,82 @@ class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         # serializer = 'https://pipeline-project.sgp1.digitaloceanspaces.com/'+full_url_path
         # return Response(serializer)
+
+    @action(methods=['POST'], detail=False)
+    def get_chart_21(self, request, *args, **kwargs):
+
+        request_ = json.loads(request.body)
+
+        queryset = InternalEvaluation.objects.filter(training=request_['training']).aggregate(
+                    five=Count('answer_1', filter=Q(answer_1=5)),
+                    four=Count('answer_1', filter=Q(answer_1=4)),
+                    three=Count('answer_1', filter=Q(answer_1=3)),
+                    two=Count('answer_1', filter=Q(answer_1=2)),
+                    one=Count('answer_1', filter=Q(answer_1=1)),
+                )
+
+        return Response(queryset)
+
+    @action(methods=['POST'], detail=False)
+    def get_chart_22(self, request, *args, **kwargs):
+
+        request_ = json.loads(request.body)
+
+        queryset2 = InternalEvaluation.objects.filter(training=request_['training']).aggregate(
+                    three=Count('answer_2', filter=Q(answer_2=3)),
+                    two=Count('answer_2', filter=Q(answer_2=2)),
+                    one=Count('answer_2', filter=Q(answer_2=1)),
+                )
+
+        queryset3 = InternalEvaluation.objects.filter(training=request_['training']).aggregate(
+                    three=Count('answer_3', filter=Q(answer_3=3)),
+                    two=Count('answer_3', filter=Q(answer_3=2)),
+                    one=Count('answer_3', filter=Q(answer_3=1)),
+                )
+
+        queryset = {
+            'soalan2': queryset2,
+            'soalan3': queryset3
+        }
+
+        return Response(queryset)
+
+    @action(methods=['POST'], detail=False)
+    def get_chart_23(self, request, *args, **kwargs):
+
+        request_ = json.loads(request.body)
+
+        queryset4a = InternalEvaluation.objects.filter(training=request_['training']).aggregate(
+                    five=Count('answer_4', filter=Q(answer_4=5)),
+                    four=Count('answer_4', filter=Q(answer_4=4)),
+                    three=Count('answer_4', filter=Q(answer_4=3)),
+                    two=Count('answer_4', filter=Q(answer_4=2)),
+                    one=Count('answer_4', filter=Q(answer_4=1)),
+                )
+
+        queryset4b = InternalEvaluation.objects.filter(training=request_['training']).aggregate(
+                    five=Count('answer_5', filter=Q(answer_5=5)),
+                    four=Count('answer_5', filter=Q(answer_5=4)),
+                    three=Count('answer_5', filter=Q(answer_5=3)),
+                    two=Count('answer_5', filter=Q(answer_5=2)),
+                    one=Count('answer_5', filter=Q(answer_5=1)),
+                )
+
+        queryset4c = InternalEvaluation.objects.filter(training=request_['training']).aggregate(
+                    five=Count('answer_6', filter=Q(answer_6=5)),
+                    four=Count('answer_6', filter=Q(answer_6=4)),
+                    three=Count('answer_6', filter=Q(answer_6=3)),
+                    two=Count('answer_6', filter=Q(answer_6=2)),
+                    one=Count('answer_6', filter=Q(answer_6=1)),
+                )
+
+        queryset = {
+            'soalan4a': queryset4a,
+            'soalan4b': queryset4b,
+            'soalan4c': queryset4c
+        }
+
+        return Response(queryset)
 
 
 class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):

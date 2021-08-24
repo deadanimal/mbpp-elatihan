@@ -97,6 +97,7 @@ class ExternalEvaluation(models.Model):
     answer_6 = models.TextField(null=True) # Question 4.2: Kelemahan freetext
     answer_7 = models.TextField(null=True) # Question 5: Pelan tindakan freetext
     answer_8 = models.TextField(null=True) # Question 6: Kesusaian freetext
+    answer_9 = models.CharField(max_length=1, null=True) # Question 7: 1/2/3
     # answer_7 = models.TextField(null=False) # Question 7: Kesusaian freetext
 
     approved_by = models.ForeignKey( # Department head
