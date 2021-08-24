@@ -5,7 +5,7 @@ import { AttendancesService } from 'src/app/shared/services/attendances/attendan
 import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
 import { UsersService } from 'src/app/shared/services/users/users.service';
 import { LoadingBarService } from '@ngx-loading-bar/core';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { Department, Section, ServiceStatus } from 'src/app/shared/code/user';
 import { Training } from 'src/app/shared/services/trainings/trainings.model';
 
@@ -30,6 +30,7 @@ export class DashboardComponent implements OnInit {
   attendanceByMonth: any
 
   user: any
+  users: any
   departments = Department
   sections = Section
   serviceStatus = ServiceStatus
@@ -37,6 +38,9 @@ export class DashboardComponent implements OnInit {
   // Chart
   chart1: any // Kehadiran Kursus Kakitangan Jabatan
   chart2: any // Kakitangan Jabatan Belum Mencapai 5 Hari Berkursus
+
+  // Subscriber
+  subscription: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -55,6 +59,10 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
     this.zone.runOutsideAngular(
       () => {
         if (this.chart1) {
@@ -137,8 +145,9 @@ export class DashboardComponent implements OnInit {
   }
 
   getData() {
-    forkJoin([
-      this.trainingService.getStatisticsDepartment()
+    this.subscription = forkJoin([
+      this.trainingService.getStatisticsDepartment(),
+      this.userService.getDepartmentStaffs()
     ]).subscribe(
       () => {},
       () => {},
@@ -147,6 +156,7 @@ export class DashboardComponent implements OnInit {
         this.totalAttendanceInternal = this.statistics['attendance_internal']
         this.totalAttendanceExternal = this.statistics['attendance_external']
         this.attendanceByMonth = this.statistics['attendance_by_month']
+        this.users = this.userService.users
 
         this.getCharts()
       }
@@ -157,7 +167,7 @@ export class DashboardComponent implements OnInit {
     this.zone.runOutsideAngular(
       () => {
         this.getChart1()
-        this.getChart2()
+        this.getChartData2();
       }
     )
   }
@@ -253,75 +263,53 @@ export class DashboardComponent implements OnInit {
     this.chart1 = chart
   }
 
-  getChart2() {
+  getChartData2() {
+    let body = {
+      department_code: this.user.department_code,
+      // section_code: this.user.section_code
+    }
+    this.attendanceService.getDashboardDC2(body).subscribe(
+      (res) => {
+        // console.log("res", res);
+        var result = []
+
+        res.forEach(obj => {
+          let result = this.sections.find(value => {
+            return value.value == obj.attendee__section_code;
+          });
+
+          obj['section'] = result.text;
+          obj['value'] = obj.count;
+        });
+
+        res.forEach((a) => {
+          if (!res[a.section]) {
+            res[a.section] = {section: a.section, value: 0}
+            result.push(res[a.section])
+          }
+          res[a.section].value += a.value
+        }, Object.create(null))
+
+        this.getChart2(result);
+      },
+      (err) => {
+        console.error("err", err);
+      }
+    );
+  }
+
+  getChart2(data) {
     let chart = am4core.create('chart-dc-dashboard-chart2', am4charts.PieChart3D);
     chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
 
     // chart.legend = new am4charts.Legend();
 
     // Add data
-    chart.data = [{
-      'department': 'JABATAN KHIDMAT PENGURUSAN',
-      'value': 0
-    }, {
-      'department': 'JABATAN PENGUATKUASAAN',
-      'value': 0
-    }, {
-      'department': 'JABATAN PERBENDAHARAAN',
-      'value': 0
-    }, {
-      'department': 'JABATAN KEJURUTERAAN',
-      'value': 0
-    }, {
-      'department': 'JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN',
-      'value': 0
-    }, {
-      'department': 'JABATAN KESIHATAN PERSEKITARAN DAN PELESENAN - PELESENAN',
-      'value': 0
-    }, {
-      'department': 'JABATAN PERKHIDMATAN DAN PERBANDARAAN',
-      'value': 0
-    }, {
-      'department': 'JABATAN KAWALAN BANGUNAN',
-      'value': 0
-    }, {
-      'department': 'JABATAN KONSERVASI WARISAN',
-      'value': 0
-    }, {
-      'department': 'JABATAN PENILAIAN DAN PENGURUSAN HARTA',
-      'value': 0
-    }, {
-      'department': 'JABATAN PESURUHJAYA BANGUNAN',
-      'value': 0
-    }, {
-      'department': 'JABATAN PERANCANGAN PEMBANGUNAN',
-      'value': 0
-    }, {
-      'department': 'JABATAN KHIDMAT KEMASYARAKATAN',
-      'value': 0
-    }, {
-      'department': 'JABATAN LANDSKAP',
-      'value': 0
-    }, {
-      'department': 'PEJABAT DATUK BANDAR',
-      'value': 0
-    }, {
-      'department': 'PEJABAT DATUK BANDAR - UNDANG - UNDANG',
-      'value': 0
-    }, {
-      'department': 'PEJABAT DATUK BANDAR - PENYELARASAN PEMBANGUNAN',
-      'value': 0
-    }, {
-      'department': 'PEJABAT DATUK BANDAR - AUDIT DALAM',
-      'value': 0
-    }, {
-      'department': 'PEJABAT DATUK BANDAR - OSC',
-      'value': 0
-    }];
+    chart.data = data;
 
     let series = chart.series.push(new am4charts.PieSeries3D());
     series.dataFields.value = 'value';
-    series.dataFields.category = 'department';
+    series.dataFields.category = 'section';
 
     this.chart2 = chart
   }

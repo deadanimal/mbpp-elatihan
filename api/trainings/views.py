@@ -2222,6 +2222,23 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         return Response(queryset)
 
     @action(methods=['POST'], detail=False)
+    def get_dashboard_dc2(self, request, *args, **kwargs):
+
+        # Kakitangan Jabatan Belum Mencapai 5 Hari Berkursus
+        # SQL Query
+        # select a.attendee_id, b.department_code, count(a.attendee_id) 
+        # from trainings_trainingattendee a
+        # join users_customuser b on b.id = a.attendee_id
+        # where a.is_attend is true
+        # group by a.attendee_id, b.department_code
+        # having count(a.attendee_id) >= 5;
+        request_ = json.loads(request.body)
+
+        queryset = (TrainingAttendee.objects.filter(is_attend=True, attendee__department_code=request_['department_code']).values('attendee_id', 'attendee__department_code', 'attendee__section_code').annotate(count=Count('attendee_id')).filter(count__lt=5).distinct()).order_by()
+
+        return Response(queryset)
+
+    @action(methods=['POST'], detail=False)
     def get_report_attendance_by_day(self, request, *args, **kwargs):
 
         # SQL Query

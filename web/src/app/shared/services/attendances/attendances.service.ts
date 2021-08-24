@@ -179,6 +179,14 @@ export class AttendancesService {
     )
   }
 
+  getDashboardDC2(body: any): Observable<any[]> {
+    return this.http.post<any[]>(this.urlAttendances + 'get_dashboard_dc2/', body).pipe(
+      tap((res) => {
+        // console.log('Attendances: ', this.attendances)
+      })
+    )
+  }
+
   getReportAttendanceByDay(training: string): Observable<any[]> {
     let body = {
       training
