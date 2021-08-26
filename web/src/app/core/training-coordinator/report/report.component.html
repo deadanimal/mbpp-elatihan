@@ -33,7 +33,7 @@
                         </select>
                     </div>
 
-                    <div class="row" *ngIf="selectedReportType == 'LK'">
+                    <div class="row" *ngIf="selectedReportType == 'LK' || selectedReportType == 'LD'">
                         <div class="col-sm-12 col-lg-6">
                             <div class="form-group">
                                 <label class="form-control-label">Jabatan</label>
@@ -53,7 +53,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group" *ngIf="selectedMonthType == 'SINGLE' && selectedReportType == 'LK'">
+                    <div class="form-group" *ngIf="selectedMonthType == 'SINGLE' && (selectedReportType == 'LK' || selectedReportType == 'LD')">
                         <label class="form-control-label">Bulan</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
@@ -67,7 +67,7 @@
                         </div>
                     </div>
                     
-                    <div class="row" *ngIf="selectedMonthType == 'RANGE' && selectedReportType == 'LK'">
+                    <div class="row" *ngIf="selectedMonthType == 'RANGE' && (selectedReportType == 'LK' || selectedReportType == 'LD')">
                         <div class="col-sm-12 col-lg-6">
                             <div class="form-group">
                                 <label class="form-control-label">Bulan Mula</label>
@@ -123,7 +123,7 @@
                         <button 
                             class="btn btn-warm-blue" 
                             (click)="generateReport()"
-                            [disabled]="selectedReportType === 'LK' && selectedMonthType === 'RANGE' && (!selectedMonthStart || !selectedMonthEnd)"
+                            [disabled]="(selectedReportType === 'LK' || selectedReportType === 'LD') && selectedMonthType === 'RANGE' && (!selectedMonthStart || !selectedMonthEnd)"
                         >Jana Laporan</button>
                     </div>
                 </div>

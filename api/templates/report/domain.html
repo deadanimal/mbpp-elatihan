@@ -1,0 +1,83 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MBPP - eLatihan | Laporan</title>
+        <meta name="description" content="MBPP - eLatihan | Laporan">
+        <meta name="author" content="eLatihan">
+
+        <style>
+            @page {
+                size: letter landscape;
+                margin: 1cm;
+            }
+            html {
+                font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+                font-size: 0.85rem !important;
+            }
+            .default-template {
+                color: #333;
+                font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+                font-size: 0.85rem !important;
+            }
+            table tr.top table td.title {
+                color: #333;
+                font-size: 0.85rem !important;
+            }
+            table tr.heading td {
+                color: #333;
+                font-weight: bold;
+                font-size: 0.85rem !important;
+            }
+            #footer {
+                font-size: 0.85rem !important;
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: 2.5rem;            /* Footer height */
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="default-template">
+            <h4 class="text-center mb-0">LAPORAN DOMAIN</h4>
+            <h4 class="text-center mt-0 mb-2">MAJLIS BANDARAYA PULAU PINANG</h4>
+
+            <h5 class="mt-5 mb-0">JABATAN: {{data.misc.department}}</h5>
+            <h5 class="m-0">BULAN: {{data.misc.month}}</h5>
+            <h5 class="m-0">TAHUN: {{data.misc.year}}</h5>
+
+            <table class="table table-bordered mt-2">
+                <tbody>
+                    <tr>
+                        <th scope="row" rowspan="2">DOMAIN</th>
+                        <th scope="row" colspan="2" class="text-center">KAEDAH LATIHAN</th>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="text-center">BERSEMUKA</th>
+                        <th scope="row" class="text-center">ONLINE</th>
+                    </tr>
+                    {% for data in data.data %}
+                    <tr >
+                        <td>{{ data.domain | upper }}</td>
+                        <td class="text-center">{{ data.f2f }}</td>
+                        <td class="text-center">{{ data.online }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+
+    <footer id="footer" class="default-template row">
+        <p class="col text-left">
+            <img src="{% static 'image/mbpp-logo.png' %}" style="max-width: 2rem">
+            <span>MBPP | eLatihan</span>
+        </p>
+        <p class="col text-right">
+            Dijana pada: {{data.misc.generated_at}}
+        </p>
+    </footer> 
+
+</html>

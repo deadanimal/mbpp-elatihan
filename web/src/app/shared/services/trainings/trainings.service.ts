@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Form } from '@angular/forms';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Training, TrainingExtended, TrainingType } from './trainings.model';
 import { User } from '../users/users.model';
@@ -235,20 +235,32 @@ export class TrainingsService {
   }
 
   getReportAttendance(body: any) {
+    const options = {
+      responseType: 'blob' as 'json'
+    };
     let urlTemp = this.urlTraining + 'report_attendance/'
-    return this.http.post<any>(urlTemp, body).pipe(
-      tap((res) => {
-        this.reportUrl = res
-      })
+    return this.http.post<any>(urlTemp, body, options).pipe(
+      map(response => response as Blob)
     )
   }
 
   getReportOBB(body: any) {
+    const options = {
+      responseType: 'blob' as 'json'
+    };
     let urlTemp = this.urlTraining + 'report_obb/'
-    return this.http.post<any>(urlTemp, body).pipe(
-      tap((res) => {
-        this.reportUrl = res
-      })
+    return this.http.post<any>(urlTemp, body, options).pipe(
+      map(response => response as Blob)
+    )
+  }
+
+  getReportDomain(body: any): Observable<Blob> {
+    const options = {
+      responseType: 'blob' as 'json'
+    };
+    let urlTemp = this.urlTraining + 'report_domain/'
+    return this.http.post<any>(urlTemp, body, options).pipe(
+      map(response => response as Blob)
     )
   }
 

@@ -331,19 +331,6 @@ class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         return response
 
-        # file_path = "mbpp-elatihan/obb-report/" + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
-        # # "mbpp-elatihan/application-report/" <-- naming system
-        # saved_file = default_storage.save(
-        #     file_path,
-        #     ContentFile(pdf_file)
-        # )
-
-        # full_url_path = settings.MEDIA_ROOT + saved_file
-        # # print(full_url_path)
-
-        # serializer = 'https://pipeline-project.sgp1.digitaloceanspaces.com/'+full_url_path
-        # return Response(serializer)
-
 
 class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = InternalEvaluation.objects.all()
@@ -509,19 +496,6 @@ class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         return response
 
-        # file_path = "mbpp-elatihan/obb-report/" + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
-        # # "mbpp-elatihan/application-report/" <-- naming system
-        # saved_file = default_storage.save(
-        #     file_path,
-        #     ContentFile(pdf_file)
-        # )
-
-        # full_url_path = settings.MEDIA_ROOT + saved_file
-        # # print(full_url_path)
-
-        # serializer = 'https://pipeline-project.sgp1.digitaloceanspaces.com/'+full_url_path
-        # return Response(serializer)
-
     @action(methods=['POST'], detail=False)
     def get_chart_21(self, request, *args, **kwargs):
 
@@ -604,7 +578,8 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     serializer_class = CertificateSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     filterset_fields = [
-        'evaluation',
+        'training',
+        'attendee',
         'created_at'
     ]
 
@@ -675,12 +650,12 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             attendee = CustomUser.objects.get(id=request_attendee_)
 
             # Start certificate generation
-            css_file = 'https://pipeline-project.sgp1.digitaloceanspaces.com/mbpp-elatihan/css/template.css'
             data_ = {
-                'name': 'name',
-                'training_name': 'name',
-                'start_date': 'start_date',
-                'end_date': 'end_date'
+                'name': attendee,
+                'training_name': training.title,
+                'start_date': training.start_date,
+                'end_date': training.end_date,
+                'venue': training.venue
             }
 
             html_string = render_to_string(
@@ -688,14 +663,15 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                 {'data': data_}
             )
             html = HTML(string=html_string)
-            pdf_file = html.write_pdf(stylesheets=[CSS(css_file)])
-            file_path = 'mbpp-elatihan/certificates/Sijil' + '-' + training.course_code + '-' \
+            pdf_file = html.write_pdf(stylesheets=[CSS(settings.STATIC_ROOT + '/css/bootstrap.css')])
+            file_path = 'certificates/Sijil' + '-' + training.course_code + '-' \
                 + attendee.nric + '.pdf'
             saved_file = default_storage.save(
                 file_path,
                 ContentFile(pdf_file)
             )
-            full_url_path = settings.MEDIA_ROOT + saved_file
+            full_url_path = saved_file
+            print('full_url_path', full_url_path)
 
             certificate = Certificate.objects.create(
                 training=training,
@@ -708,3 +684,44 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         serializer = CertificateExtendedSerializer(certificates, many=True)
         return Response(serializer.data)
+
+    @action(methods=['POST'], detail=False)
+    def generate_pdf(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+        request_attendee_ = request_['attendees']
+
+        training = Training.objects.get(id=request_training_)
+        attendee = CustomUser.objects.get(id=request_attendee_)
+
+        # Start certificate generation
+        data_ = {
+            'name': attendee,
+            'training_name': training.title,
+            'start_date': training.start_date,
+            'end_date': training.end_date,
+            'venue': training.venue
+        }
+
+        html_string = render_to_string(
+            'cert/cert.html',
+            {'data': data_}
+        )
+
+        html = HTML(string=html_string, base_url=request.build_absolute_uri())
+        pdf_file = html.write_pdf(stylesheets=[CSS(settings.STATIC_ROOT + '/css/bootstrap.css')])
+        
+        # Creating http response
+        filename = 'Sijil-Kursus-' + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="'+filename+'"'
+        response['Content-Transfer-Encoding'] = 'binary'
+        # with tempfile.NamedTemporaryFile(delete=True) as output:
+        #     output.write(result)
+        #     output.flush()
+        #     output = open(output.name, 'rb')
+        #     response.write(output.read())
+
+        return response

@@ -178,7 +178,7 @@ class Certificate(models.Model):
             'user_type': 'TC'
         }
     )
-    cert = models.FileField(null=True, upload_to=PathAndRename('mbpp-elatihan/certificates'))
+    cert = models.FileField(max_length=255, null=True, upload_to=PathAndRename('mbpp-elatihan/certificates'))
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)

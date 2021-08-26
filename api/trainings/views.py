@@ -1,3 +1,4 @@
+import itertools
 import json
 import time
 import uuid
@@ -697,21 +698,21 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         }
 
         html_string = render_to_string('report/attendance.html', {'data': items})
-        html = HTML(string=html_string)
-        pdf_file = html.write_pdf(stylesheets=[CSS('https://pipeline-project.sgp1.digitaloceanspaces.com/mbpp-elatihan/css/template.css')])
+        html = HTML(string=html_string, base_url=request.build_absolute_uri())
+        pdf_file = html.write_pdf(stylesheets=[CSS(settings.STATIC_ROOT + '/css/bootstrap.css')])
         
-        file_path = "mbpp-elatihan/attendance-report/" + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
-        # "mbpp-elatihan/application-report/" <-- naming system
-        saved_file = default_storage.save(
-            file_path, 
-            ContentFile(pdf_file)
-        )
-        
-        full_url_path = settings.MEDIA_ROOT + saved_file
-        # print(full_url_path)
+        # Creating http response
+        filename = 'Laporan-Kehadiran-' + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="'+filename+'"'
+        response['Content-Transfer-Encoding'] = 'binary'
+        # with tempfile.NamedTemporaryFile(delete=True) as output:
+        #     output.write(result)
+        #     output.flush()
+        #     output = open(output.name, 'rb')
+        #     response.write(output.read())
 
-        serializer = 'https://pipeline-project.sgp1.digitaloceanspaces.com/'+full_url_path
-        return Response(serializer)
+        return response
     
     @action(methods=['POST'], detail=False)
     def report_obb(self, request, *args, **kwargs):
@@ -789,21 +790,224 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         }
 
         html_string = render_to_string('report/obb.html', {'data': items})
-        html = HTML(string=html_string)
-        pdf_file = html.write_pdf(stylesheets=[CSS('https://pipeline-project.sgp1.digitaloceanspaces.com/mbpp-elatihan/css/template.css')])
+        html = HTML(string=html_string, base_url=request.build_absolute_uri())
+        pdf_file = html.write_pdf(stylesheets=[CSS(settings.STATIC_ROOT + '/css/bootstrap.css')])
         
-        file_path = "mbpp-elatihan/obb-report/" + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
-        # "mbpp-elatihan/application-report/" <-- naming system
-        saved_file = default_storage.save(
-            file_path, 
-            ContentFile(pdf_file)
-        )
-        
-        full_url_path = settings.MEDIA_ROOT + saved_file
-        # print(full_url_path)
+        # Creating http response
+        filename = 'Laporan-OBB-' + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="'+filename+'"'
+        response['Content-Transfer-Encoding'] = 'binary'
+        # with tempfile.NamedTemporaryFile(delete=True) as output:
+        #     output.write(result)
+        #     output.flush()
+        #     output = open(output.name, 'rb')
+        #     response.write(output.read())
 
-        serializer = 'https://pipeline-project.sgp1.digitaloceanspaces.com/'+full_url_path
-        return Response(serializer)
+        return response
+
+    @action(methods=['POST'], detail=False)
+    def report_domain(self, request, *args, **kwargs):
+
+        # LAPORAN DOMAIN
+        # SQL Query
+        # select a.method, a.domain_id, b.name, count(*)  
+        # from trainings_training a
+        # join trainings_trainingdomain b on b.id = a.domain_id
+        # group by a.method, a.domain_id, b.name;
+
+        request_ = json.loads(request.body)
+        request_department_ = request_['department']
+        request_month_type_ = request_['month_type']
+
+        # Timezone set
+        timezone_ = pytz.timezone('Asia/Kuala_Lumpur')
+        filter_year = datetime.datetime.now(tz=timezone_).year # Tahun sebenar
+        today = datetime.datetime.now(tz=timezone_)
+        # print('Date: ', today.strftime('%d/%m/%Y %H:%M %p'))
+
+        # Filter department
+        if request_department_ == 'ALL':
+            department_queryset = Training.objects.filter(
+                is_department_11=True, 
+                is_department_15=True,
+                is_department_21=True,
+                is_department_31=True,
+                is_department_41=True,
+                is_department_45=True,
+                is_department_47=True,
+                is_department_51=True,
+                is_department_55=True,
+                is_department_61=True,
+                is_department_63=True,
+                is_department_71=True,
+                is_department_81=True,
+                is_department_86=True,
+                is_department_90=True,
+                is_department_91=True,
+                is_department_92=True,
+                is_department_93=True,
+                is_department_94=True
+            )
+            
+            department = 'KESELURUHAN'
+        else:
+            if request_department_ == '11':
+                department_queryset = Training.objects.filter(is_department_11=True)
+                
+            elif request_department_ == '15':
+                department_queryset = Training.objects.filter(is_department_15=True)
+                
+            elif request_department_ == '21':
+                department_queryset = Training.objects.filter(is_department_21=True)
+                
+            elif request_department_ == '31':
+                department_queryset = Training.objects.filter(is_department_31=True)
+                
+            elif request_department_ == '41':
+                department_queryset = Training.objects.filter(is_department_41=True)
+                
+            elif request_department_ == '45':
+                department_queryset = Training.objects.filter(is_department_45=True)
+                
+            elif request_department_ == '47':
+                department_queryset = Training.objects.filter(is_department_47=True)
+                
+            elif request_department_ == '51':
+                department_queryset = Training.objects.filter(is_department_51=True)
+                
+            elif request_department_ == '55':
+                department_queryset = Training.objects.filter(is_department_55=True)
+                
+            elif request_department_ == '61':
+                department_queryset = Training.objects.filter(is_department_61=True)
+                
+            elif request_department_ == '63':
+                department_queryset = Training.objects.filter(is_department_63=True)
+                
+            elif request_department_ == '71':
+                department_queryset = Training.objects.filter(is_department_71=True)
+                
+            elif request_department_ == '81':
+                department_queryset = Training.objects.filter(is_department_81=True)
+    
+            elif request_department_ == '86':
+                department_queryset = Training.objects.filter(is_department_86=True)
+                
+            elif request_department_ == '90':
+                department_queryset = Training.objects.filter(is_department_90=True)
+                
+            elif request_department_ == '91':
+                department_queryset = Training.objects.filter(is_department_91=True)
+                
+            elif request_department_ == '92':
+                department_queryset = Training.objects.filter(is_department_92=True)
+                
+            elif request_department_ == '93':
+                department_queryset = Training.objects.filter(is_department_93=True)
+                
+            elif request_department_ == '94':
+                department_queryset = Training.objects.filter(is_department_94=True)
+            
+            department = get_departments(request_department_)
+        
+        # Filter month
+        if request_month_type_ == 'ALL':
+            queryset = (Training.objects.filter(
+                created_at__year=filter_year,
+                id__in=department_queryset.values_list('id', flat=True)
+            ).values('method', 'domain', 'domain__name').annotate(count=Count('*'))).order_by()
+
+            month = 'KESELURUHAN'
+        elif request_month_type_ == 'RANGE':
+            request_month_from_ = dateutil.parser.parse(request_['month_from'] + 'T00:00:00.0000000+08:00')
+            request_month_to_ = dateutil.parser.parse(request_['month_to'] + 'T00:00:00.00000000+08:00')
+
+            queryset = (Training.objects.filter(
+                created_at__range=[request_month_from_, request_month_to_],
+                id__in=department_queryset.values_list('id', flat=True)
+            ).values('method', 'domain', 'domain__name').annotate(count=Count('*'))).order_by()
+
+            month_from = request_month_from_.strftime('%d/%m/%Y')
+            month_to = request_month_to_.strftime('%d/%m/%Y')
+            
+            month = month_from + ' - ' + month_to
+        elif request_month_type_ == 'SINGLE':
+            request_month_ = request_['month']
+            queryset = (Training.objects.filter(
+                created_at__year=filter_year,
+                created_at__month=request_month_,
+                id__in=department_queryset.values_list('id', flat=True)
+            ).values('method', 'domain', 'domain__name').annotate(count=Count('*'))).order_by()
+            # print(request_month_)
+            if str(request_month_) == '1':
+                month = 'JANUARI'
+            elif str(request_month_) == '2':
+                month = 'FEBRUARI'
+            elif str(request_month_) == '3':
+                month = 'MAC'
+            elif str(request_month_) == '4':
+                month = 'APRIL'
+            elif str(request_month_) == '5':
+                month = 'MEI'
+            elif str(request_month_) == '6':
+                month = 'JUN'
+            elif str(request_month_) == '7':
+                month = 'JULAI'
+            elif str(request_month_) == '8':
+                month = 'OGOS'
+            elif str(request_month_) == '9':
+                month = 'SEPTEMBER'
+            elif str(request_month_) == '10':
+                month = 'OKTOBER'
+            elif str(request_month_) == '11':
+                month = 'NOVEMBER'
+            elif str(request_month_) == '12':
+                month = 'DISEMBER'
+            
+            # print(month)
+        # else:
+        #     month_queryset = department_queryset
+        #     month = 'TIADA'
+        
+        data = []
+        for k, g in itertools.groupby(sorted(queryset, key=lambda x: x['domain__name']), key=lambda x: (x['domain__name'], x['method'])):
+            l = list(g)
+            data.append(
+                {'domain': k[0], 'f2f': str(sum([int(x['count']) for x in l])) if k[1] == 'BS' else 0, 'online': str(sum([int(x['count']) for x in l])) if k[1] == 'TB' else 0})
+
+        new_data = []
+        for k, g in itertools.groupby(sorted(data, key=lambda x: x['domain']), key=lambda x: (x['domain'])):
+            l = list(g)
+            new_data.append(
+                {'domain': k, 'f2f': str(sum([int(x['f2f']) for x in l])), 'online': str(sum([int(x['online']) for x in l]))})
+
+        items = {
+            'data': new_data,
+            'misc': {
+                'department': department,
+                'month': month,
+                'year': filter_year,
+                'generated_at': today.strftime('%d/%m/%Y %H:%M %p')
+            }
+        }
+
+        html_string = render_to_string('report/domain.html', {'data': items})
+        html = HTML(string=html_string, base_url=request.build_absolute_uri())
+        pdf_file = html.write_pdf(stylesheets=[CSS(settings.STATIC_ROOT + '/css/bootstrap.css')])
+        
+        # Creating http response
+        filename = 'Laporan-Domain-' + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="'+filename+'"'
+        response['Content-Transfer-Encoding'] = 'binary'
+        # with tempfile.NamedTemporaryFile(delete=True) as output:
+        #     output.write(result)
+        #     output.flush()
+        #     output = open(output.name, 'rb')
+        #     response.write(output.read())
+
+        return response
     
     @action(methods=['GET'], detail=False)
     def extended_all(self, request, *args, **kwargs):

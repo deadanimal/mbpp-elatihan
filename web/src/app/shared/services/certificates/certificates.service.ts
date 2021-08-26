@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Form } from '@angular/forms';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { Certificate, CertificateExtended } from './certificates.model';
 
@@ -23,13 +23,23 @@ export class CertificatesService {
     private http: HttpClient
   ) { }
 
-  generateBulk(body: any): Observable<CertificateExtended> {
+  generateBulk(body: any): Observable<CertificateExtended[]> {
     let urlTemp = this.urlCertificates + 'generate_bulk/'
-    return this.http.post<any>(urlTemp, body).pipe(
+    return this.http.post<CertificateExtended[]>(urlTemp, body).pipe(
       tap((res) => {
         this.certificates = res
         // console.log('Certificates: ', this.certificates)
       })
+    )
+  }
+
+  generatePdf(body: any): Observable<Blob> {
+    const options = {
+      responseType: 'blob' as 'json'
+    };
+    let urlTemp = this.urlCertificates + 'generate_pdf/'
+    return this.http.post<any>(urlTemp, body, options).pipe(
+      map(response => response as Blob)
     )
   }
 

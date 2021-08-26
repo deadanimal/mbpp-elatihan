@@ -6,6 +6,7 @@ import {
   Validators 
 } from '@angular/forms';
 import { forkJoin, Subscription } from 'rxjs';
+import { environment } from "src/environments/environment";
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBarService } from '@ngx-loading-bar/core';
@@ -26,6 +27,7 @@ import { User } from 'src/app/shared/services/users/users.model';
 
 import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
 import { AttendancesService } from 'src/app/shared/services/attendances/attendances.service';
+import { CertificatesService } from 'src/app/shared/services/certificates/certificates.service';
 import { CoresService } from 'src/app/shared/services/cores/cores.service';
 import { DomainsService } from 'src/app/shared/services/domains/domains.service';
 import { EvaluationsService } from 'src/app/shared/services/evaluations/evaluations.service';
@@ -466,6 +468,7 @@ export class TrainingDetailsComponent implements OnInit {
   constructor(
     private applicationService: ApplicationsService,
     private attendanceService: AttendancesService,
+    private certificateService: CertificatesService,
     private coreService: CoresService,
     private domainService: DomainsService,
     private evaluationService: EvaluationsService,
@@ -3946,6 +3949,52 @@ export class TrainingDetailsComponent implements OnInit {
       this.selectedGrp = this.selectedGrp.filter(grp => grp !== 'is_group_KP_A' )
     }
   }
-  
 
+  removeDups(names) {
+    let unique = {};
+    names.forEach(function(i) {
+      if(!unique[i]) {
+        unique[i] = true;
+      }
+    });
+    return Object.keys(unique);
+  }
+  
+  printCertificate() {
+    let title = 'Tunggu sebentar'
+    let message = 'Sijil sedang dijana'
+    this.notifyService.openToastrInfo(title, message)
+
+    this.loadingBar.start()
+    let arrayAttendee = []
+    this.attendances.forEach((a) => {
+      arrayAttendee.push(a.attendee.id) 
+    })
+    
+    let body = {
+      training: this.training.id,
+      attendees: this.removeDups(arrayAttendee)
+    }
+    this.certificateService.generateBulk(body).subscribe(
+      (res) => {
+        res.forEach((obj) => {
+          window.open(environment.baseUrl.slice(0, environment.baseUrl.length - 1) + obj.cert, '_blank')
+        })
+        // let url = window.URL.createObjectURL(res);
+        // let a = document.createElement('a');
+        // document.body.appendChild(a);
+        // a.setAttribute('style', 'display: none');
+        // a.href = url;
+        // a.download = "Sijil-Kursus-"+moment(new Date()).format('YYYY-MM-DD');
+        // a.click();
+        // window.URL.revokeObjectURL(url);
+        // a.remove();
+        this.loadingBar.complete()
+      },
+      () => {
+        this.loadingBar.complete()
+      },
+      () => {})
+    
+  }
 }

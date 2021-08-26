@@ -1,7 +1,7 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <title>MBPP - eLatihan | Laporan</title>
         <meta name="description" content="MBPP - eLatihan | Laporan">
         <meta name="author" content="eLatihan">
@@ -43,7 +43,7 @@
             <h5 class="m-0">BULAN: {{data.misc.month}}</h5>
             <h5 class="mt-0 mb-5">JUMLAH PEGAWAI: {{data.total.total_staff}}</h5>
 
-            <table class="table mt-2">
+            <table class="table table-bordered mt-2">
                 <thead>
                     <tr>
                         <th scope="col">KUMPULAN \ JUMLAH HARI</th>
@@ -127,7 +127,7 @@
 
     <footer id="footer" class="default-template row">
         <p class="col text-left">
-            <img src="https://pipeline-project.sgp1.digitaloceanspaces.com/images/mbpp-logo.png" style="max-width: 2rem">
+            <img src="{% static 'image/mbpp-logo.png' %}" style="max-width: 2rem">
             <span>MBPP | eLatihan</span>
         </p>
         <p class="col text-right">

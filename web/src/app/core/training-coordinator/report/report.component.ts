@@ -28,7 +28,8 @@ export class ReportComponent implements OnInit {
   // Choices
   reports = [
     { text: 'LAPORAN KEHADIRAN', value: 'LK' },
-    { text: 'LAPORAN OBB', value: 'LO' }
+    { text: 'LAPORAN OBB', value: 'LO' },
+    { text: 'LAPORAN DOMAIN', value: 'LD' }
   ]
   departments = Department
   monthTypes = [
@@ -178,6 +179,42 @@ export class ReportComponent implements OnInit {
       }
       this.reportOBB(attendanceMonth)
     }
+    // DOMAIN keseluruhan
+    else if (
+      this.selectedReportType == 'LD' &&
+      this.selectedMonthType == 'ALL'
+    ) {
+      let attendanceAll = {
+        'department': this.selectedDepartment,
+        'month_type': this.selectedMonthType
+      }
+      this.reportDomain(attendanceAll)
+    }
+    // DOMAIN range
+    else if (
+      this.selectedReportType == 'LD' &&
+      this.selectedMonthType == 'RANGE'
+    ) {
+      let attendanceRange = {
+        'department': this.selectedDepartment,
+        'month_type': this.selectedMonthType,
+        'month_from': this.selectedMonthStart,
+        'month_to': this.selectedMonthEnd,
+      }
+      this.reportDomain(attendanceRange)
+    }
+    // DOMAIN single
+    else if (
+      this.selectedReportType == 'LD' &&
+      this.selectedMonthType == 'SINGLE'
+    ) {
+      let attendanceMonth = {
+        'department': this.selectedDepartment,
+        'month_type': this.selectedMonthType,
+        'month': this.selectedMonth
+      }
+      this.reportDomain(attendanceMonth)
+    }
   }
 
   reportState(body) {
@@ -187,15 +224,22 @@ export class ReportComponent implements OnInit {
 
     this.loadingBar.start()
     this.trainingService.getReportAttendance(body).subscribe(
-      () => {
+      (res) => {
+        let url = window.URL.createObjectURL(res);
+        let a = document.createElement('a');
+        document.body.appendChild(a);
+        a.setAttribute('style', 'display: none');
+        a.href = url;
+        a.download = "Laporan-Kehadiran-"+moment(new Date()).format('YYYY-MM-DD');
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
         this.loadingBar.complete()
       },
       () => {
         this.loadingBar.complete()
       },
-      () => {
-        window.open(this.trainingService.reportUrl, '_blank');
-      }
+      () => {}
     )
     // console.log(body)
   }
@@ -207,15 +251,49 @@ export class ReportComponent implements OnInit {
     
     this.loadingBar.start()
     this.trainingService.getReportOBB(body).subscribe(
-      () => {
+      (res) => {
+        let url = window.URL.createObjectURL(res);
+        let a = document.createElement('a');
+        document.body.appendChild(a);
+        a.setAttribute('style', 'display: none');
+        a.href = url;
+        a.download = "Laporan-OBB-"+moment(new Date()).format('YYYY-MM-DD');
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
         this.loadingBar.complete()
       },
       () => {
         this.loadingBar.complete()
       },
+      () => {}
+    )
+    // console.log(body)
+  }
+
+  reportDomain(body) {
+    let title = 'Tunggu sebentar'
+    let message = 'Laporan sedang dijana'
+    this.notifyService.openToastrInfo(title, message)
+    
+    this.loadingBar.start()
+    this.trainingService.getReportDomain(body).subscribe(
+      (res) => {
+        let url = window.URL.createObjectURL(res);
+        let a = document.createElement('a');
+        document.body.appendChild(a);
+        a.setAttribute('style', 'display: none');
+        a.href = url;
+        a.download = "Laporan-Domain-"+moment(new Date()).format('YYYY-MM-DD');
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+        this.loadingBar.complete()
+      },
       () => {
-        window.open(this.trainingService.reportUrl, '_blank');
-      }
+        this.loadingBar.complete()
+      },
+      () => {}
     )
     // console.log(body)
   }
