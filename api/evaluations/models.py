@@ -62,6 +62,16 @@ class InternalEvaluation(models.Model):
             'user_type': 'TC'
         }
     )
+    generated_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='in_evaluation_generated_by',
+        limit_choices_to={
+            'user_type': 'TC'
+        }
+    )
+    evaluation = models.FileField(max_length=255, null=True, upload_to=PathAndRename('mbpp-elatihan/evaluations/internal'))
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -119,6 +129,16 @@ class ExternalEvaluation(models.Model):
             'user_type': 'TC'
         }
     )
+    generated_by = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        related_name='ex_evaluation_generated_by',
+        limit_choices_to={
+            'user_type': 'TC'
+        }
+    )
+    evaluation = models.FileField(max_length=255, null=True, upload_to=PathAndRename('mbpp-elatihan/evaluations/external'))
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)

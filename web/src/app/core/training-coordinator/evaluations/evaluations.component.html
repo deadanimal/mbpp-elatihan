@@ -1,274 +1,354 @@
 <ngx-loading-bar height="4px"></ngx-loading-bar>
 <div class="header pb-6">
-    <div class="container-fluid">
-        <div class="header-body">
-            <div class="row align-items-center py-4">
-                <div class="col-lg-6 col-7">
-                    <h6 class="h2 text-dark d-inline-block mb-0">Penilaian</h6>
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-dark d-inline-block mb-0">Penilaian</h6>
 
-                    <nav aria-label="breadcrumb" class=" d-none d-md-inline-block ml-md-4">
-                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                            <li class=" breadcrumb-item">
-                                <a href="javascript:void(0)"> <i class="fas fa-file-alt text-dark"> </i> </a>
-                            </li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item">
+                <a href="javascript:void(0)">
+                  <i class="fas fa-file-alt text-dark"> </i>
+                </a>
+              </li>
+            </ol>
+          </nav>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <div class="container-fluid mt--6">
-    <div class="row">
-        <div class="col">
-            <tabset type="pills" class="nav-fill no-tab-content">
-                <tab heading="Dalaman">
-                    <div class="card mt-2">
-                        <div class="card-header bg-secondary">
-                            <div class="row">
-                                <div class="col my-auto">
-                                    <h4 class="m-0">Penilaian Dalaman</h4>
-                                </div>
+  <div class="row">
+    <div class="col">
+      <tabset type="pills" class="nav-fill no-tab-content">
+        <tab heading="Dalaman">
+          <div class="card mt-2">
+            <div class="card-header bg-secondary">
+              <div class="row">
+                <div class="col my-auto">
+                  <h4 class="m-0">Penilaian Dalaman</h4>
+                </div>
 
-                                <div class="col text-right">
-                                    <!-- <a
-                                        class="btn btn-sm btn-warm-blue text-white" 
-                                        (click)="openModalAdd(addLevelModal)"
-                                    > 
-                                        Tambah Aras
-                                    </a> -->
-                                </div>
-                            </div>
-                        </div>
-                
-                        <div class="dataTables_wrapper py-4">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="dataTables_length" id="datatable_length">
-                                        <label>
-                                            Lihat
-                                            <select 
-                                                name="datatable_length" 
-                                                aria-controls="datatable" 
-                                                class="form-control form-control-sm custom-select custom-select-sm"
-                                                (change)="entriesChange($event, 'internal')">
-                                                <option value="5" [selected]="tableInternalEntries == 5">5</option>
-                                                <option value="10" [selected]="tableInternalEntries == 10">10</option>
-                                                <option value="15" [selected]="tableInternalEntries == 15">15</option>
-                                                <option value="-1" [selected]="tableInternalEntries == -1">Semua</option>
-                                            </select>
-                                            rekod
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <div id="datatable_filter" class="dataTables_filter">
-                                        <label>
-                                            <input 
-                                                type="search"
-                                                class="form-control form-control-sm"
-                                                placeholder="Cari"
-                                                aria-controls="datatable"
-                                                (keyup)="filterTable($event, 'internal')"
-                                            />
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                
-                            <div class="pt-4 text-center" *ngIf="isInternalEmpty">
-                                <img [src]="iconEmpty" class="error-icon">
-                                <p>Tiada rekod dijumpai</p>
-                            </div>
-                    
-                            <ngx-datatable 
-                                class="bootstrap selection-cell" 
-                                [columnMode]="'force'" 
-                                [headerHeight]="50" 
-                                [footerHeight]="50"
-                                [rowHeight]="'auto'"
-                                [limit]="tableInternalEntries != -1 ? tableInternalEntries : undefined" 
-                                [rows]="tableInternalTemp"
-                                [messages]="tableMessages"
-                                (activate)="onActivate($event, 'internal')"
-                                *ngIf="!isInternalEmpty"
-                                [scrollbarH]="true"
-                            >
-                                <ngx-datatable-column
-                                    prop="training.title"
-                                >
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Latihan</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.training?.title}}
-                                    </ng-template>
-                                </ngx-datatable-column>
+                <div class="col text-right"></div>
+              </div>
+            </div>
 
-                                <ngx-datatable-column
-                                    prop="attendee?.full_name"
-                                >
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Kakitangan</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.attendee?.full_name}}
-                                    </ng-template>
-                                </ngx-datatable-column>
+            <div class="row p-3">
+              <div class="col">
+                <div class="form-group">
+                  <label class="form-control-label">
+                    Pilih latihan/kursus
+                  </label>
+                  <ng-select
+                    placeholder="Sila cari kursus/latihan"
+                    [(ngModel)]="selectedInternalTraining"
+                  >
+                    <ng-option
+                      *ngFor="let training of internalTrainings"
+                      [value]="training.id"
+                      >{{ training.title }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col d-flex align-items-center">
+                <button
+                  class="btn btn-sm btn-warm-blue"
+                  (click)="printEvaluation('DD')"
+                  [disabled]="!selectedInternalTraining"
+                >
+                  Cetak Penilaian
+                </button>
+              </div>
+            </div>
 
-                                <ngx-datatable-column
-                                    prop="created_at"
-                                >
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Tarikh</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.created_at | date: 'd/M/y'}}
-                                    </ng-template>
-                                </ngx-datatable-column>
-        
-                                <ngx-datatable-column>
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Aktiviti</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        <button 
-                                            class="btn btn-warm-blue"
-                                            (click)="view(row, 'DD')"
-                                        >
-                                            Lihat
-                                        </button>
-                                    </ng-template>
-                                </ngx-datatable-column>
-                            </ngx-datatable>
-                        </div>
-                    </div>
-                </tab>
+            <div class="dataTables_wrapper py-4">
+              <div class="row">
+                <div class="col-sm-12 col-md-6">
+                  <div class="dataTables_length" id="datatable_length">
+                    <label>
+                      Lihat
+                      <select
+                        name="datatable_length"
+                        aria-controls="datatable"
+                        class="
+                          form-control form-control-sm
+                          custom-select custom-select-sm
+                        "
+                        (change)="entriesChange($event, 'internal')"
+                      >
+                        <option
+                          value="5"
+                          [selected]="tableInternalEntries == 5"
+                        >
+                          5
+                        </option>
+                        <option
+                          value="10"
+                          [selected]="tableInternalEntries == 10"
+                        >
+                          10
+                        </option>
+                        <option
+                          value="15"
+                          [selected]="tableInternalEntries == 15"
+                        >
+                          15
+                        </option>
+                        <option
+                          value="-1"
+                          [selected]="tableInternalEntries == -1"
+                        >
+                          Semua
+                        </option>
+                      </select>
+                      rekod
+                    </label>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <div id="datatable_filter" class="dataTables_filter">
+                    <label>
+                      <input
+                        type="search"
+                        class="form-control form-control-sm"
+                        placeholder="Cari"
+                        aria-controls="datatable"
+                        (keyup)="filterTable($event, 'internal')"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
 
-                <tab heading="Luaran">
-                    <div class="card mt-2">
-                        <div class="card-header bg-secondary">
-                            <div class="row">
-                                <div class="col my-auto">
-                                    <h4 class="m-0">Penilaian Luaran</h4>
-                                </div>
+              <div class="pt-4 text-center" *ngIf="isInternalEmpty">
+                <img [src]="iconEmpty" class="error-icon" />
+                <p>Tiada rekod dijumpai</p>
+              </div>
 
-                                <div class="col text-right">
-                                    <!-- <a
-                                        class="btn btn-sm btn-warm-blue text-white" 
-                                        (click)="openModalAdd(addPlanModal)"
-                                    > 
-                                        Tambah Pelan
-                                    </a> -->
-                                </div>
-                            </div>
-                        </div>
-                
-                        <div class="dataTables_wrapper py-4">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="dataTables_length" id="datatable_length">
-                                        <label>
-                                            Lihat
-                                            <select 
-                                                name="datatable_length" 
-                                                aria-controls="datatable" 
-                                                class="form-control form-control-sm custom-select custom-select-sm"
-                                                (change)="entriesChange($event, 'external')">
-                                                <option value="5" [selected]="tableExternalEntries == 5">5</option>
-                                                <option value="10" [selected]="tableExternalEntries == 10">10</option>
-                                                <option value="15" [selected]="tableExternalEntries == 15">15</option>
-                                                <option value="-1" [selected]="tableExternalEntries == -1">Semua</option>
-                                            </select>
-                                            rekod
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <div id="datatable_filter" class="dataTables_filter">
-                                        <label>
-                                            <input 
-                                                type="search"
-                                                class="form-control form-control-sm"
-                                                placeholder="Cari"
-                                                aria-controls="datatable"
-                                                (keyup)="filterTable($event, 'external')"
-                                            />
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                
-                            <div class="pt-4 text-center" *ngIf="isExternalEmpty">
-                                <img [src]="iconEmpty" class="error-icon">
-                                <p>Tiada rekod dijumpai</p>
-                            </div>
-                    
-                            <ngx-datatable 
-                                class="bootstrap selection-cell" 
-                                [columnMode]="'force'" 
-                                [headerHeight]="50" 
-                                [footerHeight]="50"
-                                [rowHeight]="'auto'"
-                                [limit]="tableExternalEntries != -1 ? tableExternalEntries : undefined" 
-                                [rows]="tableExternalTemp"
-                                [messages]="tableMessages"
-                                (activate)="onActivate($event, 'external')"
-                                *ngIf="!isExternalEmpty"
-                                [scrollbarH]="true"
-                            >
-                                <ngx-datatable-column
-                                    prop="training.title"
-                                >
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Latihan</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.training?.title}}
-                                    </ng-template>
-                                </ngx-datatable-column>
+              <ngx-datatable
+                class="bootstrap selection-cell"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="'auto'"
+                [limit]="
+                  tableInternalEntries != -1 ? tableInternalEntries : undefined
+                "
+                [rows]="tableInternalTemp"
+                [messages]="tableMessages"
+                (activate)="onActivate($event, 'internal')"
+                *ngIf="!isInternalEmpty"
+                [scrollbarH]="true"
+              >
+                <ngx-datatable-column prop="training.title">
+                  <ng-template ngx-datatable-header-template>
+                    <span>Latihan</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.training?.title }}
+                  </ng-template>
+                </ngx-datatable-column>
 
-                                <ngx-datatable-column
-                                    prop="attendee?.full_name"
-                                >
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Kakitangan</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.attendee?.full_name}}
-                                    </ng-template>
-                                </ngx-datatable-column>
+                <ngx-datatable-column prop="attendee?.full_name">
+                  <ng-template ngx-datatable-header-template>
+                    <span>Kakitangan</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.attendee?.full_name }}
+                  </ng-template>
+                </ngx-datatable-column>
 
-                                <ngx-datatable-column
-                                    prop="created_at"
-                                >
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Tarikh</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        {{row.created_at | date: 'd/M/y'}}
-                                    </ng-template>
-                                </ngx-datatable-column>
-        
-                                <ngx-datatable-column>
-                                    <ng-template ngx-datatable-header-template>
-                                        <span>Aktiviti</span>
-                                    </ng-template>
-                                    <ng-template let-row="row" ngx-datatable-cell-template>
-                                        <button 
-                                            class="btn btn-warm-blue"
-                                            (click)="view(row, 'LL')"
-                                        >
-                                            Lihat
-                                        </button>
-                                    </ng-template>
-                                </ngx-datatable-column>
-                            </ngx-datatable>
-                        </div>
-                    </div>
-                </tab>
-            </tabset>
-        </div>
+                <ngx-datatable-column prop="created_at">
+                  <ng-template ngx-datatable-header-template>
+                    <span>Tarikh</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.created_at | date: "d/M/y" }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column>
+                  <ng-template ngx-datatable-header-template>
+                    <span>Aktiviti</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    <button class="btn btn-warm-blue" (click)="view(row, 'DD')">
+                      Lihat
+                    </button>
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+            </div>
+          </div>
+        </tab>
+
+        <tab heading="Luaran">
+          <div class="card mt-2">
+            <div class="card-header bg-secondary">
+              <div class="row">
+                <div class="col my-auto">
+                  <h4 class="m-0">Penilaian Luaran</h4>
+                </div>
+
+                <div class="col text-right"></div>
+              </div>
+            </div>
+
+            <div class="row p-3">
+              <div class="col">
+                <div class="form-group">
+                  <label class="form-control-label">
+                    Pilih latihan/kursus
+                  </label>
+                  <ng-select
+                    placeholder="Sila cari kursus/latihan"
+                    [(ngModel)]="selectedExternalTraining"
+                  >
+                    <ng-option
+                      *ngFor="let training of externalTrainings"
+                      [value]="training.id"
+                      >{{ training.title }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+              </div>
+              <div class="col d-flex align-items-center">
+                <button
+                  class="btn btn-sm btn-warm-blue"
+                  (click)="printEvaluation('LL')"
+                  [disabled]="!selectedExternalTraining"
+                >
+                  Cetak Penilaian
+                </button>
+              </div>
+            </div>
+
+            <div class="dataTables_wrapper py-4">
+              <div class="row">
+                <div class="col-sm-12 col-md-6">
+                  <div class="dataTables_length" id="datatable_length">
+                    <label>
+                      Lihat
+                      <select
+                        name="datatable_length"
+                        aria-controls="datatable"
+                        class="
+                          form-control form-control-sm
+                          custom-select custom-select-sm
+                        "
+                        (change)="entriesChange($event, 'external')"
+                      >
+                        <option
+                          value="5"
+                          [selected]="tableExternalEntries == 5"
+                        >
+                          5
+                        </option>
+                        <option
+                          value="10"
+                          [selected]="tableExternalEntries == 10"
+                        >
+                          10
+                        </option>
+                        <option
+                          value="15"
+                          [selected]="tableExternalEntries == 15"
+                        >
+                          15
+                        </option>
+                        <option
+                          value="-1"
+                          [selected]="tableExternalEntries == -1"
+                        >
+                          Semua
+                        </option>
+                      </select>
+                      rekod
+                    </label>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <div id="datatable_filter" class="dataTables_filter">
+                    <label>
+                      <input
+                        type="search"
+                        class="form-control form-control-sm"
+                        placeholder="Cari"
+                        aria-controls="datatable"
+                        (keyup)="filterTable($event, 'external')"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-4 text-center" *ngIf="isExternalEmpty">
+                <img [src]="iconEmpty" class="error-icon" />
+                <p>Tiada rekod dijumpai</p>
+              </div>
+
+              <ngx-datatable
+                class="bootstrap selection-cell"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="'auto'"
+                [limit]="
+                  tableExternalEntries != -1 ? tableExternalEntries : undefined
+                "
+                [rows]="tableExternalTemp"
+                [messages]="tableMessages"
+                (activate)="onActivate($event, 'external')"
+                *ngIf="!isExternalEmpty"
+                [scrollbarH]="true"
+              >
+                <ngx-datatable-column prop="training.title">
+                  <ng-template ngx-datatable-header-template>
+                    <span>Latihan</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.training?.title }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column prop="attendee?.full_name">
+                  <ng-template ngx-datatable-header-template>
+                    <span>Kakitangan</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.attendee?.full_name }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column prop="created_at">
+                  <ng-template ngx-datatable-header-template>
+                    <span>Tarikh</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.created_at | date: "d/M/y" }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column>
+                  <ng-template ngx-datatable-header-template>
+                    <span>Aktiviti</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    <button class="btn btn-warm-blue" (click)="view(row, 'LL')">
+                      Lihat
+                    </button>
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+            </div>
+          </div>
+        </tab>
+      </tabset>
     </div>
+  </div>
 </div>

@@ -331,6 +331,65 @@ class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         return response
 
+    @action(methods=['POST'], detail=False)
+    def generate_bulk(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+
+        evaluations = ExternalEvaluation.objects.filter(training=request_training_, training__organiser_type='LL', evaluation__isnull=True)
+
+        for evaluation in evaluations:
+            attendee = CustomUser.objects.get(id=evaluation.attendee.id)
+
+            items = {
+                'participant': {
+                    'full_name': evaluation.attendee.full_name,
+                    'place': '',
+                    'position': evaluation.attendee.position,
+                    'department': get_departments(evaluation.attendee.department_code)
+                },
+                'training': {
+                    'title': evaluation.training.title,
+                    'full_date': evaluation.training.start_date.strftime("%d %B %Y") +' - '+ evaluation.training.end_date.strftime("%d %B %Y"),
+                    'duration': get_training_durations('string', evaluation.training.start_date, evaluation.training.start_time, evaluation.training.end_date, evaluation.training.end_time),
+                    'venue': evaluation.training.venue,
+                    'organiser': evaluation.training.organiser.name,
+                    'sponsor_expenses': ''
+                },
+                'evaluation': {
+                    'one': evaluation.answer_1,
+                    'two': evaluation.answer_2,
+                    'three': evaluation.answer_3,
+                    'four': evaluation.answer_4,
+                    'five': evaluation.answer_5,
+                    'six': evaluation.answer_6,
+                    'seven': evaluation.answer_7,
+                    'eight': evaluation.answer_8
+                }
+            }
+
+            html_string = render_to_string(
+                'report/external_evaluation.html', {'data': items})
+            html = HTML(string=html_string, base_url=request.build_absolute_uri())
+            pdf_file = html.write_pdf(stylesheets=[CSS(settings.STATIC_ROOT + '/css/bootstrap.css')])
+            file_path = 'evaluations/external/Laporan_Penilaian_Dan_Keberkesanan_Kursus_Luar' + '-' + attendee.nric + '.pdf'
+            saved_file = default_storage.save(
+                file_path,
+                ContentFile(pdf_file)
+            )
+            full_url_path = saved_file
+
+            external_evaluation = ExternalEvaluation.objects.get(id=evaluation.id)
+            external_evaluation.generated_by = user
+            external_evaluation.evaluation = full_url_path
+            external_evaluation.save()
+
+        evaluations = ExternalEvaluation.objects.filter(training=request_training_)
+
+        serializer = ExternalEvaluationExtendedSerializer(evaluations, many=True)
+        return Response(serializer.data)
 
 class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = InternalEvaluation.objects.all()
@@ -495,6 +554,69 @@ class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         #     response.write(output.read())
 
         return response
+
+    @action(methods=['POST'], detail=False)
+    def generate_bulk(self, request, *args, **kwargs):
+
+        user = self.request.user
+        request_ = json.loads(request.body)
+        request_training_ = request_['training']
+
+        evaluations = InternalEvaluation.objects.filter(training=request_training_, training__organiser_type='DD', evaluation__isnull=True)
+
+        for evaluation in evaluations:
+            attendee = CustomUser.objects.get(id=evaluation.attendee.id)
+            content_evaluation = ContentEvaluation.objects.filter(evaluation=evaluation.id).values()
+
+            contents = []
+            for data in content_evaluation:
+                contents.append({
+                    "topic_trainer": data['topic_trainer'],
+                    "content": data['content'],
+                    "presentation": data['presentation'],
+                    "relevance": data['relevance'],
+                })
+
+            items = {
+                'training': {
+                    'title': evaluation.training.title,
+                    'full_date': evaluation.training.start_date.strftime("%d %B %Y"),
+                    'venue': evaluation.training.venue
+                },
+                'evaluation': {
+                    'one': evaluation.answer_1,
+                    'two': evaluation.answer_2,
+                    'three': evaluation.answer_3,
+                    'four': evaluation.answer_4,
+                    'five': evaluation.answer_5,
+                    'six': evaluation.answer_6,
+                    'seven': evaluation.answer_7,
+                    'eight': evaluation.answer_8,
+                    'nine': evaluation.answer_9
+                },
+                'contents': contents
+            }
+
+            html_string = render_to_string(
+                'report/internal_evaluation.html', {'data': items})
+            html = HTML(string=html_string, base_url=request.build_absolute_uri())
+            pdf_file = html.write_pdf(stylesheets=[CSS(settings.STATIC_ROOT + '/css/bootstrap.css')])
+            file_path = 'evaluations/external/Borang_Penilaian_Kursus_Dalaman' + '-' + attendee.nric + '.pdf'
+            saved_file = default_storage.save(
+                file_path,
+                ContentFile(pdf_file)
+            )
+            full_url_path = saved_file
+
+            internal_evaluation = InternalEvaluation.objects.get(id=evaluation.id)
+            internal_evaluation.generated_by = user
+            internal_evaluation.evaluation = full_url_path
+            internal_evaluation.save()
+
+        evaluations = InternalEvaluation.objects.filter(training=request_training_)
+
+        serializer = InternalEvaluationExtendedSerializer(evaluations, many=True)
+        return Response(serializer.data)
 
     @action(methods=['POST'], detail=False)
     def get_chart_21(self, request, *args, **kwargs):
@@ -671,14 +793,16 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                 ContentFile(pdf_file)
             )
             full_url_path = saved_file
-            print('full_url_path', full_url_path)
 
-            certificate = Certificate.objects.create(
-                training=training,
-                attendee=attendee,
-                generated_by=user,
-                cert=full_url_path
-            )
+            queryset = Certificate.objects.filter(training=request_training_, attendee=request_attendee_)
+
+            if not queryset:
+                certificate = Certificate.objects.create(
+                    training=training,
+                    attendee=attendee,
+                    generated_by=user,
+                    cert=full_url_path
+                )
 
         certificates = Certificate.objects.filter(training=training)
 

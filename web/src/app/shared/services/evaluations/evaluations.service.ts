@@ -321,4 +321,22 @@ export class EvaluationsService {
     )
   }
 
+  generateBulkInternal(body: any): Observable<any[]> {
+    let urlTemp = this.urlInternal + 'generate_bulk/'
+    return this.http.post<any[]>(urlTemp, body).pipe(
+      tap((res) => {
+        // console.log('Print Internal: ', res)
+      })
+    )
+  }
+  
+  generateBulkExternal(body: any): Observable<any[]> {
+    let urlTemp = this.urlExternal + 'generate_bulk/'
+    return this.http.post<any[]>(urlTemp, body).pipe(
+      tap((res) => {
+        // console.log('Print External: ', res)
+      })
+    )
+  }
+
 }
