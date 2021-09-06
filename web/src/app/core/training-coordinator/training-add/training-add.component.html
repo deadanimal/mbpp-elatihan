@@ -494,7 +494,7 @@
                 </div>
 
                 <div>
-                  <button class="btn btn-warm-blue" matStepperNext>
+                  <button class="btn btn-warm-blue" matStepperNext (click)="seterusnya1()">
                     Seterusnya
                   </button>
                 </div>
@@ -1161,10 +1161,11 @@
                   <button class="btn btn-outline-warm-blue" matStepperPrevious>
                     Sebelum
                   </button>
+                  <!-- [disabled]="!trainingForm.valid" -->
                   <button
                     class="btn btn-warm-blue"
                     (click)="confirm()"
-                    [disabled]="!trainingForm.valid"
+                    
                   >
                     Daftar
                   </button>

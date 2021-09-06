@@ -5,3 +5,7 @@
 ::ng-deep .mat-step-header:hover{
     background-color: transparent;
 }
+
+::ng-deep .mat-horizontal-stepper-header {
+    pointer-events: none !important;
+}
