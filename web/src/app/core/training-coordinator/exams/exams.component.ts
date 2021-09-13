@@ -342,6 +342,17 @@ export class ExamsComponent implements OnInit {
 
     chart.exporting.menu = new am4core.ExportMenu();
     chart.exporting.filePrefix = fileNamePrefix; 
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].month = data.data[i].month;
+        data.data[i].total = data.data[i].total;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'month': 'Bulan',
+      'total': 'Jumlah'
+    }
 
     this.chartMonth = chart
   }
@@ -629,7 +640,7 @@ export class ExamsComponent implements OnInit {
     // Export
     let todayDate = new Date()
     let todayDateFormat = moment(todayDate).format('YYYYMMDD')
-    let fileNamePrefix = 'Laporan_Peperiksaan_Mengikut_Jabatan_' + todayDateFormat
+    let fileNamePrefix = 'Laporan_Peperiksaan_Mengikut_Jabatan_Dan_Keputusan_' + todayDateFormat
 
     chart.exporting.menu = new am4core.ExportMenu();
     chart.exporting.filePrefix = fileNamePrefix;

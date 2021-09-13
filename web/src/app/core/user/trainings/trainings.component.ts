@@ -107,10 +107,21 @@ export class TrainingsComponent implements OnInit {
     // Export
     let todayDate = new Date()
     let todayDateFormat = moment(todayDate).format('YYYYMMDD')
-    let fileNamePrefix = 'Laporan_Latihan_Kakitangan_' + todayDateFormat
+    let fileNamePrefix = 'Ringkasan_Latihan_Didaftar_Mengikut_Teras_' + todayDateFormat
 
     chart.exporting.menu = new am4core.ExportMenu();
     chart.exporting.filePrefix = fileNamePrefix; 
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].core = data.data[i].core;
+        data.data[i].value = data.data[i].value;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'core': 'Teras',
+      'value': 'Jumlah'
+    }
 
     this.chartCore = chart
   }

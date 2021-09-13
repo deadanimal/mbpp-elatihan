@@ -14,6 +14,8 @@ import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 am4core.useTheme(am4themes_animated);
 
+import * as moment from 'moment';
+
 @Component({
   selector: "app-dashboard",
   templateUrl: "./dashboard.component.html",
@@ -186,6 +188,25 @@ export class DashboardComponent implements OnInit {
     chart.cursor.lineX.strokeOpacity = 0;
     chart.cursor.lineY.strokeOpacity = 0;
 
+    // Export
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileNamePrefix = 'Kehadiran_Kursus_Mengikut_Jabatan_' + todayDateFormat
+
+    chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.filePrefix = fileNamePrefix;
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].department = data.data[i].department;
+        data.data[i].value = data.data[i].value;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'department': 'Jabatan',
+      'value': 'Jumlah'
+    }
+
     this.chart1 = chart;
   }
 
@@ -235,6 +256,25 @@ export class DashboardComponent implements OnInit {
     series.dataFields.value = "value";
     series.dataFields.category = "department";
 
+    // Export
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileNamePrefix = 'Jabatan_Belum_Mencapai_5Hari_Berkursus_' + todayDateFormat
+
+    chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.filePrefix = fileNamePrefix;
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].department = data.data[i].department;
+        data.data[i].value = data.data[i].value;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'department': 'Jabatan',
+      'value': 'Jumlah'
+    }
+
     this.chart3 = chart;
   }
 
@@ -281,6 +321,25 @@ export class DashboardComponent implements OnInit {
     let series = chart.series.push(new am4charts.PieSeries3D());
     series.dataFields.value = "value";
     series.dataFields.category = "department";
+
+    // Export
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileNamePrefix = 'Jabatan_Telah_Mencapai_5Hari_Berkursus_' + todayDateFormat
+
+    chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.filePrefix = fileNamePrefix;
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].department = data.data[i].department;
+        data.data[i].value = data.data[i].value;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'department': 'Jabatan',
+      'value': 'Jumlah'
+    }
 
     this.chart4 = chart;
   }
