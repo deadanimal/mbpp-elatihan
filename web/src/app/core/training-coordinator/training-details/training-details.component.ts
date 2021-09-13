@@ -537,7 +537,6 @@ export class TrainingDetailsComponent implements OnInit {
       this.domainService.getDomains(),
       this.trainerService.filter("training="+this.trainingID),
       this.attendanceService.getReportAttendanceByDay(this.trainingID),
-      this.evaluationService.filterInternal("training="+"62542427-35da-4fea-8520-e8db58647459")
     ]).subscribe(
       () => {
         this.training = this.trainingService.trainingExtended
@@ -551,7 +550,6 @@ export class TrainingDetailsComponent implements OnInit {
         this.domains = this.domainService.domains
         this.staffs = this.trainingService.applicableStaffs
         this.applyForm.controls['training'].setValue(this.training['id'])
-        this.internalFiltered = this.evaluationService.internalFiltered
         this.loadingBar.complete() 
       },
       () => {
@@ -765,6 +763,15 @@ export class TrainingDetailsComponent implements OnInit {
         this.staffs = this.users
         this.cores = this.coreService.cores
         this.domains = this.domainService.domains
+
+        if (this.training.organiser_type == 'DD') {
+          this.evaluationService.filterInternal("training="+this.trainingID).subscribe((res) => {
+            // console.log("res", res);
+            this.internalFiltered = res;
+          }, (err) => {
+            console.error("err", err);
+          })
+        }
 
         this.coresParentTemp = this.training['core']['parent']
         this.cores.forEach(
