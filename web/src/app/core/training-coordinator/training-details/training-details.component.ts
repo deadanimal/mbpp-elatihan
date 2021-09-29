@@ -537,7 +537,6 @@ export class TrainingDetailsComponent implements OnInit {
       this.domainService.getDomains(),
       this.trainerService.filter("training="+this.trainingID),
       this.attendanceService.getReportAttendanceByDay(this.trainingID),
-      this.evaluationService.filterInternal("training="+"62542427-35da-4fea-8520-e8db58647459")
     ]).subscribe(
       () => {
         this.training = this.trainingService.trainingExtended
@@ -551,7 +550,6 @@ export class TrainingDetailsComponent implements OnInit {
         this.domains = this.domainService.domains
         this.staffs = this.trainingService.applicableStaffs
         this.applyForm.controls['training'].setValue(this.training['id'])
-        this.internalFiltered = this.evaluationService.internalFiltered
         this.loadingBar.complete() 
       },
       () => {
@@ -765,6 +763,15 @@ export class TrainingDetailsComponent implements OnInit {
         this.staffs = this.users
         this.cores = this.coreService.cores
         this.domains = this.domainService.domains
+
+        if (this.training.organiser_type == 'DD') {
+          this.evaluationService.filterInternal("training="+this.trainingID).subscribe((res) => {
+            // console.log("res", res);
+            this.internalFiltered = res;
+          }, (err) => {
+            console.error("err", err);
+          })
+        }
 
         this.coresParentTemp = this.training['core']['parent']
         this.cores.forEach(
@@ -1001,6 +1008,25 @@ export class TrainingDetailsComponent implements OnInit {
       legend.data = legenddata;
     });
 
+    // Export
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileNamePrefix = 'Keberkesanan_Kursus_Luaran_' + todayDateFormat
+
+    chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.filePrefix = fileNamePrefix;
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].kriteria = data.data[i].kriteria;
+        data.data[i].jumlah = data.data[i].jumlah;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'kriteria': 'Kriteria',
+      'jumlah': 'Jumlah'
+    }
+
     this.chart_21 = chart;
   }
 
@@ -1116,6 +1142,25 @@ export class TrainingDetailsComponent implements OnInit {
       });
       legend.data = legenddata;
     });
+
+    // Export
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileNamePrefix = 'Pencapaian_Objektif_Kursus_' + todayDateFormat
+
+    chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.filePrefix = fileNamePrefix;
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].kriteria = data.data[i].kriteria;
+        data.data[i].jumlah = data.data[i].jumlah;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'kriteria': 'Kriteria',
+      'jumlah': 'Jumlah'
+    }
 
     this.chart_21 = chart;
   }
@@ -1242,6 +1287,29 @@ export class TrainingDetailsComponent implements OnInit {
           })
         }
       }
+    }
+
+    // Export
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileNamePrefix = 'Kaitan_dengan_tugas_harian_dan_membantu_untuk_tugas_harian_' + todayDateFormat
+
+    chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.filePrefix = fileNamePrefix;
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].soalan = data.data[i].soalan;
+        data.data[i].three = data.data[i].three;
+        data.data[i].two = data.data[i].two;
+        data.data[i].one = data.data[i].one;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'soalan': 'Soalan',
+      'three': 'Sangat Berkaitan/Membantu',
+      'two': 'Berkaitan/Kurang Membantu',
+      'one': 'Kurang berkaitan/Tidak Membantu'
     }
 
     this.chart_22 = chart;
@@ -1388,6 +1456,33 @@ export class TrainingDetailsComponent implements OnInit {
       }
     }
 
+    // Export
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileNamePrefix = 'Kemudahan_Fasiliti_Makanan_' + todayDateFormat
+
+    chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.filePrefix = fileNamePrefix;
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].kriteria = data.data[i].kriteria;
+        data.data[i].five = data.data[i].five;
+        data.data[i].four = data.data[i].four;
+        data.data[i].three = data.data[i].three;
+        data.data[i].two = data.data[i].two;
+        data.data[i].one = data.data[i].one;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'kriteria': 'Kriteria',
+      'five': 'Cemerlang',
+      'four': 'Bagus',
+      'three': 'Memuaskan',
+      'two': 'Sederhana',
+      'one': 'Lemah'
+    }
+
     this.chart_23 = chart;
   }
 
@@ -1530,6 +1625,33 @@ export class TrainingDetailsComponent implements OnInit {
           })
         }
       }
+    }
+
+    // Export
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileNamePrefix = 'Penilaian_terhadap_tenaga_pengajar_' + todayDateFormat
+
+    chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.filePrefix = fileNamePrefix;
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].kriteria = data.data[i].kriteria;
+        data.data[i].five = data.data[i].five;
+        data.data[i].four = data.data[i].four;
+        data.data[i].three = data.data[i].three;
+        data.data[i].two = data.data[i].two;
+        data.data[i].one = data.data[i].one;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'kriteria': 'Kriteria',
+      'five': 'Cemerlang',
+      'four': 'Bagus',
+      'three': 'Memuaskan',
+      'two': 'Sederhana',
+      'one': 'Lemah'
     }
 
     this.chart_24 = chart;

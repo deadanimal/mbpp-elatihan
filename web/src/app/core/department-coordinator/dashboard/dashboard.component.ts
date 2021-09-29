@@ -258,7 +258,24 @@ export class DashboardComponent implements OnInit {
         }
       ]
 
-      // console.log(chart.data)
+    // Export
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileNamePrefix = 'Kehadiran_Kursus_Kakitangan_Jabatan_' + todayDateFormat
+
+    chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.filePrefix = fileNamePrefix; 
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].core = data.data[i].core;
+        data.data[i].value = data.data[i].value;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'month': 'Bulan',
+      'value': 'Jumlah'
+    }
 
     this.chart1 = chart
   }
@@ -310,6 +327,25 @@ export class DashboardComponent implements OnInit {
     let series = chart.series.push(new am4charts.PieSeries3D());
     series.dataFields.value = 'value';
     series.dataFields.category = 'section';
+
+    // Export
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileNamePrefix = 'Kakitangan_Jabatan_Belum_Mencapai_5Hari_Berkursus_' + todayDateFormat
+
+    chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.filePrefix = fileNamePrefix; 
+    chart.exporting.adapter.add("data", function(data) {
+      for (var i = 0; i < data.data.length; i++) {
+        data.data[i].core = data.data[i].core;
+        data.data[i].value = data.data[i].value;
+      }
+      return data;
+    })
+    chart.exporting.dataFields = {
+      'section': 'Bahagian',
+      'value': 'Jumlah'
+    }
 
     this.chart2 = chart
   }
