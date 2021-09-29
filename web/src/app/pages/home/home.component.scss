@@ -9,19 +9,23 @@
     // overflow: hidden;
 }
 
-.card {
-    height: 22rem;
-    max-height: 22rem;
-    .card-header {
-        // height: 10rem;
-        // max-height: 10rem;
-        margin-top: auto;
-        margin-bottom: auto;
-    } 
-    img {
-        height: 15rem;
-        max-height: 15vh;
-    }
+.card2 {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+  }
+
+.card2:hover{
+    transform: scale(1.05);
+ box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
 }
 
 .footer {

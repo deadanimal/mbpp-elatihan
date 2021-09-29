@@ -61,12 +61,6 @@
         <slide>
             <img src="../../../assets/img/default/home_2.jpg" alt="first slide" style="display: block; width: 100%; ">
         </slide>
-        <slide>
-            <img src="../../../assets/img/default/home.jpg" alt="second slide" style="display: block; width: 100%; ">
-        </slide>
-        <slide>
-            <img src="assets/img/theme/img-1-1000x600.jpg" alt="third slide" style="display: block; width: 100%;">
-        </slide>
     </carousel>
     <section class="py-5 bg-warm-blue auth-content">
         
@@ -88,7 +82,7 @@
             <div class="row mb-8">
                 <div class="col-lg-3 col-sm-12" *ngFor="let training of trainings; let i=index">
                     <div *ngIf="training.status != 'SL' && i<4">
-                        <div class="card card-lift--hover shadow bg-secondary">
+                        <div class="card2 shadow bg-secondary">
                             <div class="card-header bg-white text-center p-3">
                                 <h4 class="m-0 font-weight-bolder text-truncate" style="overflow: hidden; text-overflow: ellipsis; width: 100%">{{training.title}}</h4>
                                 <h5 class="m-0">{{training.start_date | date: 'd/M/y'}} - {{training.end_date | date: 'd/M/y'}}</h5>

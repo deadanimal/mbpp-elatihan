@@ -175,20 +175,11 @@ export class ForgotComponent implements OnInit {
     else {
       let id = "username=" + this.resetForm.value.username;
       console.log("ic = ",this.resetForm.value.username)
-      // let reset = this.resetForm.value.username
-      // this.organisationsService.sendingResetEmail(reset).subscribe(
-      //   (res) => {
-      //     console.log(res)
-      //   },
-      //   (err) => {
-      //     console.log(err)
-      //   }
-      // )
       this.userService.filter(id).subscribe(
         (res) => {
           this.userDetail = res
-          console.log(this.userDetail[0].id)
-          if (this.userDetail == undefined) {
+          // console.log('id',this.userDetail[0].id)
+          if (this.userDetail[0] === undefined) {
             this.NoInputMessage()
           }
           else {
@@ -248,13 +239,19 @@ export class ForgotComponent implements OnInit {
   changePasswordNew() {
     console.log(this.userDetail[0].id)
     console.log(this.passwordForm.value)
+    this.loadingBar.start()
     this.userService.changePassword(this.userDetail[0].id, this.passwordForm.value['new_password1']).subscribe(
       (res)=> {
         console.log(res)
+        this.loadingBar.complete()
+        this.successMessage()
+        this.navigatePage("/auth/login");
+  //     }
       }
     )
     // this.successChangePassword()
     this.closeModal()
+    this.loadingBar.complete()
   }
 
   // changePassword() {
@@ -288,7 +285,7 @@ export class ForgotComponent implements OnInit {
 
   successMessage() {
     let title = "Success";
-    let message = "A reset link has been sent to your email";
+    let message = "Your password has been successfully reset";
     this.notifyService.openToastr(title, message);
   }
 
