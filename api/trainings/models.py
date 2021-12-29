@@ -72,8 +72,8 @@ class TrainingType(models.Model):
 class Training(models.Model):
     
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False) # Done
-    title = models.CharField(max_length=100, default='NA') # Done
-    description = models.CharField(max_length=100, default='NA') # Done
+    title = models.CharField(max_length=255, default='NA') # Done
+    description = models.CharField(max_length=255, default='NA') # Done
 
     METHOD = [
         ('BS', 'Bersemuka'),
@@ -321,8 +321,8 @@ class Training(models.Model):
     is_waa44 = models.BooleanField(default=False)   # WAA44
 
     max_participant = models.IntegerField(default=0) # Done
-    venue = models.CharField(max_length=50, null=True, default='NA') # Done
-    address = models.CharField(max_length=50, null=True, default='NA') # Done
+    venue = models.CharField(max_length=255, null=True, default='NA') # Done
+    address = models.CharField(max_length=255, null=True, default='NA') # Done
     start_date = models.DateField(null=True) # Done
     start_time = models.TimeField(null=True) # Done
     end_date = models.DateField(null=True) # Done

@@ -1,3 +1,4 @@
+import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
 import { Component, OnInit } from "@angular/core";
 import {
   FormArray,
@@ -26,6 +27,7 @@ export class EvaluationDetailsComponent implements OnInit {
   // Data
   evaluationID;
   evaluationType;
+  TraningName
   internal: InternalExtended;
   external: ExternalExtended;
 
@@ -53,7 +55,8 @@ export class EvaluationDetailsComponent implements OnInit {
     private loadingBar: LoadingBarService,
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private trainingsService:TrainingsService,
   ) {
     this.evaluationID = this.route.snapshot.queryParamMap.get("id");
     this.evaluationType = this.route.snapshot.queryParamMap.get("type");
@@ -199,7 +202,7 @@ export class EvaluationDetailsComponent implements OnInit {
 
   getData() {
     this.loadingBar.start();
-
+    this.TraningName = null
     if (this.evaluationType == "DD") {
       this.subscription = forkJoin([
         this.evaluationService.getInternal(this.evaluationID),
@@ -212,6 +215,7 @@ export class EvaluationDetailsComponent implements OnInit {
           this.isEvaluated = true;
 
           this.internalForm.controls["training"].patchValue(res[0].training.id);
+          this.TraningName=res[0].training.title
           this.internalForm.controls["attendee"].patchValue(
             this.authService.userID
           );
@@ -274,6 +278,7 @@ export class EvaluationDetailsComponent implements OnInit {
           this.isEvaluated = true;
 
           this.externalForm.controls["training"].patchValue(res[0].training.id);
+          this.TraningName=res[0].training.title
           this.externalForm.controls["attendee"].patchValue(
             this.authService.userID
           );

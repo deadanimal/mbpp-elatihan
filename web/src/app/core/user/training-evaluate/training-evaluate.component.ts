@@ -22,6 +22,7 @@ export class TrainingEvaluateComponent implements OnInit {
 
   // Data
   trainingID = null
+  trainingName
   training: TrainingExtended
   external: ExternalExtended
   internal: InternalExtended
@@ -205,6 +206,16 @@ export class TrainingEvaluateComponent implements OnInit {
         this.externalForm.controls['attendee'].patchValue(this.authService.userID)
         this.internalForm.controls['training'].patchValue(this.trainingID)
         this.internalForm.controls['attendee'].patchValue(this.authService.userID)
+
+        this.trainingService.getOneTraining(this.trainingID).subscribe(
+          (res) => {
+            this.trainingName = res.title
+          },
+          (err) => {
+            console.log('Error get training name')
+          }
+
+        )
 
 
         if (this.trainingType == 'DD') {

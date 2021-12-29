@@ -9,6 +9,7 @@ import { forkJoin } from 'rxjs';
 import { SecurityService } from 'src/app/shared/services/security/security.service';
 import { SecurityQuestion } from 'src/app/shared/services/security/security.model';
 import { CustomValidators } from 'src/app/shared/validators/custom/custom-validators';
+import { untilDestroyed } from 'ngx-take-until-destroy'
 
 @Component({
   selector: 'app-login',
@@ -65,6 +66,7 @@ export class LoginComponent implements OnInit {
   user: User
   questions: SecurityQuestion[] = []
   currentDate: Date = new Date();
+  isHidden = true;
 
   // Checker
   isFirstLogin: boolean = false
@@ -76,7 +78,7 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private loadingBar: LoadingBarService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
   ) { 
     this.paramID = this.route.snapshot.queryParamMap.get('id')
     if (this.route.snapshot.queryParamMap.get('redirect')) {
@@ -188,7 +190,7 @@ export class LoginComponent implements OnInit {
         this.navigatePage('/dashboard')
         // this.successMessage()
         let title = 'Berjaya'
-        let message = 'Sedang melog masuk'
+        let message = 'Berjaya Log Masuk'
         this.notifyService.openToastr(title, message)
         this.loginForm.reset()
         break;
@@ -292,14 +294,14 @@ export class LoginComponent implements OnInit {
     // let username= '900106075156'
     // let pwd = 'mbpplatihan123'
     // Penyelaras Latihan - TC bc87f9ca-520b-4ede-84be-e5978aa8e467
-    let username= '900106075155' 
-    let pwd = 'mbpplatihan123'
+    // let username= '900106075155' 
+    // let pwd = 'mbpplatihan123,'
     // Ketua Jabatan - DH 321eea06-c911-453d-af57-14beaf38f4b6
     // let username= '900106075154'
     // let pwd = 'mbpplatihan123'
     // Pentadbir Sistem - AD 3866890b-2723-462a-9db4-3097d8321613
-    // let username= '900206075154' 
-    // let pwd = 'mbpplatihan123'
+    let username= '900206075154' 
+    let pwd = 'mbpplatihan123'
 
     this.loginForm.controls['username'].setValue(username)
     this.loginForm.controls['password'].setValue(pwd)

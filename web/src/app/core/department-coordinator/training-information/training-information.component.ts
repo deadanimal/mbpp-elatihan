@@ -11,9 +11,11 @@ import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'src/app/shared/services/users/users.model';
 
+
 import * as moment from 'moment';
 import swal from 'sweetalert2';
 import { Section } from 'src/app/shared/code/user';
+import { UsersService } from 'src/app/shared/services/users/users.service';
 
 export enum SelectionType {
   single = "single",
@@ -52,6 +54,7 @@ export class TrainingInformationComponent implements OnInit {
   tableEntries: number = 5
   tableSelected: any[] = []
   tableTemp = []
+  dataStaff = []
   tableActiveRow: any
   tableRows: any = []
   tableMessages = { 
@@ -71,7 +74,8 @@ export class TrainingInformationComponent implements OnInit {
     private fb: FormBuilder,
     private notifyService: NotifyService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private userService: UsersService
   ) { 
     this.trainingID = this.route.snapshot.queryParamMap.get('id')
   
@@ -103,7 +107,8 @@ export class TrainingInformationComponent implements OnInit {
     forkJoin([
       this.trainingService.getOne(this.trainingID),
       this.authService.getDetailByToken(),
-      this.trainingService.getApplicableDepartment(this.trainingID)
+      this.trainingService.getApplicableDepartment(this.trainingID),
+      this.userService.getDepartmentStaffs()
     ]).subscribe(
       () => {
         this.loadingBar.complete()
@@ -113,8 +118,10 @@ export class TrainingInformationComponent implements OnInit {
       },
       () => {
         this.training = this.trainingService.trainingExtended
-        this.staffs = this.trainingService.applicableStaffs
-        // console.log('training: ', this.training)
+        this.dataStaff = this.trainingService.applicableStaffs
+        this.staffs = this.userService.users
+        console.log('list of staff : ', this.staffs)
+        console.log('list of staff : ', this.dataStaff)
 
         this.applyForm.controls['training'].setValue(this.training['id'])
 

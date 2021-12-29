@@ -20,7 +20,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.core.mail import send_mail
 
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -63,12 +63,12 @@ class CustomUserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [AllowAny] #permission_classes = [IsAuthenticated]
+        permission_classes = [AllowAny] #permission_classes = [AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
 
         return [permission() for permission in permission_classes]    
@@ -166,12 +166,12 @@ class UserLogViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated] #[AllowAny]
+        permission_classes = [AllowAny] #[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -191,12 +191,12 @@ class SecurityQuestionViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         
         if self.action == 'list':
             permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         
         return [permission() for permission in permission_classes]    
 
@@ -216,12 +216,12 @@ class SecurityAnswerViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [AllowAny]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 

@@ -146,7 +146,7 @@ export const DHROUTES: RouteInfo[] = [
   { path: '/dc/trainings', title: 'Latihan Jabatan', type: 'sub', icontype: 'fas fa-chalkboard-teacher text-primary',
     collapse: 'trainings', isCollapsed: true, children: [
       { path: 'list', title: 'Senarai Semasa', type: 'link' },
-      { path: 'applications-head', title: 'Permohonan', type: 'link' },
+      { path: 'applications-head', title: 'Kelulusan Permohonan', type: 'link' },
       { path: 'application-histories', title: 'Sejarah Permohonan', type: 'link' }
     ]
   },

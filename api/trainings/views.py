@@ -14,7 +14,7 @@ from django.shortcuts import render
 from django.db.models import Q, Count
 from django.http import HttpResponse
 
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -274,12 +274,12 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        # permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny] #[AllowAny]
         
         if self.action == 'get_latest':
             permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         
         return [permission() for permission in permission_classes]    
 
@@ -1883,12 +1883,12 @@ class TrainingNoteViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -1906,12 +1906,12 @@ class TrainingCoreViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['core', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -1934,12 +1934,12 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated] [AllowAny]
+        permission_classes = [AllowAny]#[AllowAny] [AllowAny]
         
         # if self.action == 'list':
-        #     permission_classes = [IsAuthenticated]
+        #     permission_classes = [AllowAny]
         # else:
-        #     permission_classes = [IsAuthenticated]
+        #     permission_classes = [AllowAny]
         
         return [permission() for permission in permission_classes]    
 
@@ -2185,16 +2185,18 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         'training', 
         'attendee',
         'verified_by',
-        'is_attend'
+        'is_attend',
+        'training_id',
+        'attendee_id'
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -2215,9 +2217,11 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         QR Code Format: <training_id>|<check_type>|<current_date:YYYY-MM-DD>
         """
         
+        # return Response({"data qr": data_split})
+        
         if uuid.UUID(data_split[0]) and datetime.datetime.strptime(data_split[2], '%Y-%m-%d'):
 
-            attendance = TrainingAttendee.objects.get(training=data_split[0], check_date=data_split[2])
+            attendance = TrainingAttendee.objects.filter(training=data_split[0])[0] #check_date=data_split[2])
             attendee = request.user
             
             if data_split[1] == 'check_in':
@@ -2461,15 +2465,15 @@ class TrainingAbsenceMemoViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = TrainingAbsenceMemo.objects.all()
     serializer_class = TrainingAbsenceMemoSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    # filterset_fields = ['code', 'staff', 'date']
+    filterset_fields = ['id', 'attendee', 'training']
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -2509,12 +2513,12 @@ class TrainingLogViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -2532,12 +2536,12 @@ class TrainerViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     filterset_fields = ['trainer_type', 'training']
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -2555,12 +2559,12 @@ class TrainingDomainViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -2578,12 +2582,12 @@ class TrainingTypeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -2601,12 +2605,12 @@ class ConfigurationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -2624,12 +2628,12 @@ class TrainingNeedAnalysisViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     # filterset_fields = ['code', 'staff', 'date']
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -2785,12 +2789,12 @@ class MonitoringPlanViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 
@@ -2809,12 +2813,12 @@ class BasicLevelViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]#[IsAuthenticated]
+        permission_classes = [AllowAny]#[AllowAny]
         """
         if self.action == 'list':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         """
         return [permission() for permission in permission_classes]    
 

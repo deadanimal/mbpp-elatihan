@@ -104,6 +104,7 @@ export class ReportComponent implements OnInit {
 
   generateReport() {
     // Kedatangan keseluruhan
+    console.log("masuk sini")
     if (
       this.selectedReportType == 'LK' &&
       this.selectedMonthType == 'ALL'

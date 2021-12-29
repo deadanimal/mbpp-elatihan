@@ -2428,6 +2428,8 @@ export class TrainingDetailsComponent implements OnInit {
 
     this.loadingBar.complete()
 
+    // alert(this.trainingFormData)
+
     this.trainingService.update(this.training['id'], this.trainingFormData).subscribe(
       () => {
         this.loadingBar.complete()

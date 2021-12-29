@@ -78,6 +78,7 @@ export class TrainingDetailComponent implements OnInit {
   iconEmpty = 'assets/img/icons/box.svg'
   iconQR = 'assets/img/icons/qr-code.svg'
   iconMemo = 'assets/img/icons/memo.svg'
+  body
 
   // Modal
   modal: BsModalRef;
@@ -268,13 +269,15 @@ export class TrainingDetailComponent implements OnInit {
   }
 
   getQRID() {
-    let body = {
+    this.body = {
       'training': this.training['id']
     }
-    this.attendanceService.getTodayQR(body).subscribe(
+    console.log("boday id", this.body)
+    this.attendanceService.getTodayQR(this.body).subscribe(
       () => {},
       () => {},
       () => {
+        console.log("anjay", this.attendanceService)
         this.qrID = this.attendanceService.attendanceQRID[0]['id']
         this.qrCodeCheckIn = this.attendanceService.attendanceQRID[0]['training']+'|check_in|'+moment(new Date()).format('YYYY-MM-DD')
         this.qrCodeCheckOut = this.attendanceService.attendanceQRID[0]['training']+'|check_out|'+moment(new Date()).format('YYYY-MM-DD')
@@ -341,15 +344,17 @@ export class TrainingDetailComponent implements OnInit {
   scanSuccessHandler(event) {
     this.loadingBar.start()
     console.log('event', event)
+    console.log('check in ', this.qrCodeCheckIn )
     if (event == this.qrCodeCheckIn || event == this.qrCodeCheckOut) {
       this.attendanceService.signAttendance({'qr_code': event}).subscribe(
         () => {
           this.loadingBar.complete()
         },
-        () => {
+        (err) => {
           let errorTitle = 'Ralat'
           let errorMessage = 'Terdapat masalah teknikal. Sila hubungi pentadbir sistem'
           this.notifyService.openToastrError(errorTitle, errorMessage)
+          console.log("Error QR",err)
           this.loadingBar.complete()
         },
         () => {

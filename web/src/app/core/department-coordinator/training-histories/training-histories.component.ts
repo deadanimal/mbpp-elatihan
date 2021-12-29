@@ -1,10 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { AbsenceMemo } from './../../../shared/services/absence-memos/absence-memos.model';
+import { AbsenceMemosService } from './../../../shared/services/absence-memos/absence-memos.service';
+import { AttendancesService } from 'src/app/shared/services/attendances/attendances.service';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
 import { Router } from '@angular/router';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 
 import { ApplicationDepartmentExtended } from 'src/app/shared/services/applications/applications.model';
 import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 
 import * as moment from 'moment';
 import * as xlsx from 'xlsx';
@@ -30,6 +35,17 @@ export class TrainingHistoriesComponent implements OnInit {
   applications: ApplicationDepartmentExtended[] = []
   sections = Section
 
+  kehadiranForm: FormGroup
+  kehadiranData
+  absenceMemo
+
+  // Modal
+  modal: BsModalRef;
+  modalConfig = {
+    keyboard: true,
+    class: "modal-dialog-centered"
+  };
+
   // Table
   tableEntries: number = 5
   tableSelected: any[] = []
@@ -53,12 +69,20 @@ export class TrainingHistoriesComponent implements OnInit {
     private applicationService: ApplicationsService,
     private loadingBar: LoadingBarService,
     private notifyService: NotifyService,
-    private router: Router
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private modalService: BsModalService,
+    private absenceMemosService: AbsenceMemosService,
+    private attendancesService: AttendancesService
   ) { 
     this.getData()
   }
 
   ngOnInit() {
+    this.kehadiranForm = this.formBuilder.group({
+      id: new FormControl(""),
+      email: new FormControl(""),
+    });
   }
 
   getData() {
@@ -159,6 +183,57 @@ export class TrainingHistoriesComponent implements OnInit {
 
     /* save to file */
     xlsx.writeFile(wb, fileName);
+  }
+
+  openModal(modalRef: TemplateRef<any>, process: string, row) {
+    if (process === 'kehadiran'){
+      console.log("loop template")
+      console.log('row applicant id', row.applicant?.full_name)
+      console.log('row applicant id', row.applicant?.id)
+      console.log('row training id', row.training?.id)
+      const data = 'training='+ row.training?.id + '&attendee=' + row.applicant?.id
+
+      this.attendancesService.filter(data).subscribe(
+        (res)=>{
+          console.log('TT', res.length)
+          if (res.length == 0){
+            this.kehadiranData = 'Tiada Rekod'
+          }
+          else{
+            if (res[0]['is_attend'] == false){
+              this.kehadiranData = 'Tidak Hadir'
+            }
+            else if (res[0]['is_attend'] == true){
+              this.kehadiranData = 'Hadir'
+            }
+          }
+        },
+        (err)=>{},
+      )
+
+      this.absenceMemosService.filter(data).subscribe(
+        (res)=>{
+          console.log('TT TT', res)
+          if (res.length == 0){
+            this.absenceMemo = 'Tiada Rekod'
+          }
+          else{
+            this.absenceMemo = res[0]['reason']
+          }
+        },
+        (err)=>{},
+      )
+
+      this.kehadiranForm.patchValue({
+        ...row,
+      });
+    }
+
+    this.modal = this.modalService.show(modalRef, this.modalConfig);
+  }
+
+  closeModal() {
+    this.modal.hide()
   }
 
 }

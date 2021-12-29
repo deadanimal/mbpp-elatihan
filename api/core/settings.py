@@ -28,11 +28,11 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=True, cast=bool)
 
 
-ALLOWED_HOSTS = [
-    'mbpp-elatihan-api.pipe.my',
-    '127.0.0.1',
-    'localhost'
-]
+ALLOWED_HOSTS = ['*']
+    # 'mbpp-elatihan-api.pipe.my',
+    # '127.0.0.1',
+    # 'localhost',
+# ]
 
 
 # Application definition
@@ -213,7 +213,7 @@ DEFAULT_RENDERER_CLASSES = (
 )
 
 DEFAULT_PERMISSION_CLASSES = [
-   'rest_framework.permissions.IsAuthenticated',
+   'rest_framework.permissions.AllowAny',
 ]
 
 if DEBUG:

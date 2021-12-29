@@ -175,10 +175,19 @@
 							prop="approved_level_1_by"
 						>
 							<ng-template ngx-datatable-header-template>
-								<span>Kelulusaan Penyelaras</span>
+								<span>Kelulusaan PJ</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
 								{{row.approved_level_1_by?.full_name}}
+								<span class="badge badge-success" *ngIf="row.approved_level_1_by?.full_name.length<=0 && row.status == 'AP'"
+								>Diterima</span
+								>
+								<span class="badge badge-danger" *ngIf="row.approved_level_1_by?.full_name.length<=0 && row.status == 'RJ'"
+								>Ditolak</span
+								>
+								<span class="badge badge-primary" *ngIf="row.approved_level_1_by?.full_name.length<=0 && row.status == 'IP'"
+								>Dalam proses</span
+								>
 							</ng-template>
 						</ngx-datatable-column>
 
@@ -186,10 +195,42 @@
 							prop="approved_level_2_by"
 						>
 							<ng-template ngx-datatable-header-template>
-								<span>Kelulusaan Ketua</span>
+								<span>Kelulusaan KJ</span>
 							</ng-template>
 							<ng-template let-row="row" ngx-datatable-cell-template>
 								{{row.approved_level_2_by?.full_name}}
+								<span class="badge badge-success" *ngIf="row.approved_level_2_by?.full_name.length<=0 && row.status == 'AP'"
+								>Diterima</span
+								>
+								<span class="badge badge-danger" *ngIf="row.approved_level_2_by?.full_name.length<=0 && row.status == 'RJ'"
+								>Ditolak</span
+								>
+								<span class="badge badge-primary" *ngIf="row.approved_level_2_by?.full_name.length<=0 && row.status == 'IP'"
+								>Dalam proses</span
+								>
+							</ng-template>
+						</ngx-datatable-column>
+
+						<ngx-datatable-column
+							prop="approved_level_3_by"
+						>
+							<ng-template ngx-datatable-header-template>
+								<span>Kelulusaan PL</span>
+							</ng-template>
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								{{row.approved_level_3_by?.full_name}}
+								<span class="badge badge-success" *ngIf="row.approved_level_3_by?.full_name.length<=0 && row.status == 'AP'"
+								>Diterima</span
+								>
+								<span class="badge badge-danger" *ngIf="row.approved_level_3_by?.full_name.length<=0 && row.status == 'RJ'"
+								>Ditolak</span
+								>
+								<span class="badge badge-warning" *ngIf="row.approved_level_3_by?.full_name.length<=0 && row.status == 'RS'"
+								>Disimpan</span
+								>
+								<span class="badge badge-primary" *ngIf="row.approved_level_3_by?.full_name.length<=0 && row.status == 'IP'"
+								>Dalam proses</span
+								>
 							</ng-template>
 						</ngx-datatable-column>
 
@@ -200,10 +241,18 @@
 							<ng-template let-row="row" ngx-datatable-cell-template>
                                 <div class="btn-group dropdown" dropdown>
                                     <button
-                                        class="btn btn-warm-blue"
+                                        class="btn btn-sm btn-warm-blue"
                                         (click)="view(row)"
                                     >
                                         Lihat
+                                    </button>
+                                </div>
+								<div class="btn-group dropdown" dropdown>
+                                    <button
+                                        class="btn btn-sm btn-warm-blue"
+                                        (click)="openModal(KehadiranModal, 'kehadiran', row)"
+                                    >
+                                        Kehadiran
                                     </button>
                                 </div>
 							</ng-template>
@@ -266,3 +315,53 @@
 		</tbody>
 	</table>
 </div>
+
+<ng-template #KehadiranModal>
+    <div class="modal-header bg-warm-blue">
+        <h6 class="modal-title text-white my-auto" id="modal-title-default">
+            Kehadiran
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            <span aria-hidden="true" class="text-white my-auto"> × </span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+		<div class="form-group">
+			<label class="form-control-label">Kehadiran</label>
+			<input
+				class="form-control"
+				placeholder="Enter Agency Name"
+				value={{this.kehadiranData}}
+				disabled = true
+			/>
+        </div>
+		<div class="form-group">
+			<label class="form-control-label">Sebab Tidak Hadir</label>
+			<input
+				class="form-control"
+				placeholder=""
+				value={{this.absenceMemo}}
+				disabled = true
+			/>
+        </div>
+    </div> 
+
+    <div class="modal-footer">
+        <button
+            class="btn btn-outline-warm-blue ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal()"
+        >
+            Tutup
+        </button>
+    </div>
+</ng-template>

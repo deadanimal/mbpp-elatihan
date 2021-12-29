@@ -895,6 +895,7 @@
                     *ngIf="!isEmpty"
                     [scrollbarH]="true"
                   >
+                
                     <ngx-datatable-column prop="full_name">
                       <ng-template ngx-datatable-header-template>
                         <span>Nama Kakitangan</span>
@@ -1047,6 +1048,17 @@
                 *ngIf="!isApplicationsEmpty"
                 [scrollbarH]="true"
               >
+              <ngx-datatable-column [sortable]="false" [width]="20">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input"
+                            id="customCheck+{{row.id}}" (change)="checkRow(row)"
+                            [(ngModel)]="row.isTick">
+                        <label class="custom-control-label" for="customCheck+{{row.id}}">
+                        </label>
+                    </div>
+                </ng-template>
+              </ngx-datatable-column>
                 <ngx-datatable-column prop="applicant.full_name">
                   <ng-template ngx-datatable-header-template>
                     <span>Nama</span>
@@ -1109,6 +1121,15 @@
                   </ng-template>
                   <ng-template let-row="row" ngx-datatable-cell-template>
                     {{ row.approved_level_3_by?.full_name }}
+                  </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column prop="approved_level_3_by.full_name">
+                  <ng-template ngx-datatable-header-template>
+                    <span>Tarikh Kemaskini</span>
+                  </ng-template>
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.modified_at | date:"dd/MM/yyyy hh:mm a"}}
                   </ng-template>
                 </ngx-datatable-column>
 
@@ -1256,6 +1277,17 @@
                 *ngIf="!isAttendancesEmpty"
                 [scrollbarH]="true"
               >
+              <ngx-datatable-column [sortable]="false" [width]="20">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input"
+                            id="customCheck+{{row.id}}" (change)="checkRow(row)"
+                            [(ngModel)]="row.isTick">
+                        <label class="custom-control-label" for="customCheck+{{row.id}}">
+                        </label>
+                    </div>
+                </ng-template>
+              </ngx-datatable-column>
                 <ngx-datatable-column prop="attendee.full_name">
                   <ng-template ngx-datatable-header-template>
                     <span>Nama</span>
