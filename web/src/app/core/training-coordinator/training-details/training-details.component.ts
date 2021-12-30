@@ -271,6 +271,7 @@ export class TrainingDetailsComponent implements OnInit {
   fileNameAttachment: any
   fileSizeInformationAttachment = null
   fileNameInformationAttachment = null
+  kodKursus
 
   // File
   fileSizeAttachmentApproval: any
@@ -568,6 +569,9 @@ export class TrainingDetailsComponent implements OnInit {
         this.trainingForm.controls['training_type'].setValue(this.training['training_type']['id'])
         this.trainingForm.controls['course_code'].setValue(this.training['course_code'])
         this.trainingForm.controls['target_group_type'].setValue(this.training['target_group_type'])
+
+        //kod kursus (man)
+        this.kodKursus = this.training['course_code']
        
         this.trainingForm.controls['is_group_KP_A'].setValue(this.training['is_group_KP_A'])
         this.trainingForm.controls['is_group_KP_B'].setValue(this.training['is_group_KP_B'])
@@ -2383,6 +2387,7 @@ export class TrainingDetailsComponent implements OnInit {
     this.trainingForm.controls['start_date'].setValue(startDate)
     this.trainingForm.controls['end_date'].setValue(endDate)
     // console.log('After ', this.trainingForm.value)
+    console.log('kod kursus ', this.training['course_code'])
 
     this.trainingFormData = new FormData()
     Object.keys(this.trainingForm.controls).forEach(key => {
@@ -2444,11 +2449,46 @@ export class TrainingDetailsComponent implements OnInit {
         let title = 'Berjaya'
         let message = 'Latihan berjaya dikemaskini.'
         this.notifyService.openToastr(title, message)
+        // this.getData()
+        // this.addTrainer()
+        // this.success()
+      }
+    )
+
+    console.log('kod kursus ' ,this.training['course_code'])
+    setTimeout(()=>{
+      this.replaceUndefinedCode()
+    },4000)
+  }
+
+  replaceUndefinedCode() {
+    console.log('kodKursus', this.kodKursus)
+    console.log('training id', this.training['id'])
+    const updateKod = {'course_code': this.kodKursus}
+
+    console.log('updateKod ', updateKod)
+
+    this.trainingService.update(this.training['id'], updateKod).subscribe(
+      () => {
+        // this.loadingBar.complete()
+        console.log('berjaya tukar course code')
+      },
+      () => {
+        // let title = 'Tidak berjaya'
+        // let message = 'Anda tidak berjaya untuk mengemaskini latihan. Sila cuba sekali lagi'
+        // this.notifyService.openToastrError(title, message)
+        // this.loadingBar.complete()
+      },
+      () => {
+        // let title = 'Berjaya'
+        // let message = 'Latihan berjaya dikemaskini.'
+        // this.notifyService.openToastr(title, message)
         this.getData()
         // this.addTrainer()
         // this.success()
       }
     )
+
   }
 
   onChangeTargetType(event) {
@@ -2814,15 +2854,17 @@ export class TrainingDetailsComponent implements OnInit {
   }
 
   filterTable(type, $event) {
-    let val = $event.target.value.toLowerCase();
+    const val = $event.target.value.toLowerCase();
+    console.log('table filter', this.tableApplicationsTemp)
+    console.log('table hadir filter', this.tableAttendancesTemp)
     
     if (type == 'applications') {
       this.tableApplicationsTemp = this.tableApplicationsRows.filter(function(d) {
-        return d.applicant.toLowerCase().indexOf(val) !== -1 || !val;
+        return d.applicant.full_name.toLowerCase().indexOf(val) !== -1 || !val;
       });
     }
     else if (type == 'attendances') {
-      this.tableApplicationsTemp = this.tableApplicationsRows.filter(function(d) {
+      this.tableAttendancesTemp = this.tableAttendancesRows.filter(function(d) {
         return d.attendee.full_name.toLowerCase().indexOf(val) !== -1 || !val;
       });
     }

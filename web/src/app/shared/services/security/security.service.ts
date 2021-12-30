@@ -114,7 +114,7 @@ export class SecurityService {
   }
 
   checker(): Observable<any> {
-    let urlTemp = this.urlAnswer + 'checker'
+    let urlTemp = this.urlAnswer + 'checker/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         console.log(res)
@@ -123,7 +123,7 @@ export class SecurityService {
   }
 
   filterAnswer(field: String): Observable<any[]> {
-    let urlTemp = this.urlAnswer + '?' + field
+    let urlTemp = this.urlAnswer + '?' + field + '/'
     return this.http.get<any[]>(urlTemp).pipe(
       tap((res) => {
         this.questions = res
@@ -133,7 +133,7 @@ export class SecurityService {
   }
 
   filterQuestion(field: String): Observable<any[]> {
-    let urlTemp = this.urlQuestion + '?' + field
+    let urlTemp = this.urlQuestion + '?' + field + '/'
     return this.http.get<any[]>(urlTemp).pipe(
       tap((res) => {
         this.questions = res

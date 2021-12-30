@@ -1537,20 +1537,6 @@
                   </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column>
-                  <ng-template ngx-datatable-header-template>
-                    <span>Aktiviti</span>
-                  </ng-template>
-                  <ng-template let-row="row" ngx-datatable-cell-template>
-                    <button
-                      class="btn btn-sm btn-warm-blue"
-                      *ngIf="!row.verified_by"
-                      (click)="verifyAbsence(row)"
-                    >
-                      Sahkan
-                    </button>
-                  </ng-template>
-                </ngx-datatable-column>
               </ngx-datatable>
             </div>
           </div>

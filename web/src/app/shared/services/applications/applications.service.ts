@@ -14,6 +14,7 @@ export class ApplicationsService {
 
   // URL
   public urlApplications: string = environment.baseUrl + 'v1/training-applications/'
+  public urlVerifiedMemo: string = environment.baseUrl + 'v1/training-absences/'
 
   // Data
   application: Application
@@ -59,7 +60,7 @@ export class ApplicationsService {
   }
 
   getDepartmentCoordinatorList(): Observable<ApplicationDepartmentExtended[]> {
-    let urlTemp = this.urlApplications + 'get_department_coordinator_list'
+    let urlTemp = this.urlApplications + 'get_department_coordinator_list/'
     return this.http.get<ApplicationDepartmentExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.applicationsDepartment = res
@@ -69,7 +70,7 @@ export class ApplicationsService {
   }
 
   getDepartmentHeadList(): Observable<ApplicationDepartmentExtended[]> {
-    let urlTemp = this.urlApplications + 'get_department_head_list'
+    let urlTemp = this.urlApplications + 'get_department_head_list/'
     return this.http.get<ApplicationDepartmentExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.applicationsDepartment = res
@@ -89,7 +90,7 @@ export class ApplicationsService {
   }
 
   getDepartmentCoordinatorHistories(): Observable<ApplicationDepartmentExtended[]> {
-    let urlTemp = this.urlApplications + 'get_department_coordinator_histories'
+    let urlTemp = this.urlApplications + 'get_department_coordinator_histories/'
     return this.http.get<ApplicationDepartmentExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.applicationsDepartment = res
@@ -99,7 +100,7 @@ export class ApplicationsService {
   }
 
   getDepartmentHeadHistories(): Observable<ApplicationDepartmentExtended[]> {
-    let urlTemp = this.urlApplications + 'get_department_head_histories'
+    let urlTemp = this.urlApplications + 'get_department_head_histories/'
     return this.http.get<ApplicationDepartmentExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.applicationsDepartment = res
@@ -109,7 +110,7 @@ export class ApplicationsService {
   }
 
   getSelf(): Observable<ApplicationSelfExtended[]> {
-    let urlTemp = this.urlApplications + 'get_self_latest'
+    let urlTemp = this.urlApplications + 'get_self_latest/'
     return this.http.get<ApplicationSelfExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.applicationsSelf = res
@@ -119,7 +120,7 @@ export class ApplicationsService {
   }
   
   getSelfHistory(): Observable<ApplicationSelfExtended[]> {
-    let urlTemp = this.urlApplications + 'get_self_history'
+    let urlTemp = this.urlApplications + 'get_self_history/'
     return this.http.get<ApplicationSelfExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.applicationsHistory = res
@@ -209,11 +210,21 @@ export class ApplicationsService {
   }
 
   getStatisticsSelf() {
-    let urlTemp = this.urlApplications + 'get_statistics_self'
+    let urlTemp = this.urlApplications + 'get_statistics_self/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.statisticSelf = res
         // console.log('Statistics: ', this.statisticSelf)
+      })
+    )
+  }
+
+  verifiedMemo(id: string) {
+    let urlTemp = this.urlVerifiedMemo + id + '/verified_by/'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.application = res
+        // console.log('Application: ', this.application)
       })
     )
   }

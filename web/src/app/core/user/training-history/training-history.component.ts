@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Training } from 'src/app/shared/services/trainings/trainings.model';
 import { Attendance } from 'src/app/shared/services/attendances/attendances.model';
+import * as xlsx from "xlsx";
 
 import * as moment from 'moment';
 import { ApplicationsService } from 'src/app/shared/services/applications/applications.service';
@@ -31,6 +32,7 @@ export class TrainingHistoryComponent implements OnInit {
   attendance: Attendance[] = []
 
   // Table
+  isSummaryTableHidden : boolean = true
   tableEntries: number = 5
   tableSelected: any[] = []
   tableTemp = []
@@ -87,6 +89,8 @@ export class TrainingHistoryComponent implements OnInit {
           };
         });
 
+        console.log('table nk print', this.tableTemp)
+
         if (this.tableTemp.length >= 1) {
           this.isEmpty = false
         }
@@ -139,6 +143,21 @@ export class TrainingHistoryComponent implements OnInit {
 
   navigatePage(path: string) {
     this.router.navigate([path])
+  }
+
+  exportExcel() {
+    let todayDate = new Date()
+    let todayDateFormat = moment(todayDate).format('YYYYMMDD')
+    let fileName = 'Sejarah_latihan_' + todayDateFormat + '.xlsx'
+    let element = document.getElementById('summaryTable'); 
+    const ws: xlsx.WorkSheet = xlsx.utils.table_to_sheet(element);
+
+    /* generate workbook and add the worksheet */
+    const wb: xlsx.WorkBook = xlsx.utils.book_new();
+    xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    xlsx.writeFile(wb, fileName);
   }
 
 }

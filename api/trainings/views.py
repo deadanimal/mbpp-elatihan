@@ -2481,7 +2481,20 @@ class TrainingAbsenceMemoViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         queryset = TrainingAbsenceMemo.objects.all()
-        return queryset  
+        return queryset 
+    
+    
+    @action(methods=['GET'], detail=True)
+    def verified_by(self, request, *args, **kwargs):
+
+        user = request.user
+        application = self.get_object()
+        application.verified_by_id = user
+        application.save()
+
+        serializer_class = TrainingApplicationSerializer(application, many=False)
+        
+        return Response(serializer_class.data) 
 
     @action(methods=['POST'], detail=False)
     def check_memo(self, request, *args, **kwargs):

@@ -62,7 +62,7 @@ export class PlansService {
   }
 
   filter(field: String): Observable<Plan[]> {
-    let urlTemp = this.urlPlans + '?' + field
+    let urlTemp = this.urlPlans + '?' + field + '/'
     return this.http.get<Plan[]>(urlTemp).pipe(
       tap((res) => {
         this.plansFiltered = res

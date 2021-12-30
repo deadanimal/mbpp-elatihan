@@ -106,6 +106,8 @@ export class TrainingHistoriesComponent implements OnInit {
                   } else {
                     this.isEmpty = true;
                   }
+
+                  console.log('table', this.tableRows)
                 }, 1000)
               }
             });
@@ -155,6 +157,7 @@ export class TrainingHistoriesComponent implements OnInit {
         });
       }
     }
+
   }
 
   onSelect({ selected }) {
@@ -182,7 +185,7 @@ export class TrainingHistoriesComponent implements OnInit {
     let todayDateFormat = moment(todayDate).format("YYYYMMDD");
     let fileName =
       "Ringkasan_Permohonan_Latihan_Jabatan_" + todayDateFormat + ".xlsx";
-    let element = document.getElementById("summaryTable");
+    let element = document.getElementById("excel-table");
     const ws: xlsx.WorkSheet = xlsx.utils.table_to_sheet(element);
 
     /* generate workbook and add the worksheet */

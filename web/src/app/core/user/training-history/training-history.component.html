@@ -24,6 +24,11 @@
             <div class="card">
                 <div class="card-header bg-secondary">
                     <h4 class="m-0">Senarai Sejarah Latihan</h4>
+					<div class="col text-right">
+						<button class="btn btn-sm btn-warm-blue" (click)="exportExcel()">
+						  Cetak
+						</button>
+					  </div>
 				</div>
 				
 				<div class="dataTables_wrapper py-4">
@@ -154,4 +159,50 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="table" id="summaryTable" [hidden]="isSummaryTableHidden">
+  <table class="table table-responsive table-flush">
+    <thead>
+      <tr>
+        <th>Nama Kursus</th>
+        <th>Tempat</th>
+        <th>Kod Kursus</th>
+        <th>Latihan</th>
+        <th>Tarikh Mula</th>
+        <th>Tarikh Tamat</th>
+        <th>Hari</th>
+        <th>Tahun</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let row of tableRows">
+        <td>
+          {{ row.training?.title }}
+        </td>
+        <td>
+          {{ row.training?.venue }}
+        </td>
+        <td>
+          {{ row.training?.course_code }}
+        </td>
+        <td>
+          {{ row.training?.title }}
+        </td>
+        <td>
+          {{ row.training?.start_date | date: "d/M/y" }}
+        </td>
+        <td>
+          {{ row.training?.end_date | date: "d/M/y" }}
+        </td>
+        <td>
+          {{ row.training?.duration_days }}
+        </td>
+        <td>
+          {{ row.training?.start_date | date: "yyyy"}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>

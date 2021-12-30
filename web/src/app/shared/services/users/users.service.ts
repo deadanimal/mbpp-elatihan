@@ -74,7 +74,7 @@ export class UsersService {
   }
 
   getSummarySelf(): Observable<any> {
-    let urlTemp = this.urlUser + 'self_summary'
+    let urlTemp = this.urlUser + 'self_summary/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.summary = res
@@ -84,7 +84,7 @@ export class UsersService {
   }
 
   getDepartmentStaffs(): Observable<User[]> {
-    let urlTemp = this.urlUser + 'get_department_staffs'
+    let urlTemp = this.urlUser + 'get_department_staffs/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.users = res

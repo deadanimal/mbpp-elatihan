@@ -352,9 +352,19 @@
 				disabled = true
 			/>
         </div>
+		<div class="form-group">
+			<label class="form-control-label">Disahkan oleh</label>
+			<input
+				class="form-control"
+				placeholder=""
+				value={{this.verifiedBy}}
+				disabled = true
+			/>
+        </div>
     </div> 
 
     <div class="modal-footer">
+		<button *ngIf="this.kehadiranData == 'Tidak Hadir' && this.absenceMemo != 'Tiada Rekod' " type="button" class="btn btn-primary" (click)="verifyAbsence()">Terima</button>
         <button
             class="btn btn-outline-warm-blue ml-auto"
             data-dismiss="modal"

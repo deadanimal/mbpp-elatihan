@@ -166,7 +166,7 @@ export class AuthService {
 
   getDetailByToken():Observable<any> {
     // console.log('getuserbytoken')
-    let urlTemp = this.urlUser + 'current_user_detail'
+    let urlTemp = this.urlUser + 'current_user_detail/'
     let jwtHelper: JwtHelperService = new JwtHelperService()
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {

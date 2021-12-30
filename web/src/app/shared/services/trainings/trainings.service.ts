@@ -56,7 +56,7 @@ export class TrainingsService {
   }
 
   getLatest(): Observable<Training[]> {
-    let urlTemp = this.urlTraining + 'get_latest'
+    let urlTemp = this.urlTraining + 'get_latest/'
     return this.http.get<Training[]>(urlTemp).pipe(
       tap((res) => {
         this.trainings = res
@@ -66,7 +66,7 @@ export class TrainingsService {
   }
 
   getAllExtended(): Observable<TrainingExtended[]> {
-    let urlTemp = this.urlTraining + 'extended_all'
+    let urlTemp = this.urlTraining + 'extended_all/'
     return this.http.get<TrainingExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.trainingsExtended = res
@@ -76,7 +76,7 @@ export class TrainingsService {
   }
 
   getDepartmentList(): Observable<TrainingExtended[]> {
-    let urlTemp = this.urlTraining + 'get_department_list'
+    let urlTemp = this.urlTraining + 'get_department_list/'
     return this.http.get<TrainingExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.trainingsExtended = res
@@ -86,7 +86,7 @@ export class TrainingsService {
   }
 
   getOne(id: String): Observable<TrainingExtended> {
-    let urlTemp = this.urlTraining + id + '/extended'
+    let urlTemp = this.urlTraining + id + '/extended/'
     // console.log('URL ', urlTemp)
     return this.http.get<TrainingExtended>(urlTemp).pipe(
       tap((res) => {
@@ -97,7 +97,7 @@ export class TrainingsService {
   }
 
   getOneTraining(id: String): Observable<TrainingExtended> {
-    let urlTemp = this.urlTraining + id
+    let urlTemp = this.urlTraining + id + '/'
     // console.log('URL ', urlTemp)
     return this.http.get<TrainingExtended>(urlTemp).pipe(
       tap((res) => {
@@ -119,7 +119,7 @@ export class TrainingsService {
   }
 
   filter(field: String): Observable<Training[]> {
-    let urlTemp = this.urlTraining + '?' + field
+    let urlTemp = this.urlTraining + '?' + field + '/'
     return this.http.get<Training[]>(urlTemp).pipe(
       tap((res) => {
         this.trainingsFiltered = res
@@ -149,7 +149,7 @@ export class TrainingsService {
   }
 
   getStatistics() {
-    let urlTemp = this.urlTraining + 'get_statistics'
+    let urlTemp = this.urlTraining + 'get_statistics/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.trainingStatistics = res
@@ -159,7 +159,7 @@ export class TrainingsService {
   }
 
   getStatisticsDepartment() {
-    let urlTemp = this.urlTraining + 'get_statistics_department'
+    let urlTemp = this.urlTraining + 'get_statistics_department/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.trainingStatistics = res
@@ -169,7 +169,7 @@ export class TrainingsService {
   }
 
   getNextCode() {
-    let urlTemp = this.urlTraining + 'get_next_code'
+    let urlTemp = this.urlTraining + 'get_next_code/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.trainingNextCode = res['code']
@@ -179,7 +179,7 @@ export class TrainingsService {
   }
 
   checkEvaluation(id: string) {
-    let urlTemp = this.urlTraining + id + '/check_evaluation'
+    let urlTemp = this.urlTraining + id + '/check_evaluation/'
     return this.http.get<any>(urlTemp).pipe(
       tap((res) => {
         this.evaluationRes = res
@@ -207,7 +207,7 @@ export class TrainingsService {
   }
 
   getTrainingType(id: String): Observable<TrainingType> {
-    let urlTemp = this.urlTrainingType + id
+    let urlTemp = this.urlTrainingType + id + '/'
     return this.http.get<TrainingType>(urlTemp).pipe(
       tap((res) => {
         this.trainingType = res
@@ -227,7 +227,7 @@ export class TrainingsService {
   }
   
   getApplicableDepartment(id: string): Observable<User[]> {
-    let urlTemp = this.urlTraining + id + '/get_applicable_staff_department'
+    let urlTemp = this.urlTraining + id + '/get_applicable_staff_department/'
     return this.http.get<User[]>(urlTemp).pipe(
       tap((res) => {
         this.applicableStaffs = res
@@ -237,7 +237,7 @@ export class TrainingsService {
   }
 
   getApplicableTraining(id: string): Observable<User[]> {
-    let urlTemp = this.urlTraining + id + '/get_applicable_staff_training'
+    let urlTemp = this.urlTraining + id + '/get_applicable_staff_training/'
     return this.http.get<User[]>(urlTemp).pipe(
       tap((res) => {
         this.applicableStaffs = res
