@@ -3070,28 +3070,30 @@ export class TrainingDetailsComponent implements OnInit {
   }
 
   verifyAttendance(row) {
-    this.loadingBar.start()
-    let infoTitle = 'Sedang proses'
-    let infoMessage = 'Kehadiran sedang disahkan'
-    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+    // this.loadingBar.start()
+    // let infoTitle = 'Sedang proses'
+    // let infoMessage = 'Kehadiran sedang disahkan'
+    // this.notifyService.openToastrInfo(infoTitle, infoMessage)
+
+    console.log('id sah', row['id'])
     
-    this.attendanceService.verify(row['id']).subscribe(
-      () => {
-        this.loadingBar.complete()
-        let successTitle = 'Berjaya'
-        let successMessage = 'Kehadiran berjaya disahkan'
-        this.notifyService.openToastr(successTitle, successMessage)
-      },
-      () => {
-        this.loadingBar.complete()
-        let failedTitle = 'Tidak Berjaya'
-        let failedMessage = 'Kehadiran tidak berjaya disahkan. Sila cuba sekali lagi'
-        this.notifyService.openToastrError(failedTitle, failedMessage)
-      },
-      () => {
-        this.getData()
-      }
-    )
+    // this.attendanceService.verify(row['id']).subscribe(
+    //   () => {
+    //     this.loadingBar.complete()
+    //     let successTitle = 'Berjaya'
+    //     let successMessage = 'Kehadiran berjaya disahkan'
+    //     this.notifyService.openToastr(successTitle, successMessage)
+    //   },
+    //   () => {
+    //     this.loadingBar.complete()
+    //     let failedTitle = 'Tidak Berjaya'
+    //     let failedMessage = 'Kehadiran tidak berjaya disahkan. Sila cuba sekali lagi'
+    //     this.notifyService.openToastrError(failedTitle, failedMessage)
+    //   },
+    //   () => {
+    //     this.getData()
+    //   }
+    // )
   }
 
   signinAttendance(row) {
@@ -3149,6 +3151,7 @@ export class TrainingDetailsComponent implements OnInit {
     let infoTitle = 'Sedang proses'
     let infoMessage = 'Permohonan sedang diterima'
     this.notifyService.openToastrInfo(infoTitle, infoMessage)
+    console.log('terima permohonan id',row['id'])
     
     this.applicationService.approveLevel3(row['id']).subscribe(
       () => {
@@ -4163,4 +4166,166 @@ export class TrainingDetailsComponent implements OnInit {
       () => {})
     
   }
+
+  checkRow(row) {
+    for (let i = 0; i < this.tableApplicationsTemp.length; i++) {
+      if (this.tableApplicationsTemp[i].id == row.id) {
+        this.tableApplicationsTemp[i].isTick = row.isTick;
+      }
+      // console.log('row tick', this.tableApplicationsRows[i].isTick )
+    }
+  }
+
+  checkRowHadir(row) {
+    for (let i = 0; i < this.tableAttendancesTemp.length; i++) {
+      if (this.tableAttendancesTemp[i].id == row.id) {
+        this.tableAttendancesTemp[i].isTick = row.isTick;
+      }
+      // console.log('row tick', this.tableAttendancesTemp[i].isTick )
+    }
+  }
+
+  bulkSahKehadiran() {
+    console.log('button ok')
+    for (let i = 0; i < this.tableAttendancesTemp.length; i++) {
+      if (this.tableAttendancesTemp[i].isTick == true) {
+
+        this.loadingBar.start()
+        let infoTitle = 'Sedang proses'
+        let infoMessage = 'Kehadiran sedang disahkan'
+        this.notifyService.openToastrInfo(infoTitle, infoMessage)
+        
+        this.attendanceService.verify(this.tableAttendancesTemp[i].id).subscribe(
+          () => {
+            this.loadingBar.complete()
+            let successTitle = 'Berjaya'
+            let successMessage = 'Kehadiran berjaya disahkan'
+            this.notifyService.openToastr(successTitle, successMessage)
+          },
+          () => {
+            this.loadingBar.complete()
+            let failedTitle = 'Tidak Berjaya'
+            let failedMessage = 'Kehadiran tidak berjaya disahkan. Sila cuba sekali lagi'
+            this.notifyService.openToastrError(failedTitle, failedMessage)
+          },
+          () => {
+            this.getData()
+          }
+        )
+
+
+        // console.log('id tick', this.tableAttendancesTemp[i].id)
+      }
+    }
+    
+  }
+
+  bulkTerimaPermohonan() {
+    // this.spinner.show();
+    // console.log('no of row',this.tableApplicationsTemp.length)
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Permohonan sedang diterima'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+
+    for (let i = 0; i < this.tableApplicationsTemp.length; i++) {
+      if (this.tableApplicationsTemp[i].isTick == true) {
+
+        this.applicationService.approveLevel3(this.tableApplicationsTemp[i].id).subscribe(
+          () => {
+            this.loadingBar.complete()
+            let successTitle = 'Berjaya'
+            let successMessage = 'Permohonan berjaya diterima'
+            this.notifyService.openToastr(successTitle, successMessage)
+          },
+          () => {
+            this.loadingBar.complete()
+            let failedTitle = 'Tidak Berjaya'
+            let failedMessage = 'Permohonan tidak berjaya diterima. Sila cuba sekali lagi'
+            this.notifyService.openToastrError(failedTitle, failedMessage)
+          },
+          () => {
+            this.getData()
+          }
+        )
+        
+      // console.log('tick row',this.tableApplicationsTemp[i].id)
+      }
+      // this.numRow = i
+    }
+
+  }
+
+  bulkTolakPermohonan() {
+    // this.spinner.show();
+    // console.log('no of row',this.tableApplicationsTemp.length)
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Permohonan sedang diterima'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+
+    for (let i = 0; i < this.tableApplicationsTemp.length; i++) {
+      if (this.tableApplicationsTemp[i].isTick == true) {
+
+        this.applicationService.reject(this.tableApplicationsTemp[i].id).subscribe(
+          () => {
+            this.loadingBar.complete()
+            let successTitle = 'Berjaya'
+            let successMessage = 'Permohonan berjaya ditolak'
+            this.notifyService.openToastr(successTitle, successMessage)
+          },
+          () => {
+            this.loadingBar.complete()
+            let failedTitle = 'Tidak Berjaya'
+            let failedMessage = 'Permohonan tidak berjaya ditolak. Sila cuba sekali lagi'
+            this.notifyService.openToastrError(failedTitle, failedMessage)
+          },
+          () => {
+            this.getData()
+          }
+        )
+        
+      // console.log('tick row',this.tableApplicationsTemp[i].id)
+      }
+      // this.numRow = i
+    }
+
+  }
+
+  bulkSimpanPermohonan() {
+    // this.spinner.show();
+    // console.log('no of row',this.tableApplicationsTemp.length)
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Permohonan sedang diterima'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+
+    for (let i = 0; i < this.tableApplicationsTemp.length; i++) {
+      if (this.tableApplicationsTemp[i].isTick == true) {
+
+        this.applicationService.reserve(this.tableApplicationsTemp[i].id).subscribe(
+          () => {
+            this.loadingBar.complete()
+            let successTitle = 'Berjaya'
+            let successMessage = 'Permohonan berjaya disimpan'
+            this.notifyService.openToastr(successTitle, successMessage)
+          },
+          () => {
+            this.loadingBar.complete()
+            let failedTitle = 'Tidak Berjaya'
+            let failedMessage = 'Permohonan tidak berjaya disimpan. Sila cuba sekali lagi'
+            this.notifyService.openToastrError(failedTitle, failedMessage)
+          },
+          () => {
+            this.getData()
+          }
+        )
+        
+      // console.log('tick row',this.tableApplicationsTemp[i].id)
+      }
+      // this.numRow = i
+    }
+
+  }
+  
 }

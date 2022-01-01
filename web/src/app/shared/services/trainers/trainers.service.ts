@@ -42,7 +42,7 @@ export class TrainersService {
   }
 
   getTrainer(id: string): Observable<Trainer> {
-    let urlTemp = this.urlTrainers + id + '/'
+    let urlTemp = this.urlTrainers + id
     return this.http.get<Trainer>(urlTemp).pipe(
       tap((res) => {
         this.trainer = res
@@ -62,7 +62,7 @@ export class TrainersService {
   }
 
   filter(field: String): Observable<Trainer[]> {
-    let urlTemp = this.urlTrainers + '?' + field + '/'
+    let urlTemp = this.urlTrainers + '?' + field
     return this.http.get<Trainer[]>(urlTemp).pipe(
       tap((res) => {
         this.trainerFiltered = res

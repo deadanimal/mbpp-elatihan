@@ -97,7 +97,7 @@ export class TrainingsService {
   }
 
   getOneTraining(id: String): Observable<TrainingExtended> {
-    let urlTemp = this.urlTraining + id + '/'
+    let urlTemp = this.urlTraining + id 
     // console.log('URL ', urlTemp)
     return this.http.get<TrainingExtended>(urlTemp).pipe(
       tap((res) => {

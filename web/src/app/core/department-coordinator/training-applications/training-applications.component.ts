@@ -150,6 +150,8 @@ export class TrainingApplicationsComponent implements OnInit {
     let infoTitle = 'Sedang proses'
     let infoMessage = 'Permohonan sedang diterima'
     this.notifyService.openToastrInfo(infoTitle, infoMessage)
+
+    // console.log('row id ', row.id)
     
     this.applicationService.approveLevel1(row['id']).subscribe(
       () => {
@@ -184,5 +186,76 @@ export class TrainingApplicationsComponent implements OnInit {
     /* save to file */
     xlsx.writeFile(wb, fileName);
   }
+
+  checkRow(row) {
+    for (let i = 0; i < this.tableTemp.length; i++) {
+      if (this.tableTemp[i].id == row.id) {
+        this.tableTemp[i].isTick = row.isTick;
+      }
+      // console.log('row tick', this.tableTemp[i].isTick )
+    }
+  }
+
+  bulkTerimaPermohonan() {
+
+    for (let i = 0; i < this.tableTemp.length; i++) {
+      if (this.tableTemp[i].isTick == true) {
+        // console.log('tick row',this.tableTemp[i].id)
+        this.applicationService.approveLevel1(this.tableTemp[i].id).subscribe(
+          () => {
+            this.loadingBar.complete()
+            let successTitle = 'Berjaya'
+            let successMessage = 'Permohonan berjaya diterima'
+            this.notifyService.openToastr(successTitle, successMessage)
+          },
+          () => {
+            this.loadingBar.complete()
+            let failedTitle = 'Tidak Berjaya'
+            let failedMessage = 'Permohonan tidak berjaya diterima. Sila cuba sekali lagi'
+            this.notifyService.openToastrError(failedTitle, failedMessage)
+          },
+          () => {
+            this.getData()
+          }
+        )
+      }
+    }
+  }
+
+  // bulkTerimaPermohonanContoh() {
+  //   // this.spinner.show();
+  //   // console.log('no of row',this.tableApplicationsTemp.length)
+  //   this.loadingBar.start()
+  //   let infoTitle = 'Sedang proses'
+  //   let infoMessage = 'Permohonan sedang diterima'
+  //   this.notifyService.openToastrInfo(infoTitle, infoMessage)
+
+  //   for (let i = 0; i < this.tableApplicationsTemp.length; i++) {
+  //     if (this.tableApplicationsTemp[i].isTick == true) {
+
+  //       this.applicationService.approveLevel3(this.tableApplicationsTemp[i].id).subscribe(
+  //         () => {
+  //           this.loadingBar.complete()
+  //           let successTitle = 'Berjaya'
+  //           let successMessage = 'Permohonan berjaya diterima'
+  //           this.notifyService.openToastr(successTitle, successMessage)
+  //         },
+  //         () => {
+  //           this.loadingBar.complete()
+  //           let failedTitle = 'Tidak Berjaya'
+  //           let failedMessage = 'Permohonan tidak berjaya diterima. Sila cuba sekali lagi'
+  //           this.notifyService.openToastrError(failedTitle, failedMessage)
+  //         },
+  //         () => {
+  //           this.getData()
+  //         }
+  //       )
+        
+  //     // console.log('tick row',this.tableApplicationsTemp[i].id)
+  //     }
+  //     // this.numRow = i
+  //   }
+
+  // }
 
 }
