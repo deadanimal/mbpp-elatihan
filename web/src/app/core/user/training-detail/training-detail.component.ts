@@ -330,7 +330,9 @@ export class TrainingDetailComponent implements OnInit {
 
   downloadNote(row) {
     let url = row['note_file']
-    window.open(url, '_blank');
+    const urlHehe = 'https://mbpp-api.pipeline.com.my'+url
+    console.log('url', urlHehe)
+    window.open(urlHehe, '_blank');
   }
 
   openModal(modalRef: TemplateRef<any>) {

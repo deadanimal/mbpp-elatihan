@@ -3046,17 +3046,23 @@ export class TrainingDetailsComponent implements OnInit {
 
   downloadNote(row) {
     let url = row['note_file']
-    window.open(url, '_blank');
+    const urlHehe = 'https://mbpp-api.pipeline.com.my'+url
+    console.log('url', urlHehe)
+    window.open(urlHehe, '_blank');
   }
 
   downloadAttachment(type) {
     if (type == 'attachment') {
       let url = this.training['attachment']
-      window.open(url, '_blank');
+      const urlHehe = 'https://mbpp-api.pipeline.com.my'+url
+      console.log('url', urlHehe)
+      window.open(urlHehe, '_blank');
     }
     else if (type == 'attachment_approval') {
       let url = this.training['attachment_approval']
-      window.open(url, '_blank');
+      const urlHehe = 'https://mbpp-api.pipeline.com.my'+url
+      console.log('url', urlHehe)
+      window.open(urlHehe, '_blank');
     }
 
   }
