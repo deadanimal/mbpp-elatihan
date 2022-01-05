@@ -1,5 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from datetime import date
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
@@ -136,11 +137,14 @@ class CustomUserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     @action(methods=['GET'], detail=False)
     def self_summary(self, request, *args, **kwargs):
         user = request.user
+        currentDate = date.today()
+        currentYear = currentDate.year
+        print (currentYear)
 
         data_ = {
-            'trainings': len(TrainingAttendee.objects.filter(attendee=user)),
-            'exams': len(ExamAttendee.objects.filter(staff=user)),
-            'attendances': len(TrainingAttendee.objects.filter(attendee=user, is_attend=True))
+            'trainings': len(TrainingAttendee.objects.filter(attendee=user, created_at__year=currentYear)),
+            'exams': len(ExamAttendee.objects.filter(staff=user, created_at__year=currentYear)),
+            'attendances': len(TrainingAttendee.objects.filter(attendee=user, is_attend=True, created_at__year=currentYear))
         }
 
         return JsonResponse(data_)
