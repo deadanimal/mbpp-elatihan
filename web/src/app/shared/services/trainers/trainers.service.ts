@@ -52,7 +52,7 @@ export class TrainersService {
   }
 
   update(id: String, body: Form): Observable<Trainer> {
-    let urlTemp = this.urlTrainers + id + '/'
+    let urlTemp = this.urlTrainers + id
     return this.http.put<Trainer>(urlTemp, body).pipe(
       tap((res) => {
         this.trainer = res

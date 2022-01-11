@@ -144,6 +144,15 @@ export class SettingsComponent implements OnInit {
     )
   }
 
+  changeInput(input: any, input2:any): any {
+    input.type = input.type === 'password' ? 'text' : 'password';
+    input2.type = input2.type === 'password' ? 'text' : 'password';
+  }
+
+  changeInputAnswer(answer:any):any {
+    answer.type = answer.type ==='password' ? 'text' : 'password';
+  }
+
   changeSecurity() {
     this.loadingBar.start()
     this.securityService.patchAnswer(this.answer['id'], this.securityForm.value).subscribe(

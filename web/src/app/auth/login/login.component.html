@@ -56,6 +56,7 @@
                                             </span>
                                         </div>
                                         <input 
+                                            #input
                                             class="form-control"
                                             placeholder="Kata laluan"
                                             type="password"
@@ -63,6 +64,9 @@
                                             (focus)="focusPassword = true" 
                                             (blur)="focusPassword = false"
                                         />
+                                        <span class="input-group-text bg-primary" (click)="changeInput(input)">
+                                            <i class="fas fa-eye text-white"></i>
+                                        </span>
                                     </div>
                                     <div class="validation-errors">
                                         <ng-container *ngFor="let message of loginFormMessages.password">

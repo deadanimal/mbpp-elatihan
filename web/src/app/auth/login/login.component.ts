@@ -9,7 +9,7 @@ import { forkJoin } from 'rxjs';
 import { SecurityService } from 'src/app/shared/services/security/security.service';
 import { SecurityQuestion } from 'src/app/shared/services/security/security.model';
 import { CustomValidators } from 'src/app/shared/validators/custom/custom-validators';
-import { untilDestroyed } from 'ngx-take-until-destroy'
+// import { untilDestroyed } from 'ngx-take-until-destroy'
 
 @Component({
   selector: 'app-login',
@@ -171,6 +171,10 @@ export class LoginComponent implements OnInit {
         this.getDetail()
       }
     )
+  }
+
+  changeInput(input: any): any {
+    input.type = input.type === 'password' ? 'text' : 'password';
   }
 
   getDetail() {

@@ -499,5 +499,10 @@ export class ManagementUserComponent implements OnInit, OnDestroy {
     this.closeModal()
   }
 
+  changeInput(input: any, input2:any): any {
+    input.type = input.type === 'password' ? 'text' : 'password';
+    input2.type = input2.type === 'password' ? 'text' : 'password';
+  }
+
 
 }

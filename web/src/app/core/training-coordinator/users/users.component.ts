@@ -160,6 +160,11 @@ export class UsersComponent implements OnInit {
     })
   }
 
+  changeInput(input: any, input2:any): any {
+    input.type = input.type === 'password' ? 'text' : 'password';
+    input2.type = input2.type === 'password' ? 'text' : 'password';
+  }
+
   entriesChange($event) {
     this.tableEntries = $event.target.value;
   }

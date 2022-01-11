@@ -706,7 +706,7 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]  # [IsAuthenticated]
+        permission_classes = [AllowAny]  # [IsAuthenticated]
         """
         if self.action == 'list':
             permission_classes = [IsAuthenticated]
@@ -784,10 +784,22 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                 'cert/cert.html',
                 {'data': data_}
             )
-            html = HTML(string=html_string)
+            print("html string", html_string)
+            
+            html = HTML(string=html_string, base_url=request.build_absolute_uri())
             pdf_file = html.write_pdf(stylesheets=[CSS(settings.STATIC_ROOT + '/css/bootstrap.css')])
             file_path = 'certificates/Sijil' + '-' + training.course_code + '-' \
                 + attendee.nric + '.pdf'
+                
+            # # TEST
+            #    # Creating http response
+            # filename = 'Sijil-Kursus-' + datetime.datetime.utcnow().strftime("%s") + "-" + uuid.uuid4().hex + '.pdf'
+            # response = HttpResponse(pdf_file, content_type='application/pdf')
+            # response['Content-Disposition'] = 'attachment; filename="'+filename+'"'
+            # response['Content-Transfer-Encoding'] = 'binary'
+            # return response
+            # # TEST END
+            
             saved_file = default_storage.save(
                 file_path,
                 ContentFile(pdf_file)

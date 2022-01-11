@@ -308,9 +308,11 @@
       <div class="form-group">
         <label class="form-control-label">Kata Laluan Baru</label>
         <input
+          #input
           class="form-control"
           formControlName="new_password1"
           placeholder="Kata laluan baru"
+          type="password"
         />
 
         <ng-container
@@ -333,9 +335,11 @@
       <div class="form-group">
         <label class="form-control-label">Ulang Kata Laluan Baru</label>
         <input
+          #input2
           class="form-control"
           formControlName="new_password2"
           placeholder="Ulang kata laluan baru"
+          type="password"
         />
 
         <ng-container
@@ -354,6 +358,14 @@
           </div>
         </ng-container>
       </div>
+
+      <div>
+        <button
+          class="btn btn-warm-blue btn-block"
+          (click)="changeInput(input, input2)">
+          Lihat Kata Laluan
+        </button>
+      </div> 
 
       <!-- <div>
         <button

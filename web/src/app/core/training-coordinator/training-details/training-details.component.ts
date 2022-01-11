@@ -70,6 +70,10 @@ export class TrainingDetailsComponent implements OnInit {
   chart_23: am4charts.XYChart
   chart_24: am4charts.XYChart
 
+  // TickCount
+  tick_count: number = 0;
+  tick_count_Hadir: number = 0;
+
   // Data
   arrayChart23 = []
   arrayKriteriaChart23 = [{
@@ -4177,8 +4181,9 @@ export class TrainingDetailsComponent implements OnInit {
     for (let i = 0; i < this.tableApplicationsTemp.length; i++) {
       if (this.tableApplicationsTemp[i].id == row.id) {
         this.tableApplicationsTemp[i].isTick = row.isTick;
+        console.log('row tick', this.tableApplicationsTemp[i])
+        this.tick_count = 1;
       }
-      // console.log('row tick', this.tableApplicationsRows[i].isTick )
     }
   }
 
@@ -4186,6 +4191,7 @@ export class TrainingDetailsComponent implements OnInit {
     for (let i = 0; i < this.tableAttendancesTemp.length; i++) {
       if (this.tableAttendancesTemp[i].id == row.id) {
         this.tableAttendancesTemp[i].isTick = row.isTick;
+        this.tick_count_Hadir = 1;
       }
       // console.log('row tick', this.tableAttendancesTemp[i].isTick )
     }

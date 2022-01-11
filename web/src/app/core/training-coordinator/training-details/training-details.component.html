@@ -744,18 +744,21 @@
                   <button
                     class="btn btn-sm btn-success mr-1"
                     (click)="bulkTerimaPermohonan()"
+                    [disabled]="this.tick_count == 0"
                   >
                     Terima
                   </button>
                   <button
                     class="btn btn-sm btn-warning mr-1"
                     (click)="bulkTolakPermohonan()"
+                    [disabled]="this.tick_count == 0"
                   >
                     Tolak
                   </button>
                   <button
                     class="btn btn-sm btn-warning mr-1"
                     (click)="bulkSimpanPermohonan()"
+                    [disabled]="this.tick_count == 0"
                   >
                     Simpan
                   </button>
@@ -1207,6 +1210,7 @@
                   <button
                     class="btn btn-sm btn-warm-blue ml-1"
                     (click)="bulkSahKehadiran()"
+                    [disabled]="this.tick_count_Hadir == 0"
                   >
                     Sah Kehadiran
                   </button>

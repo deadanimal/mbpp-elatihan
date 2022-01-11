@@ -47,6 +47,7 @@
     "devextreme": "19.2.6",
     "devextreme-angular": "19.2.6",
     "dropzone": "5.5.1",
+    "file-saver": "^2.0.5",
     "fullcalendar": "3.10.1",
     "leaflet": "^1.7.1",
     "leaflet.markercluster": "^1.4.1",
