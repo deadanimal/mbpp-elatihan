@@ -80,7 +80,7 @@ export class ApplicationsService {
   }
 
   getDepartmentApplicantHistories(body): Observable<ApplicationDepartmentExtended[]> {
-    let urlTemp = this.urlApplications + 'get_department_applicant_histories/'
+    let urlTemp = this.urlApplications + 'get_department_applicant_histories'
     return this.http.post<ApplicationDepartmentExtended[]>(urlTemp, body).pipe(
       tap((res) => {
         this.applicationsDepartment = res
@@ -90,7 +90,7 @@ export class ApplicationsService {
   }
 
   getDepartmentCoordinatorHistories(): Observable<ApplicationDepartmentExtended[]> {
-    let urlTemp = this.urlApplications + 'get_department_coordinator_histories/'
+    let urlTemp = this.urlApplications + 'get_department_coordinator_histories'
     return this.http.get<ApplicationDepartmentExtended[]>(urlTemp).pipe(
       tap((res) => {
         this.applicationsDepartment = res

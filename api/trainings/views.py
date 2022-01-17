@@ -2099,10 +2099,10 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         application.approved_level_3_by = user
         application.save()
 
-        attendance = TrainingAttendee.objects.create(
-            training=application.training,
-            attendee=application.applicant,
-        )
+        # attendance = TrainingAttendee.objects.create(
+        #     training=application.training,
+        #     attendee=application.applicant,
+        # )
 
         serializer_class = TrainingApplicationSerializer(application, many=False)
         
@@ -2212,6 +2212,7 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         # attendance = self.get_object()
         data = json.loads(request.body)
         data_split = data['qr_code'].split('|')
+        print('data_split', data_split)
         
         """
         QR Code Format: <training_id>|<check_type>|<current_date:YYYY-MM-DD>
@@ -2220,9 +2221,10 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         # return Response({"data qr": data_split})
         
         if uuid.UUID(data_split[0]) and datetime.datetime.strptime(data_split[2], '%Y-%m-%d'):
-
-            attendance = TrainingAttendee.objects.filter(training=data_split[0])[0] #check_date=data_split[2])
+            
             attendee = request.user
+            attendance = TrainingAttendee.objects.get(training=data_split[0],check_date=data_split[2],attendee_id=attendee)
+            print(attendance)
             
             if data_split[1] == 'check_in':
                 attendance.check_in = datetime.datetime.now()

@@ -172,6 +172,9 @@ export class TrainingDetailComponent implements OnInit {
         let start_date = moment(this.training['start_date'], 'YYYY-MM-DD').toDate()
         let end_date = moment(this.training['end_date'], 'YYYY-MM-DD').toDate()
 
+        console.log('today',today)
+        console.log('end_date',end_date)
+
         // Same day
         if (moment(today).isSame(start_date)) {
           this.isLive = true
@@ -191,10 +194,13 @@ export class TrainingDetailComponent implements OnInit {
         // Same or before
         if (moment(today).isSameOrBefore(end_date)) {
           this.isSameBeforeEnd = true
+          console.log('masuk untuk get data QR')
           this.getQRID()
         }
         else {
           this.isSameBeforeEnd = false
+          console.log('masuk untuk get data QR end')
+          this.getCheckInAndOut()
         }
         
         // After
@@ -245,7 +251,7 @@ export class TrainingDetailComponent implements OnInit {
 
         // console.log('Before: ', this.isBeforeStart)
         // console.log('Live: ', this.isLive)
-        // console.log('Same before: ',this.isSameBeforeEnd)
+        console.log('Same before: ',this.isSameBeforeEnd)
         // console.log('After: ', this.isAfterEnd)
       }
     )
@@ -266,6 +272,14 @@ export class TrainingDetailComponent implements OnInit {
         Validators.required
       ])),
     })
+  }
+
+  getCheckInAndOut() {
+
+    this.qrCodeCheckIn = this.training['id']+'|check_in|'+moment(new Date()).format('YYYY-MM-DD')
+    this.qrCodeCheckOut = this.training['id']+'|check_out|'+moment(new Date()).format('YYYY-MM-DD')
+    console.log('qrCodeCheckIn', this.qrCodeCheckIn)
+    console.log('qrCodeCheckOut', this.qrCodeCheckOut)
   }
 
   getQRID() {
@@ -345,8 +359,8 @@ export class TrainingDetailComponent implements OnInit {
 
   scanSuccessHandler(event) {
     this.loadingBar.start()
-    console.log('event', event)
-    console.log('check in ', this.qrCodeCheckIn )
+    // alert('event' + event)
+    // alert('check in '+ this.qrCodeCheckIn )
     if (event == this.qrCodeCheckIn || event == this.qrCodeCheckOut) {
       this.attendanceService.signAttendance({'qr_code': event}).subscribe(
         () => {
@@ -371,6 +385,7 @@ export class TrainingDetailComponent implements OnInit {
       let errorMessage = 'Terdapat masalah teknikal. Sila hubungi pentadbir sistem'
       this.notifyService.openToastrError(errorTitle, errorMessage)
       this.loadingBar.complete()
+      console.log('scan xdpt indentify check In/Out')
     }
     this.closeModal()
   }
@@ -380,6 +395,7 @@ export class TrainingDetailComponent implements OnInit {
     let message = 'Terdapat masalah teknikal. Sila hubungi pentadbir sistem'
     this.notifyService.openToastrError(title, message)
     this.closeModal()
+    console.log('scan masuk scanErrorHandler')
   }
 
   confirm() {
