@@ -168,12 +168,12 @@ class ExternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]  # [IsAuthenticated]
+        permission_classes = [AllowAny]  # [IsAuthenticated]
         # """
         if self.action == 'generate_evaluation':
             permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         # """
         return [permission() for permission in permission_classes]
 
@@ -401,12 +401,12 @@ class InternalEvaluationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     ]
 
     def get_permissions(self):
-        permission_classes = [IsAuthenticated]  # [IsAuthenticated]
+        permission_classes = [AllowAny]  # [IsAuthenticated]
         # """
         if self.action == 'generate_evaluation':
             permission_classes = [AllowAny]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [AllowAny]
         # """
         return [permission() for permission in permission_classes]
 

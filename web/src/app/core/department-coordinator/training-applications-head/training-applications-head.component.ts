@@ -169,6 +169,31 @@ export class TrainingApplicationsHeadComponent implements OnInit {
     )
   }
 
+  rejectApplication(row) {
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Permohonan sedang ditolak'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+    
+    this.applicationService.reject(row['id']).subscribe(
+      () => {
+        this.loadingBar.complete()
+        let successTitle = 'Berjaya'
+        let successMessage = 'Permohonan berjaya ditolak'
+        this.notifyService.openToastr(successTitle, successMessage)
+      },
+      () => {
+        this.loadingBar.complete()
+        let failedTitle = 'Tidak Berjaya'
+        let failedMessage = 'Permohonan tidak berjaya ditolak. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(failedTitle, failedMessage)
+      },
+      () => {
+        this.getData()
+      }
+    )
+  }
+
   exportExcel() {
     let todayDate = new Date()
     let todayDateFormat = moment(todayDate).format('YYYYMMDD')

@@ -131,6 +131,7 @@ export class DashboardComponent implements OnInit {
         //   }
         // )
         this.evaluationApplications = this.applicationService.applicationsHistory
+        console.log('evaluationApplications', this.evaluationApplications)
         this.evaluationTableRows = this.evaluationApplications
         this.evaluationTableRows.forEach(
           (row, index) => {
@@ -188,6 +189,7 @@ export class DashboardComponent implements OnInit {
         this.user = this.authService.userDetail
       }
     )
+    console.log(this.evaluationTableTemp)
   }
 
   entriesChange($event) {

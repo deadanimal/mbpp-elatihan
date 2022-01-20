@@ -445,7 +445,14 @@
                     </label>
                   </div>
                 </div>
-                <div class="col-sm-12 col-md-6">
+                <div class="col-sm-12 col-md-6 text-right">
+                  <button
+                      class="btn btn-sm btn-warm-blue mr-4"
+                      
+                      (click)="getQRDate()"
+                  >
+                      QR Tarikh
+                  </button>
                   <!-- <div id="datatable_filter" class="dataTables_filter">
                                         <label>
                                             <input 
@@ -457,6 +464,7 @@
                                             />
                                         </label>
                                     </div> -->
+                                    
                 </div>
               </div>
 
@@ -482,7 +490,7 @@
                 *ngIf="!isAttendancesEmpty"
                 [scrollbarH]="true"
               >
-                <ngx-datatable-column>
+                <ngx-datatable-column prop="check_date">
                   <ng-template ngx-datatable-header-template>
                     <span>Tarikh Kehadiran</span>
                   </ng-template>

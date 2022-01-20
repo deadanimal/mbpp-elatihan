@@ -178,6 +178,7 @@ export class TrainingDetailComponent implements OnInit {
         // Same day
         if (moment(today).isSame(start_date)) {
           this.isLive = true
+          
         }
         else {
           this.isLive = false
@@ -186,6 +187,7 @@ export class TrainingDetailComponent implements OnInit {
         // Same or after
         if (moment(today).isSameOrAfter(start_date)) {
           this.isSameAfterStart = true
+         
         }
         else {
           this.isSameAfterStart = false
@@ -206,6 +208,7 @@ export class TrainingDetailComponent implements OnInit {
         // After
         if (moment(today).isAfter(end_date)) {
           this.isAfterEnd = true
+          
         }
         else {
           this.isAfterEnd = false
@@ -214,6 +217,7 @@ export class TrainingDetailComponent implements OnInit {
         // Before
         if (moment(today).isBefore(start_date)) {
           this.isBeforeStart = true
+         
         }
         else {
           this.isBeforeStart = false
@@ -249,10 +253,45 @@ export class TrainingDetailComponent implements OnInit {
           this.isAttendancesEmpty = true
         }
 
-        // console.log('Before: ', this.isBeforeStart)
-        // console.log('Live: ', this.isLive)
+        console.log('Before: ', this.isBeforeStart)
+        console.log('Live: ', this.isLive)
         console.log('Same before: ',this.isSameBeforeEnd)
-        // console.log('After: ', this.isAfterEnd)
+        console.log('After: ', this.isAfterEnd)
+      }
+    )
+  }
+
+  getQRDate(){
+    this.body = {
+      'training': this.training['id']
+    }
+    this.attendanceService.getTodayQR(this.body).subscribe(
+      () => {},
+      () => {},
+      () => {
+        console.log("anjay", this.attendanceService)
+        this.qrID = this.attendanceService.attendanceQRID[0]['id']
+        this.qrCodeCheckIn = this.attendanceService.attendanceQRID[0]['training']+'|check_in|'+moment(new Date()).format('YYYY-MM-DD')
+        this.qrCodeCheckOut = this.attendanceService.attendanceQRID[0]['training']+'|check_out|'+moment(new Date()).format('YYYY-MM-DD')
+        console.log('qrCodeCheckIn', this.qrCodeCheckIn)
+        console.log('qrCodeCheckOut', this.qrCodeCheckOut)
+        this.attendances = this.attendanceService.attendances
+        // console.log(this.qrID)
+        this.tableAttendancesRows = this.attendances
+        this.tableAttendancesTemp = this.tableAttendancesRows.map((prop, key) => {
+          return {
+            ...prop,
+            id_index: key+1
+          };
+        });
+
+        if (this.tableAttendancesTemp.length >= 1) {
+          this.isAttendancesEmpty = false
+        }
+        else {
+          this.isAttendancesEmpty = true
+        }
+        this.getData()
       }
     )
   }
@@ -355,6 +394,7 @@ export class TrainingDetailComponent implements OnInit {
 
   closeModal() {
     this.modal.hide()
+    this.tableAttendancesTemp = this.tableAttendancesRows
   }
 
   scanSuccessHandler(event) {
