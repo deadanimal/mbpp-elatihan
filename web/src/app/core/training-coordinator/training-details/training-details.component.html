@@ -64,6 +64,8 @@
   </div>
 </div>
 
+
+
 <div class="container-fluid mt--6">
   <div class="row">
     <!-- Left column -->
@@ -733,7 +735,53 @@
       <tabset type="pills" class="nav-fill no-tab-content">
         <!-- Applications -->
         <tab heading="Permohonan">
-          <div class="card mt-2">
+          <div class="row">
+            <div class="col-3">
+              <div class="mt-2">
+                <div class="card card-stats">
+                  <div class="card-body">
+                    <div class="text-left text-green">
+                      Terima : {{this.Approve}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="mt-2">
+                <div class="card card-stats">
+                  <div class="card-body">
+                    <div class="text-left text-red">
+                      Tolak : {{this.Reject}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="mt-2">
+                <div class="card card-stats">
+                  <div class="card-body">
+                    <div class="text-left text-blue">
+                      Proses : {{this.InProgress}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="mt-2">
+                <div class="card card-stats">
+                  <div class="card-body">
+                    <div class="text-left text-orange">
+                      Disimpan : {{this.Reserve}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mt--2">
             <div class="card-header bg-secondary">
               <div class="row">
                 <div class="col my-auto">
@@ -2079,7 +2127,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let row of tableApplicationsTemp">
+      <tr *ngFor="let row of filteredPrint">
         <td>
           {{ row.applicant?.full_name }}
         </td>

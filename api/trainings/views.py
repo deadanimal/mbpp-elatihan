@@ -1930,6 +1930,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         'training',
         'applicant',
         'status',
+        'training_id',
         'application_type'
     ]
 

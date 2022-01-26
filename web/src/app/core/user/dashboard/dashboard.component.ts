@@ -139,8 +139,8 @@ export class DashboardComponent implements OnInit {
             row.end_date = moment(row.end_date).format('DD/MM/YYYY')
 
             forkJoin([
-              this.evaluationService.filterInternal("applicant="+row.applicant+"&training="+row.training.id),
-              this.evaluationService.filterExternal("applicant="+row.applicant+"&training="+row.training.id)
+              this.evaluationService.filterInternal("applicant="+row.applicant+"&training="+row.training.id+"&answer_1=NULL"),
+              this.evaluationService.filterExternal("applicant="+row.applicant+"&training="+row.training.id+"&answer_1=NULL")
             ]).subscribe((res) => {
               if (res[0].length > 0 || res[1].length > 0) {
                 this.evaluationTableRows.splice(index, 1)

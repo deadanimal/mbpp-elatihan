@@ -922,6 +922,8 @@ export class ExamsComponent implements OnInit {
   viewDocument() {
     let url = this.selectedAttendee['document_copy']
     window.open(url, '_blank');
+    const urlHehe = 'https://mbpp-api.pipeline.com.my'+url
+    window.open(urlHehe, '_blank');
   }
 
 }

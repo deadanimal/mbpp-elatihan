@@ -151,6 +151,11 @@ export class TrainingDetailsComponent implements OnInit {
   selectedDep = []
   selectedPos = []
   selectedSch = []
+  Approve
+  Reject
+  InProgress
+  Reserve
+  filteredPrint: any
 
   // Form
   trainingForm: FormGroup
@@ -203,6 +208,7 @@ export class TrainingDetailsComponent implements OnInit {
   tableApplicationsEntries: number = 5
   tableApplicationsSelected: any[] = []
   tableApplicationsTemp = []
+  tableApplicationsPrint = []
   tableApplicationsActiveRow: any
   tableApplicationsRows: any = []
   // Attendances
@@ -555,7 +561,7 @@ export class TrainingDetailsComponent implements OnInit {
         this.domains = this.domainService.domains
         this.staffs = this.trainingService.applicableStaffs
         this.applyForm.controls['training'].setValue(this.training['id'])
-        this.loadingBar.complete() 
+        this.loadingBar.complete()
       },
       () => {
         this.loadingBar.complete() 
@@ -791,6 +797,7 @@ export class TrainingDetailsComponent implements OnInit {
         )
         
         this.tableApplicationsRows = this.applications
+        this.filteredPrint = this.tableApplicationsRows.filter(e => e.status ==='AP')
         this.tableApplicationsTemp = this.tableApplicationsRows.map((prop, key) => {
           let result = this.departments.find((obj) => {
             return obj.value == prop.applicant.department_code
@@ -801,6 +808,9 @@ export class TrainingDetailsComponent implements OnInit {
             id_index: key+1
           };
         });
+
+        console.log('trainingID',this.tableApplicationsTemp)
+        console.log('trainingID',this.filteredPrint)
         
         if (this.tableApplicationsTemp.length >= 1) {
           this.isApplicationsEmpty = false
@@ -890,6 +900,23 @@ export class TrainingDetailsComponent implements OnInit {
         }
 
         this.getCharts();
+      }
+    )
+
+    this.subscription = forkJoin([
+      this.applicationService.filter("training_id="+this.trainingID+"&status=AP"),
+      this.applicationService.filter("training_id="+this.trainingID+"&status=IP"),
+      this.applicationService.filter("training_id="+this.trainingID+"&status=RJ"),
+      this.applicationService.filter("training_id="+this.trainingID+"&status=RS"),
+    ]).subscribe(
+      (res) => {
+        this.Approve = res[0].length
+        this.Reject = res[2].length
+        this.InProgress = res[1].length
+        this.Reserve = res[3].length
+        this.tableApplicationsPrint = res[0]
+        console.log('approve',this.Approve)
+        console.log('trainingID',this.tableApplicationsPrint)
       }
     )
   }

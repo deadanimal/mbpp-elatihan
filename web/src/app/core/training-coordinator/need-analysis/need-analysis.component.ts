@@ -214,7 +214,7 @@ export class NeedAnalysisComponent implements OnInit {
     swal
       .fire({
         title: "Berjaya",
-        text: "Peperiksaan telah ditambah. Tambah lagi?",
+        text: "Berjaya ditambah. Tambah lagi?",
         type: "success",
         buttonsStyling: false,
         showCancelButton: true,

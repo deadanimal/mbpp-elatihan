@@ -81,6 +81,7 @@
                         <div class="form-group">
                             <label class="form-control-label">Teras <span class="text-warning">*</span></label>
                             <select class="form-control custom-select" formControlName="core">
+                                <option selected value="tiada">--Sila Pilih--</option>
                                 <option *ngFor="let core of coresTemp" value="{{core.id}}">
                                     {{core.child}}
                                 </option>
