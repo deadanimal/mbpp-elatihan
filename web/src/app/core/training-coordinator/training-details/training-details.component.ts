@@ -45,6 +45,7 @@ import { Department, Section } from 'src/app/shared/code/user';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import { RowHeightCache } from '@swimlane/ngx-datatable';
 
 am4core.useTheme(am4themes_animated);
 am4core.addLicense("ch-custom-attribution");
@@ -155,6 +156,8 @@ export class TrainingDetailsComponent implements OnInit {
   Reject
   InProgress
   Reserve
+  body
+  attendance_id
   filteredPrint: any
 
   // Form
@@ -1692,6 +1695,43 @@ export class TrainingDetailsComponent implements OnInit {
     this.chart_24 = chart;
   }
 
+  getQRDate(){
+    this.body = {
+      'user_id' : this.attendance_id,
+      'training': this.training['id']
+    }
+    console.log('get QR', this.body)
+    this.attendanceService.getTodayQR(this.body).subscribe(
+      () => {},
+      () => {},
+      () => {
+        console.log("anjay", this.attendanceService)
+        // this.qrID = this.attendanceService.attendanceQRID[0]['id']
+        // this.qrCodeCheckIn = this.attendanceService.attendanceQRID[0]['training']+'|check_in|'+moment(new Date()).format('YYYY-MM-DD')
+        // this.qrCodeCheckOut = this.attendanceService.attendanceQRID[0]['training']+'|check_out|'+moment(new Date()).format('YYYY-MM-DD')
+        // console.log('qrCodeCheckIn', this.qrCodeCheckIn)
+        // console.log('qrCodeCheckOut', this.qrCodeCheckOut)
+        // this.attendances = this.attendanceService.attendances
+        // console.log(this.qrID)
+        this.tableAttendancesRows = this.attendances
+        this.tableAttendancesTemp = this.tableAttendancesRows.map((prop, key) => {
+          return {
+            ...prop,
+            id_index: key+1
+          };
+        });
+
+        if (this.tableAttendancesTemp.length >= 1) {
+          this.isAttendancesEmpty = false
+        }
+        else {
+          this.isAttendancesEmpty = true
+        }
+        this.getData()
+      }
+    )
+  }
+
   getQRID() {
     let body = {
       'training': this.training['id']
@@ -3188,8 +3228,8 @@ export class TrainingDetailsComponent implements OnInit {
     let infoTitle = 'Sedang proses'
     let infoMessage = 'Permohonan sedang diterima'
     this.notifyService.openToastrInfo(infoTitle, infoMessage)
-    console.log('terima permohonan id',row['id'])
-    
+    console.log('terima permohonan id',row['applicant']['id'])
+    this.attendance_id = row['applicant']['id']
     this.applicationService.approveLevel3(row['id']).subscribe(
       () => {
         this.loadingBar.complete()
@@ -3204,7 +3244,7 @@ export class TrainingDetailsComponent implements OnInit {
         this.notifyService.openToastrError(failedTitle, failedMessage)
       },
       () => {
-        this.getData()
+        this.getQRDate()
       }
     )
   }
@@ -4214,6 +4254,19 @@ export class TrainingDetailsComponent implements OnInit {
     }
   }
 
+  selectAllRow(){
+    if(this.tableApplicationsTemp[0].isTick == true){
+      for (let i=0; i < this.tableApplicationsTemp.length; i++) {
+        this.tableApplicationsTemp[i].isTick = false
+      }
+    }
+    else {
+      for (let i=0; i < this.tableApplicationsTemp.length; i++) {
+        this.tableApplicationsTemp[i].isTick = true
+      }
+    }
+  }
+
   checkRowHadir(row) {
     for (let i = 0; i < this.tableAttendancesTemp.length; i++) {
       if (this.tableAttendancesTemp[i].id == row.id) {
@@ -4221,6 +4274,19 @@ export class TrainingDetailsComponent implements OnInit {
         this.tick_count_Hadir = 1;
       }
       // console.log('row tick', this.tableAttendancesTemp[i].isTick )
+    }
+  }
+
+  selectAllRowHadir(){
+    if(this.tableAttendancesTemp[0].isTick == true){
+      for (let i=0; i < this.tableAttendancesTemp.length; i++) {
+        this.tableAttendancesTemp[i].isTick = false
+      }
+    }
+    else {
+      for (let i=0; i < this.tableAttendancesTemp.length; i++) {
+        this.tableAttendancesTemp[i].isTick = true
+      }
     }
   }
 
@@ -4276,6 +4342,8 @@ export class TrainingDetailsComponent implements OnInit {
             let successTitle = 'Berjaya'
             let successMessage = 'Permohonan berjaya diterima'
             this.notifyService.openToastr(successTitle, successMessage)
+            this.attendance_id = this.tableApplicationsTemp['applicant']['id']
+            this.getQRDate()
           },
           () => {
             this.loadingBar.complete()

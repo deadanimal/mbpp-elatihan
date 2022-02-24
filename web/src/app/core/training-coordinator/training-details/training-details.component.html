@@ -784,11 +784,19 @@
           <div class="card mt--2">
             <div class="card-header bg-secondary">
               <div class="row">
-                <div class="col my-auto">
+                <div class="col-4 my-auto">
                   <h4 class="m-0">Permohonan</h4>
                 </div>
 
                 <div class="col text-right">
+
+                  <button
+                    class="btn btn-sm btn-success mr-1"
+                    (click)="selectAllRow()"
+                  >
+                    Pilih Semua
+                  </button>
+
                   <button
                     class="btn btn-sm btn-success mr-1"
                     (click)="bulkTerimaPermohonan()"
@@ -1255,6 +1263,18 @@
                 </div>
 
                 <div class="col text-right">
+                  <!-- <button
+                    class="btn btn-sm btn-warm-blue mr-1"
+                    (click)="getQRDate()"
+                  >
+                    Refresh
+                  </button> -->
+                  <button
+                    class="btn btn-sm btn-warm-blue mr-1"
+                    (click)="selectAllRowHadir()"
+                  >
+                    Pilih Semua
+                  </button>
                   <button
                     class="btn btn-sm btn-warm-blue ml-1"
                     (click)="bulkSahKehadiran()"

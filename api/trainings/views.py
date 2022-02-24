@@ -1,5 +1,6 @@
 import itertools
 import json
+import re
 import time
 import uuid
 import datetime
@@ -2307,9 +2308,9 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     @action(methods=['POST'], detail=False)
     def check_today(self, request, *args, **kwargs):
-
-        attendee = request.user
+        
         request_ = json.loads(request.body)
+        attendee = CustomUser.objects.get(id=request_['user_id'])
         training_id_ = request_['training']
 
         training = Training.objects.filter(

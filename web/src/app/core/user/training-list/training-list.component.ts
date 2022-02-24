@@ -101,8 +101,10 @@ export class TrainingListComponent implements OnInit {
   filterTable($event) {
     let val = $event.target.value.toLowerCase();
     this.tableTemp = this.tableRows.filter(function(d) {
-      return d.title.toLowerCase().indexOf(val) ! == -1 || !val;
+      return d.title.toLowerCase().indexOf(val) !== -1 || !val;
     });
+
+    console.log("filter table", this.tableTemp)
   }
 
   onSelect({ selected }) {

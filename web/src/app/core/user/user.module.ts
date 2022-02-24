@@ -1,3 +1,4 @@
+import { TrainingHistoryDetailComponent } from './training-history-detail/training-history-detail.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { 
@@ -45,7 +46,8 @@ import { TrainingEvaluateComponent } from './training-evaluate/training-evaluate
     TrainingInformationComponent,
     NeedAnalysisComponent,
     EvaluationsComponent,
-    TrainingEvaluateComponent
+    TrainingEvaluateComponent,
+    TrainingHistoryDetailComponent
   ],
   imports: [
     CommonModule,

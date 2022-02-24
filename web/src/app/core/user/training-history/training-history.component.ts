@@ -106,10 +106,14 @@ export class TrainingHistoryComponent implements OnInit {
   }
 
   filterTable($event) {
+    
     let val = $event.target.value.toLowerCase();
+    console.log(val)
     this.tableTemp = this.tableRows.filter(function(d) {
-      return d.title.toLowerCase().indexOf(val) ! == -1 || !val;
+      console.log(d)
+      return d.training.title.toLowerCase().indexOf(val) !== -1 || !val;
     });
+
   }
 
   onSelect({ selected }) {
@@ -122,6 +126,26 @@ export class TrainingHistoryComponent implements OnInit {
   }
 
   view(training) {
+    let path = '/trainings/history-detail'
+    let extras = training['id']
+    let organiser_type = 'DD'
+
+    if (training['organiser_type'] == 'DD') {
+      organiser_type = 'DD'
+    }
+    else {
+      organiser_type = 'LL'
+    }
+    let queryParams = {
+      queryParams: {
+        id: extras,
+        type: organiser_type
+      }
+    }
+    this.router.navigate([path], queryParams)
+  }
+
+  evaluation(training) {
     let path = '/trainings/evaluate'
     let extras = training['id']
     let organiser_type = 'DD'

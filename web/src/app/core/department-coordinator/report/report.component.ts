@@ -187,16 +187,24 @@ export class ReportComponent implements OnInit {
 
     this.loadingBar.start()
     this.trainingService.getReportAttendance(body).subscribe(
-      () => {
+      (res) => {
+        let url = window.URL.createObjectURL(res);
+        let a = document.createElement('a');
+        document.body.appendChild(a);
+        a.setAttribute('style', 'display: none');
+        a.href = url;
+        a.download = "Laporan-Kehadiran-"+moment(new Date()).format('YYYY-MM-DD');
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
         this.loadingBar.complete()
       },
       () => {
         this.loadingBar.complete()
       },
-      () => {
-        window.open(this.trainingService.reportUrl, '_blank');
-      }
+      () => {}
     )
+    
     // console.log(body)
   }
 
