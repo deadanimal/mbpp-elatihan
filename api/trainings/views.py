@@ -2307,6 +2307,53 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         return Response(serializer.data)
     
     @action(methods=['POST'], detail=False)
+    def check_today_hack(self, request, *args, **kwargs):
+        
+        request_ = json.loads(request.body)
+        attendee = CustomUser.objects.get(id=request_['user_id'])
+        training_id_ = request_['training']
+
+        training = Training.objects.filter(
+            id=training_id_
+        ).first()
+
+        if training:
+            attendance = TrainingAttendee.objects.filter(
+                attendee=attendee,
+                training=training,
+                created_at__date=datetime.datetime.now().date()
+            )
+            
+            if attendance:
+                serializer = TrainingAttendeeSerializer(attendance, many=True)
+                return Response(serializer.data)
+            else:
+                # to create multiple attendance if more than 1 day
+                for single_date in daterange(training.start_date, training.end_date):
+                    attendance_ = TrainingAttendee.objects.create(
+                        attendee=attendee,
+                        training=training,
+                        check_date=single_date
+                    )
+                
+                attendance_ = TrainingAttendee.objects.create(
+                    attendee=attendee,
+                    training=training,
+                    check_date=training.end_date
+                )
+                
+                attendance = TrainingAttendee.objects.filter(
+                    attendee=attendee,
+                    training=training,
+                    created_at__date=datetime.datetime.now().date()
+                )
+
+                serializer = TrainingAttendeeSerializer(attendance, many=True)
+                return Response(serializer.data)
+        else:
+            return HttpResponse(status=204)
+    
+    @action(methods=['POST'], detail=False)
     def check_today(self, request, *args, **kwargs):
         
         request_ = json.loads(request.body)

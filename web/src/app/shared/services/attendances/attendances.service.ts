@@ -112,6 +112,16 @@ export class AttendancesService {
         // console.log('ID: ', this.attendanceQRID)
       })
     )
+  } 
+
+  getTodayQR_hack(body) {
+    let urlTemp = this.urlAttendances + 'check_today_hack/'
+    return this.http.post<any>(urlTemp, body).pipe(
+      tap((res) => {
+        this.attendanceQRID = res
+        // console.log('ID: ', this.attendanceQRID)
+      })
+    )
   }
 
   signAttendance(body) {

@@ -1701,7 +1701,7 @@ export class TrainingDetailsComponent implements OnInit {
       'training': this.training['id']
     }
     console.log('get QR', this.body)
-    this.attendanceService.getTodayQR(this.body).subscribe(
+    this.attendanceService.getTodayQR_hack(this.body).subscribe(
       () => {},
       () => {},
       () => {
