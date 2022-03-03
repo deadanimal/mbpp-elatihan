@@ -31,6 +31,27 @@
 
 						<div class="col text-right">
 							<button
+								class="btn btn-sm btn-success mr-1"
+								(click)="selectAllRow()"
+							>
+								Pilih Semua
+							</button>
+
+							<button
+								class="btn btn-sm btn-success mr-1"
+								(click)="bulkTerimaPermohonan()"
+								[disabled]="this.tick_count == 0"
+							>
+								Terima
+							</button>
+							<button
+								class="btn btn-sm btn-warning mr-1"
+								(click)="bulkTolakPermohonan()"
+								[disabled]="this.tick_count == 0"
+							>
+								Tolak
+							</button>
+							<button
 								class="btn btn-sm btn-warm-blue"
 								(click)="exportExcel()"
 							>
@@ -92,6 +113,18 @@
 						*ngIf="!isEmpty"
                         [scrollbarH]="true"
 					>
+						<ngx-datatable-column [sortable]="false" [width]="20">
+							<ng-template let-row="row" ngx-datatable-cell-template>
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input"
+										id="customCheck+{{row.id}}" (change)="checkRow(row)"
+										[(ngModel)]="row.isTick">
+									<label class="custom-control-label" for="customCheck+{{row.id}}">
+									</label>
+								</div>
+							</ng-template>
+						</ngx-datatable-column>
+
                         <ngx-datatable-column
                             prop="applicant.full_name"
                         >

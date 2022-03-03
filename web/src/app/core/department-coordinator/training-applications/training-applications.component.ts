@@ -196,6 +196,19 @@ export class TrainingApplicationsComponent implements OnInit {
     }
   }
 
+  selectAllRow(){
+    if(this.tableTemp[0].isTick == true){
+      for (let i=0; i < this.tableTemp.length; i++) {
+        this.tableTemp[i].isTick = false
+      }
+    }
+    else {
+      for (let i=0; i < this.tableTemp.length; i++) {
+        this.tableTemp[i].isTick = true
+      }
+    }
+  }
+
   bulkTerimaPermohonan() {
 
     for (let i = 0; i < this.tableTemp.length; i++) {

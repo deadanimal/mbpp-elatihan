@@ -33,6 +33,7 @@ export class TrainingApplicationsHeadComponent implements OnInit {
   tableEntries: number = 5
   tableSelected: any[] = []
   tableTemp = []
+  tick_count 
   tableActiveRow: any
   tableRows: any = []
   tableMessages = { 
@@ -133,6 +134,29 @@ export class TrainingApplicationsHeadComponent implements OnInit {
     this.tableActiveRow = event.row;
   }
 
+  checkRow(row) {
+    for (let i = 0; i < this.tableTemp.length; i++) {
+      if (this.tableTemp[i].id == row.id) {
+        this.tableTemp[i].isTick = row.isTick;
+        console.log('row tick', this.tableTemp[i])
+        this.tick_count = 1;
+      }
+    }
+  }
+
+  selectAllRow(){
+    if(this.tableTemp[0].isTick == true){
+      for (let i=0; i < this.tableTemp.length; i++) {
+        this.tableTemp[i].isTick = false
+      }
+    }
+    else {
+      for (let i=0; i < this.tableTemp.length; i++) {
+        this.tableTemp[i].isTick = true
+      }
+    }
+  }
+
   view(selected) {
     let path = '/dc/trainings/information'
     let extras = selected['training']['id']
@@ -192,6 +216,79 @@ export class TrainingApplicationsHeadComponent implements OnInit {
         this.getData()
       }
     )
+  }
+
+  bulkTerimaPermohonan() {
+    // this.spinner.show();
+    // console.log('no of row',this.tableApplicationsTemp.length)
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Permohonan sedang diterima'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+
+    for (let i = 0; i < this.tableTemp.length; i++) {
+      if (this.tableTemp[i].isTick == true) {
+
+        this.applicationService.approveLevel2(this.tableTemp[i].id).subscribe(
+          () => {
+            this.loadingBar.complete()
+            let successTitle = 'Berjaya'
+            let successMessage = 'Permohonan berjaya diterima'
+            this.notifyService.openToastr(successTitle, successMessage)
+
+          },
+          () => {
+            this.loadingBar.complete()
+            let failedTitle = 'Tidak Berjaya'
+            let failedMessage = 'Permohonan tidak berjaya diterima. Sila cuba sekali lagi'
+            this.notifyService.openToastrError(failedTitle, failedMessage)
+          },
+          () => {
+            this.getData()
+          }
+        )
+        
+      // console.log('tick row',this.tableApplicationsTemp[i].id)
+      }
+      // this.numRow = i
+    }
+
+  }
+
+  bulkTolakPermohonan() {
+    // this.spinner.show();
+    // console.log('no of row',this.tableApplicationsTemp.length)
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Permohonan sedang diterima'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
+
+    for (let i = 0; i < this.tableTemp.length; i++) {
+      if (this.tableTemp[i].isTick == true) {
+
+        this.applicationService.reject(this.tableTemp[i].id).subscribe(
+          () => {
+            this.loadingBar.complete()
+            let successTitle = 'Berjaya'
+            let successMessage = 'Permohonan berjaya ditolak'
+            this.notifyService.openToastr(successTitle, successMessage)
+          },
+          () => {
+            this.loadingBar.complete()
+            let failedTitle = 'Tidak Berjaya'
+            let failedMessage = 'Permohonan tidak berjaya ditolak. Sila cuba sekali lagi'
+            this.notifyService.openToastrError(failedTitle, failedMessage)
+          },
+          () => {
+            this.getData()
+          }
+        )
+        
+      // console.log('tick row',this.tableApplicationsTemp[i].id)
+      }
+      // this.numRow = i
+    }
+
   }
 
   exportExcel() {
