@@ -779,6 +779,30 @@
                         </div>
                     </div>
                 </tab>
+                <tab heading="Sijil">
+                    <div class="card mt-2">
+                        <div class="card-header bg-secondary">
+                            <div class="row">
+                                <div class="col my-auto">
+                                    <h4 class="m-0">Setiausaha Bandaraya</h4>
+                                </div>
+
+                                <div class="col text-right">
+                                    <a
+                                        class="btn btn-sm btn-warm-blue text-white" 
+                                        (click)="openModalPatch(patchCertificationModal, certification, 'certifications')"
+                                    > 
+                                        Kemaskini Setiausaha Bandaraya 
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <h1>{{this.nameSU}}</h1>
+                        </div>
+                    </div>
+                </tab>
             </tabset>
         </div>
     </div>
@@ -1316,6 +1340,59 @@
             data-dismiss="modal"
             type="button"
             (click)="closeModal('configurations')"
+        >
+            Tutup
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #patchCertificationModal>
+    <div class="modal-header bg-warm-blue">
+        <h6 class="modal-title text-white my-auto" id="modal-title-default">
+            Kemaskini Setiausaha Bandaraya semasa
+        </h6>
+
+        <button
+            aria-label="Close"
+            class="close"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal('certifications')"
+        >
+            <span aria-hidden="true" class="text-white my-auto"> × </span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+        <form [formGroup]="certificationForm">
+            <div class="form-group">
+                <label class="form-control-label">Setiausaha Bandaraya Semasa <span class="text-warning">*</span></label>
+                <div class="input-group">
+                    <input 
+                        type="text"
+                        class="form-control"
+                        formControlName="value"
+                    >
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button 
+            class="btn btn-warm-blue"
+            type="button"
+            (click)="patchCert()"
+            [disabled]="!certificationForm.valid"
+        >
+            Kemaskini
+        </button>
+
+        <button
+            class="btn btn-outline-warm-blue ml-auto"
+            data-dismiss="modal"
+            type="button"
+            (click)="closeModal('certifications')"
         >
             Tutup
         </button>

@@ -4,6 +4,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { forkJoin } from 'rxjs';
 import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
+import { Certification } from 'src/app/shared/services/configurations/certifications.model';
 import { Configuration } from 'src/app/shared/services/configurations/configurations.model';
 import { ConfigurationsService } from 'src/app/shared/services/configurations/configurations.service';
 import { Core } from 'src/app/shared/services/cores/cores.model';
@@ -45,6 +46,7 @@ export class ConfigurationComponent implements OnInit {
   organisationSelected
   typeSelected
   configuration: Configuration
+  certification: Certification
   exams: Exam[] = []
   examSelected
 
@@ -117,6 +119,9 @@ export class ConfigurationComponent implements OnInit {
   trainerForm: FormGroup
   examForm: FormGroup
   configurationForm: FormGroup
+  certificationForm: FormGroup
+  dataSU
+  nameSU
 
   // Choices
   coreChoices = [
@@ -163,10 +168,15 @@ export class ConfigurationComponent implements OnInit {
       this.trainerService.getTrainers(),
       this.trainingService.getTrainingTypes(),
       this.configurationService.getAll(),
-      this.examService.getExamList()
+      this.examService.getExamList(),
+      this.configurationService.getAllCert()
     ]).subscribe(
-      () => {
+      (res) => {
         this.loadingBar.complete()
+        this.dataSU = res[7]
+        console.log('1',this.dataSU)
+        this.nameSU = this.dataSU[0].value
+        console.log('2',this.nameSU)
       },
       () => {
         this.loadingBar.complete()
@@ -277,6 +287,17 @@ export class ConfigurationComponent implements OnInit {
             }
           }
         )
+
+        this.configurationService.certifications.forEach(
+          (certification: Certification) => {
+            if (certification['name'] == 'Setiausaha Bandaraya') {
+              this.certification = certification
+              console.log(certification)
+              this.certificationForm.controls['value'].setValue(this.certification['value'])
+            }
+          }
+        )
+        console.log(this.certification)
       }
     )
   }
@@ -362,6 +383,12 @@ export class ConfigurationComponent implements OnInit {
         Validators.required
       ]))
     })
+
+    this.certificationForm = this.fb.group({
+      value: new FormControl(0, Validators.compose([
+        Validators.required
+      ]))
+    })
   }
 
   openModalAdd(modalRef: TemplateRef<any>) {
@@ -391,6 +418,9 @@ export class ConfigurationComponent implements OnInit {
     }
     else if (type == 'configurations') {
       this.configurationForm.controls['value'].setValue(row['value'])
+    }
+    else if (type == 'certifications') {
+      this.certificationForm.controls['value'].setValue(row['value'])
     }
     else if (type == 'exams') {
       this.examForm.controls['title'].setValue(row['title'])
@@ -426,6 +456,9 @@ export class ConfigurationComponent implements OnInit {
       this.examForm.controls['classification'].patchValue('FKW')
       this.examForm.controls['organiser'].patchValue(null)
       this.examForm.controls['active'].patchValue(true)
+    }
+    else if (type == 'certifications') {
+      this.certificationForm.controls['value'].patchValue(null)
     }
     this.modal.hide()
     // this.organisationForm.reset()
@@ -737,6 +770,28 @@ export class ConfigurationComponent implements OnInit {
     )
   }
 
+  patchCert() {
+    this.loadingBar.start()
+    this.configurationService.updateCert(this.certification['id'], this.certificationForm.value).subscribe(
+      () => {
+        let title = 'Berjaya'
+        let message = 'SU semasa berjaya dikemaskini'
+        this.notifyService.openToastr(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        let title = 'Tidak berjaya'
+        let message = 'SU semasa tidak berjaya dikemaskini. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(title, message)
+        this.loadingBar.complete()
+      },
+      () => {
+        this.closeModal('certifications')
+        this.getData()
+      }
+    )
+  }
+
   addExam() {
     this.loadingBar.start()
     this.examService.createExam(this.examForm.value).subscribe(
@@ -781,5 +836,4 @@ export class ConfigurationComponent implements OnInit {
       }
     )
   }
-
 }
