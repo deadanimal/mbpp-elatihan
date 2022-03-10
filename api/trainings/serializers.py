@@ -24,7 +24,8 @@ from .models import (
     Configuration,
     TrainingNeedAnalysis,
     MonitoringPlan,
-    BasicLevel
+    BasicLevel,
+    SijilConfiguration
 )
 
 from organisations.serializers import(
@@ -232,7 +233,13 @@ class SijilSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificate
         fields = '__all__'
-
+        
+class SijilConfigurationSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = SijilConfiguration
+        fields = '__all__'
+        
 class MonitoringPlanSerializer(serializers.ModelSerializer):
 
     class Meta:

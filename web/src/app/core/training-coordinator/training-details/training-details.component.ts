@@ -3228,7 +3228,7 @@ export class TrainingDetailsComponent implements OnInit {
     let infoTitle = 'Sedang proses'
     let infoMessage = 'Permohonan sedang diterima'
     this.notifyService.openToastrInfo(infoTitle, infoMessage)
-    console.log('terima permohonan id',row['applicant']['id'])
+    // console.log('terima permohonan id',row['applicant']['id'])
     this.attendance_id = row['applicant']['id']
     this.applicationService.approveLevel3(row['id']).subscribe(
       () => {
@@ -3245,6 +3245,7 @@ export class TrainingDetailsComponent implements OnInit {
       },
       () => {
         this.getQRDate()
+        this.getData()
       }
     )
   }
@@ -4343,7 +4344,7 @@ export class TrainingDetailsComponent implements OnInit {
             let successMessage = 'Permohonan berjaya diterima'
             this.notifyService.openToastr(successTitle, successMessage)
             this.attendance_id = this.tableApplicationsTemp['applicant']['id']
-            this.getQRDate()
+            // this.getQRDate()
           },
           () => {
             this.loadingBar.complete()
@@ -4352,6 +4353,7 @@ export class TrainingDetailsComponent implements OnInit {
             this.notifyService.openToastrError(failedTitle, failedMessage)
           },
           () => {
+            this.getQRDate()
             this.getData()
           }
         )

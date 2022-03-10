@@ -47,7 +47,8 @@ from .models import (
     TrainingNeedAnalysis,
     MonitoringPlan,
     BasicLevel,
-    Certificate
+    Certificate,
+    SijilConfiguration
 )
 
 from .serializers import (
@@ -69,7 +70,8 @@ from .serializers import (
     TrainingNeedAnalysisExtendedSerializer,
     MonitoringPlanSerializer,
     BasicLevelSerializer,
-    SijilSerializer
+    SijilSerializer,
+    SijilConfigurationSerializer
 )
 
 from evaluations.models import (
@@ -2686,9 +2688,9 @@ class ConfigurationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         queryset = Configuration.objects.all()
         return queryset  
 
-class SijilViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
-    queryset = Certificate.objects.all()
-    serializer_class = SijilSerializer
+class SijilConfigurationViewset(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = SijilConfiguration.objects.all()
+    serializer_class = SijilConfigurationSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     # filterset_fields = ['code', 'staff', 'date']
 
@@ -2705,7 +2707,7 @@ class SijilViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
-        queryset = Certificate.objects.all()
+        queryset = SijilConfiguration.objects.all()
         return queryset  
 
 

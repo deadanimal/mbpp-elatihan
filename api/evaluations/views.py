@@ -48,7 +48,8 @@ from .serializers import (
 )
 
 from trainings.models import (
-    Training
+    Training,
+    SijilConfiguration
     
 )
 from trainings.models import Certificate as crt
@@ -765,7 +766,7 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def generate_bulk(self, request, *args, **kwargs):
 
         user = self.request.user
-        crt_ = crt.objects.get(id='16d3b96d-aab1-4b38-8508-2ac1d9603490')
+        crt_ = SijilConfiguration.objects.get(id='eafe213e-95c5-42a3-a056-1f450ebfd93d')
         print(crt_)
         name_crt = crt_.value
         print(name_crt)
