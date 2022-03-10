@@ -33,6 +33,7 @@ from .models import (
     ExternalEvaluation,
     InternalEvaluation,
     Certificate
+    
 )
 
 from .serializers import (
@@ -48,7 +49,9 @@ from .serializers import (
 
 from trainings.models import (
     Training
+    
 )
+from trainings.models import Certificate as crt
 
 from users.models import (
     CustomUser
@@ -762,6 +765,10 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def generate_bulk(self, request, *args, **kwargs):
 
         user = self.request.user
+        crt_ = crt.objects.get(id='16d3b96d-aab1-4b38-8508-2ac1d9603490')
+        print(crt_)
+        name_crt = crt_.value
+        print(name_crt)
         request_ = json.loads(request.body)
         request_training_ = request_['training']
         request_attendees_ = request_['attendees']
@@ -777,7 +784,8 @@ class CertificateViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                 'training_name': training.title,
                 'start_date': training.start_date,
                 'end_date': training.end_date,
-                'venue': training.venue
+                'venue': training.venue,
+                'name_SU' : name_crt
             }
 
             html_string = render_to_string(

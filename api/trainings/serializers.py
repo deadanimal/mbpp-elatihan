@@ -11,6 +11,7 @@ from django.utils.timezone import now
 from drf_extra_fields.fields import Base64FileField
 
 from .models import (
+    Certificate,
     Training,
     TrainingNote,
     TrainingCore,
@@ -224,6 +225,12 @@ class ConfigurationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Configuration
+        fields = '__all__'
+        
+class SijilSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Certificate
         fields = '__all__'
 
 class MonitoringPlanSerializer(serializers.ModelSerializer):

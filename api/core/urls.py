@@ -50,7 +50,8 @@ from trainings.views import (
     ConfigurationViewSet,
     TrainingNeedAnalysisViewSet,
     MonitoringPlanViewSet,
-    BasicLevelViewSet
+    BasicLevelViewSet,
+    SijilViewSet
 )
 
 class NestedDefaultRouter(NestedRouterMixin, routers.DefaultRouter):
@@ -89,6 +90,9 @@ exams_router = router.register(
     'exams', ExamViewSet
 )
 
+sijil_router = router.register(
+    'sijil', SijilViewSet
+)
 exam_attendees_router = router.register(
     'exam-attendees', ExamAttendeeViewSet
 )

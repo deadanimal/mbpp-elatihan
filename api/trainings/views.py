@@ -46,7 +46,8 @@ from .models import (
     Configuration,
     TrainingNeedAnalysis,
     MonitoringPlan,
-    BasicLevel
+    BasicLevel,
+    Certificate
 )
 
 from .serializers import (
@@ -67,7 +68,8 @@ from .serializers import (
     TrainingNeedAnalysisSerializer,
     TrainingNeedAnalysisExtendedSerializer,
     MonitoringPlanSerializer,
-    BasicLevelSerializer
+    BasicLevelSerializer,
+    SijilSerializer
 )
 
 from evaluations.models import (
@@ -2682,6 +2684,28 @@ class ConfigurationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         queryset = Configuration.objects.all()
+        return queryset  
+
+class SijilViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
+    queryset = Certificate.objects.all()
+    serializer_class = SijilSerializer
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    # filterset_fields = ['code', 'staff', 'date']
+
+    def get_permissions(self):
+        permission_classes = [AllowAny]#[AllowAny]
+        """
+        if self.action == 'list':
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [AllowAny]
+        """
+        return [permission() for permission in permission_classes]    
+
+    
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Certificate.objects.all()
         return queryset  
 
 

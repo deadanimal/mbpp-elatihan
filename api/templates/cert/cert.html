@@ -15,7 +15,7 @@
             }
             body{
                 left: 60%;
-                background-image: url({% static 'image/test.png'%});
+                background-image: url({% static 'image/test2.png'%});
                 height: 100%;
                 width: 100%;
                 padding: 0;
@@ -27,31 +27,83 @@
                 
             
             }
+
             .container {
                 position: absolute;
                 left: 50%;
-                top: 55%;
+                top: 40%;
                 -moz-transform: translate(-50%, -50%);
                 -webkit-transform: translate(-50%, -50%);
                 transform: translate(-50%, -50%);
             }
+
+            .outer-border {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                left: 50%;
+                margin-left: -397px;
+                margin-top:-297px;
+                border: 2px solid #fff;
+            }
+              
+            .inner-border {
+                width: 90%;
+                height: 90%;
+                position: absolute;
+                left: 50%;
+                margin-left: -365px;
+                margin-top:-265px;
+                border: 2px solid #fff;
+            }
+
+            .cert {
+                border: 15px solid #0072c6;
+                border-right: 15px solid #0894fb;
+                border-left: 15px solid #0894fb;
+                width: 700px;
+                font-family: arial;
+                color: #383737;
+            }
+            
+
         </style>
     </head>
 
     <body>
+            <div class="container" >
+                <p class="col text-center" style="padding-top: 80px;">
+                    <img
+                src="{% static 'image/mbpp-logo.png' %}"
+                style="height: 120px; width: 140px"/>
+                </p>
 
-        <div class="container">
-           
-            <h3 style="text-align: center">{{ data.name | upper }}</h3>
+                <h1 style="text-align: center; font-family:Snell Roundhand, cursive; font-size: 80px; padding-top: 10px">Sijil Penyertaan</h1>
 
-            <div style="width: 70%; margin: auto;">
-            <h4 style="text-align: center; padding-top: 70px">
-                {{ data.training_name | upper }}
-            </h4>
-        </div>
-            <h4 style="text-align: center; padding-top: 30px">{{ data.start_date }} - {{ data.end_date }}</h4>
+                <h6 style="text-align: center; padding-top: 30px">ADALAH DENGAN INI DISAHKAN BAHAWA</h6>
 
-            <h4 style="text-align: center; padding-top: 30px">{{ data.venue }}</h4>
-        </div>        
+                <h4 style="text-align: center; padding-top: 10px"><b>{{ data.name | upper }}</b></h4>
+
+                <h6 style="text-align: center; padding-top: 10px">TELAH MENGIKUTI DENGAN JAYANYA</h6>
+
+                <div style="width: 70%; margin: auto;">
+                    <h4 style="text-align: center; padding-top: 10px">
+                        <b>{{ data.training_name | upper }}</b>
+                    </h4>
+
+                    <h6 style="text-align: center; padding-top: 10px">PADA</h6>
+                </div>
+
+                <h4 style="text-align: center; padding-top: 10px"><b>{{ data.start_date }}</b> - <b>{{ data.end_date }}</b></h4>
+
+                <h6 style="text-align: center; padding-top: 10px">BERTEMPAT</h6>
+
+                <h4 style="text-align: center; padding-top: 10px"><b>{{ data.venue }}</b></h4>
+                
+                <h5 style="text-align: center; padding-top: 40px"><b>{{ data.name_SU }}</b></h5>
+                <h6 style="text-align: center; font-size: 15px;">SETIAUSAHA BANDARAYA</h6>
+                <h6 style="text-align: center; font-size: 15px;">MAJLIS BANDARAYA PULAU PINANG</h6>
+                
+            </div>       
     </body>
 </html>

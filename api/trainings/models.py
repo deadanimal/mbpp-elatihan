@@ -665,3 +665,17 @@ class BasicLevel(models.Model):
 
     def __str__(self):
         return ('%s - %s'%(self.year, self.level))
+
+class Certificate(models.Model):
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100, null=False)
+    value = models.CharField(max_length=100, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.name
