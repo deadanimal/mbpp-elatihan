@@ -3,7 +3,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Router } from '@angular/router';
 
 import {
-  TrainingExtended, 
+  Training,
   TrainingType 
 } from 'src/app/shared/services/trainings/trainings.model';
 import { TrainingsService } from 'src/app/shared/services/trainings/trainings.service';
@@ -28,7 +28,7 @@ export enum SelectionType {
 export class TrainingsComponent implements OnInit {
 
   // Data
-  trainings: TrainingExtended[] = []
+  trainings: Training[] = []
   trainingTypes: TrainingType[] = []
   yearSelection
 
@@ -63,15 +63,16 @@ export class TrainingsComponent implements OnInit {
   }
 
   getData() {
+    console.log("ini sudah")
     this.loadingBar.start()
     let yearSelection_ = []
     forkJoin([
-      this.trainingService.getDepartmentList(),
+      this.trainingService.getAll(),
       this.trainingService.getTrainingTypes()
     ]).subscribe(
       () => {
         this.loadingBar.complete()
-        this.trainings =  this.trainingService.trainingsExtended
+        this.trainings = this.trainingService.trainings
         this.trainingTypes = this.trainingService.trainingTypes
         this.tableRows = this.trainings
         this.tableRows.forEach(

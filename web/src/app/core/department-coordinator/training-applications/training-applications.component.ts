@@ -100,7 +100,7 @@ export class TrainingApplicationsComponent implements OnInit {
     let val = $event.target.value.toLowerCase();
     if (type == 'name') {
       this.tableTemp = this.tableRows.filter(function(d) {
-        return d.applicant.full_name.toLowerCase().indexOf(val) !== -1 || !val;
+        return d.applicant.title.toLowerCase().indexOf(val) !== -1 || !val;
       });
     }
     else if (type == 'organiser_type') {
