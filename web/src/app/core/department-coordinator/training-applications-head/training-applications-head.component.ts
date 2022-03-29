@@ -70,6 +70,7 @@ export class TrainingApplicationsHeadComponent implements OnInit {
         this.loadingBar.complete()
         this.applications = this.applicationService.applicationsDepartment
         this.tableRows = this.applications
+        // console.log('data table', this.tableRows)
       },
       () => {
         this.loadingBar.complete()
@@ -100,7 +101,7 @@ export class TrainingApplicationsHeadComponent implements OnInit {
     let val = $event.target.value.toLowerCase();
     if (type == 'name') {
       this.tableTemp = this.tableRows.filter(function(d) {
-        return d.applicant.title.toLowerCase().indexOf(val) !== -1 || !val;
+        return d.training.title.toLowerCase().indexOf(val) !== -1 || !val;
       });
     }
     else if (type == 'organiser_type') {
@@ -138,7 +139,7 @@ export class TrainingApplicationsHeadComponent implements OnInit {
     for (let i = 0; i < this.tableTemp.length; i++) {
       if (this.tableTemp[i].id == row.id) {
         this.tableTemp[i].isTick = row.isTick;
-        console.log('row tick', this.tableTemp[i])
+        // console.log('row tick', this.tableTemp[i])
         this.tick_count = 1;
       }
     }

@@ -2024,6 +2024,11 @@ export class TrainingAddComponent implements OnInit {
         this.cd.markForCheck();
       };
     }
+    else{
+      let title = 'Tidak berjaya'
+      let message = 'Fail Lampiran telah melebihi dari 5mb. Sila cuba sekali lagi'
+      this.notifyService.openToastrError(title, message)
+    }
   }
 
   removeFile(type) {

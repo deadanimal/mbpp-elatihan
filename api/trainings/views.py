@@ -4,8 +4,10 @@ import re
 import time
 import uuid
 import datetime
+from xml.dom import UserDataHandler
 import pytz
 import dateutil.parser
+from datetime import date
 
 from django.utils import timezone
 from core.utils import get_departments
@@ -298,6 +300,34 @@ class TrainingViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         history = Training.history.all()
         serializer = TrainingSerializer(history, many=True)
         return Response(serializer.data)
+    
+    @action(methods=['GET'], detail=False)
+    def send_email_daily_report(self, request, *args, **kwargs):
+
+        # template_code = self.request.data['template_code']
+        # context = json.loads(self.request.data['context']) if self.request.data['context'] else None
+        # template_content = emailTemplate.objects.filter(template_code=template_code).values()
+        current_date = date.today()
+        print("Today's date:", current_date)
+        latihanTapis = []
+        latihanTapis = Training.objects.filter(created_at__date=current_date)
+        print(len(latihanTapis))
+        # ProductData = ProductRegistration.objects.filter()
+        # email_to = []
+
+        # emails = emailNoti.objects.all()
+
+        # data = {
+        #     'subject_': 'Email Notification',
+        #     'plain_message_': strip_tags(html_message),
+        #     'to_': email_to,
+        #     'html_message_': template_content
+        # }
+
+        # # print(data)
+
+        # send_email_result(data)
+     
     
     @action(methods=['GET'], detail=False)
     def get_latest(self, request, *args, **kwargs):
@@ -2012,6 +2042,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_department_coordinator_list(self, request, *args, **kwargs):
 
         user = request.user
+        print(user.department_code)
         applications = TrainingApplication.objects.filter(
             applicant__department_code=user.department_code,
             status='IP',
@@ -2020,6 +2051,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         )
 
         serializer_class = TrainingApplicationExtendedDepartmentSerializer(applications, many=True)
+        print(serializer_class.data)
         return Response(serializer_class.data)
     
     @action(methods=['GET'], detail=False)
@@ -2036,7 +2068,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer_class = TrainingApplicationExtendedDepartmentSerializer(applications, many=True)
         return Response(serializer_class.data)
     
-    @action(methods=['POST'], detail=False)
+    @action(methods=['POST'], detail=True)
     def get_department_applicant_histories(self, request, *args, **kwargs):
 
         user = request.user

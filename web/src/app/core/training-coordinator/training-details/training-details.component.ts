@@ -4343,7 +4343,8 @@ export class TrainingDetailsComponent implements OnInit {
             let successTitle = 'Berjaya'
             let successMessage = 'Permohonan berjaya diterima'
             this.notifyService.openToastr(successTitle, successMessage)
-            this.attendance_id = this.tableApplicationsTemp['applicant']['id']
+            this.attendance_id = this.tableApplicationsTemp[i]['applicant']['id']
+            console.log('id row yg terima',this.attendance_id)
             // this.getQRDate()
           },
           () => {

@@ -44,7 +44,7 @@
                             <button
                                 class="btn btn-warm-blue"
                                 (click)="confirm()"
-                                [hidden]="isApplied || (training?.start_date < dateToday)"
+                                [hidden]="isApplied || (training?.start_date < dateToday) || (training?.status == 'DT') || (training?.status == 'SL') || (training?.status == 'PN')"
                             >
                                 Daftar
                             </button>
