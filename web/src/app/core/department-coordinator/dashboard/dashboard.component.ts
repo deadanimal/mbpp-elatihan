@@ -283,11 +283,11 @@ export class DashboardComponent implements OnInit {
   getChartData2() {
     let body = {
       department_code: this.user.department_code,
-      // section_code: this.user.section_code
+      section_code: this.user.section_code
     }
     this.attendanceService.getDashboardDC2(body).subscribe(
       (res) => {
-        // console.log("res", res);
+        console.log("res", res);
         var result = []
 
         res.forEach(obj => {
@@ -296,7 +296,7 @@ export class DashboardComponent implements OnInit {
           });
 
           obj['section'] = result.text;
-          obj['value'] = obj.count;
+          obj['value'] = 1;
         });
 
         res.forEach((a) => {

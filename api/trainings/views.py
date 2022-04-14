@@ -66,6 +66,7 @@ from .serializers import (
     TrainerSerializer,
     TrainingDomainSerializer,
     TrainingExtendedSerializer,
+    TrainingExtendedForSpecialSerializer,
     TrainingTypeSerializer,
     ConfigurationSerializer,
     TrainingNeedAnalysisSerializer,
@@ -2049,9 +2050,11 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             approved_level_1_by=None,
             training__start_date__gte=datetime.datetime.now().date()
         )
+        
+        #print(str(applications.query))
 
         serializer_class = TrainingApplicationExtendedDepartmentSerializer(applications, many=True)
-        print(serializer_class.data)
+        
         return Response(serializer_class.data)
     
     @action(methods=['GET'], detail=False)
@@ -2530,7 +2533,7 @@ class TrainingAttendeeViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         request_ = json.loads(request.body)
 
         queryset = (TrainingAttendee.objects.filter(is_attend=True, attendee__department_code=request_['department_code']).values('attendee_id', 'attendee__department_code', 'attendee__section_code').annotate(count=Count('attendee_id')).filter(count__lt=5).distinct()).order_by()
-
+        # queryset = (TrainingAttendee.objects.filter(is_attend=True).values('attendee_id', 'attendee__department_code').annotate(count=Count('attendee_id')).filter(count__lt=5).distinct()).order_by()
         return Response(queryset)
 
     @action(methods=['POST'], detail=False)

@@ -73,6 +73,15 @@ export class UsersService {
     )
   }
 
+  get_user_detail(): Observable<any>{
+    let urlTemp = this.urlUser + 'get_current_user/'
+    return this.http.get<any>(urlTemp).pipe(
+      tap((res) => {
+        this.usersFiltered = res
+      })
+    )
+  }
+
   getSummarySelf(): Observable<any> {
     let urlTemp = this.urlUser + 'self_summary/'
     return this.http.get<any>(urlTemp).pipe(
@@ -113,5 +122,7 @@ export class UsersService {
       })
     );
   }
+
+
 
 }

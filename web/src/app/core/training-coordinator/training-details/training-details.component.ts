@@ -3147,30 +3147,30 @@ export class TrainingDetailsComponent implements OnInit {
   }
 
   verifyAttendance(row) {
-    // this.loadingBar.start()
-    // let infoTitle = 'Sedang proses'
-    // let infoMessage = 'Kehadiran sedang disahkan'
-    // this.notifyService.openToastrInfo(infoTitle, infoMessage)
+    this.loadingBar.start()
+    let infoTitle = 'Sedang proses'
+    let infoMessage = 'Kehadiran sedang disahkan'
+    this.notifyService.openToastrInfo(infoTitle, infoMessage)
 
     console.log('id sah', row['id'])
     
-    // this.attendanceService.verify(row['id']).subscribe(
-    //   () => {
-    //     this.loadingBar.complete()
-    //     let successTitle = 'Berjaya'
-    //     let successMessage = 'Kehadiran berjaya disahkan'
-    //     this.notifyService.openToastr(successTitle, successMessage)
-    //   },
-    //   () => {
-    //     this.loadingBar.complete()
-    //     let failedTitle = 'Tidak Berjaya'
-    //     let failedMessage = 'Kehadiran tidak berjaya disahkan. Sila cuba sekali lagi'
-    //     this.notifyService.openToastrError(failedTitle, failedMessage)
-    //   },
-    //   () => {
-    //     this.getData()
-    //   }
-    // )
+    this.attendanceService.verify(row['id']).subscribe(
+      () => {
+        this.loadingBar.complete()
+        let successTitle = 'Berjaya'
+        let successMessage = 'Kehadiran berjaya disahkan'
+        this.notifyService.openToastr(successTitle, successMessage)
+      },
+      () => {
+        this.loadingBar.complete()
+        let failedTitle = 'Tidak Berjaya'
+        let failedMessage = 'Kehadiran tidak berjaya disahkan. Sila cuba sekali lagi'
+        this.notifyService.openToastrError(failedTitle, failedMessage)
+      },
+      () => {
+        this.getData()
+      }
+    )
   }
 
   signinAttendance(row) {

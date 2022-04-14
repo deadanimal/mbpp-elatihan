@@ -79,6 +79,16 @@ export class ApplicationsService {
     )
   }
 
+  // getAllExtended(): Observable<Application[]> {
+  //   let urlTemp = this.urlApplications + 'extended_all/'
+  //   return this.http.get<Application[]>(urlTemp).pipe(
+  //     tap((res) => {
+  //       this.applications = res
+  //       // console.log('Trainings: ', this.trainingsExtended)
+  //     })
+  //   )
+  // }
+
   getDepartmentApplicantHistories(body): Observable<ApplicationDepartmentExtended[]> {
     let urlTemp = this.urlApplications + 'get_department_applicant_histories/'
     return this.http.post<ApplicationDepartmentExtended[]>(urlTemp, body).pipe(

@@ -113,7 +113,7 @@ export class AttendancesService {
       })
     )
   } 
-
+  // for update qr only and will be remove after 
   getTodayQR_hack(body) {
     let urlTemp = this.urlAttendances + 'check_today_hack/'
     return this.http.post<any>(urlTemp, body).pipe(

@@ -194,9 +194,28 @@ class TrainingExtendedSerializer(serializers.ModelSerializer):
         fields = '__all__'   
 
 
+class TrainingExtendedForSpecialSerializer(serializers.ModelSerializer):
+    
+    organiser = OrganisationSerializer(read_only=True)
+    # training_type = TrainingTypeSerializer(read_only=True)
+    # core = TrainingCoreSerializer(read_only=True)
+    # domain = TrainingDomainSerializer(read_only=True)
+    # speaker = CustomUserSerializer(read_only=True)
+    # facilitator = CustomUserSerializer(read_only=True)
+    #training_training_notes = TrainingNoteSerializer(read_only=True, many=True)
+    #training_application = TrainingApplicationExtendedSerializer(read_only=True, many=True)
+    #training_attendee = TrainingAttendeeExtendedSerializer(read_only=True, many=True)
+    #training_absence_memo = TrainingAbsenceMemoExtendedSerializer(read_only=True, many=True)
+    # created_by = CustomUserSerializer(read_only=True)
+    
+    class Meta:
+        model = Training
+        fields = '__all__' 
+
+
 class TrainingApplicationExtendedDepartmentSerializer(serializers.ModelSerializer):
     
-    training = TrainingExtendedSerializer(read_only=True)
+    training = TrainingExtendedForSpecialSerializer(read_only=True)
     applicant = CustomUserSerializer(read_only=True)
     approved_level_1_by = CustomUserSerializer(read_only=True)
     approved_level_2_by = CustomUserSerializer(read_only=True)

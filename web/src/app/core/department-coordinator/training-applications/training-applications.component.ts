@@ -1,3 +1,5 @@
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
+import { UsersService } from 'src/app/shared/services/users/users.service';
 import { Component, OnInit } from '@angular/core';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { NotifyService } from 'src/app/shared/handler/notify/notify.service';
@@ -10,6 +12,8 @@ import * as moment from 'moment';
 import * as xlsx from 'xlsx';
 import { forkJoin } from 'rxjs';
 import { Section } from 'src/app/shared/code/user';
+import { map } from 'rxjs/internal/operators/map';
+
 
 export enum SelectionType {
   single = "single",
@@ -29,6 +33,7 @@ export class TrainingApplicationsComponent implements OnInit {
   // Data
   applications: ApplicationDepartmentExtended[] = []
   sections = Section
+  user
 
   // Table
   tableEntries: number = 5
@@ -53,7 +58,9 @@ export class TrainingApplicationsComponent implements OnInit {
     private applicationService: ApplicationsService,
     private loadingBar: LoadingBarService,
     private notifyService: NotifyService,
-    private router: Router
+    private router: Router,
+    private usersService :UsersService,
+    private authService :AuthService
   ) { 
     this.getData()
   }
@@ -63,11 +70,17 @@ export class TrainingApplicationsComponent implements OnInit {
 
   getData() {
     this.loadingBar.start()
+
     forkJoin([
-      this.applicationService.getDepartmentCoordinatorList()
+      this.applicationService.getDepartmentCoordinatorList(),
+      // this.applicationService.getAll()
     ]).subscribe(
-      () => {
+      (res) => {
+        this.user = this.authService.userDetail,
+        console.log('test call',this.user.department_code)
+        console.log(res)
         this.loadingBar.complete()
+        // this.tableRows = res
         this.applications = this.applicationService.applicationsDepartment
         this.tableRows = this.applications
       },
@@ -90,6 +103,34 @@ export class TrainingApplicationsComponent implements OnInit {
         }
       }
     )
+
+    // this.applicationService.getAll().pipe(map(x => x.filter(i => i.status == "IP" && i.approved_level_1_by == null ))
+    //   ).subscribe(
+    //     (res) => {
+    //       console.log('filter', res)
+    //       this.tableRows = res
+    //       this.loadingBar.complete()
+          
+    //     },
+    //     () => {
+    //           this.loadingBar.complete()
+    //         },
+    //         () => {
+    //           this.tableTemp = this.tableRows.map((prop, key) => {
+    //             return {
+    //               ...prop,
+    //               id_index: key+1
+    //             };
+    //           });
+      
+    //           if (this.tableTemp.length >= 1) {
+    //             this.isEmpty = false
+    //           }
+    //           else {
+    //             this.isEmpty = true
+    //           }
+    //         }
+    //   )
   }
 
   entriesChange($event) {
