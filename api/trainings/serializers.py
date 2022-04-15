@@ -224,6 +224,19 @@ class TrainingApplicationExtendedDepartmentSerializer(serializers.ModelSerialize
     class Meta:
         model = TrainingApplication
         fields = '__all__'
+        
+
+class TrainingApplicationExtendedDepartmentForSpecialSerializer(serializers.ModelSerializer):
+    
+    training = TrainingExtendedSerializer(read_only=True)
+    applicant = CustomUserSerializer(read_only=True)
+    approved_level_1_by = CustomUserSerializer(read_only=True)
+    approved_level_2_by = CustomUserSerializer(read_only=True)
+    approved_level_3_by = CustomUserSerializer(read_only=True)
+
+    class Meta:
+        model = TrainingApplication
+        fields = '__all__'
 
 
 class TrainingNeedAnalysisSerializer(serializers.ModelSerializer):

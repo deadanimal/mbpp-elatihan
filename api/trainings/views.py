@@ -60,6 +60,7 @@ from .serializers import (
     TrainingApplicationSerializer,
     TrainingApplicationExtendedSelfSerializer,
     TrainingApplicationExtendedDepartmentSerializer,
+    TrainingApplicationExtendedDepartmentForSpecialSerializer,
     TrainingAttendeeSerializer,
     TrainingAbsenceMemoSerializer,
     TrainingLogSerializer,
@@ -2071,7 +2072,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer_class = TrainingApplicationExtendedDepartmentSerializer(applications, many=True)
         return Response(serializer_class.data)
     
-    @action(methods=['POST'], detail=True)
+    @action(methods=['POST'], detail=False)
     def get_department_applicant_histories(self, request, *args, **kwargs):
 
         user = request.user
@@ -2080,7 +2081,7 @@ class TrainingApplicationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             applicant=request_['applicant']
         )
 
-        serializer_class = TrainingApplicationExtendedDepartmentSerializer(applications, many=True)
+        serializer_class = TrainingApplicationExtendedDepartmentForSpecialSerializer(applications, many=True)
         return Response(serializer_class.data)
     
     @action(methods=['GET'], detail=False)
