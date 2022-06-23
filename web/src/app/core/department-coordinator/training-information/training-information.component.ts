@@ -280,4 +280,21 @@ export class TrainingInformationComponent implements OnInit {
     console.log(this.selectedStaffs)
   }
 
+  downloadAttachment(type) {
+    console.log('huhe', type)
+    if (type == 'attachment') {
+      let url = this.training['attachment']
+      const urlHehe = 'https://mbpp-api.pipeline.com.my'+url
+      console.log('url', urlHehe)
+      window.open(urlHehe, '_blank');
+    }
+    else if (type == 'attachment_approval') {
+      let url = this.training['attachment_approval']
+      const urlHehe = 'https://mbpp-api.pipeline.com.my'+url
+      console.log('url', urlHehe)
+      window.open(urlHehe, '_blank');
+    }
+  
+  }
+
 }

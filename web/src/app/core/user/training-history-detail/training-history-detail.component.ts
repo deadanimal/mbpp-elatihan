@@ -490,6 +490,22 @@ addMemo() {
   )
 }
 
+downloadAttachment(type) {
+  if (type == 'attachment') {
+    let url = this.training['attachment']
+    const urlHehe = 'https://mbpp-api.pipeline.com.my'+url
+    console.log('url', urlHehe)
+    window.open(urlHehe, '_blank');
+  }
+  else if (type == 'attachment_approval') {
+    let url = this.training['attachment_approval']
+    const urlHehe = 'https://mbpp-api.pipeline.com.my'+url
+    console.log('url', urlHehe)
+    window.open(urlHehe, '_blank');
+  }
+
+}
+
 onFileChange(event) {
   let reader = new FileReader();
   this.fileSize = event.target.files[0].size

@@ -342,7 +342,7 @@
                   <div class="form-group">
                     <label class="form-control-label">Lampiran 1</label>
                     <button
-                      *ngIf="trainingForm.value['attachment']"
+                      
                       type="button"
                       class="btn btn-outline-warm-blue btn-block"
                       (click)="downloadAttachment('attachment')"
@@ -355,11 +355,14 @@
                 <div class="col">
                   <div class="form-group">
                     <label class="form-control-label">Lampiran 2</label>
-                    <input
-                      class="form-control"
-                      value="{{ training?.domain.name }}"
-                      disabled
-                    />
+                    <button
+                      
+                      type="button"
+                      class="btn btn-outline-warm-blue btn-block"
+                      (click)="downloadAttachment('attachment_approval')"
+                    >
+                      Muat turun
+                    </button>
                   </div>
                 </div>
               </div>

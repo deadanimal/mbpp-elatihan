@@ -295,11 +295,11 @@ export class LoginComponent implements OnInit {
     // let username= '900106075157'
     // let pwd = 'mbpplatihan'
     // Penyelaras Jabatan - DC 8b6b8639-e23a-4061-83d4-3c7f69a49bfb
-    // let username= '900106075156'
-    // let pwd = 'mbpplatihan123'
+    let username= '900106075156'
+    let pwd = 'mbpplatihan123'
     // Penyelaras Latihan - TC bc87f9ca-520b-4ede-84be-e5978aa8e467
-    let username= '900106075155' 
-    let pwd = 'mbpplatihan12345'
+    // let username= '900106075155' 
+    // let pwd = 'mbpplatihan12345'
     // Ketua Jabatan - DH 321eea06-c911-453d-af57-14beaf38f4b6
     // let username= '900106075154'
     // let pwd = 'mbpplatihan123'

@@ -801,19 +801,20 @@ export class TrainingDetailsComponent implements OnInit {
         
         this.tableApplicationsRows = this.applications
         this.filteredPrint = this.tableApplicationsRows.filter(e => e.status ==='AP')
+        console.log('data xkuaq',this.tableApplicationsRows)
         this.tableApplicationsTemp = this.tableApplicationsRows.map((prop, key) => {
           let result = this.departments.find((obj) => {
             return obj.value == prop.applicant.department_code
           })
           return {
             ...prop,
-            department: result.text,
+            // department: result.text,
             id_index: key+1
           };
         });
 
-        console.log('trainingID',this.tableApplicationsTemp)
-        console.log('trainingID',this.filteredPrint)
+        // console.log('trainingID',this.tableApplicationsTemp)
+        // console.log('trainingID',this.filteredPrint)
         
         if (this.tableApplicationsTemp.length >= 1) {
           this.isApplicationsEmpty = false
@@ -918,8 +919,6 @@ export class TrainingDetailsComponent implements OnInit {
         this.InProgress = res[1].length
         this.Reserve = res[3].length
         this.tableApplicationsPrint = res[0]
-        console.log('approve',this.Approve)
-        console.log('trainingID',this.tableApplicationsPrint)
       }
     )
   }
